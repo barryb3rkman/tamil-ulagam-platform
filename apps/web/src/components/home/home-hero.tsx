@@ -32,10 +32,10 @@ export function HomeHero() {
             >
               {hero.title}
             </h1>
-            <p className="mt-7 max-w-xl text-lg leading-8 text-white/75 sm:text-xl sm:leading-9">
+            <p className="mt-8 max-w-lg text-[1.08rem] leading-8 text-white/82 sm:text-xl sm:leading-9">
               {hero.description}
             </p>
-            <div className="mt-9 flex flex-wrap items-center gap-3">
+            <div className="mt-10 flex flex-wrap items-center gap-4">
               <LinkButton
                 href="/about"
                 variant="secondary"
@@ -56,7 +56,7 @@ export function HomeHero() {
             <LinkButton
               href="/partners"
               variant="text"
-              className="mt-7 text-sm text-white/70 decoration-white/40 hover:text-white"
+              className="mt-8 text-sm text-white/75 decoration-white/40 hover:text-white"
             >
               Partner With Us{" "}
               <span aria-hidden="true" className="ml-2">

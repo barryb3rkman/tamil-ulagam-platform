@@ -12,7 +12,7 @@ import { homepageContent } from "@/content/homepage";
 export function PillarsSection() {
   return (
     <Section tone="ivory" aria-labelledby="pillars-title">
-      <Container>
+      <Container size="wide">
         <SectionHeading
           eyebrow="THE FOUNDATION"
           title="Connect. Empower. Preserve."

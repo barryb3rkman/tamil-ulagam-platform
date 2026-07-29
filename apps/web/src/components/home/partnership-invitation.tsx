@@ -11,7 +11,7 @@ import { homepageContent } from "@/content/homepage";
 export function PartnershipInvitation() {
   return (
     <Section tone="white" aria-labelledby="partnership-title">
-      <Container>
+      <Container size="wide">
         <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
           <div className="overflow-hidden lg:order-2">
             <ImageWithFallback

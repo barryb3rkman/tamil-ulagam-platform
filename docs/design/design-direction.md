@@ -16,11 +16,14 @@ Tamil text must remain comfortably sized with appropriate line height. Mixed-lan
 
 - Use large, measured typography and generous section spacing.
 - Preserve readable line lengths and responsive container widths.
+- Let media-led sections expand through the shared wide container instead of widening every text column.
 - Use maroon and gold as accents, not large decorative surfaces.
 - Prefer subtle borders, calm shadows, and small cultural details.
 - Keep motion short, purposeful, and compatible with reduced-motion preferences.
 - Maintain visible focus states, keyboard access, semantic landmarks, and sufficient contrast.
 
 Avoid political-party visual cues, charity templates, generic corporate stock compositions, excessive temple imagery, neon technology styling, pervasive glass effects, excessive gradients, tiny Tamil typography, and heavy animation.
+
+Homepage labels remain deliberately secondary but use consistent readable sizing and contrast at small viewport widths. The header and closing call to action may carry slightly stronger visual weight than information sections, while still preserving the calm institutional character.
 
 The homepage extends this foundation with large editorial compositions, alternating media and copy, and a restrained visual rhythm inspired by contemporary international editorial sites. The referenced Heart theme informed only those broad qualities; Tamil Ulagam does not adopt its fundraising identity or exact structure: https://heart.axiomthemes.com/

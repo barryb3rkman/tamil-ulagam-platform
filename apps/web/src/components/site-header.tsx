@@ -18,7 +18,7 @@ export function SiteHeader() {
         >
           <span
             aria-hidden="true"
-            className="bg-global-navy font-tamil ring-heritage-gold/60 ring-offset-warm-ivory grid size-10 place-items-center rounded-full text-lg font-bold text-white ring-2 ring-offset-2"
+            className="bg-global-navy font-tamil ring-heritage-gold/60 ring-offset-warm-ivory grid size-12 place-items-center rounded-full text-xl font-bold text-white ring-2 ring-offset-2"
           >
             த
           </span>
@@ -34,12 +34,12 @@ export function SiteHeader() {
 
         <nav
           aria-label="Primary navigation"
-          className="hidden items-center gap-1 lg:flex"
+          className="hidden items-center gap-2 lg:flex"
         >
           {primaryNavigation.map((entry) => (
             <Link
               key={entry.href}
-              className="rounded-button text-global-navy hover:bg-global-navy/5 hover:text-heritage-maroon focus-visible:ring-focus px-3 py-2 text-sm font-semibold transition-colors focus-visible:outline-none"
+              className="rounded-button text-global-navy hover:bg-global-navy/5 hover:text-heritage-maroon focus-visible:ring-focus px-3.5 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none"
               href={entry.href}
             >
               {entry.label}
@@ -50,6 +50,12 @@ export function SiteHeader() {
         <div className="text-global-navy hidden xl:block">
           <LanguageSelector />
         </div>
+        <Link
+          href="/partners"
+          className="bg-heritage-maroon hover:bg-deep-navy focus-visible:ring-focus rounded-button hidden min-h-10 items-center px-4 py-2 text-sm font-semibold text-white transition-colors focus-visible:outline-none xl:inline-flex"
+        >
+          Partner With Us
+        </Link>
         <MobileNavigation entries={primaryNavigation} />
       </Container>
     </header>

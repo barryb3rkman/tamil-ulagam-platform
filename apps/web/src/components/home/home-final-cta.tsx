@@ -21,22 +21,22 @@ export function HomeFinalCta() {
           className="from-deep-navy via-deep-navy/75 to-deep-navy/15 absolute inset-0 bg-gradient-to-r"
         />
       </div>
-      <Container className="relative">
-        <div className="flex min-h-[560px] items-center py-24 sm:min-h-[620px]">
+      <Container size="wide" className="relative">
+        <div className="flex min-h-[500px] items-center py-20 sm:min-h-[620px] sm:py-24">
           <div className="max-w-2xl">
             <p className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
               THE NEXT CHAPTER
             </p>
             <h2
               id="final-cta-title"
-              className="mt-4 text-4xl leading-[1.06] font-semibold tracking-[-0.04em] text-balance sm:text-6xl"
+              className="mt-4 text-4xl leading-[1.06] font-semibold tracking-[-0.04em] text-balance sm:text-6xl lg:text-7xl"
             >
               {homepageContent.finalCta.title}
             </h2>
             <p className="mt-6 max-w-xl text-lg leading-8 text-white/78">
               {homepageContent.finalCta.description}
             </p>
-            <div className="mt-9 flex flex-wrap items-center gap-4">
+            <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center">
               <LinkButton
                 href="/about"
                 variant="secondary"

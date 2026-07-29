@@ -5,9 +5,10 @@ import { expect, test } from "@playwright/test";
 
 test.describe("public homepage", () => {
   test("captures the requested visual review viewports", async ({ page }) => {
+    test.setTimeout(90_000);
     const reviewDirectory =
       process.env.HOMEPAGE_REVIEW_DIR ??
-      path.resolve(process.cwd(), "../../artifacts/homepage-review");
+      path.resolve(process.cwd(), "../../artifacts/homepage-refinement");
     await mkdir(reviewDirectory, { recursive: true });
     for (const viewport of [
       { width: 1920, height: 1080 },
@@ -21,10 +22,15 @@ test.describe("public homepage", () => {
       await page.setViewportSize(viewport);
       await page.goto("/");
       await page.locator("#home-title").waitFor({ state: "visible" });
-      const images = page.locator("img");
-      for (let index = 0; index < (await images.count()); index += 1) {
-        await images.nth(index).scrollIntoViewIfNeeded();
-      }
+      await page.evaluate(async () => {
+        for (const image of document.images) {
+          image.scrollIntoView({ block: "center" });
+          await new Promise<void>((resolve) => {
+            window.setTimeout(resolve, 30);
+          });
+        }
+      });
+      await page.waitForLoadState("networkidle");
       await page.evaluate(() => window.scrollTo(0, 0));
       await page.screenshot({
         path: `${reviewDirectory}/homepage-${viewport.width}x${viewport.height}.png`,
@@ -53,9 +59,12 @@ test.describe("public homepage", () => {
         name: "One Community. One Identity. One Global Future.",
       }),
     ).toBeVisible();
-    await expect(
-      page.getByRole("navigation", { name: "Primary navigation" }),
-    ).toBeVisible();
+    const primaryNavigation = page.getByRole("navigation", {
+      name: "Primary navigation",
+    });
+    await expect(primaryNavigation).toBeVisible();
+    await primaryNavigation.getByRole("link", { name: "About" }).focus();
+    await expect(page.locator(":focus")).toHaveText("About");
     await expect(
       page.getByRole("link", { name: "Explore Our Vision" }),
     ).toHaveAttribute("href", "/about");
@@ -67,6 +76,14 @@ test.describe("public homepage", () => {
     ).toBeVisible();
     await expect(page.getByText("Healthcare").first()).toBeVisible();
     await expect(page.getByText("Planned").first()).toBeVisible();
+    await expect(
+      page
+        .getByTestId("initiative-desktop-grid")
+        .getByTestId("initiative-card"),
+    ).toHaveCount(8);
+    await expect(
+      page.getByRole("link", { name: /Explore All Initiatives/ }),
+    ).toHaveAttribute("href", "/initiatives");
 
     const internalLinks = await page
       .locator('a[href^="/"]')
@@ -116,6 +133,9 @@ test.describe("public homepage", () => {
     await expect(page.locator(":focus")).toBeVisible();
     await page.getByRole("link", { name: "Explore Our Vision" }).focus();
     await expect(page.locator(":focus")).toHaveText("Explore Our Vision");
+    await expect(
+      page.getByTestId("initiative-mobile-grid").getByTestId("initiative-card"),
+    ).toHaveCount(4);
   });
 
   test("keeps the composition within the requested responsive viewports", async ({

@@ -12,6 +12,7 @@ coverage/
 playwright-report/
 test-results/
 artifacts/homepage-review/
+artifacts/homepage-refinement/
 
 # Environment files
 .env

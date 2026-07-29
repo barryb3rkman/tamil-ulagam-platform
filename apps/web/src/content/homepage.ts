@@ -1,3 +1,5 @@
+import type { InitiativeSlug } from "./initiatives";
+
 export const homepageContent = {
   hero: {
     eyebrowTamil: "தமிழ் உலகம்",
@@ -56,6 +58,28 @@ export const homepageContent = {
     title: "Building an ecosystem for every dimension of Tamil life.",
     description:
       "Tamil Ulagam’s long-term vision brings community, knowledge, wellbeing, enterprise and culture into one connected global platform.",
+    presentation: {
+      featured: [
+        "healthcare",
+        "education",
+      ] as const satisfies readonly InitiativeSlug[],
+      medium: [
+        "business",
+        "jobs",
+        "research",
+      ] as const satisfies readonly InitiativeSlug[],
+      supporting: [
+        "tourism",
+        "arts-culture",
+        "global-events",
+      ] as const satisfies readonly InitiativeSlug[],
+      mobileFeatured: [
+        "healthcare",
+        "education",
+        "business",
+        "jobs",
+      ] as const satisfies readonly InitiativeSlug[],
+    },
   },
   chapters: {
     eyebrow: "GLOBAL CHAPTER VISION",
@@ -89,5 +113,13 @@ export const homepageContent = {
     title: "The Tamil world is everywhere. Now it can have one home.",
     description:
       "Join the vision for a more connected, empowered and celebrated global Tamil community.",
+  },
+  roadmapExcerpts: {
+    "public-foundation":
+      "Establish the public website, information architecture, design system, and engineering standards.",
+    "community-infrastructure":
+      "Design identity, membership, chapter, and organisation capabilities after governance requirements are confirmed.",
+    "service-ecosystem":
+      "Introduce individual services incrementally with qualified partners and fit-for-purpose controls.",
   },
 } as const;

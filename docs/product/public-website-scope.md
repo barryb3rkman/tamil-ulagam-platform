@@ -26,6 +26,8 @@ The first release creates the permanent public website foundation for Tamil Ulag
 
 The homepage is a high-fidelity editorial introduction to the federation vision. It does not claim that membership, Tamil ID, chapters, healthcare, jobs, mobile applications, events, or partner services are operational. Concept visuals and future content areas are labelled accordingly.
 
+Homepage initiative previews are a curated introduction, not a service directory: the complete initiative set remains available on the initiatives page. Roadmap excerpts are intentionally concise on the homepage, while the roadmap route retains the detailed phase information.
+
 The current release does not need a database or authentication because it stores no member state and performs no privileged transaction. Adding them now would create security and operational responsibilities before the relevant governance and product requirements exist.
 
 ## Honest representation

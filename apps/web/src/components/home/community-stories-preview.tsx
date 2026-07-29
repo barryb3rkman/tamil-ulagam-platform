@@ -12,7 +12,7 @@ import { homepageContent } from "@/content/homepage";
 export function CommunityStoriesPreview() {
   return (
     <Section tone="ivory" aria-labelledby="stories-title">
-      <Container>
+      <Container size="wide">
         <div className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20">
           <div className="overflow-hidden">
             <ImageWithFallback

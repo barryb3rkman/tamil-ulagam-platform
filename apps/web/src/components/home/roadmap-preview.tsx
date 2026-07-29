@@ -6,12 +6,13 @@ import {
 } from "@tamil-ulagam/ui";
 
 import { images } from "@/config/images";
+import { homepageContent } from "@/content/homepage";
 import { roadmapPhases } from "@/content/roadmap";
 
 export function RoadmapPreview() {
   return (
     <Section tone="white" aria-labelledby="roadmap-title">
-      <Container>
+      <Container size="wide">
         <div className="grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:items-start lg:gap-20">
           <div className="lg:sticky lg:top-24">
             <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
@@ -47,9 +48,9 @@ export function RoadmapPreview() {
               {roadmapPhases.map((phase, index) => (
                 <li
                   key={phase.id}
-                  className="grid gap-4 py-7 sm:grid-cols-[5rem_1fr] sm:gap-7"
+                  className="grid gap-5 py-9 sm:grid-cols-[5rem_1fr] sm:gap-8"
                 >
-                  <span className="text-heritage-gold text-3xl font-semibold">
+                  <span className="text-heritage-gold text-4xl leading-none font-semibold">
                     0{index + 1}
                   </span>
                   <div>
@@ -61,7 +62,9 @@ export function RoadmapPreview() {
                         {phase.timeframe}
                       </span>
                     </div>
-                    <p className="text-slate mt-3 leading-7">{phase.summary}</p>
+                    <p className="text-slate mt-3 max-w-2xl text-base leading-7">
+                      {homepageContent.roadmapExcerpts[phase.id]}
+                    </p>
                     <ul className="text-charcoal mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
                       {phase.capabilities.map((capability) => (
                         <li
