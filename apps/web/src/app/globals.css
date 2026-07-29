@@ -126,3 +126,7 @@ body {
   font-family: var(--tu-font-tamil);
   line-height: 1.65;
 }
+
+#devtools-indicator {
+  display: none !important;
+}

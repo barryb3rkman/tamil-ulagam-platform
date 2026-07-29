@@ -15,6 +15,7 @@ artifacts/homepage-review/
 artifacts/homepage-refinement/
 artifacts/homepage-media-fix/
 artifacts/about-page-review/
+artifacts/about-floating-control-fix/
 
 # Environment files
 .env
