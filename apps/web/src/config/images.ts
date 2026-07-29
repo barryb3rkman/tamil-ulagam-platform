@@ -262,6 +262,17 @@ export const aboutEditorialImageKeys = [
   "roadmapFuture",
 ] as const satisfies readonly ImageKey[];
 
+export const initiativesEditorialImageKeys = [
+  "initiativeHealthcare",
+  "initiativeEducation",
+  "initiativeBusiness",
+  "initiativeJobs",
+  "initiativeResearch",
+  "initiativeTourism",
+  "initiativeArtsCulture",
+  "initiativeGlobalEvents",
+] as const satisfies readonly ImageKey[];
+
 export function getImage(key: ImageKey): ImageMetadata {
   return images[key];
 }

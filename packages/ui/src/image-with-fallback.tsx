@@ -21,6 +21,7 @@ export interface ImageWithFallbackProps extends Omit<
 > {
   readonly asset: ImageMetadata;
   readonly fallbackLabel?: string;
+  readonly priority?: boolean;
 }
 
 interface ResponsiveImageStyle extends CSSProperties {
@@ -34,12 +35,14 @@ export function ImageWithFallback({
   asset,
   className,
   fallbackLabel = "Image preparation in progress",
+  priority,
   sizes = "100vw",
   style,
   ...props
 }: ImageWithFallbackProps) {
   const [hasLoadError, setHasLoadError] = useState(false);
   const shouldShowPlaceholder = !asset.available || hasLoadError;
+  const shouldPrioritize = priority ?? asset.aboveFold;
   const responsiveClassName = asset.mobileAlternative
     ? "[object-position:var(--tu-image-mobile-position)] sm:[object-position:var(--tu-image-desktop-position)]"
     : undefined;
@@ -116,9 +119,9 @@ export function ImageWithFallback({
           alt={asset.alt}
           className={cx("object-cover", responsiveClassName, className)}
           {...props}
-          fetchPriority={asset.aboveFold ? "high" : undefined}
+          fetchPriority={shouldPrioritize ? "high" : undefined}
           height={asset.height}
-          loading={asset.aboveFold ? "eager" : "lazy"}
+          loading={shouldPrioritize ? "eager" : "lazy"}
           onError={() => {
             setHasLoadError(true);
           }}
@@ -136,9 +139,9 @@ export function ImageWithFallback({
       alt={asset.alt}
       className={cx("object-cover", className)}
       {...props}
-      fetchPriority={asset.aboveFold ? "high" : undefined}
+      fetchPriority={shouldPrioritize ? "high" : undefined}
       height={asset.height}
-      loading={asset.aboveFold ? "eager" : "lazy"}
+      loading={shouldPrioritize ? "eager" : "lazy"}
       onError={() => {
         setHasLoadError(true);
       }}

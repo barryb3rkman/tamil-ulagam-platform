@@ -30,6 +30,8 @@ Homepage initiative previews are a curated introduction, not a service directory
 
 The About page is the public institutional explanation of why Tamil Ulagam exists. It presents the long-term vision, mission, objectives, proposed ecosystem, governance principles, and development path without presenting future membership, Tamil ID, chapter, service, or mobile capabilities as operational.
 
+The Initiatives overview is the public explanation of the eight long-term initiative areas. It groups healthcare and education under human development; business, jobs, and tourism under opportunity and economy; and research, arts and culture, and global events under knowledge, culture, and global presence. It describes shared future foundations and readiness principles without presenting directories, applications, bookings, marketplaces, or registrations as live services.
+
 The current release does not need a database or authentication because it stores no member state and performs no privileged transaction. Adding them now would create security and operational responsibilities before the relevant governance and product requirements exist.
 
 ## Honest representation
