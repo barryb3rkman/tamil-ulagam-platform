@@ -18,6 +18,7 @@ artifacts/about-page-review/
 artifacts/about-floating-control-fix/
 artifacts/initiatives-overview-review/
 artifacts/initiatives-mobile-refinement/
+artifacts/initiative-detail-pages-review/
 
 # Environment files
 .env

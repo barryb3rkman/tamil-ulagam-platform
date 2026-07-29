@@ -71,7 +71,13 @@ export function MobileNavigation({ entries }: MobileNavigationProps) {
                     ref={index === 0 ? firstLinkRef : undefined}
                     className="rounded-button text-global-navy hover:bg-global-navy/5 focus-visible:ring-focus block px-3 py-3 text-base font-semibold focus-visible:outline-none"
                     href={entry.href}
-                    aria-current={pathname === entry.href ? "page" : undefined}
+                    aria-current={
+                      pathname === entry.href ||
+                      (entry.href === "/initiatives" &&
+                        pathname.startsWith("/initiatives/"))
+                        ? "page"
+                        : undefined
+                    }
                     onClick={() => {
                       setIsOpen(false);
                     }}

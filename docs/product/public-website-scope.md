@@ -32,6 +32,8 @@ The About page is the public institutional explanation of why Tamil Ulagam exist
 
 The Initiatives overview is the public explanation of the eight long-term initiative areas. It groups healthcare and education under human development; business, jobs, and tourism under opportunity and economy; and research, arts and culture, and global events under knowledge, culture, and global presence. It describes shared future foundations and readiness principles without presenting directories, applications, bookings, marketplaces, or registrations as live services.
 
+Initiative detail pages provide deeper public explanations for each of the eight long-term areas. They describe intended audiences, future capabilities, trust requirements, staged development and partnership pathways. They do not provide appointments, courses, scholarships, jobs, business listings, travel bookings, archives, event dates, registrations, tickets or other operational transactions.
+
 The current release does not need a database or authentication because it stores no member state and performs no privileged transaction. Adding them now would create security and operational responsibilities before the relevant governance and product requirements exist.
 
 ## Honest representation

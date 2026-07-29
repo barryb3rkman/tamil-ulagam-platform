@@ -17,7 +17,10 @@ export function PrimaryNavigation({ entries }: PrimaryNavigationProps) {
       className="hidden items-center gap-2 lg:flex"
     >
       {entries.map((entry) => {
-        const isCurrent = pathname === entry.href;
+        const isCurrent =
+          pathname === entry.href ||
+          (entry.href === "/initiatives" &&
+            pathname.startsWith("/initiatives/"));
 
         return (
           <Link
