@@ -23,4 +23,4 @@ Tamil text must remain comfortably sized with appropriate line height. Mixed-lan
 
 Avoid political-party visual cues, charity templates, generic corporate stock compositions, excessive temple imagery, neon technology styling, pervasive glass effects, excessive gradients, tiny Tamil typography, and heavy animation.
 
-The current components establish tokens and shells only. The final homepage composition is explicitly outside this phase.
+The homepage extends this foundation with large editorial compositions, alternating media and copy, and a restrained visual rhythm inspired by contemporary international editorial sites. The referenced Heart theme informed only those broad qualities; Tamil Ulagam does not adopt its fundraising identity or exact structure: https://heart.axiomthemes.com/

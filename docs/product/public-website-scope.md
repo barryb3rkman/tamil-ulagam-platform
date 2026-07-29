@@ -16,13 +16,15 @@ The first release creates the permanent public website foundation for Tamil Ulag
 
 ## Deliberately excluded
 
-- Final homepage design and final long-form copy
+- Internal page redesigns and future service UX
 - Database and data migrations
 - Authentication, Tamil ID registration, and membership
 - CMS and editorial workflows
 - Payments, applications, directories, or administration
 - Jobs, healthcare, education, business, or other transactional services
 - Mobile applications
+
+The homepage is a high-fidelity editorial introduction to the federation vision. It does not claim that membership, Tamil ID, chapters, healthcare, jobs, mobile applications, events, or partner services are operational. Concept visuals and future content areas are labelled accordingly.
 
 The current release does not need a database or authentication because it stores no member state and performs no privileged transaction. Adding them now would create security and operational responsibilities before the relevant governance and product requirements exist.
 
