@@ -1,0 +1,26 @@
+# Design direction
+
+## Character
+
+The design foundation should feel like a premium global federation: contemporary, editorial, culturally grounded, institutionally trustworthy, and human. It should express Tamil identity with restraint rather than relying on decorative stereotypes.
+
+The core palette combines global navy and deep navy for trust, warm ivory for humanity, heritage maroon for cultural emphasis, and heritage gold for limited highlights. Interactive blue and semantic success, warning, and error colours remain functionally distinct.
+
+## Typography
+
+English and Tamil use separate CSS font tokens so either language can be refined without duplicating component rules. Inter provides the modern English sans-serif direction and Noto Sans Tamil provides dependable Tamil coverage. Both are configured through the Next.js font system with system fallbacks.
+
+Tamil text must remain comfortably sized with appropriate line height. Mixed-language interfaces must not force Tamil glyphs through the English font stack.
+
+## Layout and interaction
+
+- Use large, measured typography and generous section spacing.
+- Preserve readable line lengths and responsive container widths.
+- Use maroon and gold as accents, not large decorative surfaces.
+- Prefer subtle borders, calm shadows, and small cultural details.
+- Keep motion short, purposeful, and compatible with reduced-motion preferences.
+- Maintain visible focus states, keyboard access, semantic landmarks, and sufficient contrast.
+
+Avoid political-party visual cues, charity templates, generic corporate stock compositions, excessive temple imagery, neon technology styling, pervasive glass effects, excessive gradients, tiny Tamil typography, and heavy animation.
+
+The current components establish tokens and shells only. The final homepage composition is explicitly outside this phase.

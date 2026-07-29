@@ -1,0 +1,25 @@
+{
+  "name": "@tamil-ulagam/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest --passWithNoTests",
+    "clean": "rimraf coverage dist *.tsbuildinfo"
+  },
+  "devDependencies": {
+    "@tamil-ulagam/config-eslint": "workspace:*",
+    "@tamil-ulagam/config-typescript": "workspace:*",
+    "eslint": "9.39.5",
+    "rimraf": "6.1.3",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
+  }
+}

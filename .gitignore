@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js and Turborepo
+.next/
+.turbo/
+out/
+
+# Test output
+coverage/
+playwright-report/
+test-results/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+pnpm-debug.log*
+
+# Editor and operating-system files
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts

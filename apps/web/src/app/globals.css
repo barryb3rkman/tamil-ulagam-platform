@@ -1,0 +1,128 @@
+@import "tailwindcss";
+@source "../../../../packages/ui/src/**/*.{ts,tsx}";
+
+:root {
+  --tu-color-global-navy: #092a47;
+  --tu-color-deep-navy: #061d32;
+  --tu-color-heritage-maroon: #861f32;
+  --tu-color-heritage-gold: #d6a84b;
+  --tu-color-warm-ivory: #f8f5ee;
+  --tu-color-white: #ffffff;
+  --tu-color-charcoal: #1c2733;
+  --tu-color-slate: #657381;
+  --tu-color-interactive-blue: #246b9e;
+  --tu-color-success: #247a59;
+  --tu-color-warning: #b87416;
+  --tu-color-error: #b9363e;
+
+  --tu-font-english:
+    var(--font-inter), Inter, ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --tu-font-tamil:
+    var(--font-noto-tamil), "Noto Sans Tamil", "Latha", "Nirmala UI", sans-serif;
+
+  --tu-space-section-compact: clamp(3rem, 6vw, 4.5rem);
+  --tu-space-section: clamp(4.5rem, 8vw, 7rem);
+  --tu-space-section-generous: clamp(6rem, 11vw, 9rem);
+  --tu-navigation-height: 5rem;
+
+  --tu-radius-small: 0.375rem;
+  --tu-radius-button: 0.625rem;
+  --tu-radius-card: 1rem;
+  --tu-radius-large: 1.5rem;
+
+  --tu-container-narrow: 48rem;
+  --tu-container-standard: 76rem;
+  --tu-container-wide: 88rem;
+
+  --tu-shadow-card: 0 1rem 2.5rem rgba(6, 29, 50, 0.08);
+  --tu-shadow-navigation: 0 1.25rem 3rem rgba(6, 29, 50, 0.13);
+
+  --tu-transition-fast: 120ms;
+  --tu-transition-standard: 180ms;
+  --tu-transition-slow: 280ms;
+
+  --tu-focus-ring-width: 3px;
+  --tu-focus-ring-offset: 2px;
+}
+
+@theme inline {
+  --color-global-navy: var(--tu-color-global-navy);
+  --color-deep-navy: var(--tu-color-deep-navy);
+  --color-heritage-maroon: var(--tu-color-heritage-maroon);
+  --color-heritage-gold: var(--tu-color-heritage-gold);
+  --color-warm-ivory: var(--tu-color-warm-ivory);
+  --color-white: var(--tu-color-white);
+  --color-charcoal: var(--tu-color-charcoal);
+  --color-slate: var(--tu-color-slate);
+  --color-interactive-blue: var(--tu-color-interactive-blue);
+  --color-success: var(--tu-color-success);
+  --color-warning: var(--tu-color-warning);
+  --color-error: var(--tu-color-error);
+
+  --font-english: var(--tu-font-english);
+  --font-tamil: var(--tu-font-tamil);
+  --font-sans: var(--tu-font-english);
+
+  --spacing-section-compact: var(--tu-space-section-compact);
+  --spacing-section: var(--tu-space-section);
+  --spacing-section-generous: var(--tu-space-section-generous);
+  --spacing-navigation: var(--tu-navigation-height);
+
+  --radius-sm: var(--tu-radius-small);
+  --radius-button: var(--tu-radius-button);
+  --radius-card: var(--tu-radius-card);
+  --radius-large: var(--tu-radius-large);
+
+  --container-container-narrow: var(--tu-container-narrow);
+  --container-container: var(--tu-container-standard);
+  --container-container-wide: var(--tu-container-wide);
+
+  --shadow-card: var(--tu-shadow-card);
+  --shadow-navigation: var(--tu-shadow-navigation);
+
+  --duration-fast: var(--tu-transition-fast);
+  --duration-standard: var(--tu-transition-standard);
+  --duration-slow: var(--tu-transition-slow);
+}
+
+@utility ring-focus {
+  box-shadow:
+    0 0 0 var(--tu-focus-ring-offset) var(--tu-color-white),
+    0 0 0 calc(var(--tu-focus-ring-offset) + var(--tu-focus-ring-width))
+      var(--tu-color-interactive-blue);
+}
+
+* {
+  border-color: color-mix(
+    in srgb,
+    var(--tu-color-global-navy) 12%,
+    transparent
+  );
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--tu-color-warm-ivory);
+  color: var(--tu-color-charcoal);
+  font-family: var(--tu-font-english);
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(
+    in srgb,
+    var(--tu-color-heritage-gold) 45%,
+    transparent
+  );
+  color: var(--tu-color-deep-navy);
+}
+
+:lang(ta) {
+  font-family: var(--tu-font-tamil);
+  line-height: 1.65;
+}

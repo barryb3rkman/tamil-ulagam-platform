@@ -1,0 +1,43 @@
+{
+  "name": "@tamil-ulagam/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "clean": "rimraf .next coverage playwright-report test-results *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@tamil-ulagam/shared": "workspace:*",
+    "@tamil-ulagam/ui": "workspace:*",
+    "next": "16.2.12",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.0",
+    "@tailwindcss/postcss": "4.3.3",
+    "@testing-library/dom": "10.4.1",
+    "@testing-library/jest-dom": "7.0.0",
+    "@testing-library/react": "16.3.2",
+    "@tamil-ulagam/config-eslint": "workspace:*",
+    "@tamil-ulagam/config-typescript": "workspace:*",
+    "@types/node": "24.13.3",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "eslint": "9.39.5",
+    "jsdom": "30.0.0",
+    "postcss": "8.5.24",
+    "rimraf": "6.1.3",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
+  }
+}
