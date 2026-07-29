@@ -1,6 +1,16 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const port = 3000;
+const configuredPort = Number(process.env.PLAYWRIGHT_PORT ?? "3100");
+
+if (
+  !Number.isInteger(configuredPort) ||
+  configuredPort < 1024 ||
+  configuredPort > 65_535
+) {
+  throw new Error("PLAYWRIGHT_PORT must be a valid unprivileged TCP port.");
+}
+
+const port = configuredPort;
 const baseURL = `http://127.0.0.1:${port}`;
 
 export default defineConfig({
@@ -20,9 +30,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "pnpm dev",
+    command: `exec ./node_modules/.bin/next dev --port ${port}`,
     url: baseURL,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
     timeout: 120_000,
   },
 });
