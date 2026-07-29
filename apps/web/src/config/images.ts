@@ -241,6 +241,21 @@ export const images = {
 
 export type ImageKey = keyof typeof images;
 
+/**
+ * Editorial media that must remain visible and decoded after a complete
+ * homepage scroll. This keeps browser verification aligned with the registry.
+ */
+export const homepageEditorialImageKeys = [
+  "whyTamilUlagam",
+  "tamilIdShowcase",
+  "globalChapters",
+  "roadmapFuture",
+  "mobileAppPreview",
+  "partnerships",
+  "communityStories",
+  "finalCallToAction",
+] as const satisfies readonly ImageKey[];
+
 export function getImage(key: ImageKey): ImageMetadata {
   return images[key];
 }

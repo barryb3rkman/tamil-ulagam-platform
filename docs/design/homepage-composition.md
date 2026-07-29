@@ -13,3 +13,5 @@ Selected editorial sections use the wide container variant so media and grids ca
 The initiative presentation is configured from typed initiative slugs: two featured initiatives, three medium initiatives, and three supporting initiatives on desktop. On mobile, four configured previews are shown with a clear route to the complete initiatives page. Roadmap summaries use concise homepage excerpts while the detailed phase content remains on the roadmap page.
 
 Small labels use consistent secondary sizing, contrast, and spacing. The final call to action gives the closing headline more room, retains a restrained image overlay, and stacks its actions intentionally on narrow screens.
+
+Visual-review captures move through the document in bounded viewport increments before returning to the top for a full-page image. This gives lazy-loaded editorial media a deterministic opportunity to decode while production delivery remains lazy below the fold.

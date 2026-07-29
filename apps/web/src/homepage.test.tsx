@@ -2,7 +2,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import HomePage from "@/app/page";
-import { images } from "@/config/images";
+import { homepageEditorialImageKeys, images } from "@/config/images";
 import { homepageContent } from "@/content/homepage";
 import { initiatives } from "@/content/initiatives";
 import { roadmapPhases } from "@/content/roadmap";
@@ -75,5 +75,13 @@ describe("public homepage composition", () => {
     expect(images.homeHero.available).toBe(true);
     expect(images.homeHero.path).toContain("home-hero-desktop.png");
     expect(images.homeHero.mobilePath).toContain("home-hero-mobile.png");
+  });
+
+  it("renders every major editorial image from the shared registry", () => {
+    render(<HomePage />);
+
+    for (const key of homepageEditorialImageKeys) {
+      expect(screen.getByRole("img", { name: images[key].alt })).toBeVisible();
+    }
   });
 });

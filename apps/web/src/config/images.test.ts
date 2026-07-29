@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { images } from "./images";
+import { homepageEditorialImageKeys, images } from "./images";
 
 function ratioValue(ratio: `${number}/${number}`): number {
   const [width, height] = ratio.split("/").map(Number);
@@ -54,5 +54,30 @@ describe("image registry", () => {
 
     expect(priorityEntries).toEqual(["homeHero"]);
     expect(images.homeHero.mobileAlternative).toBe(true);
+  });
+
+  it("keeps every major homepage editorial asset available", () => {
+    expect(homepageEditorialImageKeys).toEqual([
+      "whyTamilUlagam",
+      "tamilIdShowcase",
+      "globalChapters",
+      "roadmapFuture",
+      "mobileAppPreview",
+      "partnerships",
+      "communityStories",
+      "finalCallToAction",
+    ]);
+
+    for (const key of homepageEditorialImageKeys) {
+      const asset = images[key];
+      const assetFile = path.join(
+        process.cwd(),
+        "public",
+        asset.path.replace(/^\//, ""),
+      );
+
+      expect(asset.available, key).toBe(true);
+      expect(existsSync(assetFile), asset.path).toBe(true);
+    }
   });
 });

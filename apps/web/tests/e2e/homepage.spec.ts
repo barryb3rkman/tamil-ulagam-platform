@@ -3,12 +3,17 @@ import path from "node:path";
 
 import { expect, test } from "@playwright/test";
 
+import {
+  scrollThroughHomepage,
+  verifyMajorHomepageImages,
+} from "./helpers/homepage-media";
+
 test.describe("public homepage", () => {
   test("captures the requested visual review viewports", async ({ page }) => {
     test.setTimeout(90_000);
     const reviewDirectory =
       process.env.HOMEPAGE_REVIEW_DIR ??
-      path.resolve(process.cwd(), "../../artifacts/homepage-refinement");
+      path.resolve(process.cwd(), "../../artifacts/homepage-media-fix");
     await mkdir(reviewDirectory, { recursive: true });
     for (const viewport of [
       { width: 1920, height: 1080 },
@@ -22,21 +27,45 @@ test.describe("public homepage", () => {
       await page.setViewportSize(viewport);
       await page.goto("/");
       await page.locator("#home-title").waitFor({ state: "visible" });
-      await page.evaluate(async () => {
-        for (const image of document.images) {
-          image.scrollIntoView({ block: "center" });
-          await new Promise<void>((resolve) => {
-            window.setTimeout(resolve, 30);
-          });
-        }
-      });
-      await page.waitForLoadState("networkidle");
-      await page.evaluate(() => window.scrollTo(0, 0));
+      await scrollThroughHomepage(page);
+      await verifyMajorHomepageImages(page);
       await page.screenshot({
         path: `${reviewDirectory}/homepage-${viewport.width}x${viewport.height}.png`,
         fullPage: true,
       });
     }
+  });
+
+  test("loads major editorial imagery after a controlled scroll", async ({
+    page,
+  }) => {
+    const failedImageRequests: string[] = [];
+    page.on("requestfailed", (request) => {
+      const requestUrl = request.url();
+
+      if (requestUrl.includes(".png") || requestUrl.includes("/_next/image")) {
+        failedImageRequests.push(requestUrl);
+      }
+    });
+
+    for (const viewport of [
+      { width: 1440, height: 1000 },
+      { width: 768, height: 1024 },
+      { width: 390, height: 844 },
+    ]) {
+      await page.setViewportSize(viewport);
+      await page.goto("/");
+      await page.locator("#home-title").waitFor({ state: "visible" });
+      await scrollThroughHomepage(page);
+      await verifyMajorHomepageImages(page);
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= window.innerWidth,
+        ),
+      ).toBe(true);
+    }
+
+    expect(failedImageRequests).toEqual([]);
   });
 
   test("loads the hero, navigation, initiatives, and key routes", async ({
