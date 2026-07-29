@@ -47,13 +47,14 @@ describe("image registry", () => {
     }
   });
 
-  it("prioritises only the responsive home hero", () => {
+  it("prioritises the approved page heroes only", () => {
     const priorityEntries = Object.entries(images)
       .filter(([, asset]) => asset.aboveFold)
       .map(([key]) => key);
 
-    expect(priorityEntries).toEqual(["homeHero"]);
+    expect(priorityEntries).toEqual(["homeHero", "aboutHero"]);
     expect(images.homeHero.mobileAlternative).toBe(true);
+    expect(images.aboutHero.mobileAlternative).toBe(false);
   });
 
   it("keeps every major homepage editorial asset available", () => {

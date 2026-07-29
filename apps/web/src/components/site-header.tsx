@@ -6,6 +6,7 @@ import { siteContent } from "@/content/site";
 
 import { LanguageSelector } from "./language-selector";
 import { MobileNavigation } from "./mobile-navigation";
+import { PrimaryNavigation } from "./primary-navigation";
 
 export function SiteHeader() {
   return (
@@ -32,20 +33,7 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <nav
-          aria-label="Primary navigation"
-          className="hidden items-center gap-2 lg:flex"
-        >
-          {primaryNavigation.map((entry) => (
-            <Link
-              key={entry.href}
-              className="rounded-button text-global-navy hover:bg-global-navy/5 hover:text-heritage-maroon focus-visible:ring-focus px-3.5 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none"
-              href={entry.href}
-            >
-              {entry.label}
-            </Link>
-          ))}
-        </nav>
+        <PrimaryNavigation entries={primaryNavigation} />
 
         <div className="text-global-navy hidden xl:block">
           <LanguageSelector />

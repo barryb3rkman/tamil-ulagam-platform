@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ImageMetadata } from "@tamil-ulagam/shared";
 
 import { siteContent } from "@/content/site";
 
@@ -50,6 +51,7 @@ export function createPageMetadata(
   title: string,
   description: string,
   path: `/${string}` | "/",
+  socialImage?: ImageMetadata,
 ): Metadata {
   return {
     title,
@@ -61,6 +63,16 @@ export function createPageMetadata(
       title,
       description,
       url: path,
+      images: socialImage
+        ? [
+            {
+              url: socialImage.path,
+              width: socialImage.width,
+              height: socialImage.height,
+              alt: socialImage.alt,
+            },
+          ]
+        : undefined,
     },
   };
 }

@@ -3,6 +3,7 @@
 import type { NavigationEntry } from "@tamil-ulagam/shared";
 import { VisuallyHidden } from "@tamil-ulagam/ui";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { LanguageSelector } from "./language-selector";
@@ -13,6 +14,7 @@ export interface MobileNavigationProps {
 
 export function MobileNavigation({ entries }: MobileNavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
   const toggleButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -69,6 +71,7 @@ export function MobileNavigation({ entries }: MobileNavigationProps) {
                     ref={index === 0 ? firstLinkRef : undefined}
                     className="rounded-button text-global-navy hover:bg-global-navy/5 focus-visible:ring-focus block px-3 py-3 text-base font-semibold focus-visible:outline-none"
                     href={entry.href}
+                    aria-current={pathname === entry.href ? "page" : undefined}
                     onClick={() => {
                       setIsOpen(false);
                     }}
@@ -82,6 +85,9 @@ export function MobileNavigation({ entries }: MobileNavigationProps) {
                           <Link
                             className="rounded-button text-charcoal hover:bg-global-navy/5 focus-visible:ring-focus block px-3 py-2 text-sm focus-visible:outline-none"
                             href={child.href}
+                            aria-current={
+                              pathname === child.href ? "page" : undefined
+                            }
                             onClick={() => {
                               setIsOpen(false);
                             }}

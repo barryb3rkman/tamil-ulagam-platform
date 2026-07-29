@@ -211,7 +211,7 @@ export const images = {
     height: 941,
     aspectRatio: "16/9",
     objectPosition: "70% 50%",
-    aboveFold: false,
+    aboveFold: true,
     mobileAlternative: false,
     available: true,
   },
@@ -254,6 +254,12 @@ export const homepageEditorialImageKeys = [
   "partnerships",
   "communityStories",
   "finalCallToAction",
+] as const satisfies readonly ImageKey[];
+
+export const aboutEditorialImageKeys = [
+  "aboutHero",
+  "partnerships",
+  "roadmapFuture",
 ] as const satisfies readonly ImageKey[];
 
 export function getImage(key: ImageKey): ImageMetadata {

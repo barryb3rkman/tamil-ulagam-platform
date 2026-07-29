@@ -20,7 +20,10 @@ interface ImageDiagnostic {
   readonly width: number;
 }
 
-export async function scrollThroughHomepage(page: Page) {
+export async function scrollThroughPage(
+  page: Page,
+  imageKeys: readonly ImageKey[],
+) {
   const viewportHeight = page.viewportSize()?.height ?? 800;
   let currentPosition = 0;
   let previousDocumentHeight = 0;
@@ -35,7 +38,7 @@ export async function scrollThroughHomepage(page: Page) {
       window.scrollTo({ top: position, behavior: "auto" });
     }, currentPosition);
     await page.waitForTimeout(140);
-    await waitForNearbyEditorialImages(page, viewportHeight);
+    await waitForNearbyEditorialImages(page, imageKeys, viewportHeight);
 
     if (currentPosition >= maximumPosition) {
       if (documentHeight === previousDocumentHeight) {
@@ -54,11 +57,16 @@ export async function scrollThroughHomepage(page: Page) {
   await page.waitForTimeout(180);
 }
 
+export async function scrollThroughHomepage(page: Page) {
+  await scrollThroughPage(page, homepageEditorialImageKeys);
+}
+
 async function waitForNearbyEditorialImages(
   page: Page,
+  imageKeys: readonly ImageKey[],
   viewportHeight: number,
 ) {
-  for (const key of homepageEditorialImageKeys) {
+  for (const key of imageKeys) {
     const asset = images[key];
     const image = page.getByRole("img", { name: asset.alt });
     const isNearViewport = await image.evaluate((element, height) => {
@@ -116,8 +124,11 @@ async function inspectImage(
   });
 }
 
-export async function verifyMajorHomepageImages(page: Page) {
-  for (const key of homepageEditorialImageKeys) {
+export async function verifyPageImages(
+  page: Page,
+  imageKeys: readonly ImageKey[],
+) {
+  for (const key of imageKeys) {
     const diagnostic = await inspectImage(page, key);
 
     expect(diagnostic.complete, `${key} did not complete loading`).toBe(true);
@@ -150,4 +161,8 @@ export async function verifyMajorHomepageImages(page: Page) {
       "/_next/image",
     );
   }
+}
+
+export async function verifyMajorHomepageImages(page: Page) {
+  await verifyPageImages(page, homepageEditorialImageKeys);
 }

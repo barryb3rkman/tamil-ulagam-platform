@@ -28,6 +28,8 @@ The homepage is a high-fidelity editorial introduction to the federation vision.
 
 Homepage initiative previews are a curated introduction, not a service directory: the complete initiative set remains available on the initiatives page. Roadmap excerpts are intentionally concise on the homepage, while the roadmap route retains the detailed phase information.
 
+The About page is the public institutional explanation of why Tamil Ulagam exists. It presents the long-term vision, mission, objectives, proposed ecosystem, governance principles, and development path without presenting future membership, Tamil ID, chapter, service, or mobile capabilities as operational.
+
 The current release does not need a database or authentication because it stores no member state and performs no privileged transaction. Adding them now would create security and operational responsibilities before the relevant governance and product requirements exist.
 
 ## Honest representation

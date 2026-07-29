@@ -1,17 +1,40 @@
 import type { Metadata } from "next";
 
-import { PublicPageShell } from "@/components/public-page-shell";
+import {
+  AboutFinalCta,
+  AboutHero,
+  AboutManifesto,
+  CoreObjectivesSection,
+  CulturalStatementSection,
+  EcosystemSection,
+  GlobalChallengeSection,
+  GovernanceSection,
+  RoadmapSection,
+  VisionMissionSection,
+} from "@/components/about";
+import { images } from "@/config/images";
 import { createPageMetadata } from "@/config/metadata";
-import { publicPages } from "@/content/pages";
-
-const content = publicPages.about;
 
 export const metadata: Metadata = createPageMetadata(
-  "About",
-  content.description,
+  "About Tamil Ulagam",
+  "Learn why Tamil Ulagam is being built as a trusted global digital bridge for Tamil identity, culture, community and opportunity.",
   "/about",
+  images.aboutHero,
 );
 
 export default function AboutPage() {
-  return <PublicPageShell content={content} />;
+  return (
+    <>
+      <AboutHero />
+      <AboutManifesto />
+      <VisionMissionSection />
+      <GlobalChallengeSection />
+      <CoreObjectivesSection />
+      <EcosystemSection />
+      <GovernanceSection />
+      <RoadmapSection />
+      <CulturalStatementSection />
+      <AboutFinalCta />
+    </>
+  );
 }
