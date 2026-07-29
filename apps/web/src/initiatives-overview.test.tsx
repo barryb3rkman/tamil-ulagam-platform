@@ -107,4 +107,28 @@ describe("public Initiatives overview page", () => {
     ).toHaveAttribute("href", "/partners");
     expect(screen.getByTestId("initiatives-directory")).toBeVisible();
   });
+
+  it("retains hero media and every shared foundation and readiness principle", () => {
+    render(<InitiativesPage />);
+
+    const heroMedia = screen.getByTestId("initiatives-hero-media");
+    expect(
+      within(heroMedia).getByRole("img", {
+        name: images.initiativeHealthcare.alt,
+      }),
+    ).toHaveAttribute("loading", "eager");
+    expect(
+      within(heroMedia).getByRole("img", {
+        name: images.initiativeResearch.alt,
+      }),
+    ).toHaveAttribute("loading", "lazy");
+
+    for (const foundation of initiativeOverviewContent.sharedPlatform
+      .foundations) {
+      expect(screen.getByText(foundation)).toBeVisible();
+    }
+    for (const principle of initiativeOverviewContent.readiness.principles) {
+      expect(screen.getByText(principle)).toBeVisible();
+    }
+  });
 });

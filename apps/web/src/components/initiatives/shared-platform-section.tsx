@@ -44,12 +44,12 @@ export function SharedPlatformSection() {
             {sharedPlatform.foundations.map((foundation, index) => (
               <li
                 key={foundation}
-                className="grid grid-cols-[2.75rem_1fr] gap-4 border-white/16 p-6 sm:p-8 odd:sm:border-b"
+                className="grid grid-cols-[3.25rem_minmax(0,1fr)] items-start gap-5 border-white/16 py-7 sm:grid-cols-[2.75rem_1fr] sm:gap-4 sm:p-8 odd:sm:border-b"
               >
-                <span className="text-heritage-gold text-lg font-semibold">
+                <span className="border-heritage-gold/60 text-heritage-gold grid size-10 place-items-center rounded-full border text-sm font-semibold sm:size-auto sm:border-0 sm:text-lg">
                   0{index + 1}
                 </span>
-                <p className="text-lg font-semibold text-white/92">
+                <p className="text-base leading-7 font-semibold text-white/92 sm:text-lg sm:leading-normal">
                   {foundation}
                 </p>
               </li>

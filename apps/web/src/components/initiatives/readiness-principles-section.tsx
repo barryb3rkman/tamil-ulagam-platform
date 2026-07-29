@@ -37,12 +37,12 @@ export function ReadinessPrinciplesSection() {
             {readiness.principles.map((principle, index) => (
               <li
                 key={principle}
-                className="border-global-navy/12 grid grid-cols-[2.75rem_1fr] gap-4 p-6 sm:p-8 odd:sm:border-b"
+                className="border-global-navy/12 grid grid-cols-[3.25rem_minmax(0,1fr)] items-start gap-5 py-7 sm:grid-cols-[2.75rem_1fr] sm:gap-4 sm:p-8 odd:sm:border-b"
               >
-                <span className="text-heritage-gold text-lg font-semibold">
+                <span className="border-heritage-gold/60 text-heritage-gold grid size-10 place-items-center rounded-full border text-sm font-semibold sm:size-auto sm:border-0 sm:text-lg">
                   0{index + 1}
                 </span>
-                <p className="text-global-navy text-lg font-semibold">
+                <p className="text-global-navy text-base leading-7 font-semibold sm:text-lg sm:leading-normal">
                   {principle}
                 </p>
               </li>

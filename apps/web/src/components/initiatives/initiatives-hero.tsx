@@ -64,18 +64,21 @@ export function InitiativesHero() {
               </LinkButton>
             </div>
           </div>
-          <div className="grid grid-cols-[1.12fr_0.88fr] items-end gap-4 sm:gap-6">
+          <div
+            data-testid="initiatives-hero-media"
+            className="grid grid-cols-1 items-end gap-4 md:grid-cols-[1.12fr_0.88fr] md:gap-6"
+          >
             {montageInitiatives.map((initiative, index) => (
               <figure
                 key={initiative.slug}
-                className={index === 1 ? "mb-8 sm:mb-14" : ""}
+                className={index === 1 ? "hidden md:mb-14 md:block" : "w-full"}
               >
                 <div className="border-heritage-gold/35 aspect-[4/3] overflow-hidden border">
                   <ImageWithFallback
                     asset={images[initiative.imageKey as ImageKey]}
                     fallbackLabel={`${initiative.title} initiative image`}
-                    priority
-                    sizes="(min-width: 1024px) 48vw, 100vw"
+                    priority={index === 0}
+                    sizes="(min-width: 1024px) 48vw, (min-width: 768px) 50vw, 100vw"
                     className="h-full w-full object-cover"
                   />
                 </div>

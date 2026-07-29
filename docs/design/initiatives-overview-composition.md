@@ -18,8 +18,8 @@ Initiative identity, routes, status, summaries, and image keys remain in the cen
 
 ## Responsive and accessible behaviour
 
-Desktop compositions use broad editorial grids and controlled sticky context blocks. At narrow widths, every composition becomes a single logical vertical sequence with images retained at their intended proportions. The page uses one primary heading, semantic sections and lists, visible focus states, meaningful links, registry alt text, labelled status badges, an anchor offset for the ecosystem call to action, and no hover-only information.
+Desktop and large-tablet compositions preserve the approved two-image hero montage and multi-column foundation and readiness lists. Below the medium breakpoint, Healthcare becomes one substantial dominant hero image beneath the copy; the Research accent is visually hidden without leaving an empty media container. The shared-foundation and readiness lists become clear single-column sequences with larger numbered markers, more generous separation, and increased mobile line height. The page uses one primary heading, semantic sections and lists, visible focus states, meaningful links, registry alt text, labelled status badges, an anchor offset for the ecosystem call to action, and no hover-only information.
 
 ## Performance and motion
 
-Only the hero media sits at the top of the page; lower media remains lazy loaded through the shared image component. The directory avoids duplicate thumbnails. Motion is limited to existing short link, border, shadow, and image-hover transitions, with no carousel, parallax, counter, or persistent motion.
+Only the dominant Healthcare hero visual receives priority loading; the secondary desktop hero accent and all lower media remain lazy loaded through the shared image component. The directory avoids duplicate thumbnails. Motion is limited to existing short link, border, shadow, and image-hover transitions, with no carousel, parallax, counter, or persistent motion.

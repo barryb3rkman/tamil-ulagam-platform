@@ -25,6 +25,21 @@ async function loadInitiativeImages(page: Page) {
 
     for (let index = 0; index < imageCount; index += 1) {
       const image = imageLocator.nth(index);
+      const isVisible = await image.evaluate((element) => {
+        const styles = window.getComputedStyle(element);
+        const rect = element.getBoundingClientRect();
+
+        return (
+          styles.display !== "none" &&
+          styles.visibility !== "hidden" &&
+          rect.width > 0 &&
+          rect.height > 0
+        );
+      });
+
+      if (!isVisible) {
+        continue;
+      }
 
       await image.scrollIntoViewIfNeeded();
       await expect(image).toBeVisible();
@@ -54,7 +69,7 @@ test.describe("public Initiatives overview page", () => {
     test.setTimeout(120_000);
     const reviewDirectory = path.resolve(
       process.cwd(),
-      "../../artifacts/initiatives-overview-review",
+      "../../artifacts/initiatives-mobile-refinement",
     );
     await mkdir(reviewDirectory, { recursive: true });
 
@@ -137,5 +152,75 @@ test.describe("public Initiatives overview page", () => {
     await expect(
       page.getByTestId("initiatives-directory").getByRole("listitem"),
     ).toHaveCount(initiatives.length);
+  });
+
+  test("uses one dominant hero image and readable mobile sequences", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/initiatives");
+    await page.locator("#initiatives-title").waitFor({ state: "visible" });
+
+    const heroMedia = page.getByTestId("initiatives-hero-media");
+    const mobileHeroImages = await heroMedia
+      .locator("img")
+      .evaluateAll((images) =>
+        images
+          .map((image) => {
+            const rect = image.getBoundingClientRect();
+            const styles = window.getComputedStyle(image);
+
+            return {
+              display: styles.display,
+              height: rect.height,
+              width: rect.width,
+            };
+          })
+          .filter(
+            (image) =>
+              image.display !== "none" && image.width > 0 && image.height > 0,
+          ),
+      );
+    expect(mobileHeroImages).toHaveLength(1);
+    expect(mobileHeroImages[0]?.width).toBeGreaterThan(300);
+
+    for (const sectionTitle of [
+      "One identity. Shared foundations. Connected experiences.",
+      "Every initiative must be useful, trusted and operationally ready.",
+    ]) {
+      const section = page.getByRole("region", { name: sectionTitle });
+      const items = section.locator("ol > li");
+      const itemCount = await items.count();
+      const itemPositions = await items.evaluateAll((entries) =>
+        entries.map((entry) => entry.getBoundingClientRect().top),
+      );
+
+      expect(itemCount).toBe(8);
+      expect(
+        itemPositions.every(
+          (position, index) =>
+            index === 0 || position > itemPositions[index - 1]!,
+        ),
+      ).toBe(true);
+    }
+
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.goto("/initiatives");
+    await page.locator("#initiatives-title").waitFor({ state: "visible" });
+    const desktopHeroImages = await page
+      .getByTestId("initiatives-hero-media")
+      .locator("img")
+      .evaluateAll(
+        (images) =>
+          images.filter((image) => {
+            const rect = image.getBoundingClientRect();
+            const styles = window.getComputedStyle(image);
+
+            return (
+              styles.display !== "none" && rect.width > 0 && rect.height > 0
+            );
+          }).length,
+      );
+    expect(desktopHeroImages).toBe(2);
   });
 });
