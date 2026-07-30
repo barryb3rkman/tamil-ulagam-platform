@@ -1,4 +1,4 @@
-import type { CallToAction, RoadmapPhase } from "@tamil-ulagam/shared";
+import type { CallToAction } from "@tamil-ulagam/shared";
 
 import type { ImageKey } from "@/config/images";
 
@@ -34,11 +34,6 @@ interface EcosystemGroup {
 interface GovernancePrinciple {
   readonly title: string;
   readonly description: string;
-}
-
-interface RoadmapPresentation {
-  readonly title: string;
-  readonly phaseTitles: Readonly<Record<RoadmapPhase["id"], string>>;
 }
 
 export const aboutContent = {
@@ -229,18 +224,14 @@ export const aboutContent = {
     description:
       "Each phase extends the foundation with the governance, product and operational care appropriate to that stage.",
     imageKey: "roadmapFuture",
-    phaseTitles: {
-      "public-foundation": "Foundation",
-      "community-infrastructure": "Connected Community",
-      "service-ecosystem": "Global Services",
-    },
     callToAction: {
       label: "View Full Roadmap",
       href: "/roadmap",
       variant: "text",
     },
-  } satisfies RoadmapPresentation & {
+  } satisfies {
     readonly eyebrow: string;
+    readonly title: string;
     readonly description: string;
     readonly imageKey: AboutImageKey;
     readonly callToAction: CallToAction;

@@ -53,7 +53,7 @@ export function RoadmapSection() {
                       Phase {index + 1}
                     </p>
                     <h3 className="text-global-navy mt-1 text-xl font-semibold tracking-[-0.02em]">
-                      {roadmap.phaseTitles[phase.id]}
+                      {phase.title}
                     </h3>
                     <p className="text-slate mt-2 leading-7">{phase.summary}</p>
                   </div>

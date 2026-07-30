@@ -38,6 +38,8 @@ The Tamil ID page explains a planned digital membership credential. It does not 
 
 The Chapters page explains a planned global chapter model. It does not list active chapters, countries, cities, leaders, offices, contacts, events or applications. It describes a proposed formation path, governance and privacy boundaries, future status and directory models, and interest pathways through existing public routes.
 
+The Roadmap page explains a proposed staged sequence from the permanent public foundation through membership, chapters, controlled initiative pilots, mobile access and responsible global expansion. It does not publish delivery dates, completion percentages, budgets, confirmed partner rollouts or operational service claims. The authoritative phase sequence remains in the shared roadmap content source so other public explanations remain aligned.
+
 The current release does not need a database or authentication because it stores no member state and performs no privileged transaction. Adding them now would create security and operational responsibilities before the relevant governance and product requirements exist.
 
 ## Honest representation

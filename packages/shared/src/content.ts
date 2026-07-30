@@ -63,9 +63,23 @@ export type ImageMetadata = ImageMetadataBase &
 
 export interface RoadmapPhase {
   readonly id: string;
+  readonly number: string;
   readonly title: string;
   readonly timeframe: string;
   readonly status: "current" | "future";
+  readonly statusLabel: string;
   readonly summary: string;
+  readonly purpose: string;
   readonly capabilities: readonly string[];
+  readonly dependencies: readonly string[];
+  readonly readinessGates: readonly string[];
+  readonly deliberatelyExcluded: readonly string[];
+  readonly linkedRoutes: readonly CallToAction[];
+  readonly category:
+    | "foundation"
+    | "identity"
+    | "community"
+    | "services"
+    | "mobile"
+    | "expansion";
 }

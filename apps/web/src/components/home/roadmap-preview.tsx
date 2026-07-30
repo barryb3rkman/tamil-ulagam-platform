@@ -6,7 +6,6 @@ import {
 } from "@tamil-ulagam/ui";
 
 import { images } from "@/config/images";
-import { homepageContent } from "@/content/homepage";
 import { roadmapPhases } from "@/content/roadmap";
 
 export function RoadmapPreview() {
@@ -59,11 +58,11 @@ export function RoadmapPreview() {
                         {phase.title}
                       </h3>
                       <span className="text-slate text-xs font-semibold tracking-[0.12em] uppercase">
-                        {phase.timeframe}
+                        {phase.statusLabel}
                       </span>
                     </div>
                     <p className="text-slate mt-3 max-w-2xl text-base leading-7">
-                      {homepageContent.roadmapExcerpts[phase.id]}
+                      {phase.summary}
                     </p>
                     <ul className="text-charcoal mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
                       {phase.capabilities.map((capability) => (

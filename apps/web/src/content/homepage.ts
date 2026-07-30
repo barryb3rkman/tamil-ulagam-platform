@@ -114,12 +114,4 @@ export const homepageContent = {
     description:
       "Join the vision for a more connected, empowered and celebrated global Tamil community.",
   },
-  roadmapExcerpts: {
-    "public-foundation":
-      "Establish the public website, information architecture, design system, and engineering standards.",
-    "community-infrastructure":
-      "Design identity, membership, chapter, and organisation capabilities after governance requirements are confirmed.",
-    "service-ecosystem":
-      "Introduce individual services incrementally with qualified partners and fit-for-purpose controls.",
-  },
 } as const;
