@@ -34,6 +34,8 @@ The Initiatives overview is the public explanation of the eight long-term initia
 
 Initiative detail pages provide deeper public explanations for each of the eight long-term areas. They describe intended audiences, future capabilities, trust requirements, staged development and partnership pathways. They do not provide appointments, courses, scholarships, jobs, business listings, travel bookings, archives, event dates, registrations, tickets or other operational transactions.
 
+The Tamil ID page explains a planned digital membership credential. It does not collect applications, create accounts, issue credentials, generate QR codes or verify members. Its content distinguishes a community membership credential from government identification, sets out proposed journey and status models, and describes privacy, governance and rollout principles that must precede any operational release.
+
 The current release does not need a database or authentication because it stores no member state and performs no privileged transaction. Adding them now would create security and operational responsibilities before the relevant governance and product requirements exist.
 
 ## Honest representation
