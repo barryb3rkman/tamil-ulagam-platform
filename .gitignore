@@ -21,6 +21,7 @@ artifacts/initiatives-mobile-refinement/
 artifacts/initiative-detail-pages-review/
 artifacts/initiative-detail-differentiation/
 artifacts/tamil-id-page-review/
+artifacts/chapters-page-review/
 
 # Environment files
 .env

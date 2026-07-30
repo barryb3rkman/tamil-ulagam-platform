@@ -36,6 +36,8 @@ Initiative detail pages provide deeper public explanations for each of the eight
 
 The Tamil ID page explains a planned digital membership credential. It does not collect applications, create accounts, issue credentials, generate QR codes or verify members. Its content distinguishes a community membership credential from government identification, sets out proposed journey and status models, and describes privacy, governance and rollout principles that must precede any operational release.
 
+The Chapters page explains a planned global chapter model. It does not list active chapters, countries, cities, leaders, offices, contacts, events or applications. It describes a proposed formation path, governance and privacy boundaries, future status and directory models, and interest pathways through existing public routes.
+
 The current release does not need a database or authentication because it stores no member state and performs no privileged transaction. Adding them now would create security and operational responsibilities before the relevant governance and product requirements exist.
 
 ## Honest representation

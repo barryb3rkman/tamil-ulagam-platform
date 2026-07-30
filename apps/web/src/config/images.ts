@@ -266,6 +266,11 @@ export const tamilIdEditorialImageKeys = [
   "tamilIdShowcase",
 ] as const satisfies readonly ImageKey[];
 
+export const chaptersEditorialImageKeys = [
+  "globalChapters",
+  "partnerships",
+] as const satisfies readonly ImageKey[];
+
 export const initiativesEditorialImageKeys = [
   "initiativeHealthcare",
   "initiativeEducation",
