@@ -22,6 +22,12 @@ Each route uses only its approved registry image as the priority hero visual. No
 
 Every future service is described as planned, proposed, envisioned or subject to verified partnership and operational readiness. Detail pages never imply that appointments, courses, applications, jobs, bookings, tickets, awards, archives or registrations are active. Breadcrumbs use a labelled navigation landmark, current items are not linked, statuses are expressed in text, anchor destinations account for the header, and all navigation retains visible keyboard focus.
 
+## Shared structure, individual editorial voice
+
+The page sequence and shared labels remain consistent, while the typed detail source supplies each initiative's Why this matters heading and statement, audience heading, trust and readiness heading, participation heading, and final foundation call to action. This keeps the pages recognisably related without presenting healthcare, careers, cultural work, research, enterprise, travel or events through copied language.
+
+Capability lists use an adaptive CSS grid based on the number of real capability entries. At larger widths, the five-entry list balances its final pair and seven-entry lists centre their final single entry without creating a placeholder tile. There are no empty capability cards, coloured filler cells, hidden visual fillers or invented capability content. Semantic list order and capability numbering remain unchanged across responsive breakpoints.
+
 ## Responsive strategy
 
 Hero image and copy compositions stack deliberately below desktop widths. Audience, capability, readiness, related-initiative and previous/next layouts move from editorial grids to readable single-column sequences. Long initiative titles wrap naturally, media keeps its registry aspect ratio, and no section depends on hover or desktop-only interaction.

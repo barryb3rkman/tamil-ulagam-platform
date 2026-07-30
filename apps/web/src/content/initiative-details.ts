@@ -26,8 +26,12 @@ export interface InitiativeDetail {
   readonly layout: InitiativeDetailLayout;
   readonly heroStatement: string;
   readonly introduction: string;
-  readonly purpose: string;
+  readonly whyThisMatters: {
+    readonly heading: string;
+    readonly statement: string;
+  };
   readonly conceptStatement: string;
+  readonly audienceHeading: string;
   readonly intendedAudiences: readonly string[];
   readonly capabilities: readonly {
     readonly title: string;
@@ -35,8 +39,11 @@ export interface InitiativeDetail {
   }[];
   readonly principles: readonly string[];
   readonly readinessRequirements: readonly string[];
+  readonly readinessHeading: string;
   readonly developmentPath: readonly InitiativeDevelopmentStage[];
+  readonly participationHeading: string;
   readonly participationStatement: string;
+  readonly finalCtaHeading: string;
   readonly primaryCallToAction: CallToAction;
   readonly secondaryCallToAction: CallToAction;
   readonly related: readonly [
@@ -77,10 +84,15 @@ export const initiativeDetails = {
       "Healthcare support that understands language, culture and community.",
     introduction:
       "Tamil Ulagam is exploring a future trusted discovery and support network shaped with qualified professionals, responsible institutions and community wellbeing partners.",
-    purpose:
-      "The proposed initiative would help Tamil communities discover relevant professionals, wellbeing resources and accountable partnerships without replacing clinical care or making medical promises.",
+    whyThisMatters: {
+      heading: "A future direction with care at its centre.",
+      statement:
+        "The proposed initiative would help Tamil communities discover relevant professionals, wellbeing resources and accountable partnerships without replacing clinical care or making medical promises.",
+    },
     conceptStatement:
       "Concept visual representing the planned healthcare initiative.",
+    audienceHeading:
+      "Designed around people, professionals and community care.",
     intendedAudiences: [
       "Individuals and families",
       "Tamil-speaking healthcare professionals",
@@ -128,12 +140,15 @@ export const initiativeDetails = {
       "Privacy-conscious data handling",
       "Accountable partner agreements",
     ],
+    readinessHeading:
+      "Healthcare discovery must begin with safety and accountability.",
     developmentPath: [
       sharedDevelopmentPath.foundation,
       sharedDevelopmentPath.partnerReadiness,
       sharedDevelopmentPath.controlledPilot,
       sharedDevelopmentPath.responsibleExpansion,
     ],
+    participationHeading: "Help shape a responsible Tamil healthcare network.",
     participationStatement:
       "Healthcare professionals, institutions and wellbeing organisations may help define a safe, culturally aware future direction.",
     primaryCallToAction: {
@@ -162,6 +177,8 @@ export const initiativeDetails = {
           "Future community programmes may bring wellbeing conversations together responsibly.",
       },
     ],
+    finalCtaHeading:
+      "A future healthcare initiative needs trusted participation.",
   },
   education: {
     slug: "education",
@@ -170,10 +187,14 @@ export const initiativeDetails = {
       "Learning that strengthens identity and expands opportunity.",
     introduction:
       "Tamil Ulagam is shaping a future education ecosystem around Tamil language, cultural knowledge, mentorship, learning resources and opportunity discovery.",
-    purpose:
-      "The initiative is intended to connect learners, families, educators and institutions through carefully developed pathways rather than claim that courses, scholarships or tutoring are currently available.",
+    whyThisMatters: {
+      heading: "Learning that strengthens identity and opportunity.",
+      statement:
+        "The initiative is intended to connect learners, families, educators and institutions through carefully developed pathways rather than claim that courses, scholarships or tutoring are currently available.",
+    },
     conceptStatement:
       "Concept visual representing the planned education initiative.",
+    audienceHeading: "Built for learners, educators and institutions.",
     intendedAudiences: [
       "Students",
       "Parents",
@@ -235,12 +256,14 @@ export const initiativeDetails = {
       "Privacy-conscious student data",
       "Responsible communication",
     ],
+    readinessHeading: "Education must be safe, accurate and genuinely useful.",
     developmentPath: [
       sharedDevelopmentPath.foundation,
       sharedDevelopmentPath.partnerReadiness,
       sharedDevelopmentPath.controlledPilot,
       sharedDevelopmentPath.responsibleExpansion,
     ],
+    participationHeading: "Help strengthen Tamil learning across generations.",
     participationStatement:
       "Educators, schools, universities and mentors may contribute expertise toward a considered future learning ecosystem.",
     primaryCallToAction: {
@@ -269,6 +292,8 @@ export const initiativeDetails = {
           "Learning and mentorship can support future career readiness.",
       },
     ],
+    finalCtaHeading:
+      "A future education ecosystem needs trusted educators and partners.",
   },
   business: {
     slug: "business",
@@ -276,10 +301,15 @@ export const initiativeDetails = {
     heroStatement: "Trusted connections for Tamil enterprise across borders.",
     introduction:
       "Tamil Ulagam is considering a future network for verified Tamil-owned businesses, founders, professionals, institutions and responsible partners.",
-    purpose:
-      "The proposed network would focus on trust, discovery and accountable collaboration rather than present active listings, investment offers or commercial services.",
+    whyThisMatters: {
+      heading: "Stronger enterprise begins with trusted connections.",
+      statement:
+        "The proposed network would focus on trust, discovery and accountable collaboration rather than present active listings, investment offers or commercial services.",
+    },
     conceptStatement:
       "Concept visual representing the planned business networking initiative.",
+    audienceHeading:
+      "Designed for founders, businesses and professional networks.",
     intendedAudiences: [
       "Founders",
       "Entrepreneurs",
@@ -341,12 +371,16 @@ export const initiativeDetails = {
       "Country-specific legal considerations",
       "No investment guarantees",
     ],
+    readinessHeading:
+      "Commercial connection must begin with verification and trust.",
     developmentPath: [
       sharedDevelopmentPath.foundation,
       sharedDevelopmentPath.partnerReadiness,
       sharedDevelopmentPath.controlledPilot,
       sharedDevelopmentPath.responsibleExpansion,
     ],
+    participationHeading:
+      "Help build responsible pathways for Tamil enterprise.",
     participationStatement:
       "Founders, business associations and professional organisations may help define trustworthy future participation standards.",
     primaryCallToAction: {
@@ -375,6 +409,7 @@ export const initiativeDetails = {
           "Gatherings may create future spaces for responsible professional connection.",
       },
     ],
+    finalCtaHeading: "A future business network needs credible participation.",
   },
   jobs: {
     slug: "jobs",
@@ -383,10 +418,15 @@ export const initiativeDetails = {
       "Connecting Tamil talent with meaningful global opportunity.",
     introduction:
       "Tamil Ulagam is exploring a future careers platform for verified employers, professionals, students and career-development partners.",
-    purpose:
-      "The initiative is intended to establish accountable pathways for talent and opportunity, not to present active job listings, applications or employer dashboards today.",
+    whyThisMatters: {
+      heading: "Meaningful opportunity requires trust on both sides.",
+      statement:
+        "The initiative is intended to establish accountable pathways for talent and opportunity, not to present active job listings, applications or employer dashboards today.",
+    },
     conceptStatement:
       "Concept visual representing the planned jobs and careers initiative.",
+    audienceHeading:
+      "Designed around candidates, employers and career partners.",
     intendedAudiences: [
       "Job seekers",
       "Students",
@@ -448,12 +488,15 @@ export const initiativeDetails = {
       "Fair and transparent matching",
       "Country-specific employment considerations",
     ],
+    readinessHeading:
+      "Opportunity is useful only when it is fair and trustworthy.",
     developmentPath: [
       sharedDevelopmentPath.foundation,
       sharedDevelopmentPath.partnerReadiness,
       sharedDevelopmentPath.controlledPilot,
       sharedDevelopmentPath.responsibleExpansion,
     ],
+    participationHeading: "Help shape a responsible global careers network.",
     participationStatement:
       "Employers, recruiters, mentors and training organisations may help establish a transparent future careers model.",
     primaryCallToAction: {
@@ -482,6 +525,7 @@ export const initiativeDetails = {
           "Evidence and transparent design can strengthen future career matching.",
       },
     ],
+    finalCtaHeading: "A future jobs initiative needs trusted participation.",
   },
   research: {
     slug: "research",
@@ -489,10 +533,15 @@ export const initiativeDetails = {
     heroStatement: "Connecting Tamil knowledge, scholarship and discovery.",
     introduction:
       "Tamil Ulagam is considering a future research and knowledge ecosystem for preservation, collaboration, discovery and responsible innovation.",
-    purpose:
-      "The initiative would help scholars, institutions and communities connect around knowledge with transparent provenance, not claim that a live archive or grant programme already exists.",
+    whyThisMatters: {
+      heading: "Knowledge grows when people and institutions connect.",
+      statement:
+        "The initiative would help scholars, institutions and communities connect around knowledge with transparent provenance, not claim that a live archive or grant programme already exists.",
+    },
     conceptStatement:
       "Concept visual representing the planned research and innovation initiative.",
+    audienceHeading:
+      "Built for scholars, institutions and knowledge custodians.",
     intendedAudiences: [
       "Scholars",
       "Universities",
@@ -555,12 +604,16 @@ export const initiativeDetails = {
       "Ethical research standards",
       "Transparent provenance",
     ],
+    readinessHeading:
+      "Research discovery must protect quality, provenance and rights.",
     developmentPath: [
       sharedDevelopmentPath.foundation,
       sharedDevelopmentPath.partnerReadiness,
       sharedDevelopmentPath.controlledPilot,
       sharedDevelopmentPath.responsibleExpansion,
     ],
+    participationHeading:
+      "Help connect Tamil scholarship and responsible innovation.",
     participationStatement:
       "Scholars, archivists, institutions and technologists may contribute to responsible future knowledge foundations.",
     primaryCallToAction: {
@@ -589,6 +642,7 @@ export const initiativeDetails = {
           "Future gatherings may help knowledge travel between institutions and communities.",
       },
     ],
+    finalCtaHeading: "A future research ecosystem needs trusted collaboration.",
   },
   tourism: {
     slug: "tourism",
@@ -597,10 +651,15 @@ export const initiativeDetails = {
       "Helping the diaspora discover Tamil places, heritage and hospitality.",
     introduction:
       "Tamil Ulagam is exploring a future discovery platform connecting diaspora visitors with Tamil heritage, destinations, hospitality providers and authentic cultural experiences.",
-    purpose:
-      "The initiative is intended to support responsible discovery and cultural context, not to present bookings, prices, hotels or itineraries as currently available services.",
+    whyThisMatters: {
+      heading: "Heritage journeys should be authentic and responsible.",
+      statement:
+        "The initiative is intended to support responsible discovery and cultural context, not to present bookings, prices, hotels or itineraries as currently available services.",
+    },
     conceptStatement:
       "Concept visual representing the planned tourism and hospitality initiative.",
+    audienceHeading:
+      "Designed for travellers, communities and responsible hosts.",
     intendedAudiences: [
       "Diaspora travellers",
       "Families",
@@ -662,12 +721,15 @@ export const initiativeDetails = {
       "Dispute and support processes",
       "No misleading travel guarantees",
     ],
+    readinessHeading:
+      "Travel discovery must respect safety, culture and local communities.",
     developmentPath: [
       sharedDevelopmentPath.foundation,
       sharedDevelopmentPath.partnerReadiness,
       sharedDevelopmentPath.controlledPilot,
       sharedDevelopmentPath.responsibleExpansion,
     ],
+    participationHeading: "Help shape authentic Tamil heritage journeys.",
     participationStatement:
       "Heritage bodies, hospitality providers and local chapters may help shape a respectful future discovery model.",
     primaryCallToAction: {
@@ -696,6 +758,8 @@ export const initiativeDetails = {
           "Future gatherings may create meaningful reasons to explore Tamil places.",
       },
     ],
+    finalCtaHeading:
+      "A future tourism initiative needs responsible local participation.",
   },
   "arts-culture": {
     slug: "arts-culture",
@@ -704,10 +768,14 @@ export const initiativeDetails = {
       "A global stage for Tamil creativity, heritage and expression.",
     introduction:
       "Tamil Ulagam is shaping a future cultural ecosystem for classical and contemporary artists, archives, institutions, discovery and recognition.",
-    purpose:
-      "The initiative is intended to support respectful visibility and preservation without claiming that awards, grants, bookings or a live archive are active today.",
+    whyThisMatters: {
+      heading: "Tamil creativity deserves respectful global visibility.",
+      statement:
+        "The initiative is intended to support respectful visibility and preservation without claiming that awards, grants, bookings or a live archive are active today.",
+    },
     conceptStatement:
       "Concept visual representing the planned arts, music and culture initiative.",
+    audienceHeading: "Created for artists, institutions and audiences.",
     intendedAudiences: [
       "Musicians",
       "Dancers",
@@ -770,12 +838,16 @@ export const initiativeDetails = {
       "Archival permissions",
       "Transparent selection processes",
     ],
+    readinessHeading:
+      "Cultural visibility must respect consent, context and ownership.",
     developmentPath: [
       sharedDevelopmentPath.foundation,
       sharedDevelopmentPath.partnerReadiness,
       sharedDevelopmentPath.controlledPilot,
       sharedDevelopmentPath.responsibleExpansion,
     ],
+    participationHeading:
+      "Help create a trusted global stage for Tamil expression.",
     participationStatement:
       "Artists, teachers, heritage organisations and cultural institutions may help establish respectful future pathways.",
     primaryCallToAction: {
@@ -804,6 +876,8 @@ export const initiativeDetails = {
           "Future gatherings may provide a thoughtful stage for Tamil creativity.",
       },
     ],
+    finalCtaHeading:
+      "A future arts and culture initiative needs trusted participation.",
   },
   "global-events": {
     slug: "global-events",
@@ -812,10 +886,14 @@ export const initiativeDetails = {
       "Bringing Tamil communities together across cities and continents.",
     introduction:
       "Tamil Ulagam is considering a future platform for federation programmes, chapter gatherings, cultural events, professional summits and educational participation.",
-    purpose:
-      "The initiative would establish responsible discovery and participation foundations before it ever presents live dates, registrations, ticketing or streaming as available.",
+    whyThisMatters: {
+      heading: "Global participation begins with trusted gatherings.",
+      statement:
+        "The initiative would establish responsible discovery and participation foundations before it ever presents live dates, registrations, ticketing or streaming as available.",
+    },
     conceptStatement:
       "Concept visual representing the planned global events initiative.",
+    audienceHeading: "Built for communities, organisers and participants.",
     intendedAudiences: [
       "Members",
       "Chapters",
@@ -878,12 +956,16 @@ export const initiativeDetails = {
       "Content and media permissions",
       "Reliable support workflows",
     ],
+    readinessHeading:
+      "Events must be clear, safe and operationally accountable.",
     developmentPath: [
       sharedDevelopmentPath.foundation,
       sharedDevelopmentPath.partnerReadiness,
       sharedDevelopmentPath.controlledPilot,
       sharedDevelopmentPath.responsibleExpansion,
     ],
+    participationHeading:
+      "Help shape trusted Tamil gatherings across the world.",
     participationStatement:
       "Chapters, organisers, institutions and cultural bodies may help design responsible future gathering pathways.",
     primaryCallToAction: {
@@ -912,6 +994,8 @@ export const initiativeDetails = {
           "Knowledge exchange can travel through carefully designed future programmes.",
       },
     ],
+    finalCtaHeading:
+      "A future global events platform needs responsible organisers and partners.",
   },
 } as const satisfies Record<InitiativeSlug, InitiativeDetail>;
 

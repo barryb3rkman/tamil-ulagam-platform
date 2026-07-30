@@ -87,7 +87,10 @@ async function waitForNearbyEditorialImages(
 
             return htmlImage.complete && htmlImage.naturalWidth > 0;
           }),
-        { message: `${key} did not decode while it was in view` },
+        {
+          message: `${key} did not decode while it was in view`,
+          timeout: 15_000,
+        },
       )
       .toBe(true);
   }

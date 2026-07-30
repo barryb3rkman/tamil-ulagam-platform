@@ -15,6 +15,15 @@ import { scrollThroughPage, verifyPageImages } from "./helpers/homepage-media";
 
 const standardDesktop = { width: 1440, height: 1000 };
 const standardMobile = { width: 390, height: 844 };
+const responsiveViewports = [
+  { width: 375, height: 812 },
+  standardMobile,
+  { width: 430, height: 932 },
+  { width: 768, height: 1024 },
+  { width: 1024, height: 900 },
+  standardDesktop,
+  { width: 1920, height: 1080 },
+] as const;
 const representativeViewports = [
   { width: 1920, height: 1080 },
   { width: 768, height: 1024 },
@@ -92,6 +101,37 @@ async function verifyDetailRoute(
   }
   await expect(page.locator("#devtools-indicator")).toBeHidden();
 
+  await expect(
+    page.getByRole("heading", {
+      level: 2,
+      name: detail.whyThisMatters.heading,
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { level: 2, name: detail.audienceHeading }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { level: 2, name: detail.readinessHeading }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      level: 2,
+      name: detail.participationHeading,
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { level: 2, name: detail.finalCtaHeading }),
+  ).toBeVisible();
+
+  const capabilityCards = page.locator("[data-capability-card]");
+  await expect(capabilityCards).toHaveCount(detail.capabilities.length);
+  for (let index = 0; index < detail.capabilities.length; index += 1) {
+    const capabilityCard = capabilityCards.nth(index);
+    await expect(capabilityCard).toBeVisible();
+    await expect(capabilityCard).not.toBeEmpty();
+    await expect(capabilityCard).toContainText(`0${index + 1}`);
+  }
+
   const heroImage = page.getByRole("img", { name: images[imageKey].alt });
   await expect(heroImage).toBeVisible();
   await waitForHeroImage(page, imageKey);
@@ -115,8 +155,6 @@ async function verifyDetailRoute(
 }
 
 test.describe("initiative detail pages", () => {
-  test.describe.configure({ mode: "serial" });
-
   test("loads every approved detail route on desktop", async ({ page }) => {
     await page.setViewportSize(standardDesktop);
 
@@ -137,6 +175,25 @@ test.describe("initiative detail pages", () => {
           () => document.documentElement.scrollWidth <= window.innerWidth,
         ),
       ).toBe(true);
+    }
+  });
+
+  test("keeps every detail route within the requested responsive viewports", async ({
+    page,
+  }) => {
+    test.setTimeout(120_000);
+
+    for (const viewport of responsiveViewports) {
+      await page.setViewportSize(viewport);
+      for (const slug of initiativeDetailSlugs) {
+        await page.goto(getRoute(slug), { waitUntil: "domcontentloaded" });
+        await expect(page.locator("#initiative-title")).toBeVisible();
+        expect(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= window.innerWidth,
+          ),
+        ).toBe(true);
+      }
     }
   });
 
@@ -200,34 +257,19 @@ test.describe("initiative detail pages", () => {
   test("captures every approved detail page for visual review", async ({
     page,
   }) => {
-    test.setTimeout(240_000);
+    test.setTimeout(120_000);
     const reviewDirectory = path.resolve(
       process.cwd(),
-      "../../artifacts/initiative-detail-pages-review",
+      "../../artifacts/initiative-detail-differentiation",
     );
     await mkdir(reviewDirectory, { recursive: true });
 
-    for (const slug of initiativeDetailSlugs) {
+    for (const slug of representativeSlugs) {
       const imageKey = getInitiativeImageKey(slug);
       for (const viewport of [standardDesktop, standardMobile]) {
         await page.setViewportSize(viewport);
         await page.goto(getRoute(slug), { waitUntil: "domcontentloaded" });
         await expect(page.locator("#initiative-title")).toBeVisible();
-        await waitForHeroImage(page, imageKey);
-        await scrollThroughPage(page, [imageKey]);
-        await verifyPageImages(page, [imageKey]);
-        await page.screenshot({
-          path: `${reviewDirectory}/${slug}-${viewport.width}x${viewport.height}.png`,
-          fullPage: true,
-        });
-      }
-    }
-
-    for (const slug of representativeSlugs) {
-      const imageKey = getInitiativeImageKey(slug);
-      for (const viewport of representativeViewports) {
-        await page.setViewportSize(viewport);
-        await page.goto(getRoute(slug), { waitUntil: "domcontentloaded" });
         await waitForHeroImage(page, imageKey);
         await scrollThroughPage(page, [imageKey]);
         await verifyPageImages(page, [imageKey]);

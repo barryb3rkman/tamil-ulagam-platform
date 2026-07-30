@@ -34,14 +34,14 @@ export function InitiativePurposeSection({
         <SectionHeading
           eyebrow="WHY THIS MATTERS"
           headingLevel="h2"
-          title="A future direction with care at its centre."
+          title={detail.whyThisMatters.heading}
         />
         <div>
           <h2 id="initiative-purpose-title" className="sr-only">
             Why {initiative.title} matters
           </h2>
           <p className="text-global-navy text-xl leading-8 font-semibold sm:text-2xl sm:leading-9">
-            {detail.purpose}
+            {detail.whyThisMatters.statement}
           </p>
           <div className="border-global-navy/10 mt-8 border-l-2 pl-5">
             <p className="text-slate text-base leading-7">
@@ -62,6 +62,7 @@ export function InitiativeCapabilitiesSection({
   readonly layout: InitiativeDetailLayout;
 }) {
   const dark = layout === "opportunity";
+  const finalRowSize = detail.capabilities.length % 3;
 
   return (
     <Section
@@ -78,12 +79,26 @@ export function InitiativeCapabilitiesSection({
           className={dark ? "[&>h2]:text-white [&>p]:text-white/75" : undefined}
         />
         <ol
-          className={`mt-10 grid gap-px overflow-hidden border ${dark ? "border-white/18 bg-white/18" : "border-global-navy/10 bg-global-navy/10"} md:grid-cols-2 xl:grid-cols-3`}
+          aria-label="Capability list"
+          className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-6"
         >
           {detail.capabilities.map((capability, index) => (
             <li
               key={capability.title}
-              className={dark ? "bg-deep-navy p-6" : "bg-warm-ivory p-6"}
+              data-capability-card
+              className={`border p-6 xl:col-span-2 ${
+                finalRowSize === 2 && index === detail.capabilities.length - 2
+                  ? "xl:col-start-2"
+                  : ""
+              } ${
+                finalRowSize === 1 && index === detail.capabilities.length - 1
+                  ? "xl:col-start-3"
+                  : ""
+              } ${
+                dark
+                  ? "bg-deep-navy border-white/18"
+                  : "border-global-navy/10 bg-warm-ivory"
+              }`}
             >
               <span className="text-heritage-gold text-sm font-semibold tracking-[0.14em]">
                 0{index + 1}
@@ -116,7 +131,7 @@ export function InitiativeAudienceSection({
       <Container className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:items-start">
         <SectionHeading
           eyebrow="WHO IT IS INTENDED TO SERVE"
-          title="Built around real community roles."
+          title={detail.audienceHeading}
         />
         <ul className="grid gap-3 sm:grid-cols-2">
           {detail.intendedAudiences.map((audience) => (
@@ -157,7 +172,7 @@ export function InitiativeReadinessSection({
             id="readiness-title"
             className={`font-english mt-4 text-4xl leading-tight font-semibold tracking-[-0.025em] sm:text-5xl ${dark ? "text-white" : "text-global-navy"}`}
           >
-            Useful only when it is responsible.
+            {detail.readinessHeading}
           </h2>
           <p
             className={`mt-5 text-lg leading-8 ${dark ? "text-white/76" : "text-slate"}`}
@@ -271,7 +286,7 @@ export function InitiativeParticipationSection({
             id="participation-title"
             className={`font-english mt-4 text-4xl leading-tight font-semibold tracking-[-0.025em] sm:text-5xl ${dark ? "text-white" : "text-global-navy"}`}
           >
-            Help shape a useful future initiative.
+            {detail.participationHeading}
           </h2>
           <p
             className={`mt-5 max-w-2xl text-lg leading-8 ${dark ? "text-white/76" : "text-slate"}`}
@@ -284,7 +299,9 @@ export function InitiativeParticipationSection({
             href="/partners"
             variant={dark ? "primary" : "primary"}
             className={
-              dark ? "text-global-navy hover:bg-warm-ivory bg-white" : undefined
+              dark
+                ? "!text-global-navy hover:bg-warm-ivory bg-white"
+                : undefined
             }
           >
             Explore partnership
@@ -413,9 +430,9 @@ export function InitiativePreviousNext({
 }
 
 export function InitiativeFinalCta({
-  initiative,
+  detail,
 }: {
-  readonly initiative: InitiativeEntry;
+  readonly detail: InitiativeDetail;
 }) {
   return (
     <Section
@@ -432,8 +449,7 @@ export function InitiativeFinalCta({
             id="initiative-final-cta-title"
             className="font-english mt-4 max-w-2xl text-4xl leading-tight font-semibold tracking-[-0.025em] text-white sm:text-5xl"
           >
-            A future {initiative.title.toLowerCase()} initiative needs trusted
-            participation.
+            {detail.finalCtaHeading}
           </h2>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-white/76">
             Explore the wider initiative ecosystem or begin a conversation about

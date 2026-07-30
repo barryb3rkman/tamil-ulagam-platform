@@ -104,7 +104,7 @@ export function InitiativeHero({
                 variant={isDark ? "primary" : "primary"}
                 className={
                   isDark
-                    ? "text-global-navy hover:bg-warm-ivory bg-white"
+                    ? "!text-global-navy hover:bg-warm-ivory bg-white"
                     : undefined
                 }
               >

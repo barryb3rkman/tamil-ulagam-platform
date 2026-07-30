@@ -71,7 +71,7 @@ export function InitiativeDetailPage({ detail }: InitiativeDetailPageProps) {
         }
         next={next ? { href: next.href, title: next.title } : undefined}
       />
-      <InitiativeFinalCta initiative={initiative} />
+      <InitiativeFinalCta detail={detail} />
     </>
   );
 }

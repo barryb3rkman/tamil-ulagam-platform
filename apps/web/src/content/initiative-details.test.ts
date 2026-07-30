@@ -32,6 +32,12 @@ describe("initiative detail content", () => {
       expect(detail.readinessRequirements.length).toBeGreaterThan(0);
       expect(detail.developmentPath).toHaveLength(4);
       expect(detail.related).toHaveLength(3);
+      expect(detail.whyThisMatters.heading.trim()).not.toBe("");
+      expect(detail.whyThisMatters.statement.trim()).not.toBe("");
+      expect(detail.audienceHeading.trim()).not.toBe("");
+      expect(detail.readinessHeading.trim()).not.toBe("");
+      expect(detail.participationHeading.trim()).not.toBe("");
+      expect(detail.finalCtaHeading.trim()).not.toBe("");
       expect(images[initiative.imageKey as keyof typeof images]).toBeDefined();
       expect(detail.primaryCallToAction.href).toBe("#capabilities");
     }
@@ -55,6 +61,51 @@ describe("initiative detail content", () => {
         /book now|apply now|enrol now|register for the summit|available worldwide|serving thousands|trusted by leading organisations/,
       );
       expect(content).not.toMatch(/\b\d{3,}\b/);
+    }
+  });
+
+  it("keeps editorial headings unique and initiative-specific", () => {
+    const headingSets = Object.values(initiativeDetails).map((detail) => [
+      detail.whyThisMatters.heading,
+      detail.audienceHeading,
+      detail.readinessHeading,
+      detail.participationHeading,
+      detail.finalCtaHeading,
+    ]);
+
+    expect(
+      new Set(
+        Object.values(initiativeDetails).map(
+          (detail) => detail.whyThisMatters.heading,
+        ),
+      ).size,
+    ).toBe(initiativeDetailSlugs.length);
+    expect(
+      new Set(headingSets.map((headings) => headings.join("|"))).size,
+    ).toBe(initiativeDetailSlugs.length);
+
+    for (const [slug, detail] of Object.entries(initiativeDetails)) {
+      if (slug !== "healthcare") {
+        expect(detail.whyThisMatters.heading).not.toContain(
+          "care at its centre",
+        );
+      }
+    }
+  });
+
+  it("contains only complete, sequential capability entries", () => {
+    for (const detail of Object.values(initiativeDetails)) {
+      const titles = detail.capabilities.map((capability) => capability.title);
+
+      expect(new Set(titles).size).toBe(titles.length);
+      for (const capability of detail.capabilities) {
+        expect(capability.title.trim()).not.toBe("");
+        expect(capability.description.trim()).not.toBe("");
+        expect(Object.keys(capability).sort()).toEqual([
+          "description",
+          "title",
+        ]);
+      }
     }
   });
 });

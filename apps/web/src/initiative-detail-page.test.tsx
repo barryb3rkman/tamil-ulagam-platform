@@ -43,12 +43,27 @@ describe("initiative detail pages", () => {
       ).toBeVisible();
       expect(
         view.getByRole("heading", {
-          name: "Built around real community roles.",
+          name: detail.audienceHeading,
         }),
       ).toBeVisible();
       expect(
         view.getByRole("heading", {
-          name: "Useful only when it is responsible.",
+          name: detail.readinessHeading,
+        }),
+      ).toBeVisible();
+      expect(
+        view.getByRole("heading", {
+          name: detail.whyThisMatters.heading,
+        }),
+      ).toBeVisible();
+      expect(
+        view.getByRole("heading", {
+          name: detail.participationHeading,
+        }),
+      ).toBeVisible();
+      expect(
+        view.getByRole("heading", {
+          name: detail.finalCtaHeading,
         }),
       ).toBeVisible();
       expect(
@@ -59,6 +74,15 @@ describe("initiative detail pages", () => {
       expect(
         view.getByRole("link", { name: "Explore partnership" }),
       ).toHaveAttribute("href", "/partners");
+
+      const capabilityItems = within(
+        view.getByRole("list", { name: "Capability list" }),
+      ).getAllByRole("listitem");
+      expect(capabilityItems).toHaveLength(detail.capabilities.length);
+      capabilityItems.forEach((item, index) => {
+        expect(item).toHaveTextContent(`0${index + 1}`);
+        expect(item.textContent?.trim()).not.toBe("");
+      });
 
       const relatedSection = view.getByRole("region", {
         name: "Related initiatives",
