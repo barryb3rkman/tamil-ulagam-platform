@@ -18,6 +18,7 @@ export const primaryNavigation = [
   },
   { label: "Tamil ID", href: "/tamil-id" },
   { label: "Chapters", href: "/chapters" },
+  { label: "Partners", href: "/partners" },
   { label: "Events", href: "/events" },
   { label: "News", href: "/news" },
 ] as const satisfies readonly NavigationEntry[];

@@ -275,6 +275,10 @@ export const roadmapEditorialImageKeys = [
   "roadmapFuture",
 ] as const satisfies readonly ImageKey[];
 
+export const partnersEditorialImageKeys = [
+  "partnerships",
+] as const satisfies readonly ImageKey[];
+
 export const initiativesEditorialImageKeys = [
   "initiativeHealthcare",
   "initiativeEducation",

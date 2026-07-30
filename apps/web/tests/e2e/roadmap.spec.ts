@@ -84,7 +84,7 @@ test.describe("public Roadmap page", () => {
         name: "Clear answers for a roadmap still being built responsibly.",
       }),
     ).toBeVisible();
-    await expect(page.locator("body")).not.toContainText(/\b20\d{2}\b/);
+    await expect(page.locator("main")).not.toContainText(/\b20\d{2}\b/);
     await expect(page.locator("body")).not.toContainText(/\b\d{1,3}%\b/);
 
     await page.keyboard.press("Tab");

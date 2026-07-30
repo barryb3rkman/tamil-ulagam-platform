@@ -23,6 +23,7 @@ artifacts/initiative-detail-differentiation/
 artifacts/tamil-id-page-review/
 artifacts/chapters-page-review/
 artifacts/roadmap-page-review/
+artifacts/partners-page-review/
 
 # Environment files
 .env
