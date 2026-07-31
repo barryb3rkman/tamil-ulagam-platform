@@ -1,17 +1,44 @@
 import type { Metadata } from "next";
 
-import { PublicPageShell } from "@/components/public-page-shell";
+import {
+  ContactFaq,
+  ContactFinalCta,
+  ContactHero,
+  ContactPrivacySection,
+  ContactPurposeSection,
+  ContactRoutingSection,
+  EnquiryCategoriesSection,
+  FutureContactModelSection,
+  InformationBoundarySection,
+  InformationToIncludeSection,
+  InstitutionalEnquiriesSection,
+  ResponseExpectationsSection,
+  UrgentMattersSection,
+} from "@/components/contact";
 import { createPageMetadata } from "@/config/metadata";
-import { publicPages } from "@/content/pages";
-
-const content = publicPages.contact;
 
 export const metadata: Metadata = createPageMetadata(
-  "Contact",
-  content.description,
+  "Contact | Begin a Conversation with Tamil Ulagam",
+  "Understand how to begin a future enquiry with Tamil Ulagam, including partnership, chapter, initiative, event, editorial, privacy and website-feedback pathways.",
   "/contact",
 );
 
 export default function ContactPage() {
-  return <PublicPageShell content={content} />;
+  return (
+    <>
+      <ContactHero />
+      <ContactPurposeSection />
+      <EnquiryCategoriesSection />
+      <InformationToIncludeSection />
+      <InformationBoundarySection />
+      <ContactRoutingSection />
+      <ContactPrivacySection />
+      <ResponseExpectationsSection />
+      <UrgentMattersSection />
+      <InstitutionalEnquiriesSection />
+      <FutureContactModelSection />
+      <ContactFaq />
+      <ContactFinalCta />
+    </>
+  );
 }

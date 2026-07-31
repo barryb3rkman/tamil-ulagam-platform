@@ -31,6 +31,9 @@ export default defineConfig({
   ],
   webServer: {
     command: `exec ./node_modules/.bin/next dev --port ${port}`,
+    env: {
+      TAMIL_ULAGAM_E2E: "1",
+    },
     url: baseURL,
     reuseExistingServer: false,
     timeout: 120_000,

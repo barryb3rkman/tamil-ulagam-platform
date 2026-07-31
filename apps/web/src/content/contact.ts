@@ -1,0 +1,497 @@
+import type { CallToAction } from "@tamil-ulagam/shared";
+
+interface ContactHeroContent {
+  readonly eyebrow: string;
+  readonly title: string;
+  readonly description: string;
+  readonly status: string;
+  readonly note: string;
+  readonly primaryCallToAction: CallToAction;
+  readonly secondaryCallToAction: CallToAction;
+}
+
+interface TextSection {
+  readonly eyebrow: string;
+  readonly title: string;
+  readonly description?: string;
+}
+
+interface Statement {
+  readonly title: string;
+  readonly description: string;
+}
+
+interface LinkedStatement extends Statement {
+  readonly href: `/${string}`;
+  readonly linkLabel: string;
+}
+
+interface NumberedStatement extends Statement {
+  readonly number: string;
+}
+
+interface FaqItem {
+  readonly title: string;
+  readonly description: string;
+}
+
+export const contactContent = {
+  hero: {
+    eyebrow: "CONTACT TAMIL ULAGAM",
+    title: "Start with a clear purpose. Build the right conversation.",
+    description:
+      "Tamil Ulagam welcomes thoughtful enquiries from individuals, organisations, institutions and professionals interested in community, culture, knowledge and responsible collaboration.",
+    status: "Contact Routing in Development",
+    note: "Contacting Tamil Ulagam does not create an application, membership, chapter or approved partnership.",
+    primaryCallToAction: {
+      label: "Choose an Enquiry Path",
+      href: "/contact#contact-paths",
+      variant: "secondary",
+    },
+    secondaryCallToAction: {
+      label: "Explore Partnerships",
+      href: "/partners",
+      variant: "text",
+    },
+  } satisfies ContactHeroContent,
+  purpose: {
+    eyebrow: "HOW TO BEGIN A CONVERSATION",
+    title: "The right context helps an enquiry reach the right discussion.",
+    description:
+      "A future enquiry should be concise enough to understand, complete enough to route responsibly and proportionate to the conversation being requested.",
+    guidance: [
+      "Who you are",
+      "Whether you represent yourself or an organisation",
+      "The subject of the enquiry",
+      "The intended outcome",
+      "Relevant country or region",
+      "Relevant initiative or public page",
+      "Whether the matter is informational, operational or collaborative",
+      "Any deadline, only when genuinely necessary",
+      "A safe method for future response once approved contact channels exist",
+    ],
+    statement:
+      "This page currently explains routing expectations. It does not submit an enquiry or collect contact information.",
+  },
+  categories: {
+    eyebrow: "ENQUIRY CATEGORIES",
+    title: "Different questions require different context.",
+    items: [
+      {
+        title: "General enquiry",
+        description:
+          "Questions about Tamil Ulagam’s public vision, website or future platform.",
+        href: "/about",
+        linkLabel: "Explore Tamil Ulagam",
+      },
+      {
+        title: "Partnership discussion",
+        description: "Institutional or professional collaboration.",
+        href: "/partners",
+        linkLabel: "Understand partnerships",
+      },
+      {
+        title: "Chapter interest",
+        description:
+          "Interest in responsible future local chapter discussions.",
+        href: "/chapters",
+        linkLabel: "Explore the chapter model",
+      },
+      {
+        title: "Initiative collaboration",
+        description:
+          "Healthcare, education, business, jobs, research, tourism, culture or global events.",
+        href: "/initiatives",
+        linkLabel: "Explore initiatives",
+      },
+      {
+        title: "Events discussion",
+        description:
+          "Future organiser, venue, accessibility or programme collaboration.",
+        href: "/events",
+        linkLabel: "Understand the events model",
+      },
+      {
+        title: "Editorial and knowledge contribution",
+        description:
+          "Research, translation, cultural documentation, fact-checking or future newsroom collaboration.",
+        href: "/news",
+        linkLabel: "Understand the editorial model",
+      },
+      {
+        title: "Tamil ID and membership questions",
+        description: "Questions about the planned membership model.",
+        href: "/tamil-id",
+        linkLabel: "Explore Tamil ID",
+      },
+      {
+        title: "Privacy, security or accessibility concern",
+        description:
+          "Issues involving public content, data boundaries, accessibility or responsible platform design.",
+        href: "/privacy",
+        linkLabel: "Review the privacy foundation",
+      },
+      {
+        title: "Media or institutional enquiry",
+        description:
+          "Enquiries from recognised institutions or authorised representatives.",
+        href: "/partners",
+        linkLabel: "Review institutional pathways",
+      },
+      {
+        title: "Website feedback",
+        description:
+          "Accessibility, navigation, factual corrections or technical issues relating to the public website.",
+        href: "/roadmap",
+        linkLabel: "View the platform roadmap",
+      },
+    ] as const satisfies readonly LinkedStatement[],
+  },
+  informationToInclude: {
+    eyebrow: "WHAT TO INCLUDE",
+    title: "Useful enquiries are clear, specific and proportionate.",
+    description:
+      "These are future guidance points, not required fields or a live submission checklist.",
+    items: [
+      "Name",
+      "Organisation, where relevant",
+      "Authorised role",
+      "Country or region",
+      "Enquiry category",
+      "Concise subject",
+      "Relevant background",
+      "Intended outcome",
+      "Public reference links where appropriate",
+      "Relevant Tamil Ulagam page or initiative",
+      "Whether follow-up is time-sensitive",
+      "Accessibility or language needs",
+    ],
+  },
+  informationNotToSend: {
+    eyebrow: "WHAT NOT TO SEND",
+    title:
+      "Do not send sensitive documents or unnecessary personal information.",
+    statement:
+      "Tamil Ulagam does not currently request identity documents through this public page.",
+    items: [
+      "Passports",
+      "Aadhaar cards",
+      "National identity documents",
+      "Driving licences",
+      "Bank details",
+      "Card details",
+      "Passwords",
+      "Medical records",
+      "Confidential employment records",
+      "Children’s personal information",
+      "Private member databases",
+      "Unredacted contracts",
+      "Confidential legal documents",
+      "Biometric information",
+      "Verification codes",
+      "Login credentials",
+    ],
+  },
+  routing: {
+    eyebrow: "HOW ENQUIRIES MAY BE ROUTED",
+    title: "Contact should be routed by purpose, responsibility and access.",
+    areas: [
+      "Public information",
+      "Partnerships",
+      "Chapters",
+      "Initiatives",
+      "Events",
+      "Editorial",
+      "Privacy and security",
+      "Accessibility",
+      "Legal or governance",
+      "Technical website issues",
+    ],
+    principles: [
+      "Minimum necessary information",
+      "Responsible ownership",
+      "No unrestricted forwarding",
+      "Role-appropriate access",
+      "Recorded handover where needed",
+      "Clear escalation",
+      "No automatic approval",
+      "No silent change of purpose",
+      "Closure when no further action is required",
+    ],
+  },
+  privacy: {
+    eyebrow: "PRIVACY AND SENSITIVE INFORMATION",
+    title: "Contact should not create unnecessary exposure.",
+    description:
+      "Future contact forms must have an approved privacy notice before personal information processing begins.",
+    principles: [
+      "Data minimisation",
+      "Purpose limitation",
+      "Restricted access",
+      "Secure handling",
+      "No public disclosure",
+      "Retention limits",
+      "Consent where required",
+      "Safe escalation",
+      "No selling of enquiry information",
+      "No reuse for unrelated marketing",
+      "Care with minors and vulnerable people",
+      "Auditability for sensitive actions",
+    ],
+  },
+  responseExpectations: {
+    eyebrow: "RESPONSE EXPECTATIONS",
+    title: "A responsible response depends on scope, ownership and readiness.",
+    items: [
+      "Contacting Tamil Ulagam does not guarantee a response",
+      "Response time cannot currently be promised",
+      "Some enquiries may require clarification",
+      "Some requests may be outside scope",
+      "Partnership discussions require review",
+      "Membership and chapter applications are not currently open",
+      "Event and article submissions are not currently open",
+      "Urgent deadlines should not be assumed accepted",
+      "Public information may already exist on the website",
+      "Approved future channels must provide acknowledgement and status expectations",
+    ],
+    statement:
+      "Response depends on scope and availability. No service level or guaranteed response time is currently offered.",
+  },
+  urgentMatters: {
+    eyebrow: "URGENT AND EMERGENCY MATTERS",
+    title: "This website is not an emergency or crisis-response service.",
+    description:
+      "Contact the appropriate local emergency, medical, legal or public authority when immediate support or intervention is required.",
+    items: [
+      "Do not use Tamil Ulagam for medical emergencies",
+      "Do not use it for police, fire or immediate safety incidents",
+      "Do not use it for urgent legal representation",
+      "Do not use it for crisis counselling",
+      "Do not use it for immigration emergencies",
+      "Do not use it to report immediate danger",
+    ],
+    statement:
+      "Tamil Ulagam does not monitor public enquiries continuously and cannot provide emergency intervention.",
+  },
+  institutionalEnquiries: {
+    eyebrow: "ORGANISATIONS AND AUTHORISED REPRESENTATIVES",
+    title:
+      "Institutional enquiries should identify authority and purpose clearly.",
+    details: [
+      "Legal or public organisation name",
+      "Organisation type",
+      "Official website where available",
+      "Authorised representative",
+      "Role or title",
+      "Purpose of contact",
+      "Relevant country or jurisdiction",
+      "Intended collaboration area",
+      "Whether the enquiry is public or confidential",
+      "Conflicts or commercial interests where relevant",
+    ],
+    boundaries: [
+      "Discussion does not establish partnership.",
+      "Use of the Tamil Ulagam name or logo is not permitted without approval.",
+      "No one may claim to represent Tamil Ulagam without written authorisation.",
+      "Private member information will not be shared simply because an organisation makes contact.",
+    ],
+    callToAction: {
+      label: "Explore Partnerships",
+      href: "/partners",
+      variant: "text",
+    },
+  },
+  workflow: {
+    eyebrow: "FUTURE CONTACT WORKFLOW",
+    title: "A future contact system should make ownership and status clear.",
+    description:
+      "These stages describe a proposed future contact workflow. They are not operating today and do not provide enquiry tracking.",
+    label: "Proposed future contact workflow",
+    steps: [
+      {
+        number: "01",
+        title: "Enquiry submitted",
+        description: "A future approved channel accepts an enquiry.",
+      },
+      {
+        number: "02",
+        title: "Receipt after processing exists",
+        description:
+          "A receipt may be provided only after secure processing is available.",
+      },
+      {
+        number: "03",
+        title: "Basic routing review",
+        description:
+          "Purpose, scope and minimum required information are reviewed.",
+      },
+      {
+        number: "04",
+        title: "Assigned to responsible owner",
+        description: "A suitable owner receives only the information required.",
+      },
+      {
+        number: "05",
+        title: "Clarification requested",
+        description: "Further context may be requested where necessary.",
+      },
+      {
+        number: "06",
+        title: "Under consideration",
+        description:
+          "The responsible owner reviews the enquiry within available scope.",
+      },
+      {
+        number: "07",
+        title: "Referred to relevant area",
+        description: "A controlled handover may occur when justified.",
+      },
+      {
+        number: "08",
+        title: "Response provided",
+        description: "An appropriate response may be issued where possible.",
+      },
+      {
+        number: "09",
+        title: "No action or outside scope",
+        description:
+          "The enquiry may be closed when no responsible action is available.",
+      },
+      {
+        number: "10",
+        title: "Closed",
+        description:
+          "The future record is concluded with an appropriate outcome status.",
+      },
+      {
+        number: "11",
+        title: "Reopened when justified",
+        description:
+          "A closed enquiry may be reconsidered when relevant new context exists.",
+      },
+    ] as const satisfies readonly NumberedStatement[],
+  },
+  faqs: [
+    {
+      title: "Is there a working contact form?",
+      description:
+        "No. This page currently explains enquiry routes and expectations.",
+    },
+    {
+      title: "Can I apply for membership here?",
+      description: "No. Membership applications are not currently open.",
+    },
+    {
+      title: "Can I apply to create a chapter?",
+      description: "No. Chapter applications are not currently open.",
+    },
+    {
+      title: "Can I submit an event?",
+      description:
+        "No. Event organiser onboarding and event submission are not currently open.",
+    },
+    {
+      title: "Can I submit an article?",
+      description:
+        "No. Article submission and contributor onboarding are not currently open.",
+    },
+    {
+      title: "Does contacting Tamil Ulagam create a partnership?",
+      description:
+        "No. A discussion does not establish an approved partnership.",
+    },
+    {
+      title: "Can I send identity documents?",
+      description:
+        "No. Do not send sensitive identity documents through public contact routes.",
+    },
+    {
+      title: "Will I receive a response immediately?",
+      description: "No response time is currently guaranteed.",
+    },
+    {
+      title: "Can Tamil Ulagam help during an emergency?",
+      description:
+        "No. Contact the appropriate local emergency or public authority.",
+    },
+    {
+      title: "Can organisations begin discussions?",
+      description:
+        "Responsible institutional discussions may begin through future approved contact channels.",
+    },
+    {
+      title: "Can I report a website accessibility issue?",
+      description: "Yes, once approved contact channels are published.",
+    },
+    {
+      title: "Where can I learn more first?",
+      description:
+        "Review the About, Roadmap, Partners, Chapters, Tamil ID, Events and News pages.",
+    },
+  ] as const satisfies readonly FaqItem[],
+  finalCallToAction: {
+    eyebrow: "BEGIN WITH CLARITY",
+    title:
+      "Good conversations begin with the right purpose and responsible expectations.",
+    description:
+      "Explore Tamil Ulagam’s public pages to understand the platform before beginning a future enquiry.",
+    primaryCallToAction: {
+      label: "Explore Tamil Ulagam",
+      href: "/about",
+      variant: "secondary",
+    },
+    secondaryCallToAction: {
+      label: "Explore Partnerships",
+      href: "/partners",
+      variant: "text",
+    },
+    textCallToActions: [
+      { label: "View the Roadmap", href: "/roadmap", variant: "text" },
+      { label: "Explore Initiatives", href: "/initiatives", variant: "text" },
+    ] as const satisfies readonly CallToAction[],
+  },
+} as const satisfies {
+  readonly hero: ContactHeroContent;
+  readonly purpose: TextSection & {
+    readonly guidance: readonly string[];
+    readonly statement: string;
+  };
+  readonly categories: TextSection & {
+    readonly items: readonly LinkedStatement[];
+  };
+  readonly informationToInclude: TextSection & {
+    readonly items: readonly string[];
+  };
+  readonly informationNotToSend: TextSection & {
+    readonly statement: string;
+    readonly items: readonly string[];
+  };
+  readonly routing: TextSection & {
+    readonly areas: readonly string[];
+    readonly principles: readonly string[];
+  };
+  readonly privacy: TextSection & { readonly principles: readonly string[] };
+  readonly responseExpectations: TextSection & {
+    readonly items: readonly string[];
+    readonly statement: string;
+  };
+  readonly urgentMatters: TextSection & {
+    readonly items: readonly string[];
+    readonly statement: string;
+  };
+  readonly institutionalEnquiries: TextSection & {
+    readonly details: readonly string[];
+    readonly boundaries: readonly string[];
+    readonly callToAction: CallToAction;
+  };
+  readonly workflow: TextSection & {
+    readonly label: string;
+    readonly steps: readonly NumberedStatement[];
+  };
+  readonly faqs: readonly FaqItem[];
+  readonly finalCallToAction: TextSection & {
+    readonly primaryCallToAction: CallToAction;
+    readonly secondaryCallToAction: CallToAction;
+    readonly textCallToActions: readonly CallToAction[];
+  };
+};

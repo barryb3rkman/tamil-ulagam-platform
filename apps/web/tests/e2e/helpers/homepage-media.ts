@@ -132,6 +132,7 @@ export async function verifyPageImages(
   imageKeys: readonly ImageKey[],
 ) {
   for (const key of imageKeys) {
+    const asset = images[key];
     const diagnostic = await inspectImage(page, key);
 
     expect(diagnostic.complete, `${key} did not complete loading`).toBe(true);
@@ -160,9 +161,10 @@ export async function verifyPageImages(
       diagnostic.parentHeight,
       `${key} parent has no height`,
     ).toBeGreaterThan(0);
-    expect(diagnostic.src, `${key} has no resolved source`).toContain(
-      "/_next/image",
-    );
+    expect(
+      [asset.path, "/_next/image"],
+      `${key} has no resolved source`,
+    ).toContain(new URL(diagnostic.src).pathname);
   }
 }
 
