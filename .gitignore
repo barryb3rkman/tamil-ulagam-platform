@@ -25,6 +25,7 @@ artifacts/chapters-page-review/
 artifacts/roadmap-page-review/
 artifacts/partners-page-review/
 artifacts/events-page-review/
+artifacts/news-page-review/
 
 # Environment files
 .env

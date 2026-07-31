@@ -44,6 +44,8 @@ The Partners page explains a future collaboration model. It does not list partne
 
 The Events page explains a planned event-discovery and participation model. It does not present a live calendar, event records, dates, venues, speakers, organiser directory, submission workflow, registration, ticketing, payments, attendance records, livestreams or recordings. It distinguishes proposed organiser verification, event lifecycle, registration principles, privacy boundaries, public statuses and readiness requirements from currently available services.
 
+The News page explains a planned public editorial platform. It does not publish articles, headlines, dates, bylines, interviews, chapter reports, press releases, subscription controls, search, filters, feeds, author profiles or publication analytics. It sets out proposed publication types, editorial distinctions, verification, consent, corrections, multilingual publishing, accessibility, discovery, distribution, statuses and readiness without representing any editorial workflow as already operational.
+
 The current release does not need a database or authentication because it stores no member state and performs no privileged transaction. Adding them now would create security and operational responsibilities before the relevant governance and product requirements exist.
 
 ## Honest representation
