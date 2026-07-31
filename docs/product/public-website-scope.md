@@ -42,6 +42,8 @@ The Roadmap page explains a proposed staged sequence from the permanent public f
 
 The Partners page explains a future collaboration model. It does not list partners, endorsements, logos, contracts, sponsorships, funding, applications or active access arrangements. It describes proposed categories, discussion and due-diligence stages, controlled data access, status distinctions, readiness and conversation routes through the existing public website.
 
+The Events page explains a planned event-discovery and participation model. It does not present a live calendar, event records, dates, venues, speakers, organiser directory, submission workflow, registration, ticketing, payments, attendance records, livestreams or recordings. It distinguishes proposed organiser verification, event lifecycle, registration principles, privacy boundaries, public statuses and readiness requirements from currently available services.
+
 The current release does not need a database or authentication because it stores no member state and performs no privileged transaction. Adding them now would create security and operational responsibilities before the relevant governance and product requirements exist.
 
 ## Honest representation

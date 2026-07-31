@@ -279,6 +279,10 @@ export const partnersEditorialImageKeys = [
   "partnerships",
 ] as const satisfies readonly ImageKey[];
 
+export const eventsEditorialImageKeys = [
+  "initiativeGlobalEvents",
+] as const satisfies readonly ImageKey[];
+
 export const initiativesEditorialImageKeys = [
   "initiativeHealthcare",
   "initiativeEducation",
