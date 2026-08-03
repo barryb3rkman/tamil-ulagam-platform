@@ -9,7 +9,7 @@ export function VisionSignalStrip() {
       className="border-global-navy/10 border-y bg-white"
     >
       <Container>
-        <ul className="divide-global-navy/10 grid divide-y sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
+        <ul className="divide-global-navy/10 grid divide-y sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-3 xl:grid-cols-6">
           {homepageContent.visionSignals.map((signal, index) => (
             <li
               key={signal}

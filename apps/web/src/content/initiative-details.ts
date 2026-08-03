@@ -11,11 +11,6 @@ import { type InitiativeSlug, initiatives } from "./initiatives";
 export type InitiativeDetailLayout =
   "human-development" | "opportunity" | "knowledge-global";
 
-export interface InitiativeDevelopmentStage {
-  readonly title: string;
-  readonly description: string;
-}
-
 export interface InitiativeRelatedEntry {
   readonly slug: InitiativeSlug;
   readonly relationship: string;
@@ -31,16 +26,13 @@ export interface InitiativeDetail {
     readonly statement: string;
   };
   readonly conceptStatement: string;
+  readonly safetyNotice?: string;
   readonly audienceHeading: string;
   readonly intendedAudiences: readonly string[];
   readonly capabilities: readonly {
     readonly title: string;
     readonly description: string;
   }[];
-  readonly principles: readonly string[];
-  readonly readinessRequirements: readonly string[];
-  readonly readinessHeading: string;
-  readonly developmentPath: readonly InitiativeDevelopmentStage[];
   readonly participationHeading: string;
   readonly participationStatement: string;
   readonly finalCtaHeading: string;
@@ -52,29 +44,6 @@ export interface InitiativeDetail {
     InitiativeRelatedEntry,
   ];
 }
-
-const sharedDevelopmentPath = {
-  foundation: {
-    title: "Foundation",
-    description:
-      "Define the purpose, operating model, data boundaries, governance and accountable ownership.",
-  },
-  partnerReadiness: {
-    title: "Partner readiness",
-    description:
-      "Establish verified institutions, organisations or professional participation before public access is considered.",
-  },
-  controlledPilot: {
-    title: "Controlled pilot",
-    description:
-      "Test a limited experience with accountable administration, clear feedback and careful safeguards.",
-  },
-  responsibleExpansion: {
-    title: "Responsible expansion",
-    description:
-      "Expand only where adoption, trust, quality and measurable community need support the next stage.",
-  },
-} as const satisfies Record<string, InitiativeDevelopmentStage>;
 
 export const initiativeDetails = {
   healthcare: {
@@ -91,6 +60,8 @@ export const initiativeDetails = {
     },
     conceptStatement:
       "Concept visual representing the planned healthcare initiative.",
+    safetyNotice:
+      "Tamil Ulagam does not currently provide medical care or telemedicine. For emergencies, contact local emergency services.",
     audienceHeading:
       "Designed around people, professionals and community care.",
     intendedAudiences: [
@@ -103,50 +74,30 @@ export const initiativeDetails = {
     ],
     capabilities: [
       {
-        title: "Professional discovery",
+        title: "Tamil-speaking doctor directory",
         description:
           "A proposed way to discover verified healthcare professionals by location, speciality and language support.",
       },
       {
-        title: "Tamil-language accessibility",
+        title: "Telemedicine",
         description:
-          "Future discovery features may help people identify care settings where Tamil communication can support understanding and trust.",
+          "Future remote consultations would require qualified providers, clinical governance and country-specific approval before launch.",
       },
       {
-        title: "Health and wellbeing resources",
+        title: "Health camps",
         description:
-          "Educational resources could be curated through responsible editorial and professional review processes.",
+          "Proposed community health camps would depend on approved local partners and appropriate clinical safeguards.",
       },
       {
-        title: "Partner-supported programmes",
+        title: "Mental-health support",
         description:
-          "Community health initiatives may be introduced in future only with verified institutions and organisations.",
+          "Planned mental-health resources would require qualified oversight and clear crisis-support boundaries.",
       },
       {
-        title: "Cross-border guidance",
+        title: "Hospital partnerships and Tamil health resources",
         description:
-          "Discovery of information and providers would be designed carefully, without unsafe medical advice or guarantees.",
+          "Hospital collaboration and reviewed Tamil-language resources are future ambitions; no relationship or care service is currently active.",
       },
-    ],
-    principles: [
-      "No diagnosis or medical advice through the platform",
-      "Clear emergency and country-specific disclaimers",
-      "Language support treated as a discovery aid, not a clinical claim",
-    ],
-    readinessRequirements: [
-      "Professional verification",
-      "Country-specific rules",
-      "Medical-content review",
-      "Privacy-conscious data handling",
-      "Accountable partner agreements",
-    ],
-    readinessHeading:
-      "Healthcare discovery must begin with safety and accountability.",
-    developmentPath: [
-      sharedDevelopmentPath.foundation,
-      sharedDevelopmentPath.partnerReadiness,
-      sharedDevelopmentPath.controlledPilot,
-      sharedDevelopmentPath.responsibleExpansion,
     ],
     participationHeading: "Help shape a responsible Tamil healthcare network.",
     participationStatement:
@@ -207,61 +158,35 @@ export const initiativeDetails = {
     ],
     capabilities: [
       {
-        title: "Tamil language learning",
+        title: "Tamil language courses",
         description:
           "Future pathways for discovering language-learning resources and trusted educational partners.",
       },
       {
-        title: "Cultural and historical education",
+        title: "K–12 resources",
         description:
-          "Proposed connections to contextual learning that carries Tamil knowledge between generations.",
+          "Proposed school-age resources would require curriculum, rights and safeguarding review.",
       },
       {
-        title: "Curated learning resources",
+        title: "Scholarship database",
         description:
-          "An intended editorial approach for useful resources reviewed for relevance and quality.",
+          "A future directory could make approved scholarships and eligibility information easier to discover.",
       },
       {
-        title: "Mentor and tutor discovery",
+        title: "Tuition marketplace",
         description:
           "A future discovery layer for verified mentors and tutors, subject to safeguarding standards.",
       },
       {
-        title: "Scholarship and opportunity discovery",
+        title: "Cultural modules",
         description:
-          "Transparent information pathways may be introduced where partners can be verified.",
+          "Planned modules could connect Tamil language with literature, history, arts and heritage.",
       },
       {
-        title: "Educational partnerships",
+        title: "University partnerships",
         description:
           "Institutions could help shape responsible programmes, content and access models.",
       },
-      {
-        title: "Youth and intergenerational programmes",
-        description:
-          "Future initiatives may connect learners with community knowledge in age-appropriate ways.",
-      },
-    ],
-    principles: [
-      "Learning should honour Tamil identity alongside wider opportunity",
-      "Young people require clear safeguarding",
-      "Information must be transparent about availability and eligibility",
-    ],
-    readinessRequirements: [
-      "Educator and institution verification",
-      "Age-appropriate content",
-      "Safeguarding for minors",
-      "Content quality review",
-      "Transparent scholarship information",
-      "Privacy-conscious student data",
-      "Responsible communication",
-    ],
-    readinessHeading: "Education must be safe, accurate and genuinely useful.",
-    developmentPath: [
-      sharedDevelopmentPath.foundation,
-      sharedDevelopmentPath.partnerReadiness,
-      sharedDevelopmentPath.controlledPilot,
-      sharedDevelopmentPath.responsibleExpansion,
     ],
     participationHeading: "Help strengthen Tamil learning across generations.",
     participationStatement:
@@ -321,63 +246,35 @@ export const initiativeDetails = {
     ],
     capabilities: [
       {
-        title: "Verified business directory",
+        title: "Tamil business directory",
         description:
           "A future directory could make it easier to discover businesses after responsible verification.",
       },
       {
-        title: "Founder and professional discovery",
+        title: "B2B and B2C marketplace",
         description:
-          "Planned pathways for finding relevant people, expertise and collaboration opportunities.",
+          "A future marketplace could support business and consumer discovery; no transactions are currently available.",
       },
       {
-        title: "B2B enquiry pathways",
+        title: "Mentorship",
         description:
-          "Future contact routes may be introduced with clear representation and auditability expectations.",
+          "Planned connections could support knowledge exchange between experienced professionals and emerging founders.",
       },
       {
-        title: "Mentorship and knowledge exchange",
+        title: "Investment matchmaking",
         description:
-          "A proposed setting for founders and professionals to share useful experience responsibly.",
+          "This is a proposed future capability requiring financial, legal and eligibility controls.",
       },
       {
-        title: "International market discovery",
+        title: "Tamil Business Summit",
         description:
-          "Future information pathways may help organisations understand cross-border opportunities.",
+          "An annual summit is part of the original vision and remains a proposed event without an approved date.",
       },
       {
-        title: "Partnership opportunities",
+        title: "CSR collaboration",
         description:
-          "Verified institutions and associations could help shape trusted connections.",
+          "Future corporate collaboration would require confirmed participants and an approved community purpose.",
       },
-      {
-        title: "Future member offers and services",
-        description:
-          "Any future service would be introduced only after governance and commercial safeguards are ready.",
-      },
-    ],
-    principles: [
-      "Trust must precede discovery",
-      "Commercial participation needs clear disclosures",
-      "No investment outcome can be promised",
-    ],
-    readinessRequirements: [
-      "Organisation verification",
-      "Authorised representatives",
-      "Fraud controls",
-      "Clear commercial disclosures",
-      "Enquiry auditability",
-      "Moderation",
-      "Country-specific legal considerations",
-      "No investment guarantees",
-    ],
-    readinessHeading:
-      "Commercial connection must begin with verification and trust.",
-    developmentPath: [
-      sharedDevelopmentPath.foundation,
-      sharedDevelopmentPath.partnerReadiness,
-      sharedDevelopmentPath.controlledPilot,
-      sharedDevelopmentPath.responsibleExpansion,
     ],
     participationHeading:
       "Help build responsible pathways for Tamil enterprise.",
@@ -438,63 +335,40 @@ export const initiativeDetails = {
     ],
     capabilities: [
       {
-        title: "Professional profiles",
+        title: "Tamil job board",
         description:
-          "Future profile pathways could help people present relevant experience with clear privacy controls.",
+          "A planned job board could bring suitable opportunities into one Tamil community platform.",
       },
       {
-        title: "Verified employer onboarding",
+        title: "Job listings",
         description:
           "Employers would need accountable verification before any future opportunity publishing.",
       },
       {
-        title: "Structured job listings",
+        title: "Bilingual profiles",
         description:
-          "A future listing model could prioritise clear salary, location and role information.",
+          "Planned Tamil and English profiles could help professionals present relevant experience and skills.",
       },
       {
-        title: "Search and filtering",
+        title: "Internships",
         description:
-          "Planned discovery tools may help people navigate relevant opportunities transparently.",
+          "Future internship discovery could support students and early-career professionals.",
       },
       {
-        title: "Application workflows",
+        title: "Employer listings",
         description:
-          "Any future application process would require auditable, privacy-conscious handling.",
+          "Employer participation would require clear identity, listing and accountability controls.",
       },
       {
-        title: "Career resources and mentorship",
+        title: "Cross-border matching",
         description:
-          "Guidance pathways could connect professional development with trusted contributors.",
+          "Future matching could support discovery across countries without promising employment outcomes.",
       },
       {
-        title: "Future relevance-based recommendations",
+        title: "AI-powered matching",
         description:
-          "Recommendations would be considered only with fair and transparent matching standards.",
+          "AI-assisted matching is a future concept requiring transparency, fairness testing and human oversight.",
       },
-    ],
-    principles: [
-      "Opportunity must be clear, fair and verifiable",
-      "Applicant privacy cannot be an afterthought",
-      "Career pathways should not make promises about outcomes",
-    ],
-    readinessRequirements: [
-      "Employer verification",
-      "Listing moderation",
-      "Anti-fraud controls",
-      "Applicant privacy",
-      "Clear salary and location information",
-      "Application audit records",
-      "Fair and transparent matching",
-      "Country-specific employment considerations",
-    ],
-    readinessHeading:
-      "Opportunity is useful only when it is fair and trustworthy.",
-    developmentPath: [
-      sharedDevelopmentPath.foundation,
-      sharedDevelopmentPath.partnerReadiness,
-      sharedDevelopmentPath.controlledPilot,
-      sharedDevelopmentPath.responsibleExpansion,
     ],
     participationHeading: "Help shape a responsible global careers network.",
     participationStatement:
@@ -554,63 +428,35 @@ export const initiativeDetails = {
     ],
     capabilities: [
       {
-        title: "Researcher and institution discovery",
+        title: "Digital archive",
         description:
-          "A future way to find relevant people and institutions across Tamil research fields.",
+          "A planned archive could preserve and organise Tamil research and cultural knowledge with appropriate rights.",
       },
       {
-        title: "Digital knowledge resources",
+        title: "Research grants",
         description:
-          "Proposed resource pathways with clear source context and editorial responsibility.",
+          "Future grants remain an ambition and require approved funding, criteria and administration.",
       },
       {
-        title: "Archive and preservation initiatives",
+        title: "Academic collaboration",
         description:
-          "Future preservation work would require permissions, stewardship and sustainable standards.",
+          "Researchers and institutions may explore responsible collaboration across disciplines and countries.",
       },
       {
-        title: "Collaboration opportunities",
+        title: "Annual research conference",
         description:
-          "Institutions and researchers may be able to identify responsible collaboration routes.",
+          "An annual conference is proposed; no programme or date is currently confirmed.",
       },
       {
-        title: "Research events and publications",
+        title: "University partnerships",
         description:
-          "Future discovery could connect scholarly activity without claiming active publishing services.",
+          "University collaboration is part of the original vision; no named relationship is currently confirmed.",
       },
       {
-        title: "Responsible datasets and documentation",
+        title: "Open-access Tamil library",
         description:
-          "Any future data work would prioritise provenance, context and ethical use.",
+          "A future library could improve access while respecting copyright, attribution and context.",
       },
-      {
-        title: "Innovation networks",
-        description:
-          "A proposed network could connect knowledge with responsible future innovation.",
-      },
-    ],
-    principles: [
-      "Knowledge needs clear provenance",
-      "Preservation must respect rights holders",
-      "Innovation should be accountable to community context",
-    ],
-    readinessRequirements: [
-      "Source attribution",
-      "Copyright and licensing",
-      "Academic review",
-      "Archival permissions",
-      "Institutional agreements",
-      "Data quality",
-      "Ethical research standards",
-      "Transparent provenance",
-    ],
-    readinessHeading:
-      "Research discovery must protect quality, provenance and rights.",
-    developmentPath: [
-      sharedDevelopmentPath.foundation,
-      sharedDevelopmentPath.partnerReadiness,
-      sharedDevelopmentPath.controlledPilot,
-      sharedDevelopmentPath.responsibleExpansion,
     ],
     participationHeading:
       "Help connect Tamil scholarship and responsible innovation.",
@@ -671,63 +517,35 @@ export const initiativeDetails = {
     ],
     capabilities: [
       {
-        title: "Heritage destination discovery",
+        title: "Heritage-site guide",
         description:
           "Future discovery could connect people with places of Tamil cultural and historical significance.",
       },
       {
-        title: "Cultural journey guidance",
+        title: "Tamil homestays",
         description:
-          "Proposed guidance may support more contextual, respectful travel planning.",
+          "Homestay discovery is proposed and would require provider, safety and local legal review.",
       },
       {
-        title: "Verified hospitality providers",
+        title: "Diaspora heritage tours",
         description:
-          "Any future provider discovery would depend on verification and clear policies.",
+          "Proposed journeys could help diaspora visitors explore Tamil heritage with cultural context.",
       },
       {
-        title: "Local chapter recommendations",
+        title: "Virtual tours",
         description:
-          "Future chapters may contribute local knowledge through accountable collaboration.",
+          "Future digital experiences could make selected heritage places accessible around the world.",
       },
       {
-        title: "Community-led experiences",
+        title: "Tamil cuisine",
         description:
-          "Community participation may help shape authentic experiences with appropriate safeguards.",
+          "Planned guides could support responsible discovery of Tamil culinary traditions.",
       },
       {
-        title: "Travel resources",
+        title: "Tourism-board partnerships",
         description:
-          "Future resources could make practical and cultural information easier to discover.",
+          "Tourism-board collaboration is an ambition; no official relationship is currently confirmed.",
       },
-      {
-        title: "Future responsible booking integrations",
-        description:
-          "Any booking connection would be considered only after provider, pricing and support readiness.",
-      },
-    ],
-    principles: [
-      "Discovery should respect place and culture",
-      "Travel information needs transparent context",
-      "No provider or travel outcome can be guaranteed",
-    ],
-    readinessRequirements: [
-      "Provider verification",
-      "Clear pricing and policies",
-      "Safety information",
-      "Local regulation",
-      "Responsible cultural representation",
-      "Accessibility information",
-      "Dispute and support processes",
-      "No misleading travel guarantees",
-    ],
-    readinessHeading:
-      "Travel discovery must respect safety, culture and local communities.",
-    developmentPath: [
-      sharedDevelopmentPath.foundation,
-      sharedDevelopmentPath.partnerReadiness,
-      sharedDevelopmentPath.controlledPilot,
-      sharedDevelopmentPath.responsibleExpansion,
     ],
     participationHeading: "Help shape authentic Tamil heritage journeys.",
     participationStatement:
@@ -789,62 +607,35 @@ export const initiativeDetails = {
     ],
     capabilities: [
       {
-        title: "Artist and organisation discovery",
+        title: "Classical arts directory",
         description:
           "A future discovery layer could help people find artists and cultural organisations with consent.",
       },
       {
-        title: "Cultural resources and archives",
+        title: "Performances and broadcasts",
         description:
-          "Proposed knowledge pathways would respect rights, context and archival permissions.",
+          "Future performances and broadcasts would require programme approval and media permissions.",
       },
       {
-        title: "Performance and programme discovery",
+        title: "Digital arts gallery",
         description:
-          "Future visibility may help communities find relevant activity without presenting active bookings.",
+          "A future gallery could present Tamil creative work with artist consent, attribution and context.",
       },
       {
-        title: "Educational connections",
+        title: "Awards and recognition",
         description:
-          "Creative practice could connect with future learning and intergenerational knowledge.",
+          "Awards are proposed; no annual programme or recipient is currently announced.",
       },
       {
-        title: "Global creative collaboration",
+        title: "Film, literature and folk traditions",
         description:
-          "A proposed network may support responsible connection across borders and disciplines.",
+          "Planned coverage could connect classical and contemporary traditions across generations.",
       },
       {
-        title: "Recognition and future awards",
+        title: "Youth arts programmes",
         description:
-          "Any future recognition programme would need transparent selection and governance.",
+          "Future youth programmes would require consent, safeguarding and responsible educational partners.",
       },
-      {
-        title: "Digital cultural preservation",
-        description:
-          "Future preservation work would be introduced with attribution and permissions at its centre.",
-      },
-    ],
-    principles: [
-      "Creative work deserves context and consent",
-      "Culture should not be reduced to decoration",
-      "Recognition requires transparent processes",
-    ],
-    readinessRequirements: [
-      "Artist and organisation consent",
-      "Copyright and media rights",
-      "Cultural context and accuracy",
-      "Respectful representation",
-      "Content moderation",
-      "Archival permissions",
-      "Transparent selection processes",
-    ],
-    readinessHeading:
-      "Cultural visibility must respect consent, context and ownership.",
-    developmentPath: [
-      sharedDevelopmentPath.foundation,
-      sharedDevelopmentPath.partnerReadiness,
-      sharedDevelopmentPath.controlledPilot,
-      sharedDevelopmentPath.responsibleExpansion,
     ],
     participationHeading:
       "Help create a trusted global stage for Tamil expression.",
@@ -906,63 +697,35 @@ export const initiativeDetails = {
     ],
     capabilities: [
       {
-        title: "Global event discovery",
+        title: "Tamil Ulagam Day",
         description:
-          "A future view could make relevant Tamil programmes easier to discover across regions.",
+          "A proposed annual celebration connecting Tamil communities around the world.",
       },
       {
-        title: "Country and chapter event listings",
+        title: "Pongal celebrations",
         description:
-          "Verified organisers may eventually contribute accountable local and global information.",
+          "Proposed chapter and community celebrations; no city programme is currently confirmed.",
       },
       {
-        title: "Future registration workflows",
+        title: "Tamil New Year gala",
         description:
-          "Any future registration would require clear policies, privacy and operational readiness.",
+          "A future gathering concept without an approved date, venue or registration process.",
       },
       {
-        title: "Attendance and participation",
+        title: "Global Tamil Summit",
         description:
-          "Planned pathways may help communities understand how to take part when services are introduced.",
+          "A proposed forum for community, institutional and professional connection.",
       },
       {
-        title: "Hybrid and online-event support",
+        title: "Tamil Heritage Month",
         description:
-          "Future formats could be considered with reliable access and moderation standards.",
+          "A proposed period of cultural, educational and community programming.",
       },
       {
-        title: "Speaker and programme information",
+        title: "Tamil Ulagam Awards Night",
         description:
-          "Verified information may help people understand future programmes without inventing events.",
+          "A future recognition event; no awards programme or recipients are currently confirmed.",
       },
-      {
-        title: "Future streaming and event archives",
-        description:
-          "Any future media offering would need permissions, support workflows and durable stewardship.",
-      },
-    ],
-    principles: [
-      "Gatherings need accountable organisers",
-      "Participation must be clear and safe",
-      "Global presence should remain locally grounded",
-    ],
-    readinessRequirements: [
-      "Organiser verification",
-      "Event moderation",
-      "Clear cancellation policies",
-      "Participant privacy",
-      "Payment readiness when introduced",
-      "Safety and venue information",
-      "Content and media permissions",
-      "Reliable support workflows",
-    ],
-    readinessHeading:
-      "Events must be clear, safe and operationally accountable.",
-    developmentPath: [
-      sharedDevelopmentPath.foundation,
-      sharedDevelopmentPath.partnerReadiness,
-      sharedDevelopmentPath.controlledPilot,
-      sharedDevelopmentPath.responsibleExpansion,
     ],
     participationHeading:
       "Help shape trusted Tamil gatherings across the world.",

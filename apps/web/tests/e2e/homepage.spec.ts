@@ -85,7 +85,7 @@ test.describe("public homepage", () => {
     await expect(
       page.getByRole("heading", {
         level: 1,
-        name: "One Community. One Identity. One Global Future.",
+        name: "Connecting the Global Tamil Community",
       }),
     ).toBeVisible();
     const primaryNavigation = page.getByRole("navigation", {

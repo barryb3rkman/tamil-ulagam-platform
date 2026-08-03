@@ -51,24 +51,19 @@ describe("public About page", () => {
     }
   });
 
-  it("keeps planned ecosystem, governance, cultural, and route content honest", () => {
+  it("keeps the planned ecosystem, cultural statement, and routes honest", () => {
     render(<AboutPage />);
 
     expect(screen.getByText("Building the foundation")).toBeVisible();
-    for (const principle of aboutContent.governance.principles) {
-      expect(
-        screen.getByRole("heading", { name: principle.title }),
-      ).toBeVisible();
-    }
+    expect(
+      screen.queryByRole("heading", { name: aboutContent.governance.title }),
+    ).not.toBeInTheDocument();
     expect(
       screen.getByText(aboutContent.culturalStatement.tamil),
     ).toBeVisible();
     expect(
       screen.getByRole("link", { name: "Explore Initiatives" }),
     ).toHaveAttribute("href", "/initiatives");
-    expect(
-      screen.getByRole("link", { name: "Partnership Vision" }),
-    ).toHaveAttribute("href", "/partners");
     expect(
       screen.getAllByRole("link", { name: "View Full Roadmap" })[0],
     ).toHaveAttribute("href", "/roadmap");

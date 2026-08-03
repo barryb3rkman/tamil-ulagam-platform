@@ -29,13 +29,10 @@ describe("initiative detail content", () => {
       expect(initiative.status).toBeDefined();
       expect(detail.intendedAudiences.length).toBeGreaterThan(0);
       expect(detail.capabilities.length).toBeGreaterThan(0);
-      expect(detail.readinessRequirements.length).toBeGreaterThan(0);
-      expect(detail.developmentPath).toHaveLength(4);
       expect(detail.related).toHaveLength(3);
       expect(detail.whyThisMatters.heading.trim()).not.toBe("");
       expect(detail.whyThisMatters.statement.trim()).not.toBe("");
       expect(detail.audienceHeading.trim()).not.toBe("");
-      expect(detail.readinessHeading.trim()).not.toBe("");
       expect(detail.participationHeading.trim()).not.toBe("");
       expect(detail.finalCtaHeading.trim()).not.toBe("");
       expect(images[initiative.imageKey as keyof typeof images]).toBeDefined();
@@ -68,7 +65,6 @@ describe("initiative detail content", () => {
     const headingSets = Object.values(initiativeDetails).map((detail) => [
       detail.whyThisMatters.heading,
       detail.audienceHeading,
-      detail.readinessHeading,
       detail.participationHeading,
       detail.finalCtaHeading,
     ]);

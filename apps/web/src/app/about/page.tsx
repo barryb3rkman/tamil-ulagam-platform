@@ -8,7 +8,6 @@ import {
   CulturalStatementSection,
   EcosystemSection,
   GlobalChallengeSection,
-  GovernanceSection,
   RoadmapSection,
   VisionMissionSection,
 } from "@/components/about";
@@ -31,7 +30,6 @@ export default function AboutPage() {
       <GlobalChallengeSection />
       <CoreObjectivesSection />
       <EcosystemSection />
-      <GovernanceSection />
       <RoadmapSection />
       <CulturalStatementSection />
       <AboutFinalCta />

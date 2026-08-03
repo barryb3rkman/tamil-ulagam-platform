@@ -258,7 +258,6 @@ export const homepageEditorialImageKeys = [
 
 export const aboutEditorialImageKeys = [
   "aboutHero",
-  "partnerships",
   "roadmapFuture",
 ] as const satisfies readonly ImageKey[];
 
@@ -268,7 +267,6 @@ export const tamilIdEditorialImageKeys = [
 
 export const chaptersEditorialImageKeys = [
   "globalChapters",
-  "partnerships",
 ] as const satisfies readonly ImageKey[];
 
 export const roadmapEditorialImageKeys = [

@@ -72,19 +72,6 @@ test.describe("public Events page", () => {
     await expect(
       page.getByText(eventsContent.definition.statement),
     ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: eventsContent.organiserPathway.title }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: eventsContent.lifecycle.title }),
-    ).toBeVisible();
-    await expect(page.getByText(eventsContent.privacy.statement)).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: eventsContent.statusModel.title }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: eventsContent.readiness.title }),
-    ).toBeVisible();
     await expect(page.getByText(eventsContent.interest.notice)).toBeVisible();
     await expect(page.locator("main")).not.toContainText(/\b20\d{2}\b/);
     await expect(page.locator("main")).not.toContainText(/venue:\s/i);
@@ -109,18 +96,6 @@ test.describe("public Events page", () => {
       .getByRole("link", { name: "Understand the Events Model" })
       .click();
     await expect(page).toHaveURL(/#events-model$/);
-    await expect(
-      page.getByRole("link", { name: "Explore Tamil ID" }),
-    ).toHaveAttribute("href", "/tamil-id");
-    await expect(
-      page.getByRole("link", { name: "Explore Chapters" }),
-    ).toHaveAttribute("href", "/chapters");
-    await expect(
-      page.getByRole("link", { name: "Explore Partners", exact: true }),
-    ).toHaveAttribute("href", "/partners");
-    await expect(
-      page.getByRole("link", { name: "View the Roadmap" }).first(),
-    ).toHaveAttribute("href", "/roadmap");
     await expect(
       page.getByRole("link", { name: "Explore Global Events" }).first(),
     ).toHaveAttribute("href", "/initiatives/global-events");

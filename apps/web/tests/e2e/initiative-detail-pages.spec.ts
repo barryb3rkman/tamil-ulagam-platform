@@ -111,9 +111,6 @@ async function verifyDetailRoute(
     page.getByRole("heading", { level: 2, name: detail.audienceHeading }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { level: 2, name: detail.readinessHeading }),
-  ).toBeVisible();
-  await expect(
     page.getByRole("heading", {
       level: 2,
       name: detail.participationHeading,

@@ -32,7 +32,7 @@ describe("public Partners page", () => {
     ).toBeVisible();
     expect(screen.getByText(partnersContent.interest.notice)).toBeVisible();
     expect(
-      screen.getByText(partnersContent.governance.privacyStatement),
+      screen.getByText(partnersContent.boundaries.statement),
     ).toBeVisible();
     expect(
       screen.queryByText(/trusted by|supported by|our partners/i),
@@ -42,7 +42,7 @@ describe("public Partners page", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("renders categories, models, pathway, due diligence, governance, statuses, and readiness", () => {
+  it("renders PPT partner categories and concise collaboration models", () => {
     render(<PartnersPage />);
 
     for (const category of partnersContent.categories.items) {
@@ -54,35 +54,14 @@ describe("public Partners page", () => {
     for (const item of partnersContent.boundaries.items) {
       expect(screen.getByText(item)).toBeVisible();
     }
-    for (const step of partnersContent.pathway.steps) {
-      expect(screen.getByRole("heading", { name: step.title })).toBeVisible();
-    }
-    for (const item of partnersContent.dueDiligence.items) {
-      expect(screen.getByText(item)).toBeVisible();
-    }
-    for (const group of partnersContent.governance.groups) {
-      expect(screen.getByRole("heading", { name: group.title })).toBeVisible();
-    }
-    for (const status of partnersContent.statusModel.statuses) {
-      expect(screen.getAllByText(status)[0]).toBeVisible();
-    }
-    for (const group of partnersContent.initiatives.groups) {
-      expect(screen.getByRole("heading", { name: group.title })).toBeVisible();
-    }
-    for (const item of partnersContent.readiness.items) {
-      expect(screen.getByText(item)).toBeVisible();
-    }
+    expect(
+      screen.queryByText(/Tamil Nadu Government|UNESCO|IIT Madras/),
+    ).not.toBeInTheDocument();
   });
 
-  it("keeps Tamil ID, chapters, roadmap, initiative, contact and FAQ routes available", () => {
+  it("keeps roadmap, contact and FAQ routes available", () => {
     render(<PartnersPage />);
 
-    expect(
-      screen.getByRole("link", { name: "Explore Tamil ID" }),
-    ).toHaveAttribute("href", "/tamil-id");
-    expect(
-      screen.getByRole("link", { name: "Explore Opportunity" }),
-    ).toHaveAttribute("href", "/initiatives/business");
     for (const link of screen.getAllByRole("link", {
       name: "View the Roadmap",
     })) {

@@ -184,25 +184,24 @@ test.describe("public Initiatives overview page", () => {
     expect(mobileHeroImages).toHaveLength(1);
     expect(mobileHeroImages[0]?.width).toBeGreaterThan(300);
 
-    for (const sectionTitle of [
-      "One identity. Shared foundations. Connected experiences.",
-      "Every initiative must be useful, trusted and operationally ready.",
-    ]) {
-      const section = page.getByRole("region", { name: sectionTitle });
-      const items = section.locator("ol > li");
-      const itemCount = await items.count();
-      const itemPositions = await items.evaluateAll((entries) =>
-        entries.map((entry) => entry.getBoundingClientRect().top),
-      );
+    const ecosystemSection = page.getByRole("region", {
+      name: "Three connected pathways.",
+    });
+    const ecosystemItems = ecosystemSection
+      .locator("ol")
+      .first()
+      .locator("> li");
+    const itemPositions = await ecosystemItems.evaluateAll((entries) =>
+      entries.map((entry) => entry.getBoundingClientRect().top),
+    );
 
-      expect(itemCount).toBe(8);
-      expect(
-        itemPositions.every(
-          (position, index) =>
-            index === 0 || position > itemPositions[index - 1]!,
-        ),
-      ).toBe(true);
-    }
+    await expect(ecosystemItems).toHaveCount(3);
+    expect(
+      itemPositions.every(
+        (position, index) =>
+          index === 0 || position > itemPositions[index - 1]!,
+      ),
+    ).toBe(true);
 
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto("/initiatives");

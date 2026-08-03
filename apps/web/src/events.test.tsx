@@ -28,11 +28,7 @@ describe("public Events page", () => {
     render(<EventsPage />);
 
     expect(screen.getByText(eventsContent.definition.statement)).toBeVisible();
-    expect(
-      screen.getByText(eventsContent.organiserPathway.description),
-    ).toBeVisible();
     expect(screen.getByText(eventsContent.interest.notice)).toBeVisible();
-    expect(screen.getByText(eventsContent.privacy.statement)).toBeVisible();
     expect(
       screen.getByText(
         "No live event calendar is being presented at this stage.",
@@ -43,7 +39,7 @@ describe("public Events page", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("renders the categories, organiser pathway, lifecycle, registration, privacy, and relationships", () => {
+  it("renders the six proposed global celebration concepts", () => {
     render(<EventsPage />);
 
     for (const category of eventsContent.categories.items) {
@@ -51,65 +47,11 @@ describe("public Events page", () => {
         screen.getAllByRole("heading", { name: category.title })[0],
       ).toBeVisible();
     }
-    for (const organiser of eventsContent.organisers.categories) {
-      expect(screen.getByText(organiser)).toBeVisible();
-    }
-    for (const step of eventsContent.organiserPathway.steps) {
-      expect(screen.getByRole("heading", { name: step.title })).toBeVisible();
-    }
-    for (const step of eventsContent.lifecycle.steps) {
-      expect(
-        screen.getAllByRole("heading", { name: step.title })[0],
-      ).toBeVisible();
-    }
-    for (const principle of eventsContent.registration.principles) {
-      expect(screen.getByText(principle)).toBeVisible();
-    }
-    for (const item of eventsContent.privacy.publicInformation) {
-      expect(screen.getAllByText(item)[0]).toBeVisible();
-    }
-    for (const item of eventsContent.privacy.privateInformation) {
-      expect(screen.getAllByText(item)[0]).toBeVisible();
-    }
-    for (const group of eventsContent.relationships.groups) {
-      expect(
-        screen.getAllByRole("heading", { name: group.title })[0],
-      ).toBeVisible();
-    }
   });
 
-  it("renders hybrid safeguards, status models, safety, readiness, routes, and honest FAQs", () => {
+  it("renders key routes and honest FAQs", () => {
     render(<EventsPage />);
 
-    for (const safeguard of eventsContent.hybridArchive.safeguards) {
-      expect(screen.getAllByText(safeguard)[0]).toBeVisible();
-    }
-    for (const status of eventsContent.statusModel.publicStatuses) {
-      expect(screen.getAllByText(status)[0]).toBeVisible();
-    }
-    for (const status of eventsContent.statusModel.administrativeStatuses) {
-      expect(screen.getAllByText(status)[0]).toBeVisible();
-    }
-    for (const principle of eventsContent.safety.principles) {
-      expect(screen.getAllByText(principle)[0]).toBeVisible();
-    }
-    for (const gate of eventsContent.readiness.items) {
-      expect(screen.getByText(gate)).toBeVisible();
-    }
-    expect(
-      screen.getByRole("link", { name: "Explore Tamil ID" }),
-    ).toHaveAttribute("href", "/tamil-id");
-    expect(
-      screen.getByRole("link", { name: "Explore Chapters" }),
-    ).toHaveAttribute("href", "/chapters");
-    expect(
-      screen.getByRole("link", { name: "Explore Partners" }),
-    ).toHaveAttribute("href", "/partners");
-    for (const link of screen.getAllByRole("link", {
-      name: "View the Roadmap",
-    })) {
-      expect(link).toHaveAttribute("href", "/roadmap");
-    }
     for (const link of screen.getAllByRole("link", {
       name: "Explore Global Events",
     })) {

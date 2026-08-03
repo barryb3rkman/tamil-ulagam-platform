@@ -4,15 +4,17 @@ export const homepageContent = {
   hero: {
     eyebrowTamil: "தமிழ் உலகம்",
     eyebrowEnglish: "TAMIL ULAGAM GLOBAL FEDERATION",
-    title: "One Community. One Identity. One Global Future.",
+    title: "Connecting the Global Tamil Community",
     description:
-      "A global digital home connecting Tamil people, organisations, culture and opportunity across borders.",
+      "Tamil Ulagam is building a global digital bridge through technology, culture and collaboration—connecting people, organisations, knowledge and opportunity across borders.",
   },
   visionSignals: [
-    "Global Community",
-    "Shared Identity",
-    "Trusted Connections",
-    "Future Opportunity",
+    "Connect",
+    "Preserve",
+    "Empower",
+    "Support",
+    "Foster",
+    "Celebrate",
   ],
   pillars: [
     {

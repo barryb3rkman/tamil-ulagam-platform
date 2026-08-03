@@ -9,8 +9,6 @@ import {
   KnowledgeCultureSection,
   OpportunityEconomySection,
   ParticipationCta,
-  ReadinessPrinciplesSection,
-  SharedPlatformSection,
 } from "@/components/initiatives";
 import { images } from "@/config/images";
 import { createPageMetadata } from "@/config/metadata";
@@ -34,8 +32,6 @@ export default function InitiativesPage() {
       <HumanDevelopmentSection />
       <OpportunityEconomySection />
       <KnowledgeCultureSection />
-      <SharedPlatformSection />
-      <ReadinessPrinciplesSection />
       <InitiativesDirectory />
       <ParticipationCta />
     </>

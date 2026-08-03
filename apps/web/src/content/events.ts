@@ -101,53 +101,38 @@ export const eventsContent = {
     ] as const satisfies readonly LabeledStatement[],
   },
   categories: {
-    eyebrow: "EVENT CATEGORIES",
-    title: "Different events serve different forms of community connection.",
+    eyebrow: "PROPOSED GLOBAL CELEBRATIONS",
+    title: "Annual event concepts from the Tamil Ulagam vision.",
     items: [
       {
-        title: "Federation programs",
+        title: "Tamil Ulagam Day",
         description:
-          "Global or federation-wide programs approved through central governance.",
+          "A proposed annual celebration connecting Tamil communities worldwide.",
       },
       {
-        title: "Chapter events",
+        title: "Pongal celebrations",
         description:
-          "Future events published by approved chapters within their authorised scope.",
+          "Future community and chapter celebrations, subject to local approval.",
       },
       {
-        title: "Organisation events",
+        title: "Tamil New Year gala",
         description:
-          "Events from verified organisations where publication has been approved.",
+          "A proposed cultural gathering without a confirmed date, venue or registration process.",
       },
       {
-        title: "Cultural programs",
+        title: "Global Tamil Summit",
         description:
-          "Music, dance, literature, theatre, film, visual arts and heritage activity.",
+          "A future global forum for community, institutional and professional connection.",
       },
       {
-        title: "Education and research",
+        title: "Tamil Heritage Month",
         description:
-          "Lectures, workshops, conferences, youth programs and academic discussions.",
+          "A proposed period of cultural, educational and community programming.",
       },
       {
-        title: "Business and careers",
+        title: "Tamil Ulagam Awards Night",
         description:
-          "Professional networking, employer sessions, entrepreneurship and career development.",
-      },
-      {
-        title: "Healthcare and wellbeing",
-        description:
-          "Responsible awareness programs and partner-supported community sessions.",
-      },
-      {
-        title: "Community gatherings",
-        description:
-          "Locally relevant social, intergenerational and community-building activity.",
-      },
-      {
-        title: "Global summits",
-        description:
-          "Future major international gatherings, forums and cross-border programs.",
+          "A future recognition concept; no awards programme or recipients are currently confirmed.",
       },
     ] as const satisfies readonly LabeledStatement[],
   },
@@ -592,11 +577,6 @@ export const eventsContent = {
         "No. Event-submission and organiser-onboarding workflows are not currently open.",
     },
     {
-      title: "Are chapter events already active?",
-      description:
-        "No active chapter directory or chapter-event system is currently being presented.",
-    },
-    {
       title: "Will every event require registration?",
       description: "No. Future registration requirements may vary by event.",
     },
@@ -609,31 +589,6 @@ export const eventsContent = {
       title: "Can organisations publish events?",
       description:
         "Future publication may be available to verified organisations within approved scope.",
-    },
-    {
-      title: "Does publication mean Tamil Ulagam endorses the organiser?",
-      description:
-        "No. Publication approval would apply only to the defined event and scope.",
-    },
-    {
-      title: "Will virtual events and recordings be available?",
-      description:
-        "Virtual access and recordings are part of the long-term vision, subject to consent, rights and technical readiness.",
-    },
-    {
-      title: "What attendee information may be collected?",
-      description:
-        "Only information required for registration, attendance, support and approved operations should be collected.",
-    },
-    {
-      title: "Can organisers view all member data?",
-      description:
-        "No. Access must be limited by role, purpose and approved policy.",
-    },
-    {
-      title: "How will cancelled events be communicated?",
-      description:
-        "Future systems should clearly communicate cancellations, postponements and relevant support information.",
     },
     {
       title: "How can an organiser begin a discussion?",

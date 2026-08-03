@@ -15,7 +15,7 @@ describe("public homepage composition", () => {
 
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      "One Community. One Identity. One Global Future.",
+      "Connecting the Global Tamil Community",
     );
     expect(
       screen.getByRole("link", { name: "Explore Our Vision" }),
@@ -32,6 +32,9 @@ describe("public homepage composition", () => {
       expect(
         screen.getAllByRole("heading", { name: title, level: 3 }),
       ).toHaveLength(1);
+    }
+    for (const objective of homepageContent.visionSignals) {
+      expect(screen.getByText(objective, { selector: "span" })).toBeVisible();
     }
     for (const initiative of initiatives) {
       const isMobileFeatured =

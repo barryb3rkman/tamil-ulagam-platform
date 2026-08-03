@@ -334,23 +334,20 @@ export const chaptersContent = {
     ],
   },
   directory: {
-    eyebrow: "FUTURE CHAPTER DIRECTORY",
-    title: "A future directory designed for honest discovery.",
+    eyebrow: "PROPOSED GLOBAL CHAPTER NETWORK",
+    title: "Planned regions from the original global vision.",
     description:
-      "When governance and chapter operations are ready, a directory may help visitors understand the current status and approved public information for a chapter without presenting speculative location data today.",
-    status: "Planned directory",
+      "The original vision identifies regions where Tamil communities may eventually connect through approved chapters. These are proposed areas, not active Tamil Ulagam chapters.",
+    status: "Proposed locations",
     areas: [
-      "Country",
-      "Region",
-      "City",
-      "Chapter name",
-      "Current status",
-      "Approved chapter description",
-      "Chapter contact route",
-      "Verified organisations connected with the chapter",
-      "Future chapter events",
-      "Public chapter announcements",
-      "Accessibility and language information",
+      "India",
+      "Sri Lanka",
+      "Malaysia",
+      "Singapore",
+      "United Kingdom and Europe",
+      "North America",
+      "Australia and New Zealand",
+      "Gulf countries",
     ],
   },
   readiness: {
@@ -425,34 +422,9 @@ export const chaptersContent = {
         "No. Chapters are intended to collaborate with and complement existing organisations.",
     },
     {
-      title: "Can an organisation become a chapter?",
-      description:
-        "Organisation registration and chapter recognition are separate concepts. The future process must define how organisations may participate.",
-    },
-    {
-      title: "Will every country have one chapter?",
-      description:
-        "Geographic and organisational structures have not been finalised. Some locations may eventually require country, regional or city-level arrangements.",
-    },
-    {
       title: "Who will lead a chapter?",
       description:
         "Leadership models and eligibility rules must be approved before chapter formation begins.",
-    },
-    {
-      title: "Will chapters collect membership fees?",
-      description:
-        "Financial responsibilities, membership pricing and chapter funding rules have not been finalised publicly.",
-    },
-    {
-      title: "Can chapter administrators view all member data?",
-      description:
-        "No. Future access must be limited by role, responsibility, privacy policy and member visibility rules.",
-    },
-    {
-      title: "How will chapter disputes be handled?",
-      description:
-        "Future governance must include complaints, escalation, review and appeal pathways.",
     },
     {
       title: "How can I express interest?",

@@ -41,38 +41,21 @@ describe("public Tamil ID concept page", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("renders every proposed journey, privacy, status, rollout, and FAQ item", () => {
+  it("renders the PPT membership concept and concise status safeguards", () => {
     render(<TamilIdPage />);
 
-    for (const step of tamilIdContent.journey.steps) {
-      expect(screen.getByRole("heading", { name: step.title })).toBeVisible();
-    }
     expect(
       screen.getByText(
-        "Sensitive personal data should not be stored directly in the QR.",
+        "Proposed Community, Professional and Patron membership tiers",
       ),
     ).toBeVisible();
+    expect(screen.getByText("Future event and service access")).toBeVisible();
     expect(
-      screen.getByRole("heading", {
-        name: "Possible public verification information",
-      }),
-    ).toBeVisible();
+      screen.queryByText(tamilIdContent.journey.title),
+    ).not.toBeInTheDocument();
     expect(
-      screen.getByRole("heading", {
-        name: "Information that must remain private",
-      }),
-    ).toBeVisible();
-    for (const principle of tamilIdContent.privacy.principles) {
-      expect(
-        screen.getByRole("heading", { name: principle.title }),
-      ).toBeVisible();
-    }
-    for (const state of tamilIdContent.governance.states) {
-      expect(screen.getByText(state)).toBeVisible();
-    }
-    for (const phase of tamilIdContent.rollout.phases) {
-      expect(screen.getByRole("heading", { name: phase.title })).toBeVisible();
-    }
+      screen.queryByText(tamilIdContent.verification.illustrativeUrl),
+    ).not.toBeInTheDocument();
     for (const faq of tamilIdContent.faqs) {
       expect(screen.getByText(faq.title)).toBeVisible();
       expect(screen.getByText(faq.description)).toBeVisible();
@@ -84,9 +67,6 @@ describe("public Tamil ID concept page", () => {
 
     expect(
       screen.getByRole("link", { name: "View the Roadmap" }),
-    ).toHaveAttribute("href", "/roadmap");
-    expect(
-      screen.getByRole("link", { name: "Explore the Roadmap" }),
     ).toHaveAttribute("href", "/roadmap");
     expect(
       screen.getByRole("link", { name: "Partner With Tamil Ulagam" }),

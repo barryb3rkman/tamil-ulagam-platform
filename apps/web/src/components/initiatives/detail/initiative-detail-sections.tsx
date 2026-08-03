@@ -15,12 +15,6 @@ import {
 } from "@/content/initiative-details";
 import type { InitiativeEntry } from "@tamil-ulagam/shared";
 
-const layoutStyles = {
-  "human-development": "border-heritage-gold/45 bg-warm-ivory",
-  opportunity: "border-white/18 bg-deep-navy",
-  "knowledge-global": "border-heritage-gold/45 bg-white",
-} as const satisfies Record<InitiativeDetailLayout, string>;
-
 export function InitiativePurposeSection({
   detail,
   initiative,
@@ -48,6 +42,11 @@ export function InitiativePurposeSection({
               {initiative.description}
             </p>
           </div>
+          {detail.safetyNotice ? (
+            <p className="border-error/35 bg-error/5 text-charcoal mt-6 border-l-2 px-5 py-4 text-sm leading-6">
+              {detail.safetyNotice}
+            </p>
+          ) : null}
         </div>
       </Container>
     </Section>
@@ -143,119 +142,6 @@ export function InitiativeAudienceSection({
             </li>
           ))}
         </ul>
-      </Container>
-    </Section>
-  );
-}
-
-export function InitiativeReadinessSection({
-  detail,
-  initiative,
-  layout,
-}: {
-  readonly detail: InitiativeDetail;
-  readonly initiative: InitiativeEntry;
-  readonly layout: InitiativeDetailLayout;
-}) {
-  const dark = layout === "opportunity";
-
-  return (
-    <Section tone={dark ? "navy" : "ivory"} aria-labelledby="readiness-title">
-      <Container className="grid gap-10 lg:grid-cols-2 lg:gap-16">
-        <div>
-          <p
-            className={`text-sm font-semibold tracking-[0.14em] uppercase ${dark ? "text-heritage-gold" : "text-heritage-maroon"}`}
-          >
-            TRUST AND READINESS
-          </p>
-          <h2
-            id="readiness-title"
-            className={`font-english mt-4 text-4xl leading-tight font-semibold tracking-[-0.025em] sm:text-5xl ${dark ? "text-white" : "text-global-navy"}`}
-          >
-            {detail.readinessHeading}
-          </h2>
-          <p
-            className={`mt-5 text-lg leading-8 ${dark ? "text-white/76" : "text-slate"}`}
-          >
-            Every future {initiative.title.toLowerCase()} experience must meet
-            clear quality, safety and operating requirements before it is
-            introduced.
-          </p>
-          <div className={`mt-7 border p-5 ${layoutStyles[layout]}`}>
-            <InitiativeStatusBadge status={initiative.status} />
-            <p
-              className={`mt-3 text-sm leading-6 ${dark ? "text-white/78" : "text-slate"}`}
-            >
-              Planned service — participation and delivery will depend on
-              verified partnerships and responsible operating readiness.
-            </p>
-          </div>
-        </div>
-        <div>
-          <h3
-            className={`text-xl font-semibold ${dark ? "text-white" : "text-global-navy"}`}
-          >
-            Readiness requirements
-          </h3>
-          <ul className="mt-5 grid gap-x-8 gap-y-4 sm:grid-cols-2">
-            {detail.readinessRequirements.map((requirement) => (
-              <li
-                key={requirement}
-                className={`border-b pb-4 text-base leading-6 ${dark ? "border-white/16 text-white/84" : "border-global-navy/12 text-charcoal"}`}
-              >
-                {requirement}
-              </li>
-            ))}
-          </ul>
-          <h3
-            className={`mt-8 text-xl font-semibold ${dark ? "text-white" : "text-global-navy"}`}
-          >
-            Guiding principles
-          </h3>
-          <ul
-            className={`mt-4 space-y-3 border-l-2 pl-5 ${dark ? "border-heritage-gold text-white/78" : "border-heritage-maroon text-slate"}`}
-          >
-            {detail.principles.map((principle) => (
-              <li key={principle} className="leading-7">
-                {principle}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </Container>
-    </Section>
-  );
-}
-
-export function InitiativeDevelopmentPath({
-  detail,
-}: {
-  readonly detail: InitiativeDetail;
-}) {
-  return (
-    <Section tone="white" aria-label="Development path">
-      <Container>
-        <SectionHeading
-          eyebrow="STAGED DEVELOPMENT PATH"
-          title="A responsible route from purpose to participation."
-          description="No dates or pilot claims are implied. Each phase must earn the next through readiness and accountable delivery."
-        />
-        <ol className="border-global-navy/12 mt-10 grid border-t lg:grid-cols-4">
-          {detail.developmentPath.map((stage, index) => (
-            <li
-              key={stage.title}
-              className="border-global-navy/12 border-b py-6 lg:border-r lg:px-6 lg:first:pl-0 lg:last:border-r-0"
-            >
-              <span className="text-heritage-maroon text-sm font-semibold tracking-[0.14em]">
-                0{index + 1}
-              </span>
-              <h3 className="text-global-navy mt-3 text-xl font-semibold">
-                {stage.title}
-              </h3>
-              <p className="text-slate mt-3 leading-7">{stage.description}</p>
-            </li>
-          ))}
-        </ol>
       </Container>
     </Section>
   );

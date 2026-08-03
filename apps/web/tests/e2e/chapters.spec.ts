@@ -65,17 +65,6 @@ test.describe("public Chapters page", () => {
     await expect(page.getByText(chaptersContent.hero.status)).toBeVisible();
     await expect(page.getByText(chaptersContent.hero.caption)).toBeVisible();
     await expect(
-      page.getByRole("heading", {
-        name: chaptersContent.formationJourney.title,
-      }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: chaptersContent.governance.title }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: chaptersContent.statusModel.title }),
-    ).toBeVisible();
-    await expect(
       page.getByText(chaptersContent.directory.status),
     ).toBeVisible();
     await expect(page.getByText(chaptersContent.interest.notice)).toBeVisible();
@@ -103,9 +92,6 @@ test.describe("public Chapters page", () => {
       .getByRole("link", { name: "Understand the Chapter Vision" })
       .click();
     await expect(page).toHaveURL(/#chapter-vision$/);
-    await expect(
-      page.getByRole("link", { name: "Explore Tamil ID" }),
-    ).toHaveAttribute("href", "/tamil-id");
     await expect(
       page.locator("main").getByRole("link", { name: "Partner With Us" }),
     ).toHaveAttribute("href", "/partners");

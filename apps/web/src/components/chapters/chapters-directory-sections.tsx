@@ -35,8 +35,8 @@ export function PlannedDirectorySection() {
             ))}
           </ul>
           <p className="text-slate mt-7 leading-7">
-            The directory will be introduced only when approved chapter records
-            and accountable public information are available.
+            Chapter formation and recognition remain subject to approval. No
+            active chapter count or operating location is claimed here.
           </p>
         </div>
       </Container>

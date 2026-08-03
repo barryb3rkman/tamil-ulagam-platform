@@ -107,35 +107,35 @@ export const roadmapPageContent = {
       "The sequence is deliberate: the public layer establishes trust, secure participation supports local structures, and proven capabilities can then expand responsibly.",
     items: [
       {
-        phaseId: "public-foundation",
+        phaseId: "foundation",
         title: "Public foundation",
         description: "Establishes identity, content and trust.",
       },
       {
-        phaseId: "identity-and-membership",
+        phaseId: "foundation",
         title: "Membership and Tamil ID",
         description:
           "Establish secure people, permissions and a verifiable membership credential.",
       },
       {
-        phaseId: "chapters-organisations-events",
+        phaseId: "connected-community",
         title: "Chapters, organisations and events",
         description:
           "Establish accountable local and institutional participation with recurring engagement.",
       },
       {
-        phaseId: "knowledge-wellbeing-opportunity",
+        phaseId: "connected-community",
         title: "Initiative pilots",
         description:
           "Introduce useful service experiences through verified partners and controlled pilots.",
       },
       {
-        phaseId: "mobile-access-member-communication",
+        phaseId: "foundation",
         title: "Mobile access",
         description: "Extends proven platform capabilities to member devices.",
       },
       {
-        phaseId: "responsible-global-expansion",
+        phaseId: "global-services",
         title: "Global expansion",
         description:
           "Scales systems that have demonstrated value and operational readiness.",
@@ -313,37 +313,14 @@ export const roadmapPageContent = {
         "No. It is intended to become the permanent public foundation while future member and service systems are added.",
     },
     {
-      title: "Is Tamil ID currently operational?",
-      description: "No. Tamil ID is presented as a planned membership concept.",
-    },
-    {
-      title: "Are chapters currently active?",
-      description: "No active chapter directory is currently being presented.",
-    },
-    {
       title: "Will every initiative launch at the same time?",
       description:
         "No. Initiatives may move forward at different speeds based on need, verified partners and operational readiness.",
     },
     {
-      title: "When will membership applications open?",
-      description:
-        "Membership policy, administration and platform systems must be completed before applications open.",
-    },
-    {
       title: "Will there be a mobile application?",
       description:
         "Mobile access is part of the long-term platform direction after the member foundation is stable.",
-    },
-    {
-      title: "Can the roadmap change?",
-      description:
-        "Yes. Details may evolve through approved planning, policy decisions and community learning.",
-    },
-    {
-      title: "How will Tamil Ulagam decide what to build next?",
-      description:
-        "Decisions should consider readiness, governance, community value, partner quality, risk and operational capacity.",
     },
     {
       title: "Can organisations participate now?",

@@ -77,9 +77,6 @@ test.describe("public Roadmap page", () => {
       ).toBeVisible();
     }
     await expect(
-      page.getByRole("heading", { name: roadmapPageContent.readiness.title }),
-    ).toBeVisible();
-    await expect(
       page.getByRole("heading", {
         name: "Clear answers for a roadmap still being built responsibly.",
       }),

@@ -69,21 +69,6 @@ test.describe("public Partners page", () => {
     await expect(
       page.getByRole("img", { name: images.partnerships.alt }),
     ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: partnersContent.pathway.title }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: partnersContent.dueDiligence.title }),
-    ).toBeVisible();
-    await expect(
-      page.getByText(partnersContent.governance.privacyStatement),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: partnersContent.statusModel.title }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: partnersContent.readiness.title }),
-    ).toBeVisible();
     await expect(page.getByText(partnersContent.interest.notice)).toBeVisible();
     await expect(page.locator("body")).not.toContainText(
       /our partners|trusted by/i,
@@ -109,9 +94,6 @@ test.describe("public Partners page", () => {
       .getByRole("link", { name: "Explore the Partnership Model" })
       .click();
     await expect(page).toHaveURL(/#partnership-model$/);
-    await expect(
-      page.getByRole("link", { name: "Explore Tamil ID" }),
-    ).toHaveAttribute("href", "/tamil-id");
     await expect(
       page.getByRole("link", { name: "View the Roadmap" }).first(),
     ).toHaveAttribute("href", "/roadmap");

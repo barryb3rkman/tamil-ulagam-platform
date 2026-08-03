@@ -9,7 +9,7 @@ import { roadmapPhases } from "@/content/roadmap";
 afterEach(() => cleanup());
 
 describe("public Roadmap page", () => {
-  it("renders one strategic heading, current focus, and the approved registry image", () => {
+  it("renders one strategic heading and the approved registry image", () => {
     render(<RoadmapPage />);
 
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
@@ -18,9 +18,6 @@ describe("public Roadmap page", () => {
     );
     expect(screen.getByText(roadmapPageContent.hero.status)).toBeVisible();
     expect(screen.getByText(roadmapPageContent.hero.caption)).toBeVisible();
-    expect(
-      screen.getByText(roadmapPageContent.foundation.status),
-    ).toBeVisible();
     expect(
       screen.getByRole("img", {
         name: images[roadmapPageContent.hero.imageKey].alt,
@@ -38,38 +35,27 @@ describe("public Roadmap page", () => {
       "01",
       "02",
       "03",
-      "04",
-      "05",
-      "06",
     ]);
 
     for (const phase of roadmapPhases) {
       expect(screen.getByRole("heading", { name: phase.title })).toBeVisible();
-      expect(screen.getByText(phase.statusLabel)).toBeVisible();
+      expect(screen.getAllByText(phase.statusLabel)[0]).toBeVisible();
     }
 
-    expect(roadmapPhases[1].title).toBe("Identity and Membership");
-    expect(roadmapPhases[2].title).toBe("Chapters, Organisations and Events");
-    expect(roadmapPhases[4].title).toBe(
-      "Mobile Access and Member Communication",
-    );
-    expect(roadmapPhases[5].statusLabel).toBe("Long-Term Direction");
+    expect(roadmapPhases.map((phase) => phase.title)).toEqual([
+      "Foundation",
+      "Connected Community",
+      "Global Services",
+    ]);
   });
 
-  it("keeps readiness, quality, adaptability, and public descriptions honest", () => {
+  it("keeps the phase targets and public descriptions honest", () => {
     render(<RoadmapPage />);
 
-    for (const gate of roadmapPageContent.readiness.items) {
-      expect(screen.getByText(gate)).toBeVisible();
-    }
-    for (const principle of roadmapPageContent.quality.principles) {
-      expect(screen.getByText(principle)).toBeVisible();
-    }
-    for (const item of roadmapPageContent.adaptability.mayChange) {
-      expect(screen.getAllByText(item)[0]).toBeVisible();
-    }
-    for (const item of roadmapPageContent.adaptability.remainsStable) {
-      expect(screen.getAllByText(item)[0]).toBeVisible();
+    for (const phase of roadmapPhases) {
+      for (const capability of phase.capabilities) {
+        expect(screen.getByText(capability)).toBeVisible();
+      }
     }
     for (const faq of roadmapPageContent.faqs) {
       expect(screen.getByText(faq.title)).toBeVisible();
@@ -82,6 +68,7 @@ describe("public Roadmap page", () => {
       screen.queryByText(/completion percentage/i),
     ).not.toBeInTheDocument();
     expect(screen.queryByText(/launching on/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/one crore.*20(27|29)/i)).not.toBeInTheDocument();
   });
 
   it("keeps implemented routes and registry references centralised", () => {
@@ -90,9 +77,6 @@ describe("public Roadmap page", () => {
     expect(
       screen.getAllByRole("link", { name: "Explore Tamil ID" })[0],
     ).toHaveAttribute("href", "/tamil-id");
-    expect(
-      screen.getAllByRole("link", { name: "Explore Chapters" })[0],
-    ).toHaveAttribute("href", "/chapters");
     expect(
       screen.getAllByRole("link", { name: "Explore Initiatives" })[0],
     ).toHaveAttribute("href", "/initiatives");

@@ -74,21 +74,12 @@ test.describe("public News page", () => {
       page.getByText(newsContent.definition.statement),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: newsContent.workflow.title }),
-    ).toBeVisible();
-    await expect(
       page.getByRole("heading", { name: newsContent.corrections.title }),
     ).toBeVisible();
     await expect(
       page.getByRole("heading", {
         name: newsContent.multilingualAccessibility.title,
       }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: newsContent.statusModel.title }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: newsContent.readiness.title }),
     ).toBeVisible();
     await expect(page.getByText(newsContent.interest.notice)).toBeVisible();
 
@@ -122,9 +113,6 @@ test.describe("public News page", () => {
       .getByRole("link", { name: "Understand the Editorial Model" })
       .click();
     await expect(page).toHaveURL(/#editorial-model$/);
-    await expect(
-      page.getByRole("link", { name: "View the Roadmap" }).first(),
-    ).toHaveAttribute("href", "/roadmap");
     await expect(
       page.getByRole("link", { name: "Explore Partnerships" }).first(),
     ).toHaveAttribute("href", "/partners");

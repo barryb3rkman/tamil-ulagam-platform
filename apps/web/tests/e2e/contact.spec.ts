@@ -78,12 +78,6 @@ test.describe("public Contact page", () => {
       page.getByText(contactContent.urgentMatters.statement),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: contactContent.workflow.title }),
-    ).toBeVisible();
-    await expect(
-      page.getByText(contactContent.workflow.label, { exact: true }),
-    ).toBeVisible();
-    await expect(
       page.getByRole("heading", {
         name: "Clear answers before contact channels open.",
       }),

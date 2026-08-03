@@ -12,12 +12,10 @@ import { InitiativeHero } from "./initiative-hero";
 import {
   InitiativeAudienceSection,
   InitiativeCapabilitiesSection,
-  InitiativeDevelopmentPath,
   InitiativeFinalCta,
   InitiativeParticipationSection,
   InitiativePreviousNext,
   InitiativePurposeSection,
-  InitiativeReadinessSection,
   RelatedInitiatives,
 } from "./initiative-detail-sections";
 
@@ -57,12 +55,6 @@ export function InitiativeDetailPage({ detail }: InitiativeDetailPageProps) {
       <InitiativePurposeSection detail={detail} initiative={initiative} />
       <InitiativeCapabilitiesSection detail={detail} layout={detail.layout} />
       <InitiativeAudienceSection detail={detail} />
-      <InitiativeReadinessSection
-        detail={detail}
-        initiative={initiative}
-        layout={detail.layout}
-      />
-      <InitiativeDevelopmentPath detail={detail} />
       <InitiativeParticipationSection detail={detail} layout={detail.layout} />
       <RelatedInitiatives related={related} />
       <InitiativePreviousNext

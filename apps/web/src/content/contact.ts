@@ -64,11 +64,6 @@ export const contactContent = {
       "Whether you represent yourself or an organisation",
       "The subject of the enquiry",
       "The intended outcome",
-      "Relevant country or region",
-      "Relevant initiative or public page",
-      "Whether the matter is informational, operational or collaborative",
-      "Any deadline, only when genuinely necessary",
-      "A safe method for future response once approved contact channels exist",
     ],
     statement:
       "This page currently explains routing expectations. It does not submit an enquiry or collect contact information.",
@@ -105,45 +100,18 @@ export const contactContent = {
         linkLabel: "Explore initiatives",
       },
       {
-        title: "Events discussion",
+        title: "Events or editorial discussion",
         description:
-          "Future organiser, venue, accessibility or programme collaboration.",
+          "Future events, community news, research or cultural-story collaboration.",
         href: "/events",
-        linkLabel: "Understand the events model",
+        linkLabel: "Explore the events vision",
       },
       {
-        title: "Editorial and knowledge contribution",
+        title: "Privacy, accessibility or website feedback",
         description:
-          "Research, translation, cultural documentation, fact-checking or future newsroom collaboration.",
-        href: "/news",
-        linkLabel: "Understand the editorial model",
-      },
-      {
-        title: "Tamil ID and membership questions",
-        description: "Questions about the planned membership model.",
-        href: "/tamil-id",
-        linkLabel: "Explore Tamil ID",
-      },
-      {
-        title: "Privacy, security or accessibility concern",
-        description:
-          "Issues involving public content, data boundaries, accessibility or responsible platform design.",
+          "Concerns about public content, data boundaries, accessibility or the website.",
         href: "/privacy",
         linkLabel: "Review the privacy foundation",
-      },
-      {
-        title: "Media or institutional enquiry",
-        description:
-          "Enquiries from recognised institutions or authorised representatives.",
-        href: "/partners",
-        linkLabel: "Review institutional pathways",
-      },
-      {
-        title: "Website feedback",
-        description:
-          "Accessibility, navigation, factual corrections or technical issues relating to the public website.",
-        href: "/roadmap",
-        linkLabel: "View the platform roadmap",
       },
     ] as const satisfies readonly LinkedStatement[],
   },
@@ -386,42 +354,14 @@ export const contactContent = {
       description: "No. Chapter applications are not currently open.",
     },
     {
-      title: "Can I submit an event?",
-      description:
-        "No. Event organiser onboarding and event submission are not currently open.",
-    },
-    {
-      title: "Can I submit an article?",
-      description:
-        "No. Article submission and contributor onboarding are not currently open.",
-    },
-    {
-      title: "Does contacting Tamil Ulagam create a partnership?",
-      description:
-        "No. A discussion does not establish an approved partnership.",
-    },
-    {
       title: "Can I send identity documents?",
       description:
         "No. Do not send sensitive identity documents through public contact routes.",
     },
     {
-      title: "Will I receive a response immediately?",
-      description: "No response time is currently guaranteed.",
-    },
-    {
       title: "Can Tamil Ulagam help during an emergency?",
       description:
         "No. Contact the appropriate local emergency or public authority.",
-    },
-    {
-      title: "Can organisations begin discussions?",
-      description:
-        "Responsible institutional discussions may begin through future approved contact channels.",
-    },
-    {
-      title: "Can I report a website accessibility issue?",
-      description: "Yes, once approved contact channels are published.",
     },
     {
       title: "Where can I learn more first?",

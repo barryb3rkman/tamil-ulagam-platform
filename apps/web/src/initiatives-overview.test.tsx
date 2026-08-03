@@ -70,11 +70,8 @@ describe("public Initiatives overview page", () => {
       }),
     ).toBeVisible();
     expect(
-      screen.getByText("Planned shared platform foundation"),
-    ).toBeVisible();
-    expect(
-      screen.getByText(/will not launch empty marketplaces/i),
-    ).toBeVisible();
+      screen.queryByText("Planned shared platform foundation"),
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByText(/book now|apply now|register now|available today/i),
     ).not.toBeInTheDocument();
@@ -97,18 +94,15 @@ describe("public Initiatives overview page", () => {
       screen.getByRole("link", { name: "Explore the ecosystem" }),
     ).toHaveAttribute("href", "#ecosystem");
     expect(
-      screen.getAllByRole("link", { name: "View the roadmap" })[0],
+      screen.getAllByRole("link", { name: "View our roadmap" })[0],
     ).toHaveAttribute("href", "/roadmap");
-    expect(
-      screen.getByRole("link", { name: "Explore Tamil ID" }),
-    ).toHaveAttribute("href", "/tamil-id");
     expect(
       screen.getByRole("link", { name: "Partner with Tamil Ulagam" }),
     ).toHaveAttribute("href", "/partners");
     expect(screen.getByTestId("initiatives-directory")).toBeVisible();
   });
 
-  it("retains hero media and every shared foundation and readiness principle", () => {
+  it("retains hero media while omitting internal platform and readiness detail", () => {
     render(<InitiativesPage />);
 
     const heroMedia = screen.getByTestId("initiatives-hero-media");
@@ -123,12 +117,15 @@ describe("public Initiatives overview page", () => {
       }),
     ).toHaveAttribute("loading", "lazy");
 
-    for (const foundation of initiativeOverviewContent.sharedPlatform
-      .foundations) {
-      expect(screen.getByText(foundation)).toBeVisible();
-    }
-    for (const principle of initiativeOverviewContent.readiness.principles) {
-      expect(screen.getByText(principle)).toBeVisible();
-    }
+    expect(
+      screen.queryByRole("heading", {
+        name: initiativeOverviewContent.sharedPlatform.title,
+      }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", {
+        name: initiativeOverviewContent.readiness.title,
+      }),
+    ).not.toBeInTheDocument();
   });
 });

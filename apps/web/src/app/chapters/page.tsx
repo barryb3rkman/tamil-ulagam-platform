@@ -2,17 +2,10 @@ import type { Metadata } from "next";
 
 import {
   ChapterDefinitionSection,
-  ChapterFormationJourney,
-  ChapterGovernanceSection,
   ChapterInterestSection,
-  ChapterReadinessSection,
-  ChapterRelationshipsSection,
-  ChapterResponsibilitiesSection,
-  ChapterStatusSection,
   ChaptersFaq,
   ChaptersFinalCta,
   ChaptersHero,
-  GlobalLocalRelationshipSection,
   LocalValueSection,
   PlannedDirectorySection,
 } from "@/components/chapters";
@@ -22,7 +15,7 @@ import { chaptersContent } from "@/content/chapters";
 
 export const metadata: Metadata = createPageMetadata(
   "Global Chapters | Tamil Ulagam",
-  "Explore Tamil Ulagam’s planned global chapter model, including local community purpose, chapter formation, governance, status and responsible rollout.",
+  "Explore Tamil Ulagam’s proposed global chapter network, planned regions and vision for connecting local communities through one global federation.",
   "/chapters",
   images[chaptersContent.hero.imageKey],
 );
@@ -33,14 +26,7 @@ export default function ChaptersPage() {
       <ChaptersHero />
       <ChapterDefinitionSection />
       <LocalValueSection />
-      <GlobalLocalRelationshipSection />
-      <ChapterFormationJourney />
-      <ChapterResponsibilitiesSection />
-      <ChapterGovernanceSection />
-      <ChapterRelationshipsSection />
-      <ChapterStatusSection />
       <PlannedDirectorySection />
-      <ChapterReadinessSection />
       <ChapterInterestSection />
       <ChaptersFaq />
       <ChaptersFinalCta />

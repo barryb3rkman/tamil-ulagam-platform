@@ -102,7 +102,7 @@ export const newsContent = {
   },
   publicationTypes: {
     eyebrow: "WHAT MAY BE PUBLISHED",
-    title: "Different content types serve different public purposes.",
+    title: "News and stories for a connected global community.",
     items: [
       {
         title: "Federation announcements",
@@ -110,49 +110,24 @@ export const newsContent = {
           "Approved updates concerning Tamil Ulagam’s public direction, governance, platform or operations.",
       },
       {
-        title: "Platform updates",
+        title: "Community news and diaspora updates",
         description:
-          "Honest information about development progress, availability and important changes.",
+          "Responsible coverage of relevant community developments across countries.",
       },
       {
-        title: "Initiative updates",
+        title: "Tamil and English communication",
         description:
-          "Approved progress relating to healthcare, education, business, careers, research, tourism, culture or global events.",
+          "Future public communication in Tamil and English with appropriate translation review.",
       },
       {
-        title: "Chapter and organisation updates",
+        title: "Cultural and institutional stories",
         description:
-          "Verified public updates from approved chapters or organisations within defined scope.",
+          "Stories about language, arts, heritage, knowledge and institutions published with consent and context.",
       },
       {
-        title: "Community stories",
+        title: "Initiative and event updates",
         description:
-          "Human-centred stories published with consent, dignity and appropriate safeguarding.",
-      },
-      {
-        title: "Research and knowledge",
-        description:
-          "Educational, historical, academic and evidence-based public material.",
-      },
-      {
-        title: "Language, culture and heritage",
-        description:
-          "Tamil language, arts, literature, history, archives and cultural knowledge.",
-      },
-      {
-        title: "Event coverage",
-        description:
-          "Approved reporting, recordings or summaries from real published events.",
-      },
-      {
-        title: "Public notices",
-        description:
-          "Service status, policy changes, corrections, maintenance or other necessary public communication.",
-      },
-      {
-        title: "Editorial features",
-        description:
-          "Carefully reviewed interviews, analysis or long-form public-interest content.",
+          "Approved progress from planned initiatives and future events once accountable publishing begins.",
       },
     ] as const satisfies readonly Statement[],
   },
@@ -622,11 +597,6 @@ export const newsContent = {
         "No approved public article collection is being presented on this page yet.",
     },
     {
-      title: "Why are there no placeholder news stories?",
-      description:
-        "Fictional headlines, dates and authors would misrepresent the platform’s current status.",
-    },
-    {
       title: "Can I submit an article now?",
       description:
         "No. Article-submission and contributor-onboarding workflows are not currently open.",
@@ -642,34 +612,9 @@ export const newsContent = {
         "Yes. Future community storytelling must include appropriate consent, privacy and safeguarding review.",
     },
     {
-      title: "Will all chapter updates be published?",
-      description:
-        "No. Future chapter information must be verified, approved and relevant to public audiences.",
-    },
-    {
       title: "How will corrections be handled?",
       description:
         "Material errors should be corrected transparently rather than silently replaced.",
-    },
-    {
-      title: "Will articles show authors and sources?",
-      description:
-        "Future publications should provide appropriate authorship, ownership and source context.",
-    },
-    {
-      title: "Will Tamil Ulagam publish opinion pieces?",
-      description:
-        "Editorial or opinion formats may be considered, but they must be clearly distinguished from official announcements and verified facts.",
-    },
-    {
-      title: "Can organisations submit announcements?",
-      description:
-        "Future organisational publishing may be considered only for verified organisations and approved scope.",
-    },
-    {
-      title: "Will there be email or mobile news alerts?",
-      description:
-        "Future notification systems are part of the long-term platform direction after member and editorial foundations are ready.",
     },
     {
       title: "How can I discuss editorial collaboration?",

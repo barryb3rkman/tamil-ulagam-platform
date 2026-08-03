@@ -41,51 +41,24 @@ describe("public Chapters page", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("renders the formation, governance, relationships, statuses, directory, and readiness model", () => {
+  it("renders the chapter vision and proposed global regions without administrative workflows", () => {
     render(<ChaptersPage />);
 
     expect(
       screen.getByRole("heading", { name: chaptersContent.definition.title }),
     ).toBeVisible();
-    expect(
-      screen.getByRole("heading", {
-        name: chaptersContent.relationship.federation.title,
-      }),
-    ).toBeVisible();
-    expect(
-      screen.getByRole("heading", {
-        name: chaptersContent.relationship.chapter.title,
-      }),
-    ).toBeVisible();
-    for (const step of chaptersContent.formationJourney.steps) {
-      expect(screen.getByRole("heading", { name: step.title })).toBeVisible();
-    }
-    for (const principle of chaptersContent.governance.principles) {
-      expect(
-        screen.getByRole("heading", { name: principle.title }),
-      ).toBeVisible();
-    }
-    for (const group of chaptersContent.relationships.groups) {
-      expect(screen.getByRole("heading", { name: group.title })).toBeVisible();
-    }
-    expect(
-      screen.getByText(chaptersContent.relationships.privacyStatement),
-    ).toBeVisible();
-    for (const status of chaptersContent.statusModel.statuses) {
-      expect(screen.getAllByText(status)[0]).toBeVisible();
-    }
     expect(screen.getByText(chaptersContent.directory.status)).toBeVisible();
-    for (const requirement of chaptersContent.readiness.requirements) {
-      expect(screen.getByText(requirement)).toBeVisible();
+    for (const region of chaptersContent.directory.areas) {
+      expect(screen.getByText(region)).toBeVisible();
     }
+    expect(
+      screen.getByText(/No active chapter count or operating location/i),
+    ).toBeVisible();
   });
 
   it("keeps Tamil ID, roadmap, partner, and contact routes available", () => {
     render(<ChaptersPage />);
 
-    expect(
-      screen.getByRole("link", { name: "Explore Tamil ID" }),
-    ).toHaveAttribute("href", "/tamil-id");
     for (const label of ["View the Roadmap", "Explore the Roadmap"]) {
       for (const link of screen.getAllByRole("link", { name: label })) {
         expect(link).toHaveAttribute("href", "/roadmap");

@@ -70,12 +70,6 @@ test.describe("public Tamil ID concept page", () => {
       ),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: tamilIdContent.journey.title }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: tamilIdContent.verification.title }),
-    ).toBeVisible();
-    await expect(
       page.getByRole("heading", {
         name: /Clear answers for a concept still being built/i,
       }),

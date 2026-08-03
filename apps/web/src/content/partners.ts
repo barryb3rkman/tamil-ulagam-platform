@@ -100,18 +100,12 @@ export const partnersContent = {
     eyebrow: "WHO MAY COLLABORATE",
     title: "Different institutions can contribute in different ways.",
     items: [
-      "Tamil associations and community organisations",
-      "Educational institutions and Tamil schools",
-      "Universities and research bodies",
-      "Hospitals, clinics and wellbeing organisations",
-      "Businesses and professional networks",
-      "Employers and workforce organisations",
-      "Cultural institutions and artist bodies",
-      "Tourism and hospitality organisations",
-      "Event organisers and venues",
-      "Technology, security and operational specialists",
-      "Legal, privacy and governance advisers",
-      "Charitable and social-impact organisations where aligned",
+      "Government and institutions",
+      "Universities and research",
+      "Tamil associations",
+      "Corporate and CSR organisations",
+      "Technology partners",
+      "Media and community organisations",
     ],
     statement:
       "Inclusion in this list does not represent approval, endorsement or an existing relationship.",
@@ -129,45 +123,21 @@ export const partnersContent = {
       },
       {
         number: "02",
-        title: "Service partnership",
+        title: "Community and institutional programmes",
         description:
-          "Verified organisations supporting future healthcare, education, career, business or community services.",
+          "Future education, healthcare, culture, research and community initiatives with confirmed organisations.",
       },
       {
         number: "03",
-        title: "Institutional collaboration",
+        title: "Technology and media collaboration",
         description:
-          "Universities, hospitals, associations and cultural bodies working on defined programs.",
+          "Responsible platform, communication and public-awareness support.",
       },
       {
         number: "04",
-        title: "Technology and operations",
+        title: "Corporate and CSR collaboration",
         description:
-          "Security, identity, infrastructure, accessibility, reliability and platform operations.",
-      },
-      {
-        number: "05",
-        title: "Chapter and local-community collaboration",
-        description:
-          "Organisations supporting responsible local participation without automatically becoming a chapter.",
-      },
-      {
-        number: "06",
-        title: "Events and programs",
-        description:
-          "Joint educational, cultural, professional or community programs with clear ownership.",
-      },
-      {
-        number: "07",
-        title: "Research and preservation",
-        description:
-          "Archive, documentation, language, culture and knowledge initiatives.",
-      },
-      {
-        number: "08",
-        title: "Sponsorship or financial support",
-        description:
-          "Considered only through approved policies, transparent agreements and clear public disclosure.",
+          "Future support for clearly defined community goals under approved agreements.",
       },
     ] as const satisfies readonly NumberedStatement[],
   },
@@ -510,39 +480,9 @@ export const partnersContent = {
         "No automatic access is provided. Any future access must be necessary, approved, limited and auditable.",
     },
     {
-      title: "Can a company become an exclusive partner?",
-      description:
-        "Exclusivity is not implied and would require specific approved policy and agreement.",
-    },
-    {
       title: "Can Tamil organisations collaborate without becoming chapters?",
       description:
         "Yes. Organisation collaboration and chapter recognition are separate concepts.",
-    },
-    {
-      title: "Will Tamil Ulagam accept sponsorship?",
-      description:
-        "Any future sponsorship requires approved policy, transparent terms and appropriate disclosure.",
-    },
-    {
-      title: "Can individuals participate as professional advisers?",
-      description:
-        "Future advisory participation may be considered where expertise, responsibilities and conflicts are clearly defined.",
-    },
-    {
-      title: "How will partnerships be reviewed?",
-      description:
-        "Future relationships should be reviewed through documented scope, due diligence, approvals and ongoing accountability.",
-    },
-    {
-      title: "Can Tamil Ulagam end a partnership?",
-      description:
-        "Future agreements should include pause, suspension, completion and closure provisions.",
-    },
-    {
-      title: "Will every partnership be publicly announced?",
-      description:
-        "No. Public disclosure depends on approved scope, policy and communication decisions.",
     },
     {
       title: "How can an organisation begin?",

@@ -39,26 +39,11 @@ describe("public News page", () => {
     expect(screen.queryAllByRole("article")).toHaveLength(0);
   });
 
-  it("renders publication types, distinctions, principles, workflow and trust standards", () => {
+  it("renders PPT-aligned publication types and essential consent and correction principles", () => {
     render(<NewsPage />);
 
     for (const item of newsContent.publicationTypes.items) {
       expect(screen.getByRole("heading", { name: item.title })).toBeVisible();
-    }
-    for (const item of newsContent.distinctions.items) {
-      expect(screen.getByText(item.title)).toBeVisible();
-    }
-    for (const item of newsContent.principles.items) {
-      expect(screen.getByText(item)).toBeVisible();
-    }
-    for (const step of newsContent.workflow.steps) {
-      expect(screen.getByRole("heading", { name: step.title })).toBeVisible();
-    }
-    for (const item of newsContent.verification.items) {
-      expect(screen.getByText(item)).toBeVisible();
-    }
-    for (const item of newsContent.authorship.principles) {
-      expect(screen.getByText(item)).toBeVisible();
     }
     for (const item of newsContent.communityStories.items) {
       expect(screen.getByText(item)).toBeVisible();
@@ -68,29 +53,11 @@ describe("public News page", () => {
     }
   });
 
-  it("renders multilingual, discovery, distribution, status, readiness and honest routes", () => {
+  it("renders multilingual foundations with honest routes", () => {
     render(<NewsPage />);
 
     for (const group of newsContent.multilingualAccessibility.groups) {
       expect(screen.getByRole("heading", { name: group.title })).toBeVisible();
-    }
-    expect(screen.getByText(newsContent.discovery.status)).toBeVisible();
-    for (const item of newsContent.distribution.principles) {
-      expect(screen.getByText(item)).toBeVisible();
-    }
-    for (const status of newsContent.statusModel.internalStatuses) {
-      expect(screen.getAllByText(status)[0]).toBeVisible();
-    }
-    for (const status of newsContent.statusModel.publicStatuses) {
-      expect(screen.getAllByText(status)[0]).toBeVisible();
-    }
-    for (const item of newsContent.readiness.items) {
-      expect(screen.getByText(item)).toBeVisible();
-    }
-    for (const link of screen.getAllByRole("link", {
-      name: "View the Roadmap",
-    })) {
-      expect(link).toHaveAttribute("href", "/roadmap");
     }
     for (const link of screen.getAllByRole("link", {
       name: "Explore Partnerships",

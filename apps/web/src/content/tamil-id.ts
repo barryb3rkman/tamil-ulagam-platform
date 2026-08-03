@@ -70,6 +70,7 @@ export const tamilIdContent = {
     principles: [
       "A Tamil Ulagam membership identifier",
       "A secure digital credential",
+      "Proposed Community, Professional and Patron membership tiers",
       "A connection to an approved membership record",
       "A future access point for chapters, events and organisations",
       "A privacy-conscious verification method",
@@ -256,7 +257,7 @@ export const tamilIdContent = {
   },
   access: {
     eyebrow: "FUTURE MEMBER ACCESS",
-    title: "One credential, connecting future member experiences.",
+    title: "One membership concept, connecting future experiences.",
     description:
       "Tamil ID may eventually support access to a connected set of Tamil Ulagam experiences as each service is introduced responsibly.",
     status: "Planned member experience",
@@ -267,6 +268,7 @@ export const tamilIdContent = {
       "Event registration",
       "Community announcements",
       "Future member benefits",
+      "Future event and service access",
       "Education and opportunity discovery",
       "Future mobile access",
       "Partner services subject to approved agreements",
@@ -384,21 +386,6 @@ export const tamilIdContent = {
       title: "Will membership be free or paid?",
       description:
         "Membership pricing and categories have not yet been finalised publicly.",
-    },
-    {
-      title: "Will Tamil ID work in the future mobile application?",
-      description:
-        "Secure mobile access is part of the long-term platform vision.",
-    },
-    {
-      title:
-        "Can Tamil ID replace a passport, Aadhaar card or other official identification?",
-      description: "No.",
-    },
-    {
-      title: "What happens if a credential is suspended or expires?",
-      description:
-        "A future verification page should clearly show the current approved status.",
     },
     {
       title: "How can organisations help?",

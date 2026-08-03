@@ -6,12 +6,7 @@ import {
   TamilIdDefinition,
   TamilIdFaq,
   TamilIdFinalCta,
-  TamilIdGovernanceSection,
   TamilIdHero,
-  TamilIdJourney,
-  TamilIdPrivacySection,
-  TamilIdRolloutSection,
-  TamilIdVerificationSection,
 } from "@/components/tamil-id";
 import { images } from "@/config/images";
 import { createPageMetadata } from "@/config/metadata";
@@ -29,13 +24,8 @@ export default function TamilIdPage() {
     <>
       <TamilIdHero />
       <TamilIdDefinition />
-      <TamilIdJourney />
       <TamilIdCredentialPreview />
-      <TamilIdVerificationSection />
-      <TamilIdPrivacySection />
       <TamilIdAccessSection />
-      <TamilIdGovernanceSection />
-      <TamilIdRolloutSection />
       <TamilIdFaq />
       <TamilIdFinalCta />
     </>

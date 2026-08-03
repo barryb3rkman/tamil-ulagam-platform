@@ -1,18 +1,11 @@
 import type { Metadata } from "next";
 
 import {
-  ChangeAndTransparencySection,
-  CurrentFoundationSection,
-  DependencySection,
-  PlatformLayersSection,
-  QualityPrinciplesSection,
-  ReadinessGatesSection,
   RoadmapFaq,
   RoadmapFinalCta,
   RoadmapHero,
   RoadmapParticipationSection,
   RoadmapPhaseSequence,
-  RoadmapPrinciples,
 } from "@/components/roadmap";
 import { images } from "@/config/images";
 import { createPageMetadata } from "@/config/metadata";
@@ -29,14 +22,7 @@ export default function RoadmapPage() {
   return (
     <>
       <RoadmapHero />
-      <RoadmapPrinciples />
-      <CurrentFoundationSection />
       <RoadmapPhaseSequence />
-      <DependencySection />
-      <PlatformLayersSection />
-      <ReadinessGatesSection />
-      <QualityPrinciplesSection />
-      <ChangeAndTransparencySection />
       <RoadmapParticipationSection />
       <RoadmapFaq />
       <RoadmapFinalCta />

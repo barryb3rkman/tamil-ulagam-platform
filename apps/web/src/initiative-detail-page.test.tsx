@@ -8,6 +8,7 @@ import {
   getInitiativeImageKey,
   initiativeDetailSlugs,
   initiativeDetails,
+  type InitiativeDetail,
 } from "@/content/initiative-details";
 import { initiatives } from "@/content/initiatives";
 
@@ -16,7 +17,7 @@ afterEach(() => cleanup());
 describe("initiative detail pages", () => {
   it("renders the shared detail foundation for every approved initiative", () => {
     for (const slug of initiativeDetailSlugs) {
-      const detail = initiativeDetails[slug];
+      const detail: InitiativeDetail = initiativeDetails[slug];
       const initiative = getInitiativeDetailIdentity(slug);
       const currentIndex = initiatives.findIndex(
         (entry) => entry.slug === slug,
@@ -48,11 +49,6 @@ describe("initiative detail pages", () => {
       ).toBeVisible();
       expect(
         view.getByRole("heading", {
-          name: detail.readinessHeading,
-        }),
-      ).toBeVisible();
-      expect(
-        view.getByRole("heading", {
           name: detail.whyThisMatters.heading,
         }),
       ).toBeVisible();
@@ -67,10 +63,13 @@ describe("initiative detail pages", () => {
         }),
       ).toBeVisible();
       expect(
-        view.getByRole("heading", {
+        view.queryByRole("heading", {
           name: "A responsible route from purpose to participation.",
         }),
-      ).toBeVisible();
+      ).not.toBeInTheDocument();
+      if (detail.safetyNotice) {
+        expect(view.getByText(detail.safetyNotice)).toBeVisible();
+      }
       expect(
         view.getByRole("link", { name: "Explore partnership" }),
       ).toHaveAttribute("href", "/partners");

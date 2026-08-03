@@ -47,7 +47,7 @@ export const initiatives = [
   },
   {
     slug: "research",
-    title: "Research",
+    title: "Research & Innovation",
     shortDescription:
       "Planning a space for evidence, scholarship, and shared global learning.",
     description:
@@ -58,7 +58,7 @@ export const initiatives = [
   },
   {
     slug: "tourism",
-    title: "Tourism",
+    title: "Tourism & Hospitality",
     shortDescription:
       "Exploring culturally respectful ways to discover Tamil places and experiences.",
     description:
@@ -69,7 +69,7 @@ export const initiatives = [
   },
   {
     slug: "arts-culture",
-    title: "Arts & Culture",
+    title: "Arts, Music & Culture",
     shortDescription:
       "Preparing a global platform for Tamil creativity, heritage, and expression.",
     description:
