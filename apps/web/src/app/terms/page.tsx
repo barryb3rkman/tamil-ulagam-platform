@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
 
-import { PublicPageShell } from "@/components/public-page-shell";
+import { LegalDocument } from "@/components/legal";
 import { createPageMetadata } from "@/config/metadata";
-import { publicPages } from "@/content/pages";
+import { termsOfUse } from "@/content/legal";
 
-const content = publicPages.terms;
-
-export const metadata: Metadata = createPageMetadata(
-  "Terms",
-  content.description,
+const baseMetadata = createPageMetadata(
+  termsOfUse.metadataTitle,
+  termsOfUse.metadataDescription,
   "/terms",
 );
 
+export const metadata: Metadata = {
+  ...baseMetadata,
+  title: { absolute: termsOfUse.metadataTitle },
+};
+
 export default function TermsPage() {
-  return <PublicPageShell content={content} />;
+  return <LegalDocument document={termsOfUse} />;
 }

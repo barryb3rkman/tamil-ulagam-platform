@@ -59,20 +59,4 @@ export const publicPages = {
     notice:
       "This foundation does not yet collect contact enquiries or personal information.",
   },
-  privacy: {
-    eyebrow: "Privacy",
-    title: "Privacy information for the foundation website",
-    description:
-      "The present website foundation does not provide accounts, forms, payments, or member services. A complete privacy notice will be published before personal data collection begins.",
-    notice:
-      "This temporary notice is not a substitute for the reviewed policy required before public launch.",
-  },
-  terms: {
-    eyebrow: "Terms",
-    title: "Terms for the foundation website",
-    description:
-      "Formal website terms will be reviewed and published before public launch and before any interactive service becomes available.",
-    notice:
-      "This temporary content shell does not create service availability or an application process.",
-  },
 } as const satisfies Record<string, PublicPageContent>;

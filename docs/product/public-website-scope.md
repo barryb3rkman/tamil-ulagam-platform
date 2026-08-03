@@ -48,6 +48,8 @@ The News page explains a planned public editorial platform. It does not publish 
 
 The Contact page explains future enquiry categories, information guidance, routing, privacy, response expectations, emergency limitations, institutional authority and a proposed future workflow. It does not provide a form, email address, telephone number, physical address, live support, ticketing, acknowledgements, response guarantees, applications or operational enquiry processing.
 
+The Privacy Policy and Terms of Use pages are public draft foundations for review. They document current public-site limitations, potential future responsibilities and the decisions required before personal-data processing or binding service terms begin. They do not establish an approved legal entity, effective date, contact route, governing law, processor list, retention schedule, legal basis or regulatory-compliance claim. Qualified legal, governance, security and operational review must replace or materially update the drafts before they govern a production service.
+
 The current release does not need a database or authentication because it stores no member state and performs no privileged transaction. Adding them now would create security and operational responsibilities before the relevant governance and product requirements exist.
 
 ## Honest representation

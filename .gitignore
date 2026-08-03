@@ -27,6 +27,7 @@ artifacts/partners-page-review/
 artifacts/events-page-review/
 artifacts/news-page-review/
 artifacts/contact-page-review/
+artifacts/legal-pages-review/
 
 # Environment files
 .env

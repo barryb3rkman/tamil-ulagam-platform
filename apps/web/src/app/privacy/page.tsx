@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
 
-import { PublicPageShell } from "@/components/public-page-shell";
+import { LegalDocument } from "@/components/legal";
 import { createPageMetadata } from "@/config/metadata";
-import { publicPages } from "@/content/pages";
+import { privacyPolicy } from "@/content/legal";
 
-const content = publicPages.privacy;
-
-export const metadata: Metadata = createPageMetadata(
-  "Privacy",
-  content.description,
+const baseMetadata = createPageMetadata(
+  privacyPolicy.metadataTitle,
+  privacyPolicy.metadataDescription,
   "/privacy",
 );
 
+export const metadata: Metadata = {
+  ...baseMetadata,
+  title: { absolute: privacyPolicy.metadataTitle },
+};
+
 export default function PrivacyPage() {
-  return <PublicPageShell content={content} />;
+  return <LegalDocument document={privacyPolicy} />;
 }
