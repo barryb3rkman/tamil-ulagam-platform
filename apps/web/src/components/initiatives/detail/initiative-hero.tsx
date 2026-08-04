@@ -1,6 +1,5 @@
 import { Container, ImageWithFallback, LinkButton } from "@tamil-ulagam/ui";
 
-import { InitiativeStatusBadge } from "@/components/initiative-status-badge";
 import { images } from "@/config/images";
 import type { InitiativeDetail } from "@/content/initiative-details";
 import type { InitiativeEntry } from "@tamil-ulagam/shared";
@@ -57,7 +56,7 @@ export function InitiativeHero({
                 <ImageWithFallback
                   asset={images[imageKey]}
                   className="h-full w-full transition-transform duration-500 hover:scale-[1.02]"
-                  fallbackLabel={`${initiative.title} initiative concept image`}
+                  fallbackLabel={`${initiative.title} initiative image`}
                   priority
                   sizes="(min-width: 1024px) 46vw, 100vw"
                 />
@@ -79,12 +78,9 @@ export function InitiativeHero({
             >
               {groupTitle}
             </p>
-            <div className="mt-5">
-              <InitiativeStatusBadge status={initiative.status} />
-            </div>
             <h1
               id="initiative-title"
-              className={`font-english mt-5 max-w-xl text-4xl leading-[1.04] font-semibold tracking-[-0.035em] text-balance sm:text-5xl lg:text-6xl ${presentation.copy}`}
+              className={`font-english mt-6 max-w-xl text-4xl leading-[1.04] font-semibold tracking-[-0.035em] text-balance sm:text-5xl lg:text-6xl ${presentation.copy}`}
             >
               {initiative.title}
             </h1>

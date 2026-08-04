@@ -5,100 +5,83 @@ export type InitiativeEcosystemGroupId =
 
 export interface InitiativeOverviewDetail {
   readonly purpose: string;
-  readonly futureCapabilities: readonly string[];
-  readonly availabilityStatement: string;
+  readonly capabilities: readonly string[];
 }
 
 export const initiativeOverviewDetails = {
   healthcare: {
     purpose:
-      "A future network for discovering trusted Tamil-speaking healthcare professionals, wellbeing information, and responsible community support.",
-    futureCapabilities: [
+      "A trusted network for discovering Tamil-speaking healthcare professionals, wellbeing information and responsible community support.",
+    capabilities: [
       "Professional directory discovery",
       "Language-aware care discovery",
       "Health resources",
-      "Future partner-supported programmes",
+      "Partner-supported programmes",
     ],
-    availabilityStatement:
-      "Concept in planning — consultations and care services are not available through Tamil Ulagam.",
   },
   education: {
     purpose:
-      "A future learning ecosystem supporting Tamil language, cultural knowledge, mentorship, educational resources, and opportunity discovery.",
-    futureCapabilities: [
+      "A learning ecosystem supporting Tamil language, cultural knowledge, mentorship, educational resources and opportunity discovery.",
+    capabilities: [
       "Tamil learning resources",
       "Cultural education",
       "Scholarship and opportunity discovery",
       "Mentorship and tutor connections",
     ],
-    availabilityStatement:
-      "Concept in planning — courses, scholarships, and tutoring cannot currently be booked here.",
   },
   business: {
     purpose:
-      "A future trusted network for Tamil-owned businesses, founders, professionals, and responsible collaboration.",
-    futureCapabilities: [
+      "A trusted network for Tamil-owned businesses, founders, professionals and responsible collaboration.",
+    capabilities: [
       "Business discovery",
       "Founder and professional connections",
       "Responsible collaboration pathways",
     ],
-    availabilityStatement:
-      "Future initiative — listings, referrals, and commercial services are not currently available.",
   },
   jobs: {
     purpose:
-      "A future careers platform connecting Tamil talent with verified organisations and meaningful opportunities.",
-    futureCapabilities: [
+      "A careers platform connecting Tamil talent with verified organisations and meaningful opportunities.",
+    capabilities: [
       "Verified organisation discovery",
       "Career opportunity discovery",
       "Professional guidance pathways",
     ],
-    availabilityStatement:
-      "Future initiative — job listings, applications, and recruitment services are not currently available.",
   },
   research: {
     purpose:
-      "A future space for digital preservation, academic collaboration, research discovery, and knowledge sharing.",
-    futureCapabilities: [
+      "A space for digital preservation, academic collaboration, research discovery and knowledge sharing.",
+    capabilities: [
       "Research discovery",
       "Knowledge preservation pathways",
       "Academic collaboration",
     ],
-    availabilityStatement:
-      "Future initiative — no research archive, funding programme, or grant application is currently available.",
   },
   tourism: {
     purpose:
-      "A future discovery platform connecting diaspora communities with Tamil heritage, destinations, hospitality, and authentic experiences.",
-    futureCapabilities: [
+      "A discovery platform connecting diaspora communities with Tamil heritage, destinations, hospitality and authentic experiences.",
+    capabilities: [
       "Heritage discovery",
       "Destination information",
       "Responsible cultural tourism guidance",
     ],
-    availabilityStatement:
-      "Future initiative — travel bookings, prices, and hospitality services are not currently available.",
   },
   "arts-culture": {
     purpose:
-      "A future global stage for classical and contemporary Tamil creativity, heritage, and expression.",
-    futureCapabilities: [
+      "A global stage for classical and contemporary Tamil creativity, heritage and expression.",
+    capabilities: [
       "Creative work discovery",
       "Cultural knowledge pathways",
       "Respectful presentation and attribution",
     ],
-    availabilityStatement:
-      "Future initiative — artist programmes, awards, and cultural archives are not currently available.",
   },
   "global-events": {
     purpose:
-      "A future shared platform for summits, cultural programmes, community gatherings, and chapter events.",
-    futureCapabilities: [
+      "A shared platform for summits, cultural programmes, community gatherings and chapter events.",
+    capabilities: [
       "Verified event discovery",
       "Community gathering visibility",
-      "Future chapter coordination",
+      "Chapter coordination",
     ],
-    availabilityStatement:
-      "Future initiative — event publishing, registration, ticketing, and live programmes are not currently available.",
   },
 } as const satisfies Record<InitiativeSlug, InitiativeOverviewDetail>;
 
@@ -108,7 +91,6 @@ export const initiativeOverviewContent = {
     title: "Building an ecosystem for every dimension of Tamil life.",
     description:
       "Tamil Ulagam’s long-term vision connects community, wellbeing, education, enterprise, opportunity, knowledge, and culture through one trusted global platform.",
-    status: "Building the foundation",
     montageSlugs: ["healthcare", "research"] as const,
     primaryCallToAction: {
       label: "Explore the ecosystem",
@@ -128,7 +110,7 @@ export const initiativeOverviewContent = {
       {
         title: "Shared foundation",
         description:
-          "Common standards can make future participation more trustworthy and consistent across every initiative.",
+          "Common standards make participation more trustworthy and consistent across every initiative.",
       },
       {
         title: "Connected experience",
@@ -136,9 +118,9 @@ export const initiativeOverviewContent = {
           "People and organisations should be able to discover relevant pathways without rebuilding their connection each time.",
       },
       {
-        title: "Staged rollout",
+        title: "Responsible delivery",
         description:
-          "Each initiative will move forward only when its purpose, governance, and operating readiness are clear.",
+          "Clear purpose, governance and operational ownership shape every initiative.",
       },
     ],
   },
@@ -178,14 +160,14 @@ export const initiativeOverviewContent = {
     eyebrow: "HUMAN DEVELOPMENT",
     title: "Wellbeing and learning, built with care.",
     description:
-      "Healthcare and education are future initiatives centred on trusted discovery, useful knowledge, and responsible collaboration.",
+      "Healthcare and education centre on trusted discovery, useful knowledge and responsible collaboration.",
     initiativeSlugs: ["healthcare", "education"] as const,
   },
   opportunityEconomy: {
     eyebrow: "OPPORTUNITY AND ECONOMY",
     title: "Connecting talent, enterprise and economic opportunity.",
     description:
-      "Future pathways for professional connection, enterprise discovery, and culturally grounded travel will be introduced carefully and in stages.",
+      "Professional connection, enterprise discovery and culturally grounded travel form one responsible opportunity ecosystem.",
     initiativeSlugs: ["business", "jobs", "tourism"] as const,
   },
   knowledgeCultureGlobal: {
@@ -193,7 +175,7 @@ export const initiativeOverviewContent = {
     title:
       "Preserving knowledge. Celebrating excellence. Connecting the world.",
     description:
-      "Research, creative expression, and future gathering spaces can help Tamil voices, ideas, and cultural work travel further with care.",
+      "Research, creative expression and global gatherings help Tamil voices, ideas and cultural work travel further with care.",
     initiativeSlugs: ["research", "arts-culture", "global-events"] as const,
   },
   sharedPlatform: {
@@ -201,7 +183,6 @@ export const initiativeOverviewContent = {
     title: "One identity. Shared foundations. Connected experiences.",
     description:
       "Over time, each initiative is intended to connect through shared standards rather than operate as an isolated destination.",
-    status: "Planned shared platform foundation",
     foundations: [
       "Member identity",
       "Tamil ID",
@@ -241,7 +222,7 @@ export const initiativeOverviewContent = {
     eyebrow: "EXPLORE THE ECOSYSTEM",
     title: "Every initiative, in one place.",
     description:
-      "Explore the long-term purpose and current planned status of each initiative.",
+      "Explore the purpose, capabilities and connections behind each initiative.",
   },
   participation: {
     eyebrow: "RESPONSIBLE PARTICIPATION",

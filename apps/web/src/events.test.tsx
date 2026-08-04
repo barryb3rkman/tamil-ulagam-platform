@@ -8,38 +8,32 @@ import { eventsContent } from "@/content/events";
 afterEach(() => cleanup());
 
 describe("public Events page", () => {
-  it("renders one planned-events heading and the approved registry image", () => {
+  it("renders one global-events heading and the approved registry image", () => {
     render(<EventsPage />);
 
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       eventsContent.hero.title,
     );
-    expect(
-      screen.getByText(eventsContent.hero.status, { exact: true }),
-    ).toBeVisible();
     expect(screen.getByText(eventsContent.hero.caption)).toBeVisible();
     for (const key of eventsEditorialImageKeys) {
       expect(screen.getByRole("img", { name: images[key].alt })).toBeVisible();
     }
   });
 
-  it("keeps the page honest about future availability and attendee access", () => {
+  it("keeps the page honest about attendee access", () => {
     render(<EventsPage />);
 
     expect(screen.getByText(eventsContent.definition.statement)).toBeVisible();
-    expect(screen.getByText(eventsContent.interest.notice)).toBeVisible();
-    expect(
-      screen.getByText(
-        "No live event calendar is being presented at this stage.",
-      ),
-    ).toBeVisible();
     expect(
       screen.queryByText(/upcoming events|register now|buy tickets/i),
     ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/planned|proposed|no live event calendar/i),
+    ).not.toBeInTheDocument();
   });
 
-  it("renders the six proposed global celebration concepts", () => {
+  it("renders the six global celebrations", () => {
     render(<EventsPage />);
 
     for (const category of eventsContent.categories.items) {

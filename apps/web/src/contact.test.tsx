@@ -14,7 +14,6 @@ describe("public Contact page", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       contactContent.hero.title,
     );
-    expect(screen.getByText(contactContent.hero.status)).toBeVisible();
     expect(container.querySelector("form")).toBeNull();
     expect(container.querySelector("input, textarea, select")).toBeNull();
     expect(container.querySelector('a[href^="mailto:"]')).toBeNull();
@@ -58,15 +57,12 @@ describe("public Contact page", () => {
     ).toBeVisible();
   });
 
-  it("keeps membership and chapter applications closed and preserves public routes", () => {
+  it("keeps enquiry guidance direct and preserves public routes", () => {
     render(<ContactPage />);
 
     expect(
-      screen.getByText("No. Membership applications are not currently open."),
-    ).toBeVisible();
-    expect(
-      screen.getByText("No. Chapter applications are not currently open."),
-    ).toBeVisible();
+      screen.queryByText(/not currently open|future enquiry|in development/i),
+    ).not.toBeInTheDocument();
     for (const link of screen.getAllByRole("link", {
       name: "Explore Tamil Ulagam",
     })) {

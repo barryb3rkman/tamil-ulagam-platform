@@ -4,9 +4,9 @@ export const siteContent = {
   name: "Tamil Ulagam Global Federation",
   shortName: "Tamil Ulagam",
   description:
-    "A permanent digital foundation for connecting Tamil communities, institutions, knowledge, and opportunity across the world.",
+    "A global digital home connecting Tamil communities, institutions, knowledge and opportunity across the world.",
   purpose:
-    "Tamil Ulagam is establishing a trusted global platform designed to grow responsibly with Tamil communities over time.",
+    "Tamil Ulagam is a trusted global platform shaped to grow responsibly with Tamil communities over time.",
   languages: ["English", "தமிழ்"] as const,
 } as const;
 

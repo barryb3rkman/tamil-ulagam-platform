@@ -14,7 +14,7 @@ export function ChapterFormationJourney() {
           description={formationJourney.description}
         />
         <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.14em] uppercase">
-          Proposed formation journey
+          Chapter formation journey
         </p>
         <ol className="border-global-navy/12 mt-5 grid border-t md:grid-cols-2 xl:grid-cols-5">
           {formationJourney.steps.map((step) => (

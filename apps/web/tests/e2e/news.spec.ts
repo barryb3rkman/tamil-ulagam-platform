@@ -63,9 +63,6 @@ test.describe("public News page", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: newsContent.hero.title }),
     ).toBeVisible();
-    await expect(
-      page.getByText(newsContent.hero.status, { exact: true }),
-    ).toBeVisible();
     await expect(page.getByText(newsContent.hero.caption)).toBeVisible();
     await expect(
       page.getByRole("img", { name: images.communityStories.alt }),
@@ -81,7 +78,9 @@ test.describe("public News page", () => {
         name: newsContent.multilingualAccessibility.title,
       }),
     ).toBeVisible();
-    await expect(page.getByText(newsContent.interest.notice)).toBeVisible();
+    await expect(page.locator("main")).not.toContainText(
+      /planned|proposed|in development|future newsroom/i,
+    );
 
     const main = page.locator("main#main-content");
     await expect(main).not.toContainText(/\b20\d{2}\b/);

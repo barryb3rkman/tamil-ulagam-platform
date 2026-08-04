@@ -7,7 +7,6 @@ import {
   SectionHeading,
 } from "@tamil-ulagam/ui";
 
-import { InitiativeStatusBadge } from "@/components/initiative-status-badge";
 import { images, type ImageKey } from "@/config/images";
 import { homepageContent } from "@/content/homepage";
 import { initiatives } from "@/content/initiatives";
@@ -59,14 +58,11 @@ function InitiativeCard({
           />
         </div>
         <div className={featured ? "p-6 sm:p-7" : "p-5 sm:p-6"}>
-          <div className="flex items-start justify-between gap-3">
-            <h3
-              className={`text-global-navy font-semibold tracking-[-0.025em] ${featured ? "text-2xl" : "text-xl"}`}
-            >
-              {initiative.title}
-            </h3>
-            <InitiativeStatusBadge status={initiative.status} />
-          </div>
+          <h3
+            className={`text-global-navy font-semibold tracking-[-0.025em] ${featured ? "text-2xl" : "text-xl"}`}
+          >
+            {initiative.title}
+          </h3>
           <p className="text-slate mt-3 leading-7">
             {initiative.shortDescription}
           </p>

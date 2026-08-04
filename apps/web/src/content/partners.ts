@@ -8,7 +8,6 @@ interface PartnersHeroContent {
   readonly eyebrow: string;
   readonly title: string;
   readonly description: string;
-  readonly status: string;
   readonly caption: string;
   readonly imageKey: PartnersImageKey;
   readonly primaryCallToAction: CallToAction;
@@ -34,10 +33,9 @@ export const partnersContent = {
     eyebrow: "PARTNERSHIP VISION",
     title: "Trusted collaboration for a connected global Tamil future.",
     description:
-      "Tamil Ulagam intends to work with responsible organisations, institutions and professionals whose expertise, integrity and community understanding can strengthen the platform’s long-term mission.",
-    status: "Partnership Discussions",
+      "Tamil Ulagam welcomes responsible organisations, institutions and professionals whose expertise, integrity and community understanding can strengthen the platform’s long-term mission.",
     caption:
-      "Conceptual representation of responsible institutional collaboration.",
+      "Responsible institutional collaboration across communities and sectors.",
     imageKey: "partnerships",
     primaryCallToAction: {
       label: "Explore the Partnership Model",
@@ -55,7 +53,7 @@ export const partnersContent = {
     title:
       "A platform serving global communities cannot succeed through technology alone.",
     description:
-      "Responsible collaboration may bring the knowledge, safeguards and delivery capacity needed to make future platform layers useful and accountable.",
+      "Responsible collaboration brings the knowledge, safeguards and delivery capacity needed to make the platform useful and accountable.",
     principles: [
       "Community knowledge",
       "Professional expertise",
@@ -108,7 +106,7 @@ export const partnersContent = {
       "Media and community organisations",
     ],
     statement:
-      "Inclusion in this list does not represent approval, endorsement or an existing relationship.",
+      "These categories reflect distinct forms of knowledge, capability and community contribution.",
   },
   collaborationModels: {
     eyebrow: "FORMS OF COLLABORATION",
@@ -125,7 +123,7 @@ export const partnersContent = {
         number: "02",
         title: "Community and institutional programmes",
         description:
-          "Future education, healthcare, culture, research and community initiatives with confirmed organisations.",
+          "Education, healthcare, culture, research and community initiatives with confirmed organisations.",
       },
       {
         number: "03",
@@ -137,7 +135,7 @@ export const partnersContent = {
         number: "04",
         title: "Corporate and CSR collaboration",
         description:
-          "Future support for clearly defined community goals under approved agreements.",
+          "Support for clearly defined community goals under approved agreements.",
       },
     ] as const satisfies readonly NumberedStatement[],
   },
@@ -159,13 +157,13 @@ export const partnersContent = {
       "Permission to use Tamil Ulagam branding",
     ],
     statement:
-      "Partnership status should never be implied before due diligence, written approval and clearly defined scope.",
+      "Public discussion or inclusion does not imply endorsement, contract or confirmed partnership.",
   },
   pathway: {
-    eyebrow: "PROPOSED PARTNERSHIP PATHWAY",
+    eyebrow: "PARTNERSHIP PATHWAY",
     title: "A careful path from initial interest to accountable collaboration.",
     description:
-      "This proposed partnership pathway describes responsible preparation. It is not a live application workflow or a guarantee of approval.",
+      "The partnership pathway connects shared purpose, responsible review and accountable collaboration.",
     steps: [
       {
         number: "01",
@@ -182,7 +180,7 @@ export const partnersContent = {
         number: "03",
         title: "Scope definition",
         description:
-          "Proposed responsibilities, beneficiaries, geography and intended outcomes are clarified.",
+          "Responsibilities, beneficiaries, geography and intended outcomes are clarified.",
       },
       {
         number: "04",
@@ -238,7 +236,7 @@ export const partnersContent = {
     eyebrow: "DUE DILIGENCE AND VERIFICATION",
     title: "Trust requires more than a promising conversation.",
     description:
-      "These proposed review areas help establish whether a collaboration has the identity, safeguards and capacity appropriate to its intended scope.",
+      "These review areas establish whether a collaboration has the identity, safeguards and capacity appropriate to its intended scope.",
     items: [
       "Legal identity",
       "Authorised representatives",
@@ -253,7 +251,7 @@ export const partnersContent = {
       "Service quality",
       "Insurance or professional credentials where required",
       "Media, copyright and data rights",
-      "Capacity to deliver the proposed scope",
+      "Capacity to deliver the agreed scope",
     ],
   },
   governance: {
@@ -317,11 +315,11 @@ export const partnersContent = {
     },
   },
   statusModel: {
-    eyebrow: "PROPOSED PARTNERSHIP STATUS MODEL",
+    eyebrow: "PARTNERSHIP STATUS MODEL",
     title:
       "Partnership status should be clear, current and publicly verifiable.",
     description:
-      "Only approved public relationships should appear on a future partner directory. Discussion, approved partnership, active delivery, and paused or closed relationships must remain distinct.",
+      "Only confirmed public relationships belong in a partner directory. Discussion, agreed partnership, delivery, and paused or closed relationships remain distinct.",
     statuses: [
       "Interest received",
       "Initial discussion",
@@ -329,7 +327,7 @@ export const partnersContent = {
       "Preliminary review",
       "Due diligence",
       "Proposal under review",
-      "Approval pending",
+      "Under review",
       "Approved",
       "Active",
       "Paused",
@@ -401,14 +399,14 @@ export const partnersContent = {
     })[],
   },
   readiness: {
-    eyebrow: "COLLABORATE ONLY WHEN READY",
+    eyebrow: "RESPONSIBLE COLLABORATION",
     title: "A partnership should begin only when responsibility is clear.",
     items: [
       "Genuine community value",
       "Clear purpose and scope",
       "Verified organisation and representatives",
       "Named operational ownership",
-      "Governance and approval readiness",
+      "Governance and approval controls",
       "Privacy and security review",
       "Data-access boundaries",
       "Safeguarding and risk review",
@@ -441,8 +439,6 @@ export const partnersContent = {
       "Technology and operations",
       "Privacy, governance and accessibility",
     ],
-    notice:
-      "Starting a conversation does not represent an approved partnership.",
     primaryCallToAction: {
       label: "Contact Tamil Ulagam",
       href: "/contact",
@@ -461,9 +457,9 @@ export const partnersContent = {
   },
   faqs: [
     {
-      title: "Does Tamil Ulagam currently have approved public partners?",
+      title: "How are public partnerships represented?",
       description:
-        "No approved partner directory is being presented on this page at this stage.",
+        "A public relationship requires appropriate review, written agreement and clearly defined scope.",
     },
     {
       title: "Does contacting Tamil Ulagam create a partnership?",
@@ -477,7 +473,7 @@ export const partnersContent = {
     {
       title: "Will partners receive member data?",
       description:
-        "No automatic access is provided. Any future access must be necessary, approved, limited and auditable.",
+        "No automatic access is provided. Any access must be necessary, approved, limited and auditable.",
     },
     {
       title: "Can Tamil organisations collaborate without becoming chapters?",

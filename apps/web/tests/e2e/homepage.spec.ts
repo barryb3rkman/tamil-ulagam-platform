@@ -104,7 +104,9 @@ test.describe("public homepage", () => {
       }),
     ).toBeVisible();
     await expect(page.getByText("Healthcare").first()).toBeVisible();
-    await expect(page.getByText("Planned").first()).toBeVisible();
+    await expect(page.locator("main")).not.toContainText(
+      /planned|proposed|in development|concept preview/i,
+    );
     await expect(
       page
         .getByTestId("initiative-desktop-grid")

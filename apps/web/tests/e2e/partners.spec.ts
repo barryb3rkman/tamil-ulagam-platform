@@ -62,14 +62,16 @@ test.describe("public Partners page", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: partnersContent.hero.title }),
     ).toBeVisible();
-    await expect(
-      page.getByText(partnersContent.hero.status, { exact: true }),
-    ).toBeVisible();
     await expect(page.getByText(partnersContent.hero.caption)).toBeVisible();
     await expect(
       page.getByRole("img", { name: images.partnerships.alt }),
     ).toBeVisible();
-    await expect(page.getByText(partnersContent.interest.notice)).toBeVisible();
+    await expect(
+      page.getByText(partnersContent.boundaries.statement),
+    ).toBeVisible();
+    await expect(page.locator("main")).not.toContainText(
+      /planned|proposed|approval pending/i,
+    );
     await expect(page.locator("body")).not.toContainText(
       /our partners|trusted by/i,
     );

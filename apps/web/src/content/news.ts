@@ -8,7 +8,6 @@ interface HeroContent {
   readonly eyebrow: string;
   readonly title: string;
   readonly description: string;
-  readonly status: string;
   readonly caption: string;
   readonly imageKey: NewsImageKey;
   readonly primaryCallToAction: CallToAction;
@@ -37,13 +36,11 @@ interface FaqItem {
 
 export const newsContent = {
   hero: {
-    eyebrow: "PLANNED PUBLIC NEWSROOM",
+    eyebrow: "PUBLIC NEWSROOM",
     title: "Trusted updates. Meaningful stories. A clear public record.",
     description:
-      "Tamil Ulagam’s future newsroom is intended to publish verified announcements, thoughtful community stories, initiative updates and knowledge with clear ownership and responsible editorial review.",
-    status: "Editorial Foundation in Development",
-    caption:
-      "Conceptual representation of future Tamil Ulagam editorial storytelling. No published story is represented.",
+      "Tamil Ulagam brings verified announcements, thoughtful community stories, initiative updates and knowledge together with clear ownership and responsible editorial review.",
+    caption: "Tamil Ulagam editorial storytelling and public communication.",
     imageKey: "communityStories",
     primaryCallToAction: {
       label: "Understand the Editorial Model",
@@ -61,7 +58,7 @@ export const newsContent = {
     title:
       "A trusted public space for updates, stories, knowledge and accountability.",
     description:
-      "The future newsroom may provide a clear, responsibly maintained public record for information that matters to Tamil communities and the wider federation.",
+      "The newsroom provides a clear, responsibly maintained public record for information that matters to Tamil communities and the wider federation.",
     capabilities: [
       "Official federation announcements",
       "Public platform updates",
@@ -76,12 +73,12 @@ export const newsContent = {
       "Long-term public records",
     ],
     statement:
-      "No approved public articles are currently presented on this page. It describes the future editorial model rather than displaying placeholder news.",
+      "Accuracy, consent, context and visible editorial ownership shape the Tamil Ulagam public record.",
     principles: [
       {
         title: "Public value",
         description:
-          "Each future publication should have a clear purpose for its intended public audience.",
+          "Each publication should have a clear purpose for its intended public audience.",
       },
       {
         title: "Responsible ownership",
@@ -101,7 +98,7 @@ export const newsContent = {
     ] as const satisfies readonly Statement[],
   },
   publicationTypes: {
-    eyebrow: "WHAT MAY BE PUBLISHED",
+    eyebrow: "PUBLICATION FOCUS",
     title: "News and stories for a connected global community.",
     items: [
       {
@@ -117,7 +114,7 @@ export const newsContent = {
       {
         title: "Tamil and English communication",
         description:
-          "Future public communication in Tamil and English with appropriate translation review.",
+          "Public communication in Tamil and English with appropriate translation review.",
       },
       {
         title: "Cultural and institutional stories",
@@ -127,7 +124,7 @@ export const newsContent = {
       {
         title: "Initiative and event updates",
         description:
-          "Approved progress from planned initiatives and future events once accountable publishing begins.",
+          "Responsible updates across Tamil Ulagam initiatives, events and community programmes.",
       },
     ] as const satisfies readonly Statement[],
   },
@@ -190,11 +187,11 @@ export const newsContent = {
     ],
   },
   workflow: {
-    eyebrow: "PROPOSED PUBLISHING WORKFLOW",
+    eyebrow: "PUBLISHING WORKFLOW",
     title: "A careful path from editorial idea to accountable public record.",
     description:
-      "This proposed workflow describes how future material may move through responsible review before and after publication.",
-    label: "Proposed publishing workflow",
+      "The publishing workflow moves material through responsible review before and after publication.",
+    label: "Publishing workflow",
     steps: [
       {
         number: "01",
@@ -282,7 +279,7 @@ export const newsContent = {
   verification: {
     eyebrow: "SOURCES, FACT-CHECKING AND VERIFICATION",
     title: "A credible publication should show how its claims can be trusted.",
-    label: "Proposed source and verification standards",
+    label: "Source and verification standards",
     items: [
       "Distinguish firsthand, documentary and secondary sources",
       "Verify names, roles and organisational authority",
@@ -352,7 +349,7 @@ export const newsContent = {
     title:
       "Trust grows when corrections are visible and the public record remains clear.",
     statement:
-      "Material editorial changes should not be hidden through silent replacement. These future principles are not a formally approved correction policy.",
+      "Material editorial changes belong in a visible correction record, not a silent replacement.",
     categories: [
       {
         title: "Minor correction",
@@ -437,10 +434,9 @@ export const newsContent = {
     }[],
   },
   discovery: {
-    eyebrow: "FUTURE DISCOVERY AND ARCHIVES",
+    eyebrow: "DISCOVERY AND ARCHIVES",
     title:
-      "A future newsroom should make information easy to discover and difficult to misrepresent.",
-    status: "Planned editorial discovery and archive",
+      "A trusted newsroom makes information easy to discover and difficult to misrepresent.",
     discoveryFields: [
       "Publication type",
       "Initiative",
@@ -468,7 +464,7 @@ export const newsContent = {
     ],
   },
   distribution: {
-    eyebrow: "FUTURE DISTRIBUTION AND NOTIFICATIONS",
+    eyebrow: "DISTRIBUTION AND NOTIFICATIONS",
     title:
       "Publishing is only useful when important information reaches the right audience responsibly.",
     channels: [
@@ -476,8 +472,8 @@ export const newsContent = {
       "Member notifications",
       "Chapter notifications",
       "Organisation updates",
-      "Future email summaries",
-      "Future mobile notifications",
+      "Email summaries",
+      "Mobile notifications",
       "Event-related communication",
       "Public feeds where approved",
     ],
@@ -494,7 +490,7 @@ export const newsContent = {
     ],
   },
   statusModel: {
-    eyebrow: "PROPOSED CONTENT STATUS MODEL",
+    eyebrow: "CONTENT STATUS MODEL",
     title: "Editorial status should be clear internally and publicly.",
     description:
       "Internal workflow states should not automatically be exposed publicly. Visitors should be able to distinguish current, updated, corrected, archived, withdrawn and retracted content when real material exists.",
@@ -507,7 +503,7 @@ export const newsContent = {
       "Privacy review",
       "Language review",
       "Editorial review",
-      "Approval pending",
+      "Under review",
       "Approved",
       "Scheduled",
       "Rejected",
@@ -523,7 +519,7 @@ export const newsContent = {
     ],
   },
   readiness: {
-    eyebrow: "PUBLISH ONLY WHEN READY",
+    eyebrow: "RESPONSIBLE EDITORIAL FOUNDATIONS",
     title:
       "The newsroom should open only when editorial responsibility is real.",
     statement:
@@ -557,7 +553,7 @@ export const newsContent = {
     title:
       "Interested in contributing knowledge or supporting responsible public communication?",
     description:
-      "Future editorial collaboration should begin with a responsible conversation about public value, expertise, scope and safeguarding.",
+      "Editorial collaboration begins with a responsible conversation about public value, expertise, scope and safeguarding.",
     areas: [
       "Tamil language editing",
       "Translation",
@@ -572,8 +568,6 @@ export const newsContent = {
       "Public communications",
       "Institutional announcements",
     ],
-    notice:
-      "Article submissions and contributor onboarding are not currently open.",
     primaryCallToAction: {
       label: "Contact Tamil Ulagam",
       href: "/contact",
@@ -592,24 +586,24 @@ export const newsContent = {
   },
   faqs: [
     {
-      title: "Are public Tamil Ulagam articles currently available?",
+      title: "What belongs in the Tamil Ulagam newsroom?",
       description:
-        "No approved public article collection is being presented on this page yet.",
+        "Federation announcements, community news, diaspora updates, cultural stories and initiative communication all belong within its editorial purpose.",
     },
     {
-      title: "Can I submit an article now?",
+      title: "How are contributors and stories handled?",
       description:
-        "No. Article-submission and contributor-onboarding workflows are not currently open.",
+        "Clear ownership, source review, consent, attribution and safeguarding guide every contribution.",
     },
     {
-      title: "Will Tamil Ulagam publish in Tamil and English?",
+      title: "How are Tamil and English handled?",
       description:
-        "Bilingual publishing is part of the long-term editorial direction, subject to qualified review.",
+        "Public communication supports Tamil and English with qualified language and translation review.",
     },
     {
       title: "Will community stories require consent?",
       description:
-        "Yes. Future community storytelling must include appropriate consent, privacy and safeguarding review.",
+        "Yes. Community storytelling requires appropriate consent, privacy and safeguarding review.",
     },
     {
       title: "How will corrections be handled?",
@@ -626,7 +620,7 @@ export const newsContent = {
     title:
       "Meaningful public communication begins with accuracy, ownership and respect.",
     description:
-      "Tamil Ulagam welcomes thoughtful conversations with editors, researchers, cultural institutions, community organisations and responsible contributors interested in future public communication.",
+      "Tamil Ulagam welcomes thoughtful conversations with editors, researchers, cultural institutions, community organisations and responsible contributors.",
     primaryCallToAction: {
       label: "Contact Tamil Ulagam",
       href: "/contact",
@@ -685,7 +679,6 @@ export const newsContent = {
     }[];
   };
   readonly discovery: TextSection & {
-    readonly status: string;
     readonly discoveryFields: readonly string[];
     readonly articleFields: readonly string[];
   };
@@ -704,7 +697,6 @@ export const newsContent = {
   };
   readonly interest: TextSection & {
     readonly areas: readonly string[];
-    readonly notice: string;
     readonly primaryCallToAction: CallToAction;
     readonly secondaryCallToAction: CallToAction;
     readonly textCallToAction: CallToAction;

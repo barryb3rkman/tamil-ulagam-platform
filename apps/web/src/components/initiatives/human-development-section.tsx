@@ -5,7 +5,6 @@ import {
   Section,
 } from "@tamil-ulagam/ui";
 
-import { InitiativeStatusBadge } from "@/components/initiative-status-badge";
 import { images, type ImageKey } from "@/config/images";
 import {
   getOverviewInitiatives,
@@ -52,15 +51,14 @@ export function HumanDevelopmentSection() {
 
             const content = (
               <div className="flex flex-col justify-center py-1 lg:py-8">
-                <InitiativeStatusBadge status={initiative.status} />
-                <h3 className="text-global-navy mt-5 text-3xl leading-tight font-semibold tracking-[-0.035em] sm:text-4xl">
+                <h3 className="text-global-navy text-3xl leading-tight font-semibold tracking-[-0.035em] sm:text-4xl">
                   {initiative.title}
                 </h3>
                 <p className="text-slate mt-5 text-lg leading-8">
                   {detail.purpose}
                 </p>
                 <ul className="border-global-navy/12 mt-7 grid divide-y border-y sm:grid-cols-2 sm:divide-x sm:divide-y-0">
-                  {detail.futureCapabilities.map((capability) => (
+                  {detail.capabilities.map((capability) => (
                     <li
                       key={capability}
                       className="text-charcoal px-4 py-3 text-sm leading-6 sm:first:pl-0 sm:last:pr-0"
@@ -69,9 +67,6 @@ export function HumanDevelopmentSection() {
                     </li>
                   ))}
                 </ul>
-                <p className="text-slate mt-5 text-sm leading-6 italic">
-                  {detail.availabilityStatement}
-                </p>
                 <LinkButton
                   href={initiative.href}
                   variant="text"

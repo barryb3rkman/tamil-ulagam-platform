@@ -54,9 +54,6 @@ test.describe("public Contact page", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: contactContent.hero.title }),
     ).toBeVisible();
-    await expect(
-      page.getByText(contactContent.hero.status, { exact: true }),
-    ).toBeVisible();
     await expect(page.locator("form")).toHaveCount(0);
     await expect(page.locator("input, textarea, select")).toHaveCount(0);
     await expect(page.locator('a[href^="mailto:"]')).toHaveCount(0);
@@ -79,7 +76,7 @@ test.describe("public Contact page", () => {
     ).toBeVisible();
     await expect(
       page.getByRole("heading", {
-        name: "Clear answers before contact channels open.",
+        name: "Clear answers about beginning a conversation.",
       }),
     ).toBeVisible();
 

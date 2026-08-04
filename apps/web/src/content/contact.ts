@@ -4,7 +4,6 @@ interface ContactHeroContent {
   readonly eyebrow: string;
   readonly title: string;
   readonly description: string;
-  readonly status: string;
   readonly note: string;
   readonly primaryCallToAction: CallToAction;
   readonly secondaryCallToAction: CallToAction;
@@ -41,7 +40,6 @@ export const contactContent = {
     title: "Start with a clear purpose. Build the right conversation.",
     description:
       "Tamil Ulagam welcomes thoughtful enquiries from individuals, organisations, institutions and professionals interested in community, culture, knowledge and responsible collaboration.",
-    status: "Contact Routing in Development",
     note: "Contacting Tamil Ulagam does not create an application, membership, chapter or approved partnership.",
     primaryCallToAction: {
       label: "Choose an Enquiry Path",
@@ -58,7 +56,7 @@ export const contactContent = {
     eyebrow: "HOW TO BEGIN A CONVERSATION",
     title: "The right context helps an enquiry reach the right discussion.",
     description:
-      "A future enquiry should be concise enough to understand, complete enough to route responsibly and proportionate to the conversation being requested.",
+      "An enquiry should be concise enough to understand, complete enough to route responsibly and proportionate to the conversation being requested.",
     guidance: [
       "Who you are",
       "Whether you represent yourself or an organisation",
@@ -66,7 +64,7 @@ export const contactContent = {
       "The intended outcome",
     ],
     statement:
-      "This page currently explains routing expectations. It does not submit an enquiry or collect contact information.",
+      "This page provides enquiry context and does not collect personal information.",
   },
   categories: {
     eyebrow: "ENQUIRY CATEGORIES",
@@ -75,7 +73,7 @@ export const contactContent = {
       {
         title: "General enquiry",
         description:
-          "Questions about Tamil Ulagam’s public vision, website or future platform.",
+          "Questions about Tamil Ulagam’s public vision, website or connected platform.",
         href: "/about",
         linkLabel: "Explore Tamil Ulagam",
       },
@@ -87,8 +85,7 @@ export const contactContent = {
       },
       {
         title: "Chapter interest",
-        description:
-          "Interest in responsible future local chapter discussions.",
+        description: "Interest in responsible local chapter discussions.",
         href: "/chapters",
         linkLabel: "Explore the chapter model",
       },
@@ -102,7 +99,7 @@ export const contactContent = {
       {
         title: "Events or editorial discussion",
         description:
-          "Future events, community news, research or cultural-story collaboration.",
+          "Events, community news, research or cultural-story collaboration.",
         href: "/events",
         linkLabel: "Explore the events vision",
       },
@@ -140,7 +137,7 @@ export const contactContent = {
     title:
       "Do not send sensitive documents or unnecessary personal information.",
     statement:
-      "Tamil Ulagam does not currently request identity documents through this public page.",
+      "Do not share identity documents or sensitive personal information through public contact routes.",
     items: [
       "Passports",
       "Aadhaar cards",
@@ -270,16 +267,16 @@ export const contactContent = {
     },
   },
   workflow: {
-    eyebrow: "FUTURE CONTACT WORKFLOW",
-    title: "A future contact system should make ownership and status clear.",
+    eyebrow: "CONTACT WORKFLOW",
+    title: "A responsible contact system makes ownership and status clear.",
     description:
-      "These stages describe a proposed future contact workflow. They are not operating today and do not provide enquiry tracking.",
-    label: "Proposed future contact workflow",
+      "These stages connect enquiry context, responsible routing, review and closure.",
+    label: "Contact workflow",
     steps: [
       {
         number: "01",
         title: "Enquiry submitted",
-        description: "A future approved channel accepts an enquiry.",
+        description: "An approved channel accepts an enquiry.",
       },
       {
         number: "02",
@@ -329,7 +326,7 @@ export const contactContent = {
         number: "10",
         title: "Closed",
         description:
-          "The future record is concluded with an appropriate outcome status.",
+          "The record is concluded with an appropriate outcome status.",
       },
       {
         number: "11",
@@ -341,17 +338,14 @@ export const contactContent = {
   },
   faqs: [
     {
-      title: "Is there a working contact form?",
+      title: "What context helps a Tamil Ulagam enquiry?",
       description:
-        "No. This page currently explains enquiry routes and expectations.",
+        "Identify who you are, the subject, relevant organisation context and the outcome you want to discuss.",
     },
     {
-      title: "Can I apply for membership here?",
-      description: "No. Membership applications are not currently open.",
-    },
-    {
-      title: "Can I apply to create a chapter?",
-      description: "No. Chapter applications are not currently open.",
+      title: "Which enquiry categories does Tamil Ulagam cover?",
+      description:
+        "General, partnership, chapter, initiative, events, editorial, privacy, accessibility and website discussions are represented here.",
     },
     {
       title: "Can I send identity documents?",
@@ -374,7 +368,7 @@ export const contactContent = {
     title:
       "Good conversations begin with the right purpose and responsible expectations.",
     description:
-      "Explore Tamil Ulagam’s public pages to understand the platform before beginning a future enquiry.",
+      "Explore Tamil Ulagam’s public pages to understand the platform and begin the right conversation.",
     primaryCallToAction: {
       label: "Explore Tamil Ulagam",
       href: "/about",

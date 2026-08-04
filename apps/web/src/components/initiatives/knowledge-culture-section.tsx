@@ -5,7 +5,6 @@ import {
   Section,
 } from "@tamil-ulagam/ui";
 
-import { InitiativeStatusBadge } from "@/components/initiative-status-badge";
 import { images, type ImageKey } from "@/config/images";
 import {
   getOverviewInitiative,
@@ -51,15 +50,11 @@ export function KnowledgeCultureSection() {
             />
           </div>
           <div className="flex flex-col justify-center p-7 sm:p-10">
-            <InitiativeStatusBadge status={research.status} />
-            <h3 className="text-global-navy mt-5 text-3xl font-semibold tracking-[-0.035em]">
+            <h3 className="text-global-navy text-3xl font-semibold tracking-[-0.035em]">
               {research.title}
             </h3>
             <p className="text-slate mt-4 text-lg leading-8">
               {researchDetail.purpose}
-            </p>
-            <p className="text-slate mt-5 text-sm leading-6 italic">
-              {researchDetail.availabilityStatement}
             </p>
             <LinkButton
               href={research.href}
@@ -91,14 +86,10 @@ export function KnowledgeCultureSection() {
                   />
                 </div>
                 <div className="p-6 sm:p-7">
-                  <InitiativeStatusBadge status={initiative.status} />
-                  <h3 className="text-global-navy mt-5 text-2xl font-semibold tracking-[-0.025em]">
+                  <h3 className="text-global-navy text-2xl font-semibold tracking-[-0.025em]">
                     {initiative.title}
                   </h3>
                   <p className="text-slate mt-3 leading-7">{detail.purpose}</p>
-                  <p className="text-slate mt-5 text-sm leading-6 italic">
-                    {detail.availabilityStatement}
-                  </p>
                   <LinkButton
                     href={initiative.href}
                     variant="text"

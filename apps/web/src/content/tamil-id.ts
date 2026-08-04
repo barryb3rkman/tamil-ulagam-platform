@@ -8,7 +8,6 @@ interface TamilIdHeroContent {
   readonly eyebrow: string;
   readonly title: string;
   readonly description: string;
-  readonly status: string;
   readonly caption: string;
   readonly imageKey: TamilIdImageKey;
   readonly primaryCallToAction: CallToAction;
@@ -44,12 +43,11 @@ type TamilIdFaq = LabeledStatement;
 
 export const tamilIdContent = {
   hero: {
-    eyebrow: "PLANNED DIGITAL MEMBERSHIP",
+    eyebrow: "DIGITAL MEMBERSHIP",
     title: "One membership. A world of connection.",
     description:
-      "Tamil ID is envisioned as a secure digital membership credential connecting Tamil Ulagam members with chapters, organisations, events and future community services.",
-    status: "In Development",
-    caption: "Concept preview. Tamil ID is not yet available.",
+      "Tamil ID is a secure digital membership vision connecting Tamil Ulagam members with chapters, organisations, events and community experiences.",
+    caption: "A visual expression of the Tamil ID membership credential.",
     imageKey: "tamilIdShowcase",
     primaryCallToAction: {
       label: "Understand the Tamil ID",
@@ -63,18 +61,18 @@ export const tamilIdContent = {
     },
   } satisfies TamilIdHeroContent,
   definition: {
-    eyebrow: "THE CONCEPT",
+    eyebrow: "DIGITAL MEMBERSHIP",
     title: "A membership credential for one connected Tamil platform.",
     description:
-      "Tamil ID is planned as a trusted connection between a member and an approved Tamil Ulagam membership record. It is intended to make future participation clearer across web and mobile experiences while keeping private information protected.",
+      "Tamil ID connects a member with an approved Tamil Ulagam membership record, making participation clearer across web and mobile experiences while keeping private information protected.",
     principles: [
       "A Tamil Ulagam membership identifier",
       "A secure digital credential",
-      "Proposed Community, Professional and Patron membership tiers",
+      "Community, Professional and Patron membership tiers",
       "A connection to an approved membership record",
-      "A future access point for chapters, events and organisations",
+      "Member access to chapters, events and organisations",
       "A privacy-conscious verification method",
-      "One identity across web and future mobile systems",
+      "One identity across web and mobile systems",
     ],
   },
   notGovernmentId: {
@@ -82,7 +80,7 @@ export const tamilIdContent = {
     title:
       "A community membership credential — not a government identity document.",
     description:
-      "Tamil ID is not intended to establish citizenship, nationality or any official legal identity. It will never replace the documents issued by governments or financial institutions.",
+      "Tamil ID is a Tamil Ulagam membership credential. It is not proof of citizenship, nationality or travel authority and does not replace documents issued by governments or financial institutions.",
     items: [
       "Proof of citizenship or nationality",
       "A passport, visa or travel document",
@@ -94,10 +92,10 @@ export const tamilIdContent = {
     ],
   },
   journey: {
-    eyebrow: "PROPOSED MEMBERSHIP JOURNEY",
+    eyebrow: "MEMBERSHIP JOURNEY",
     title: "A carefully governed path from interest to membership.",
     description:
-      "This proposed journey describes the accountability expected before Tamil ID is introduced. It is not an application process currently available through this website.",
+      "The membership journey connects clear identity, accountable review and responsible credential issuance.",
     steps: [
       {
         number: "01",
@@ -108,7 +106,7 @@ export const tamilIdContent = {
         number: "02",
         title: "Create an account",
         description:
-          "Secure account creation will be introduced in a future platform phase.",
+          "Secure account creation establishes the member’s private platform record.",
       },
       {
         number: "03",
@@ -148,10 +146,10 @@ export const tamilIdContent = {
     ] as const satisfies readonly JourneyStep[],
   },
   credential: {
-    eyebrow: "CREDENTIAL CONCEPT",
+    eyebrow: "CREDENTIAL DESIGN",
     title: "Designed to communicate membership clearly and securely.",
     description:
-      "The future credential should reveal only the information appropriate to its purpose, with sensitive records held separately behind authorised systems.",
+      "The credential reveals only information appropriate to its purpose, with sensitive records held separately behind authorised systems.",
     areas: [
       { label: "Tamil Ulagam identity", example: "Tamil Ulagam" },
       { label: "Member display name", example: "Member name" },
@@ -256,24 +254,23 @@ export const tamilIdContent = {
     ] as const satisfies readonly LabeledStatement[],
   },
   access: {
-    eyebrow: "FUTURE MEMBER ACCESS",
-    title: "One membership concept, connecting future experiences.",
+    eyebrow: "CONNECTED MEMBER ACCESS",
+    title: "One membership connecting Tamil Ulagam experiences.",
     description:
-      "Tamil ID may eventually support access to a connected set of Tamil Ulagam experiences as each service is introduced responsibly.",
-    status: "Planned member experience",
+      "Tamil ID brings member profiles, chapter affiliation, events, organisations and opportunity discovery into one connected experience.",
     areas: [
       "Member profile",
       "Chapter affiliation",
       "Organisation participation",
       "Event registration",
       "Community announcements",
-      "Future member benefits",
-      "Future event and service access",
+      "Member benefits",
+      "Event and service access",
       "Education and opportunity discovery",
-      "Future mobile access",
-      "Partner services subject to approved agreements",
+      "Mobile access",
+      "Partner services governed by approved agreements",
     ],
-    note: "Possessing Tamil ID will not automatically guarantee access to every future service. Eligibility may depend on membership policy, location, partner rules and service availability.",
+    note: "Tamil ID does not guarantee eligibility for every service. Membership policy, location, partner rules and service requirements determine access.",
   },
   governance: {
     eyebrow: "TRUST, GOVERNANCE AND STATUS",
@@ -294,7 +291,7 @@ export const tamilIdContent = {
       "Chapter and organisation boundaries",
       "Incident response",
     ],
-    statesLabel: "Proposed membership states",
+    statesLabel: "Membership states",
     states: [
       "Interest registered",
       "Application in preparation",
@@ -342,7 +339,7 @@ export const tamilIdContent = {
         number: "05",
         title: "Member-platform expansion",
         description:
-          "Connect Tamil ID with events, organisations, chapters and future services.",
+          "Connect Tamil ID with events, organisations, chapters and member services.",
       },
       {
         number: "06",
@@ -359,14 +356,14 @@ export const tamilIdContent = {
   },
   faqs: [
     {
-      title: "Is Tamil ID currently available?",
+      title: "What does Tamil ID represent?",
       description:
-        "No. It is currently presented as a planned digital membership concept.",
+        "It represents a Tamil Ulagam membership credential connecting identity, chapters, events and member experiences.",
     },
     {
       title: "Is Tamil ID a government-issued identity document?",
       description:
-        "No. It is intended only as a Tamil Ulagam membership credential.",
+        "No. It is only a Tamil Ulagam membership credential and carries no citizenship, nationality or travel authority.",
     },
     {
       title: "Will sensitive personal information be stored in the QR code?",
@@ -380,12 +377,12 @@ export const tamilIdContent = {
     {
       title: "Who can become a member?",
       description:
-        "Eligibility and membership categories must be approved before applications open.",
+        "Eligibility and membership categories are governed through published Tamil Ulagam membership policy.",
     },
     {
       title: "Will membership be free or paid?",
       description:
-        "Membership pricing and categories have not yet been finalised publicly.",
+        "Membership categories and pricing require clear public policy before they are offered.",
     },
     {
       title: "How can organisations help?",
@@ -394,7 +391,7 @@ export const tamilIdContent = {
     },
   ] as const satisfies readonly TamilIdFaq[],
   finalCallToAction: {
-    eyebrow: "BUILDING THE MEMBERSHIP FOUNDATION",
+    eyebrow: "TRUSTED DIGITAL MEMBERSHIP",
     title:
       "A trusted Tamil ID begins with clear policy, secure systems and responsible participation.",
     description:

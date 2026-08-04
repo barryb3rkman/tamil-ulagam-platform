@@ -152,7 +152,7 @@ export function OrganiserPathwaySection() {
           className="[&>h2]:text-white"
         />
         <p className="text-heritage-gold mt-7 text-sm font-semibold tracking-[0.14em] uppercase">
-          Proposed organiser pathway
+          Organiser pathway
         </p>
         <ol className="mt-5 grid border-t border-white/16 md:grid-cols-2 xl:grid-cols-3">
           {organiserPathway.steps.map((step) => (
@@ -188,7 +188,7 @@ export function EventLifecycleSection() {
           description={lifecycle.description}
         />
         <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.14em] uppercase">
-          Proposed event lifecycle
+          Event lifecycle
         </p>
         <ol className="border-global-navy/12 mt-5 grid border-t md:grid-cols-2 xl:grid-cols-4">
           {lifecycle.steps.map((step) => (

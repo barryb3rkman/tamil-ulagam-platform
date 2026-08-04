@@ -16,7 +16,7 @@ export function ChaptersFaq() {
       >
         <SectionHeading
           eyebrow="FREQUENTLY ASKED QUESTIONS"
-          title="Clear answers for a chapter network still being planned."
+          title="Clear answers about the global chapter network."
         />
         <dl className="border-global-navy/12 divide-global-navy/12 border-y">
           {chaptersContent.faqs.map((faq) => (

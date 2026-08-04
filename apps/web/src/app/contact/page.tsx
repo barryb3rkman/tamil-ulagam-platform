@@ -13,7 +13,7 @@ import { createPageMetadata } from "@/config/metadata";
 
 export const metadata: Metadata = createPageMetadata(
   "Contact | Begin a Conversation with Tamil Ulagam",
-  "Understand how to begin a future enquiry with Tamil Ulagam, including partnership, chapter, initiative, event, editorial, privacy and website-feedback pathways.",
+  "Understand how to begin an enquiry with Tamil Ulagam across partnership, chapter, initiative, event, editorial, privacy and website-feedback pathways.",
   "/contact",
 );
 

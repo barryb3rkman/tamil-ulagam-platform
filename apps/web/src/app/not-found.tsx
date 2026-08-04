@@ -10,8 +10,8 @@ export default function NotFound() {
         Page not found
       </h1>
       <p className="text-slate mx-auto mt-5 max-w-xl text-lg leading-8">
-        The page may have moved, or it may belong to a future Tamil Ulagam
-        service that is not yet available.
+        The page may have moved, or the address may not be recognised. Return to
+        the Tamil Ulagam homepage to continue exploring.
       </p>
       <LinkButton className="mt-8" href="/">
         Return home

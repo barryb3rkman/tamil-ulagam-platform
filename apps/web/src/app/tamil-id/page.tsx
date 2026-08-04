@@ -13,8 +13,8 @@ import { createPageMetadata } from "@/config/metadata";
 import { tamilIdContent } from "@/content/tamil-id";
 
 export const metadata: Metadata = createPageMetadata(
-  "Tamil ID | Planned Digital Membership for Tamil Ulagam",
-  "Explore the planned Tamil ID digital membership concept, including future verification, privacy principles, member access and responsible rollout.",
+  "Tamil ID | Digital Membership for Tamil Ulagam",
+  "Explore Tamil ID digital membership, including QR-enabled credentials, privacy principles and connected member access.",
   "/tamil-id",
   images[tamilIdContent.hero.imageKey],
 );

@@ -1,4 +1,4 @@
-import { Badge, Container, LinkButton, Section } from "@tamil-ulagam/ui";
+import { Container, LinkButton, Section } from "@tamil-ulagam/ui";
 
 import { initiativeOverviewContent } from "@/content/initiatives-overview";
 
@@ -26,16 +26,10 @@ export function SharedPlatformSection() {
             <p className="mt-6 max-w-xl text-lg leading-8 text-white/76">
               {sharedPlatform.description}
             </p>
-            <Badge
-              tone="warning"
-              className="bg-heritage-gold/15 text-heritage-gold mt-7 text-sm"
-            >
-              {sharedPlatform.status}
-            </Badge>
             <LinkButton
               href={sharedPlatform.callToAction.href}
               variant="secondary"
-              className="hover:text-deep-navy mt-8 border-white text-white hover:bg-white"
+              className="hover:text-deep-navy mt-9 border-white text-white hover:bg-white"
             >
               {sharedPlatform.callToAction.label}
             </LinkButton>

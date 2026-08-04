@@ -24,8 +24,8 @@ export function RoadmapPreview() {
               A considered path to one connected future.
             </h2>
             <p className="text-slate mt-6 max-w-md text-lg leading-8">
-              The platform will grow in deliberate phases, with governance,
-              trust and community needs guiding each step.
+              Governance, trust and community needs guide a deliberate
+              three-phase path.
             </p>
             <LinkButton href="/roadmap" variant="text" className="mt-8">
               View the Roadmap{" "}
@@ -38,7 +38,7 @@ export function RoadmapPreview() {
             <div className="aspect-[16/7] overflow-hidden">
               <ImageWithFallback
                 asset={images.roadmapFuture}
-                fallbackLabel="Roadmap future concept image"
+                fallbackLabel="Tamil Ulagam roadmap"
                 sizes="(min-width: 1024px) 60vw, 100vw"
                 className="h-full w-full object-cover"
               />
@@ -53,31 +53,12 @@ export function RoadmapPreview() {
                     0{index + 1}
                   </span>
                   <div>
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <h3 className="text-global-navy text-2xl font-semibold tracking-[-0.02em]">
-                        {phase.title}
-                      </h3>
-                      <span className="text-slate text-xs font-semibold tracking-[0.12em] uppercase">
-                        {phase.statusLabel}
-                      </span>
-                    </div>
+                    <h3 className="text-global-navy text-2xl font-semibold tracking-[-0.02em]">
+                      {phase.title}
+                    </h3>
                     <p className="text-slate mt-3 max-w-2xl text-base leading-7">
                       {phase.summary}
                     </p>
-                    <ul className="text-charcoal mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
-                      {phase.capabilities.map((capability) => (
-                        <li
-                          key={capability}
-                          className="flex items-center gap-2"
-                        >
-                          <span
-                            aria-hidden="true"
-                            className="bg-heritage-maroon h-1.5 w-1.5 rounded-full"
-                          />
-                          {capability}
-                        </li>
-                      ))}
-                    </ul>
                   </div>
                 </li>
               ))}

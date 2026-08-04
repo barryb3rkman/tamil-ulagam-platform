@@ -1,9 +1,4 @@
-import {
-  Badge,
-  Container,
-  ImageWithFallback,
-  LinkButton,
-} from "@tamil-ulagam/ui";
+import { Container, ImageWithFallback, LinkButton } from "@tamil-ulagam/ui";
 
 import { images } from "@/config/images";
 import { newsContent } from "@/content/news";
@@ -29,9 +24,6 @@ export function NewsHero() {
             <p className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
               {hero.eyebrow}
             </p>
-            <Badge tone="neutral" className="mt-6">
-              {hero.status}
-            </Badge>
             <h1
               id="news-title"
               className="mt-6 max-w-3xl text-5xl leading-[0.98] font-semibold tracking-[-0.055em] text-balance text-white sm:text-6xl lg:text-6xl xl:text-7xl"
@@ -70,7 +62,7 @@ export function NewsHero() {
             <div className="overflow-hidden">
               <ImageWithFallback
                 asset={images[hero.imageKey]}
-                fallbackLabel="Future public newsroom concept representation"
+                fallbackLabel="Tamil Ulagam editorial storytelling"
                 priority
                 sizes="(min-width: 1024px) 60vw, 100vw"
                 className="aspect-[4/3] h-full w-full object-cover"

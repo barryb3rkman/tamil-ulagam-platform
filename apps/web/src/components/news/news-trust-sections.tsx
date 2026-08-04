@@ -56,7 +56,7 @@ export function AuthorshipSection() {
               id="future-attribution-title"
               className="text-global-navy text-xl font-semibold"
             >
-              Future public attribution may include
+              Public attribution may include
             </h3>
             <ul className="border-global-navy/12 mt-5 grid border-t sm:grid-cols-2">
               {authorship.mayInclude.map((item) => (

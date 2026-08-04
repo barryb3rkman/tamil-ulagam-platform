@@ -1,6 +1,5 @@
 import { Container, LinkButton, Section } from "@tamil-ulagam/ui";
 
-import { InitiativeStatusBadge } from "@/components/initiative-status-badge";
 import { initiatives } from "@/content/initiatives";
 import {
   initiativeOverviewContent,
@@ -42,7 +41,6 @@ export function InitiativesDirectory() {
                   <span className="text-heritage-gold text-sm font-semibold tracking-[0.12em]">
                     0{index + 1}
                   </span>
-                  <InitiativeStatusBadge status={initiative.status} />
                   <h3 className="text-global-navy mt-5 text-xl font-semibold tracking-[-0.025em]">
                     {initiative.title}
                   </h3>

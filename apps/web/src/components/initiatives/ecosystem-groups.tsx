@@ -1,7 +1,6 @@
 import { Container, Section } from "@tamil-ulagam/ui";
 import Link from "next/link";
 
-import { InitiativeStatusBadge } from "@/components/initiative-status-badge";
 import {
   getOverviewInitiatives,
   initiativeOverviewContent,
@@ -29,8 +28,8 @@ export function EcosystemGroups() {
             </h2>
           </div>
           <p className="text-slate max-w-xl leading-7">
-            Each pathway is distinct in purpose, while designed to grow from a
-            shared and responsible platform foundation.
+            Each pathway is distinct in purpose while connected through shared,
+            responsible platform standards.
           </p>
         </div>
         <ol className="border-global-navy/12 mt-12 grid border-y lg:grid-cols-3 lg:divide-x">
@@ -61,7 +60,9 @@ export function EcosystemGroups() {
                         <span className="text-global-navy group-hover:text-heritage-maroon font-semibold transition-colors">
                           {initiative.title}
                         </span>
-                        <InitiativeStatusBadge status={initiative.status} />
+                        <span aria-hidden="true" className="text-heritage-gold">
+                          →
+                        </span>
                       </Link>
                     </li>
                   ))}

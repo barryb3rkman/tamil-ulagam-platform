@@ -1,4 +1,4 @@
-import { Badge, Container, Section, SectionHeading } from "@tamil-ulagam/ui";
+import { Container, Section, SectionHeading } from "@tamil-ulagam/ui";
 
 import { newsContent } from "@/content/news";
 
@@ -55,9 +55,6 @@ export function FutureDiscoverySection() {
             eyebrow={discovery.eyebrow}
             title={discovery.title}
           />
-          <Badge tone="warning" className="mt-6">
-            {discovery.status}
-          </Badge>
         </div>
         <div className="grid gap-8 sm:grid-cols-2">
           <section aria-labelledby="discovery-fields-title">
@@ -65,7 +62,7 @@ export function FutureDiscoverySection() {
               id="discovery-fields-title"
               className="text-global-navy text-xl font-semibold"
             >
-              Potential future discovery fields
+              Discovery fields
             </h3>
             <ul className="border-global-navy/12 mt-5 border-t">
               {discovery.discoveryFields.map((item) => (
@@ -83,7 +80,7 @@ export function FutureDiscoverySection() {
               id="future-article-experience-title"
               className="text-global-navy text-xl font-semibold"
             >
-              Potential future article experience
+              Article experience
             </h3>
             <ul className="border-global-navy/12 mt-5 border-t">
               {discovery.articleFields.map((item) => (
@@ -120,7 +117,7 @@ export function DistributionSection() {
               id="distribution-channels-title"
               className="text-xl font-semibold text-white"
             >
-              Potential future distribution channels
+              Distribution channels
             </h3>
             <ul className="mt-5 grid border-t border-white/16 sm:grid-cols-2">
               {distribution.channels.map((channel) => (
@@ -181,7 +178,7 @@ export function ContentStatusSection() {
               id="internal-statuses-title"
               className="text-global-navy text-xl font-semibold"
             >
-              Proposed internal statuses
+              Internal statuses
             </h3>
             <ul className="mt-5 flex flex-wrap gap-3">
               {statusModel.internalStatuses.map((status) => (
@@ -199,7 +196,7 @@ export function ContentStatusSection() {
               id="public-statuses-title"
               className="text-global-navy text-xl font-semibold"
             >
-              Proposed public statuses
+              Public statuses
             </h3>
             <ul className="mt-5 flex flex-wrap gap-3">
               {statusModel.publicStatuses.map((status) => (

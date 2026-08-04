@@ -16,7 +16,7 @@ import { partnersContent } from "@/content/partners";
 
 export const metadata: Metadata = createPageMetadata(
   "Partners | Responsible Collaboration with Tamil Ulagam",
-  "Explore Tamil Ulagam’s future collaboration vision across institutions, universities, Tamil associations, corporate organisations, technology and media.",
+  "Explore Tamil Ulagam’s collaboration vision across institutions, universities, Tamil associations, corporate organisations, technology and media.",
   "/partners",
   images[partnersContent.hero.imageKey],
 );

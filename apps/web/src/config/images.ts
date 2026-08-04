@@ -162,7 +162,7 @@ export const images = {
   },
   tamilIdShowcase: {
     path: "/images/tamil-ulagam/membership/tamil-id-showcase.png",
-    alt: "Concept design of a Tamil ID card held against a navy background",
+    alt: "Digital Tamil ID membership card held against a navy background",
     width: 1086,
     height: 1448,
     aspectRatio: "3/4",
@@ -228,7 +228,7 @@ export const images = {
   },
   mobileAppPreview: {
     path: "/images/tamil-ulagam/pages/mobile-app-preview.png",
-    alt: "Concept mobile app interface presented in a community setting",
+    alt: "Tamil Ulagam mobile app interface visual presented in a community setting",
     width: 1086,
     height: 1448,
     aspectRatio: "3/4",

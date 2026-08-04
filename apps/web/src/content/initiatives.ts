@@ -5,9 +5,9 @@ export const initiatives = [
     slug: "healthcare",
     title: "Healthcare",
     shortDescription:
-      "Exploring trusted pathways to health information and community support.",
+      "Trusted pathways to health information and community support.",
     description:
-      "This planned initiative is being shaped around responsible access, safeguarding, and collaboration with qualified organisations. No healthcare service is currently offered through this website.",
+      "A responsible healthcare vision centred on trusted discovery, safeguarding and collaboration with qualified organisations.",
     status: "planned",
     href: "/initiatives/healthcare",
     imageKey: "initiativeHealthcare",
@@ -16,9 +16,9 @@ export const initiatives = [
     slug: "education",
     title: "Education",
     shortDescription:
-      "Planning connections between learners, educators, and Tamil knowledge.",
+      "Connections between learners, educators and Tamil knowledge.",
     description:
-      "This planned initiative will explore educational access, language learning, and institutional collaboration. Courses and learner services are not currently available.",
+      "An education ecosystem connecting language learning, cultural knowledge, mentorship and institutional collaboration.",
     status: "planned",
     href: "/initiatives/education",
     imageKey: "initiativeEducation",
@@ -27,9 +27,9 @@ export const initiatives = [
     slug: "business",
     title: "Business",
     shortDescription:
-      "Preparing a trustworthy foundation for enterprise and professional connections.",
+      "Trusted enterprise and professional connections across borders.",
     description:
-      "This planned initiative will consider responsible ways to connect businesses and professionals. Listings, referrals, and commercial services are not currently available.",
+      "A responsible network for Tamil-owned businesses, founders, professionals and institutional collaboration.",
     status: "planned",
     href: "/initiatives/business",
     imageKey: "initiativeBusiness",
@@ -38,9 +38,9 @@ export const initiatives = [
     slug: "jobs",
     title: "Jobs",
     shortDescription:
-      "Designing future pathways between talent, employers, and opportunity.",
+      "Pathways between Tamil talent, employers and opportunity.",
     description:
-      "This planned initiative will be developed with clear verification and safety standards. Job listings, applications, and recruitment services are not currently available.",
+      "A trusted careers vision shaped around organisation verification, transparent opportunity and professional guidance.",
     status: "planned",
     href: "/initiatives/jobs",
     imageKey: "initiativeJobs",
@@ -49,9 +49,9 @@ export const initiatives = [
     slug: "research",
     title: "Research & Innovation",
     shortDescription:
-      "Planning a space for evidence, scholarship, and shared global learning.",
+      "A space for evidence, scholarship and shared global learning.",
     description:
-      "This planned initiative will explore how research can be responsibly organised, attributed, and shared. No research repository or funding programme is currently available.",
+      "A research and knowledge ecosystem for responsible discovery, attribution, preservation and collaboration.",
     status: "planned",
     href: "/initiatives/research",
     imageKey: "initiativeResearch",
@@ -60,9 +60,9 @@ export const initiatives = [
     slug: "tourism",
     title: "Tourism & Hospitality",
     shortDescription:
-      "Exploring culturally respectful ways to discover Tamil places and experiences.",
+      "Culturally respectful discovery of Tamil places and experiences.",
     description:
-      "This planned initiative will consider trusted destination information and responsible cultural tourism. Booking and travel services are not currently available.",
+      "A responsible discovery platform for Tamil heritage, destinations, hospitality and cultural context.",
     status: "planned",
     href: "/initiatives/tourism",
     imageKey: "initiativeTourism",
@@ -71,9 +71,9 @@ export const initiatives = [
     slug: "arts-culture",
     title: "Arts, Music & Culture",
     shortDescription:
-      "Preparing a global platform for Tamil creativity, heritage, and expression.",
+      "A global platform for Tamil creativity, heritage and expression.",
     description:
-      "This planned initiative will explore respectful presentation, attribution, and access across art forms. Artist programmes and cultural archives are not currently available.",
+      "A cultural ecosystem for respectful presentation, attribution, discovery and intergenerational access.",
     status: "planned",
     href: "/initiatives/arts-culture",
     imageKey: "initiativeArtsCulture",
@@ -82,9 +82,9 @@ export const initiatives = [
     slug: "global-events",
     title: "Global Events",
     shortDescription:
-      "Planning ways for communities to discover and coordinate meaningful gatherings.",
+      "Meaningful gatherings connecting Tamil communities worldwide.",
     description:
-      "This planned initiative will consider verified event publishing and chapter coordination. Event submission, registration, and ticketing are not currently available.",
+      "A shared events vision for trusted discovery, cultural programmes, summits and community participation.",
     status: "planned",
     href: "/initiatives/global-events",
     imageKey: "initiativeGlobalEvents",

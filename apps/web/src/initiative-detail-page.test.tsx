@@ -36,12 +36,14 @@ describe("initiative detail pages", () => {
           name: images[getInitiativeImageKey(slug)].alt,
         }),
       ).toHaveAttribute("loading", "eager");
-      expect(view.getAllByText("Planned").length).toBeGreaterThan(0);
       expect(
         view.getByRole("heading", {
-          name: "Planned capabilities, introduced in stages.",
+          name: "Connected capabilities shaped around trust and community value.",
         }),
       ).toBeVisible();
+      expect(
+        view.queryByText(/planned|proposed|in development/i),
+      ).not.toBeInTheDocument();
       expect(
         view.getByRole("heading", {
           name: detail.audienceHeading,

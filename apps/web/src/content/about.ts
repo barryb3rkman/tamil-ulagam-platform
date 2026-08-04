@@ -41,7 +41,7 @@ export const aboutContent = {
     eyebrow: "ABOUT TAMIL ULAGAM",
     title: "A global home for Tamil identity, connection and progress.",
     description:
-      "Tamil Ulagam is being built as a trusted digital bridge connecting Tamil people, organisations, knowledge, culture and opportunity across borders.",
+      "Tamil Ulagam is a trusted digital bridge connecting Tamil people, organisations, knowledge, culture and opportunity across borders.",
     imageKey: "aboutHero",
     primaryCallToAction: {
       label: "Explore Our Vision",
@@ -59,7 +59,7 @@ export const aboutContent = {
       "The Tamil world is global. Its digital future should be connected.",
     paragraphs: [
       "Tamil communities have grown across countries, professions and generations. Yet the systems that connect people, organisations, knowledge, services and opportunity remain fragmented.",
-      "Tamil Ulagam is envisioned as a shared global platform where identity is respected, collaboration is strengthened and Tamil heritage continues into the future.",
+      "Tamil Ulagam is a shared global platform where identity is respected, collaboration is strengthened and Tamil heritage continues into the future.",
     ],
   },
   visionMission: {
@@ -81,7 +81,7 @@ export const aboutContent = {
     eyebrow: "THE CHALLENGE",
     title: "A worldwide community should not remain digitally fragmented.",
     description:
-      "Tamil Ulagam is designed to strengthen connection between existing communities and institutions, while making future pathways easier to discover and build together.",
+      "Tamil Ulagam strengthens connections between existing communities and institutions while making shared pathways easier to discover and shape together.",
     statements: [
       {
         title: "Community fragmentation",
@@ -142,14 +142,13 @@ export const aboutContent = {
     ] as const satisfies readonly AboutObjective[],
   },
   ecosystem: {
-    eyebrow: "THE LONG-TERM PLATFORM",
+    eyebrow: "THE CONNECTED PLATFORM",
     title: "More than a website — a connected digital ecosystem.",
     description:
-      "Tamil Ulagam is being developed in deliberate stages, with public information and community connection forming the base for future capabilities.",
-    status: "Building the foundation",
+      "Public information, community connection, membership and opportunity belong to one coherent digital ecosystem.",
     groups: [
       {
-        title: "Foundation",
+        title: "Public connection",
         items: [
           "Public website",
           "Content",
@@ -158,7 +157,7 @@ export const aboutContent = {
         ],
       },
       {
-        title: "Connection",
+        title: "Membership",
         items: ["Membership", "Tamil ID", "Events", "Notifications"],
       },
       {
@@ -183,7 +182,7 @@ export const aboutContent = {
     eyebrow: "TRUST BY DESIGN",
     title: "A global federation must be built with clear responsibility.",
     description:
-      "Tamil Ulagam’s long-term credibility will depend not only on technology, but on transparent governance, accountable administration, privacy-conscious systems and trusted collaboration.",
+      "Tamil Ulagam’s long-term credibility depends not only on technology, but on transparent governance, accountable administration, privacy-conscious systems and trusted collaboration.",
     imageKey: "partnerships",
     principles: [
       {
@@ -204,7 +203,7 @@ export const aboutContent = {
       {
         title: "Honest communication",
         description:
-          "Planned services, partnerships and milestones must never be presented as already active.",
+          "Services, partnerships and milestones must be represented accurately and with clear responsibility.",
       },
       {
         title: "Responsible collaboration",

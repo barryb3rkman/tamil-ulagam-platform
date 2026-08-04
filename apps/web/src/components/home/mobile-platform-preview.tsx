@@ -1,5 +1,4 @@
 import {
-  Badge,
   Container,
   ImageWithFallback,
   LinkButton,
@@ -18,14 +17,10 @@ export function MobilePlatformPreview() {
           <div className="lg:order-2">
             <ImageWithFallback
               asset={images.mobileAppPreview}
-              fallbackLabel="Future Tamil Ulagam mobile app concept preview"
+              fallbackLabel="Tamil Ulagam mobile platform visual"
               sizes="(min-width: 1024px) 34vw, 90vw"
               className="mx-auto aspect-[3/4] max-h-[680px] w-full max-w-md object-cover"
             />
-            <p className="text-slate mt-3 text-center text-xs leading-5">
-              Concept preview only — the mobile platform is planned for a future
-              phase.
-            </p>
           </div>
           <div className="lg:order-1">
             <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
@@ -40,9 +35,6 @@ export function MobilePlatformPreview() {
             <p className="text-slate mt-6 max-w-xl text-lg leading-8">
               {mobile.description}
             </p>
-            <Badge tone="maroon" className="mt-7">
-              Planned
-            </Badge>
             <ul className="mt-8 grid gap-3 sm:grid-cols-2">
               {mobile.features.map((feature) => (
                 <li key={feature} className="flex gap-3 text-sm leading-6">

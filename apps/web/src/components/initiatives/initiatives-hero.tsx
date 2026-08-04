@@ -1,9 +1,4 @@
-import {
-  Badge,
-  Container,
-  ImageWithFallback,
-  LinkButton,
-} from "@tamil-ulagam/ui";
+import { Container, ImageWithFallback, LinkButton } from "@tamil-ulagam/ui";
 
 import { images, type ImageKey } from "@/config/images";
 import {
@@ -39,12 +34,6 @@ export function InitiativesHero() {
             <p className="mt-7 max-w-2xl text-[1.06rem] leading-8 text-white/80 sm:text-xl sm:leading-9">
               {hero.description}
             </p>
-            <Badge
-              tone="warning"
-              className="bg-heritage-gold/15 text-heritage-gold mt-7 text-sm"
-            >
-              {hero.status}
-            </Badge>
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <LinkButton
                 href={hero.primaryCallToAction.href}

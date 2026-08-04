@@ -47,7 +47,7 @@ export const roadmapPhases = [
     status: "future",
     statusLabel: "Future Phase",
     summary:
-      "Broaden the chapter network and introduce business, jobs, awards and membership growth initiatives.",
+      "Broaden the chapter network and connect business, jobs, awards and membership growth initiatives.",
     purpose:
       "Connect more communities and create planned pathways for enterprise, careers and recognition.",
     capabilities: [

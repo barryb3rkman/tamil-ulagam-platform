@@ -28,8 +28,8 @@ export function ChapterGovernanceSection() {
             />
           </div>
           <p className="border-global-navy/12 text-slate border-b py-4 text-sm leading-6">
-            Conceptual collaboration image. It does not represent an active
-            chapter or confirmed organisation relationship.
+            Community collaboration visual. It does not represent a confirmed
+            organisation relationship.
           </p>
         </div>
         <div>
@@ -39,7 +39,7 @@ export function ChapterGovernanceSection() {
             description={governance.description}
           />
           <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.14em] uppercase">
-            Proposed governance principles
+            Chapter governance principles
           </p>
           <ol className="border-global-navy/12 divide-global-navy/12 mt-5 divide-y border-y">
             {governance.principles.map((principle, index) => (
@@ -130,7 +130,7 @@ export function ChapterStatusSection() {
         />
         <div>
           <h2 id="chapter-status-title" className="sr-only">
-            Proposed chapter statuses
+            Chapter statuses
           </h2>
           <ul className="flex flex-wrap gap-3">
             {statusModel.statuses.map((status) => (
@@ -143,8 +143,8 @@ export function ChapterStatusSection() {
             ))}
           </ul>
           <p className="border-heritage-maroon/35 text-slate mt-8 border-l-2 pl-5 leading-7">
-            Status labels are proposed for a future directory. No real location
-            or chapter is being assigned a status on this page.
+            Status labels keep chapter recognition and local responsibility
+            clear without misrepresenting a location.
           </p>
         </div>
       </Container>

@@ -77,10 +77,7 @@ export function EventsInterestSection() {
               </li>
             ))}
           </ul>
-          <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.12em] uppercase">
-            {interest.notice}
-          </p>
-          <div className="mt-6 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+          <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center">
             <LinkButton href={interest.primaryCallToAction.href} size="large">
               {interest.primaryCallToAction.label}
             </LinkButton>

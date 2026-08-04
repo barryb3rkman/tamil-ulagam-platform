@@ -20,7 +20,7 @@ export function PartnershipPathwaySection() {
           description={pathway.description}
         />
         <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.14em] uppercase">
-          Proposed partnership pathway
+          Partnership pathway
         </p>
         <ol className="border-global-navy/12 mt-5 grid border-t md:grid-cols-2 xl:grid-cols-4">
           {pathway.steps.map((step) => (
@@ -59,7 +59,7 @@ export function DueDiligenceSection() {
         />
         <div>
           <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
-            Proposed due-diligence areas
+            Due-diligence areas
           </p>
           <ol className="border-global-navy/12 mt-5 grid border-t sm:grid-cols-2">
             {dueDiligence.items.map((item, index) => (

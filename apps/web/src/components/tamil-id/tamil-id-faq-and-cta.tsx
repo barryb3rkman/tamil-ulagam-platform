@@ -16,7 +16,7 @@ export function TamilIdFaq() {
       >
         <SectionHeading
           eyebrow="FREQUENTLY ASKED QUESTIONS"
-          title="Clear answers for a concept still being built."
+          title="Clear answers about Tamil ID membership."
         />
         <dl className="border-global-navy/12 divide-global-navy/12 border-y">
           {tamilIdContent.faqs.map((faq) => (

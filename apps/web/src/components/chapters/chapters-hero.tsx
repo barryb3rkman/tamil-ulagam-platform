@@ -1,9 +1,4 @@
-import {
-  Badge,
-  Container,
-  ImageWithFallback,
-  LinkButton,
-} from "@tamil-ulagam/ui";
+import { Container, ImageWithFallback, LinkButton } from "@tamil-ulagam/ui";
 
 import { images } from "@/config/images";
 import { chaptersContent } from "@/content/chapters";
@@ -30,11 +25,6 @@ export function ChaptersHero() {
             <p className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
               {hero.eyebrow}
             </p>
-            <div className="mt-5">
-              <Badge className="border-heritage-gold/28 bg-heritage-gold/14 text-heritage-gold border">
-                {hero.status}
-              </Badge>
-            </div>
             <h1
               id="chapters-title"
               className="mt-6 max-w-xl text-5xl leading-[0.99] font-semibold tracking-[-0.045em] text-balance sm:text-6xl lg:text-[4.35rem]"
@@ -72,7 +62,7 @@ export function ChaptersHero() {
           <div className="relative w-full max-w-5xl overflow-hidden">
             <ImageWithFallback
               asset={images[hero.imageKey]}
-              fallbackLabel="Global Chapters concept representation"
+              fallbackLabel="Global Tamil chapter network"
               priority
               sizes="(min-width: 1024px) 60vw, 100vw"
               className="aspect-[16/9] h-full w-full object-cover"

@@ -62,12 +62,13 @@ test.describe("public Chapters page", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: chaptersContent.hero.title }),
     ).toBeVisible();
-    await expect(page.getByText(chaptersContent.hero.status)).toBeVisible();
     await expect(page.getByText(chaptersContent.hero.caption)).toBeVisible();
     await expect(
-      page.getByText(chaptersContent.directory.status),
+      page.getByText(/does not imply control over them/i),
     ).toBeVisible();
-    await expect(page.getByText(chaptersContent.interest.notice)).toBeVisible();
+    await expect(page.locator("main")).not.toContainText(
+      /planned|proposed|applications are not open/i,
+    );
     await expect(
       page.getByRole("img", { name: images.globalChapters.alt }),
     ).toBeVisible();

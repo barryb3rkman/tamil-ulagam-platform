@@ -7,15 +7,14 @@ import { tamilIdContent } from "@/content/tamil-id";
 
 afterEach(() => cleanup());
 
-describe("public Tamil ID concept page", () => {
-  it("renders one planned concept heading and the approved registry image", () => {
+describe("public Tamil ID page", () => {
+  it("renders one digital-membership heading and the approved registry image", () => {
     render(<TamilIdPage />);
 
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       tamilIdContent.hero.title,
     );
-    expect(screen.getByText(tamilIdContent.hero.status)).toBeVisible();
     expect(screen.getByText(tamilIdContent.hero.caption)).toBeVisible();
     expect(
       screen.getByRole("img", {
@@ -24,7 +23,7 @@ describe("public Tamil ID concept page", () => {
     ).toBeVisible();
   });
 
-  it("keeps the membership concept honest and distinct from official identification", () => {
+  it("keeps digital membership distinct from official identification", () => {
     render(<TamilIdPage />);
 
     expect(
@@ -41,15 +40,13 @@ describe("public Tamil ID concept page", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("renders the PPT membership concept and concise status safeguards", () => {
+  it("renders the PPT membership vision and concise safeguards", () => {
     render(<TamilIdPage />);
 
     expect(
-      screen.getByText(
-        "Proposed Community, Professional and Patron membership tiers",
-      ),
+      screen.getByText("Community, Professional and Patron membership tiers"),
     ).toBeVisible();
-    expect(screen.getByText("Future event and service access")).toBeVisible();
+    expect(screen.getByText("Event and service access")).toBeVisible();
     expect(
       screen.queryByText(tamilIdContent.journey.title),
     ).not.toBeInTheDocument();
@@ -60,6 +57,9 @@ describe("public Tamil ID concept page", () => {
       expect(screen.getByText(faq.title)).toBeVisible();
       expect(screen.getByText(faq.description)).toBeVisible();
     }
+    expect(
+      screen.queryByText(/planned|in development|concept preview/i),
+    ).not.toBeInTheDocument();
   });
 
   it("keeps roadmap, partner, contact and registry references centralised", () => {

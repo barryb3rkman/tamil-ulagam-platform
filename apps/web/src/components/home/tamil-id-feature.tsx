@@ -1,5 +1,4 @@
 import {
-  Badge,
   Container,
   ImageWithFallback,
   LinkButton,
@@ -22,13 +21,10 @@ export function TamilIdFeature() {
           <div className="mx-auto w-full max-w-sm lg:order-2">
             <ImageWithFallback
               asset={images.tamilIdShowcase}
-              fallbackLabel="Tamil ID concept preview"
+              fallbackLabel="Tamil ID digital membership visual"
               sizes="(min-width: 1024px) 30vw, 90vw"
               className="aspect-[3/4] h-full w-full object-cover"
             />
-            <p className="mt-3 text-center text-xs leading-5 text-white/55">
-              Concept preview only — Tamil ID is not currently active.
-            </p>
           </div>
           <div className="lg:order-1">
             <p className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
@@ -43,12 +39,6 @@ export function TamilIdFeature() {
             <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72">
               {tamilId.description}
             </p>
-            <Badge
-              tone="warning"
-              className="bg-heritage-gold/15 text-heritage-gold mt-7"
-            >
-              In development
-            </Badge>
             <ul className="mt-8 grid gap-3 sm:grid-cols-2">
               {tamilId.features.map((feature) => (
                 <li

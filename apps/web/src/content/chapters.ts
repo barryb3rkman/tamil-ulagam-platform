@@ -8,7 +8,6 @@ interface ChaptersHeroContent {
   readonly eyebrow: string;
   readonly title: string;
   readonly description: string;
-  readonly status: string;
   readonly caption: string;
   readonly imageKey: Extract<ChaptersImageKey, "globalChapters">;
   readonly primaryCallToAction: CallToAction;
@@ -28,12 +27,11 @@ type ChaptersFaq = LabeledStatement;
 
 export const chaptersContent = {
   hero: {
-    eyebrow: "PLANNED GLOBAL CHAPTER NETWORK",
+    eyebrow: "GLOBAL CHAPTER NETWORK",
     title: "Local communities. One global federation.",
     description:
-      "Tamil Ulagam chapters are envisioned as trusted local connections between Tamil communities, organisations and the wider global platform.",
-    status: "Building the Foundation",
-    caption: "Conceptual representation of a future global chapter network.",
+      "The Tamil Ulagam chapter vision connects local Tamil communities and organisations within one shared global federation.",
+    caption: "Local Tamil communities connected through one global network.",
     imageKey: "globalChapters",
     primaryCallToAction: {
       label: "Understand the Chapter Vision",
@@ -50,7 +48,7 @@ export const chaptersContent = {
     eyebrow: "THE CHAPTER VISION",
     title: "A trusted local presence within one shared global mission.",
     description:
-      "A future Tamil Ulagam chapter is intended to be a recognised local unit of the federation: locally relevant, globally aligned and accountable to clear shared standards.",
+      "A Tamil Ulagam chapter is a recognised local unit of the federation: locally relevant, globally aligned and accountable to clear shared standards.",
     principles: [
       "A recognised local unit of the federation",
       "A connection point for communities and organisations",
@@ -103,7 +101,7 @@ export const chaptersContent = {
     eyebrow: "GLOBAL AND LOCAL RELATIONSHIP",
     title: "Local responsibility. Shared standards. Global connection.",
     description:
-      "The future model separates global standards from local responsibility so that community participation can remain relevant, accountable and connected.",
+      "The chapter model separates global standards from local responsibility so community participation remains relevant, accountable and connected.",
     federation: {
       title: "Global federation",
       items: [
@@ -134,10 +132,10 @@ export const chaptersContent = {
       "Tamil Ulagam chapters are intended to complement existing Tamil organisations, not replace them.",
   },
   formationJourney: {
-    eyebrow: "PROPOSED CHAPTER-FORMATION JOURNEY",
+    eyebrow: "CHAPTER-FORMATION JOURNEY",
     title: "A careful path from local interest to an accountable chapter.",
     description:
-      "This proposed formation journey is a design for responsible introduction. It is not an application process currently accepting submissions.",
+      "The formation journey connects local purpose, representative leadership and accountable federation review.",
     steps: [
       {
         number: "01",
@@ -149,7 +147,7 @@ export const chaptersContent = {
         number: "02",
         title: "Initial discussion",
         description:
-          "The federation reviews the local context, proposed scope and community need.",
+          "The federation reviews local context, chapter scope and community need.",
       },
       {
         number: "03",
@@ -201,10 +199,10 @@ export const chaptersContent = {
     ] as const satisfies readonly NumberedStatement[],
   },
   responsibilities: {
-    eyebrow: "PROPOSED CHAPTER RESPONSIBILITIES",
+    eyebrow: "CHAPTER RESPONSIBILITIES",
     title: "A chapter should serve its community—not merely carry a name.",
     description:
-      "These are proposed responsibilities, subject to future governance approval and local operating context.",
+      "Shared responsibilities keep local chapters accountable to community context and federation standards.",
     items: [
       "Maintain accurate chapter information",
       "Operate within approved scope",
@@ -217,7 +215,7 @@ export const chaptersContent = {
       "Report important activity and concerns",
       "Escalate safety, legal or governance issues",
       "Avoid political-party alignment in the federation’s name",
-      "Communicate planned and active services honestly",
+      "Communicate services and participation accurately",
     ],
   },
   governance: {
@@ -244,7 +242,7 @@ export const chaptersContent = {
       {
         title: "Financial accountability",
         description:
-          "Any future chapter funds require approved controls, records and reporting.",
+          "Chapter funds require approved controls, records and reporting.",
       },
       {
         title: "Role-based administration",
@@ -315,11 +313,11 @@ export const chaptersContent = {
     },
   },
   statusModel: {
-    eyebrow: "PROPOSED CHAPTER STATUS MODEL",
+    eyebrow: "CHAPTER STATUS MODEL",
     title:
       "Chapter status should be clear, current and publicly understandable.",
     description:
-      "A future public directory should clearly distinguish planned chapters, chapters under formation, approved active chapters, and inactive or suspended chapters without implying a real location at this stage.",
+      "A public directory distinguishes recognised chapters, chapters under formation, and paused, suspended or closed chapters without misrepresenting a location.",
     statuses: [
       "Interest gathering",
       "Initial discussion",
@@ -334,11 +332,10 @@ export const chaptersContent = {
     ],
   },
   directory: {
-    eyebrow: "PROPOSED GLOBAL CHAPTER NETWORK",
-    title: "Planned regions from the original global vision.",
+    eyebrow: "GLOBAL CHAPTER NETWORK",
+    title: "Chapter regions across the Tamil world.",
     description:
-      "The original vision identifies regions where Tamil communities may eventually connect through approved chapters. These are proposed areas, not active Tamil Ulagam chapters.",
-    status: "Proposed locations",
+      "Tamil communities across these regions express the global reach of the chapter vision and its local relevance.",
     areas: [
       "India",
       "Sri Lanka",
@@ -351,8 +348,9 @@ export const chaptersContent = {
     ],
   },
   readiness: {
-    eyebrow: "BUILT IN STAGES",
-    title: "A chapter should launch only when it can operate responsibly.",
+    eyebrow: "RESPONSIBLE CHAPTER FOUNDATIONS",
+    title:
+      "Every chapter needs the people, standards and capacity to serve responsibly.",
     requirements: [
       "Genuine community need",
       "Representative founding group",
@@ -361,7 +359,7 @@ export const chaptersContent = {
       "Defined leadership responsibilities",
       "Governance and conflict controls",
       "Administrative capacity",
-      "Privacy and security readiness",
+      "Privacy and security controls",
       "Local legal and regulatory awareness",
       "Sustainable event and program capacity",
       "Communication and support processes",
@@ -376,10 +374,10 @@ export const chaptersContent = {
     },
   },
   interest: {
-    eyebrow: "REGISTER INTEREST",
-    title: "Interested in helping shape a future local chapter?",
+    eyebrow: "CHAPTER PARTICIPATION",
+    title: "Help shape responsible local connection.",
     description:
-      "Individuals and organisations may eventually express interest in contributing local knowledge, governance experience, institutional perspective or program support.",
+      "Individuals and organisations can contribute local knowledge, governance experience, institutional perspective and programme support.",
     areas: [
       "Joining a founding discussion",
       "Sharing knowledge of the local Tamil community",
@@ -388,7 +386,6 @@ export const chaptersContent = {
       "Helping with culture, education, events or professional networks",
       "Discussing institutional collaboration",
     ],
-    notice: "Chapter applications are not currently open.",
     primaryCallToAction: {
       label: "Contact Tamil Ulagam",
       href: "/contact",
@@ -407,14 +404,14 @@ export const chaptersContent = {
   },
   faqs: [
     {
-      title: "Are Tamil Ulagam chapters currently active?",
+      title: "What does the chapter-region list represent?",
       description:
-        "No active chapter directory is being presented at this stage. The page explains the planned chapter model.",
+        "It expresses the global reach of the chapter vision without claiming an operating chapter or chapter count.",
     },
     {
-      title: "Can an individual create a chapter immediately?",
+      title: "How is a Tamil Ulagam chapter recognised?",
       description:
-        "No. Any future chapter formation will require an approved process, representative founding group and governance review.",
+        "Recognition requires a representative founding group, clear local purpose and federation governance review.",
     },
     {
       title: "Will chapters replace existing Tamil organisations?",
@@ -424,12 +421,12 @@ export const chaptersContent = {
     {
       title: "Who will lead a chapter?",
       description:
-        "Leadership models and eligibility rules must be approved before chapter formation begins.",
+        "Each chapter requires representative leadership, defined responsibility and accountable governance.",
     },
     {
       title: "How can I express interest?",
       description:
-        "Visitors may currently use the Contact or Partners pages to begin a discussion.",
+        "Use the Contact or Partners page to begin a chapter conversation.",
     },
   ] as const satisfies readonly ChaptersFaq[],
   finalCallToAction: {

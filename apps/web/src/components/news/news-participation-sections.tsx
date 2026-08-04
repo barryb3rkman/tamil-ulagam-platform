@@ -80,10 +80,7 @@ export function NewsInterestSection() {
               </li>
             ))}
           </ul>
-          <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.12em] uppercase">
-            {interest.notice}
-          </p>
-          <div className="mt-6 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+          <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center">
             <LinkButton href={interest.primaryCallToAction.href} size="large">
               {interest.primaryCallToAction.label}
             </LinkButton>
@@ -118,7 +115,7 @@ export function NewsFaq() {
         <SectionHeading
           id="news-faq-title"
           eyebrow="FREQUENTLY ASKED QUESTIONS"
-          title="Clear answers for a planned public newsroom."
+          title="Clear answers about Tamil Ulagam publishing."
         />
         <dl className="border-global-navy/12 divide-global-navy/12 border-y">
           {newsContent.faqs.map((faq) => (

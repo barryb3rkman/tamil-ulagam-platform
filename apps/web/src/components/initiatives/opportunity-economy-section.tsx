@@ -5,7 +5,6 @@ import {
   Section,
 } from "@tamil-ulagam/ui";
 
-import { InitiativeStatusBadge } from "@/components/initiative-status-badge";
 import { images, type ImageKey } from "@/config/images";
 import {
   getOverviewInitiative,
@@ -51,15 +50,11 @@ export function OpportunityEconomySection() {
                 />
               </div>
               <div className="p-7 sm:p-9">
-                <InitiativeStatusBadge status={business.status} />
-                <h3 className="text-global-navy mt-5 text-3xl font-semibold tracking-[-0.035em]">
+                <h3 className="text-global-navy text-3xl font-semibold tracking-[-0.035em]">
                   {business.title}
                 </h3>
                 <p className="text-slate mt-4 max-w-2xl text-lg leading-8">
                   {businessDetail.purpose}
-                </p>
-                <p className="text-slate mt-5 text-sm leading-6 italic">
-                  {businessDetail.availabilityStatement}
                 </p>
                 <LinkButton
                   href={business.href}
@@ -91,15 +86,11 @@ export function OpportunityEconomySection() {
                       />
                     </div>
                     <div className="p-6 sm:p-7">
-                      <InitiativeStatusBadge status={initiative.status} />
-                      <h3 className="mt-5 text-2xl font-semibold tracking-[-0.025em]">
+                      <h3 className="text-2xl font-semibold tracking-[-0.025em]">
                         {initiative.title}
                       </h3>
                       <p className="mt-3 leading-7 text-white/76">
                         {detail.purpose}
-                      </p>
-                      <p className="mt-5 text-sm leading-6 text-white/62 italic">
-                        {detail.availabilityStatement}
                       </p>
                       <LinkButton
                         href={initiative.href}

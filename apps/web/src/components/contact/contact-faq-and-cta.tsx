@@ -17,7 +17,7 @@ export function ContactFaq() {
         <SectionHeading
           id="contact-faq-title"
           eyebrow="FREQUENTLY ASKED QUESTIONS"
-          title="Clear answers before contact channels open."
+          title="Clear answers about beginning a conversation."
         />
         <dl className="border-global-navy/12 divide-global-navy/12 border-y">
           {contactContent.faqs.map((faq) => (

@@ -78,7 +78,9 @@ async function verifyDetailRoute(
   await expect(
     page.getByRole("heading", { level: 1, name: initiative.title }),
   ).toBeVisible();
-  await expect(page.getByText("Planned").first()).toBeVisible();
+  await expect(page.locator("main")).not.toContainText(
+    /planned|proposed|in development/i,
+  );
   await expect(
     page.getByRole("navigation", { name: "Breadcrumb" }),
   ).toBeVisible();

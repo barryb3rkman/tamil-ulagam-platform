@@ -61,7 +61,7 @@ export function SiteFooter() {
           <p>
             © {new Date().getFullYear()} {siteContent.name}
           </p>
-          <p>Public website foundation</p>
+          <p>Connecting Tamil communities worldwide</p>
         </Container>
       </div>
     </footer>

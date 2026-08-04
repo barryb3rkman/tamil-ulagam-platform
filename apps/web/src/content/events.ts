@@ -8,7 +8,6 @@ interface EventsHeroContent {
   readonly eyebrow: string;
   readonly title: string;
   readonly description: string;
-  readonly status: string;
   readonly caption: string;
   readonly imageKey: EventsImageKey;
   readonly primaryCallToAction: CallToAction;
@@ -36,13 +35,11 @@ interface EventsFaqItem {
 
 export const eventsContent = {
   hero: {
-    eyebrow: "PLANNED EVENTS PLATFORM",
+    eyebrow: "GLOBAL EVENTS",
     title: "Bringing communities together through trusted events.",
     description:
-      "Tamil Ulagam’s future events platform is intended to connect members, chapters, organisations and communities through carefully reviewed cultural, educational, professional and global programs.",
-    status: "Building the Foundation",
-    caption:
-      "Conceptual representation of future Tamil Ulagam events and community participation.",
+      "Tamil Ulagam connects members, chapters, organisations and communities through cultural, educational, professional and global programmes.",
+    caption: "Tamil Ulagam events and community participation across borders.",
     imageKey: "initiativeGlobalEvents",
     primaryCallToAction: {
       label: "Understand the Events Model",
@@ -60,23 +57,23 @@ export const eventsContent = {
     title:
       "One place to discover approved events, understand participation and stay connected.",
     description:
-      "The planned platform may eventually bring trusted event information, participation pathways and community communication into one accountable public experience.",
+      "Trusted event information, participation pathways and community communication belong in one accountable public experience.",
     capabilities: [
       "Public event discovery",
       "Member event discovery",
       "Federation programs",
-      "Future chapter events",
-      "Future organisation events",
+      "Chapter events",
+      "Organisation events",
       "Cultural performances",
       "Education and research programs",
       "Professional summits",
       "Community gatherings",
       "Hybrid and virtual participation",
-      "Future registrations",
-      "Future recordings and archives",
+      "Participation and registration guidance",
+      "Recordings and archives",
     ],
     statement:
-      "The Events page currently explains the future operating model. It is not presenting a live event calendar.",
+      "Clear purpose, accountable organisers and respectful participation shape every Tamil Ulagam event experience.",
     principles: [
       {
         title: "Trusted discovery",
@@ -101,38 +98,38 @@ export const eventsContent = {
     ] as const satisfies readonly LabeledStatement[],
   },
   categories: {
-    eyebrow: "PROPOSED GLOBAL CELEBRATIONS",
-    title: "Annual event concepts from the Tamil Ulagam vision.",
+    eyebrow: "GLOBAL CELEBRATIONS",
+    title: "Annual celebrations across the Tamil world.",
     items: [
       {
         title: "Tamil Ulagam Day",
         description:
-          "A proposed annual celebration connecting Tamil communities worldwide.",
+          "An annual celebration connecting Tamil communities worldwide.",
       },
       {
         title: "Pongal celebrations",
         description:
-          "Future community and chapter celebrations, subject to local approval.",
+          "Community and chapter celebrations rooted in local Tamil culture.",
       },
       {
         title: "Tamil New Year gala",
         description:
-          "A proposed cultural gathering without a confirmed date, venue or registration process.",
+          "A cultural gathering celebrating renewal, community and Tamil identity.",
       },
       {
         title: "Global Tamil Summit",
         description:
-          "A future global forum for community, institutional and professional connection.",
+          "A global forum for community, institutional and professional connection.",
       },
       {
         title: "Tamil Heritage Month",
         description:
-          "A proposed period of cultural, educational and community programming.",
+          "Cultural, educational and community programming centred on Tamil heritage.",
       },
       {
         title: "Tamil Ulagam Awards Night",
         description:
-          "A future recognition concept; no awards programme or recipients are currently confirmed.",
+          "A celebration of Tamil contribution across culture, knowledge, enterprise and community life.",
       },
     ] as const satisfies readonly LabeledStatement[],
   },
@@ -166,10 +163,10 @@ export const eventsContent = {
     ],
   },
   organiserPathway: {
-    eyebrow: "PROPOSED ORGANISER PATHWAY",
+    eyebrow: "ORGANISER PATHWAY",
     title: "A careful route from organiser interest to publishing authority.",
     description:
-      "This proposed pathway explains what responsible preparation may require. Organiser onboarding and event submissions are not currently open.",
+      "The organiser pathway connects verified ownership, clear scope and responsible publishing authority.",
     steps: [
       {
         number: "01",
@@ -230,7 +227,7 @@ export const eventsContent = {
     title:
       "Every published event should have a clear and accountable lifecycle.",
     description:
-      "These are proposed operating states, not records of currently available events.",
+      "Clear operating states keep event ownership, publication and participation understandable.",
     steps: [
       {
         number: "01",
@@ -455,11 +452,11 @@ export const eventsContent = {
       "Virtual access and recordings are part of the long-term vision, subject to consent, rights and technical readiness.",
   },
   statusModel: {
-    eyebrow: "PROPOSED EVENT STATUS MODEL",
+    eyebrow: "EVENT STATUS MODEL",
     title: "Event status should always be clear and current.",
     publicStatuses: [
       "Announced",
-      "Registration planned",
+      "Registration required",
       "Registration open",
       "Registration closed",
       "Waitlist",
@@ -507,7 +504,7 @@ export const eventsContent = {
       "Tamil Ulagam should not publish events simply to make the platform appear active.",
   },
   readiness: {
-    eyebrow: "LAUNCH ONLY WHEN READY",
+    eyebrow: "RESPONSIBLE EVENT FOUNDATIONS",
     title:
       "The Events platform should open only when publishing and participation can be supported responsibly.",
     items: [
@@ -537,7 +534,7 @@ export const eventsContent = {
     eyebrow: "BEGIN A CONVERSATION",
     title: "Interested in shaping responsible Tamil community events?",
     description:
-      "Tamil Ulagam welcomes early conversations about how future events can be useful, safe, inclusive and operationally credible.",
+      "Tamil Ulagam welcomes conversations about events that are useful, safe, inclusive and operationally credible.",
     areas: [
       "Federation programs",
       "Chapter events",
@@ -552,8 +549,6 @@ export const eventsContent = {
       "Virtual participation",
       "Safety and safeguarding",
     ],
-    notice:
-      "Event organiser onboarding and event submissions are not currently open.",
     primaryCallToAction: { label: "Contact Tamil Ulagam", href: "/contact" },
     secondaryCallToAction: {
       label: "Explore Partnerships",
@@ -568,27 +563,28 @@ export const eventsContent = {
   },
   faqs: [
     {
-      title: "Are Tamil Ulagam events currently listed?",
-      description: "No live event calendar is being presented at this stage.",
+      title: "What kinds of events belong in Tamil Ulagam?",
+      description:
+        "Cultural celebrations, educational programmes, professional summits, research gatherings and community events all belong within the vision.",
     },
     {
-      title: "Can I submit an event now?",
+      title: "How is event participation communicated?",
       description:
-        "No. Event-submission and organiser-onboarding workflows are not currently open.",
+        "Each event experience should communicate its audience, access, participation and organiser responsibilities clearly.",
     },
     {
       title: "Will every event require registration?",
-      description: "No. Future registration requirements may vary by event.",
+      description: "No. Participation requirements vary by event and audience.",
     },
     {
       title: "Will some events be paid?",
       description:
-        "Future payment and ticketing policies have not been approved publicly.",
+        "Any paid participation requires clear pricing, payment, cancellation and refund policies.",
     },
     {
       title: "Can organisations publish events?",
       description:
-        "Future publication may be available to verified organisations within approved scope.",
+        "Verified organisations can participate within clearly approved scope and accountable publishing standards.",
     },
     {
       title: "How can an organiser begin a discussion?",
@@ -600,7 +596,7 @@ export const eventsContent = {
     title:
       "Meaningful events begin with clear purpose, responsible organisers and safe participation.",
     description:
-      "Tamil Ulagam welcomes thoughtful conversations with organisations, chapters, institutions and professionals interested in shaping credible future events.",
+      "Tamil Ulagam welcomes thoughtful conversations with organisations, chapters, institutions and professionals interested in credible global events.",
     primaryCallToAction: { label: "Contact Tamil Ulagam", href: "/contact" },
     secondaryCallToAction: {
       label: "Explore the Roadmap",

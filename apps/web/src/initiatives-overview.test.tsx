@@ -12,17 +12,13 @@ import {
 afterEach(() => cleanup());
 
 describe("public Initiatives overview page", () => {
-  it("renders one h1, all initiative identities, routes, and statuses", () => {
+  it("renders one h1 and all initiative identities and routes", () => {
     render(<InitiativesPage />);
 
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       initiativeOverviewContent.hero.title,
     );
-    expect(screen.getAllByText("Planned").length).toBeGreaterThanOrEqual(
-      initiatives.length,
-    );
-
     for (const initiative of initiatives) {
       expect(screen.getAllByText(initiative.title).length).toBeGreaterThan(0);
       expect(
@@ -32,7 +28,7 @@ describe("public Initiatives overview page", () => {
     }
   });
 
-  it("keeps ecosystem groups complete, unique, and clearly planned", () => {
+  it("keeps ecosystem groups complete, unique, and capability-led", () => {
     const groupedSlugs = initiativeOverviewContent.groups.flatMap(
       (group) => group.initiativeSlugs,
     );
@@ -76,10 +72,11 @@ describe("public Initiatives overview page", () => {
       screen.queryByText(/book now|apply now|register now|available today/i),
     ).not.toBeInTheDocument();
     for (const detail of Object.values(initiativeOverviewDetails)) {
-      expect(detail.availabilityStatement.toLowerCase()).toMatch(
-        /not currently|cannot currently|not available|no .*currently available/,
-      );
+      expect(detail.capabilities.length).toBeGreaterThan(0);
     }
+    expect(
+      screen.queryByText(/planned|proposed|not currently available/i),
+    ).not.toBeInTheDocument();
   });
 
   it("uses registry media and preserves the key public pathways", () => {

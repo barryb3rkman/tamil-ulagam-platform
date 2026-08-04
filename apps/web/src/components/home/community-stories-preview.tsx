@@ -1,5 +1,4 @@
 import {
-  Badge,
   Container,
   ImageWithFallback,
   LinkButton,
@@ -35,13 +34,10 @@ export function CommunityStoriesPreview() {
             <p className="text-slate mt-6 max-w-xl text-lg leading-8">
               {homepageContent.stories.description}
             </p>
-            <Badge tone="maroon" className="mt-7">
-              Editorial platform in development
-            </Badge>
             <LinkButton
               href="/news"
               variant="text"
-              className="mt-8 block w-fit"
+              className="mt-9 block w-fit"
             >
               Explore News and Stories{" "}
               <span aria-hidden="true" className="ml-2">

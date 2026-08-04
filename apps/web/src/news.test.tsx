@@ -8,35 +8,31 @@ import { newsContent } from "@/content/news";
 afterEach(() => cleanup());
 
 describe("public News page", () => {
-  it("renders one planned-newsroom heading and the approved registry image", () => {
+  it("renders one newsroom heading and the approved registry image", () => {
     render(<NewsPage />);
 
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       newsContent.hero.title,
     );
-    expect(screen.getByText(newsContent.hero.status)).toBeVisible();
     expect(screen.getByText(newsContent.hero.caption)).toBeVisible();
     for (const key of newsEditorialImageKeys) {
       expect(screen.getByRole("img", { name: images[key].alt })).toBeVisible();
     }
   });
 
-  it("keeps the future newsroom honest without placeholder editorial records", () => {
+  it("keeps the newsroom honest without placeholder editorial records", () => {
     render(<NewsPage />);
 
     expect(screen.getByText(newsContent.definition.statement)).toBeVisible();
-    expect(screen.getByText(newsContent.interest.notice)).toBeVisible();
-    expect(
-      screen.getByText(
-        "No approved public article collection is being presented on this page yet.",
-      ),
-    ).toBeVisible();
     expect(
       screen.queryByText(/breaking news|subscribe now|published today/i),
     ).not.toBeInTheDocument();
     expect(screen.queryByRole("searchbox")).not.toBeInTheDocument();
     expect(screen.queryAllByRole("article")).toHaveLength(0);
+    expect(
+      screen.queryByText(/planned|proposed|in development|future newsroom/i),
+    ).not.toBeInTheDocument();
   });
 
   it("renders PPT-aligned publication types and essential consent and correction principles", () => {
@@ -74,7 +70,7 @@ describe("public News page", () => {
     ).toHaveAttribute("href", "/about");
 
     const faq = screen.getByRole("heading", {
-      name: "Clear answers for a planned public newsroom.",
+      name: "Clear answers about Tamil Ulagam publishing.",
     }).parentElement?.parentElement;
     expect(faq).not.toBeNull();
     for (const item of newsContent.faqs) {

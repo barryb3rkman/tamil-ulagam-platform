@@ -51,10 +51,12 @@ describe("public About page", () => {
     }
   });
 
-  it("keeps the planned ecosystem, cultural statement, and routes honest", () => {
+  it("keeps the connected ecosystem, cultural statement, and routes clear", () => {
     render(<AboutPage />);
 
-    expect(screen.getByText("Building the foundation")).toBeVisible();
+    expect(
+      screen.getByRole("heading", { name: aboutContent.ecosystem.title }),
+    ).toBeVisible();
     expect(
       screen.queryByRole("heading", { name: aboutContent.governance.title }),
     ).not.toBeInTheDocument();
@@ -69,6 +71,9 @@ describe("public About page", () => {
     ).toHaveAttribute("href", "/roadmap");
     expect(
       screen.queryByText(/members worldwide|active chapters|partner logo/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/planned|in development|building the foundation/i),
     ).not.toBeInTheDocument();
   });
 

@@ -88,7 +88,7 @@ test.describe("PPT-aligned public content", () => {
       waitUntil: "domcontentloaded",
     });
     await expect(page.locator("main")).toContainText(
-      /does not currently provide medical care or telemedicine/i,
+      /does not provide medical care or telemedicine/i,
     );
     await expect(page.locator("main")).toContainText(
       /for emergencies, contact local emergency services/i,
@@ -108,12 +108,12 @@ test.describe("PPT-aligned public content", () => {
     );
 
     await page.goto("/events", { waitUntil: "domcontentloaded" });
-    await expect(page.locator("main")).toContainText(/no live event calendar/i);
+    await expect(page.locator("main")).not.toContainText(
+      /register now|buy tickets|event date/i,
+    );
 
     await page.goto("/news", { waitUntil: "domcontentloaded" });
-    await expect(page.locator("main")).toContainText(
-      /no approved public article collection/i,
-    );
+    await expect(page.locator("main article")).toHaveCount(0);
 
     await page.goto("/roadmap", { waitUntil: "domcontentloaded" });
     await expect(page.locator("main")).not.toContainText(

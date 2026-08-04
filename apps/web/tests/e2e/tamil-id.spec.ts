@@ -62,7 +62,6 @@ test.describe("public Tamil ID concept page", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: tamilIdContent.hero.title }),
     ).toBeVisible();
-    await expect(page.getByText(tamilIdContent.hero.status)).toBeVisible();
     await expect(page.getByText(tamilIdContent.hero.caption)).toBeVisible();
     await expect(
       page.getByText(
@@ -71,9 +70,12 @@ test.describe("public Tamil ID concept page", () => {
     ).toBeVisible();
     await expect(
       page.getByRole("heading", {
-        name: /Clear answers for a concept still being built/i,
+        name: /Clear answers about Tamil ID membership/i,
       }),
     ).toBeVisible();
+    await expect(page.locator("main")).not.toContainText(
+      /planned|in development|concept preview/i,
+    );
     await expect(
       page.getByRole("img", {
         name: images[tamilIdContent.hero.imageKey].alt,

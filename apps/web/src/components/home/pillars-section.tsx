@@ -14,7 +14,7 @@ export function PillarsSection() {
     <Section tone="ivory" aria-labelledby="pillars-title">
       <Container size="wide">
         <SectionHeading
-          eyebrow="THE FOUNDATION"
+          eyebrow="CONNECT · EMPOWER · PRESERVE"
           title="Connect. Empower. Preserve."
           description="A shared direction for a global Tamil community, shaped with care and built for the long term."
         />

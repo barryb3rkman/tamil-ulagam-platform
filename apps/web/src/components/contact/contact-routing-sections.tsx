@@ -19,7 +19,7 @@ export function ContactRoutingSection() {
               id="routing-areas-title"
               className="text-global-navy text-xl font-semibold"
             >
-              Possible future routing areas
+              Enquiry routing areas
             </h3>
             <ul className="border-global-navy/12 mt-5 grid border-t sm:grid-cols-2 lg:grid-cols-1">
               {routing.areas.map((area) => (

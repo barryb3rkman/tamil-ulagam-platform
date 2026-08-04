@@ -16,7 +16,7 @@ import { createPageMetadata } from "@/config/metadata";
 
 export const metadata: Metadata = createPageMetadata(
   "About Tamil Ulagam",
-  "Learn why Tamil Ulagam is being built as a trusted global digital bridge for Tamil identity, culture, community and opportunity.",
+  "Discover Tamil Ulagam’s vision as a trusted global digital bridge for Tamil identity, culture, community and opportunity.",
   "/about",
   images.aboutHero,
 );

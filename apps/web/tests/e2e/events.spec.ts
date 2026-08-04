@@ -62,9 +62,6 @@ test.describe("public Events page", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: eventsContent.hero.title }),
     ).toBeVisible();
-    await expect(
-      page.getByText(eventsContent.hero.status, { exact: true }),
-    ).toBeVisible();
     await expect(page.getByText(eventsContent.hero.caption)).toBeVisible();
     await expect(
       page.getByRole("img", { name: images.initiativeGlobalEvents.alt }),
@@ -72,7 +69,9 @@ test.describe("public Events page", () => {
     await expect(
       page.getByText(eventsContent.definition.statement),
     ).toBeVisible();
-    await expect(page.getByText(eventsContent.interest.notice)).toBeVisible();
+    await expect(page.locator("main")).not.toContainText(
+      /planned|proposed|no live event calendar/i,
+    );
     await expect(page.locator("main")).not.toContainText(/\b20\d{2}\b/);
     await expect(page.locator("main")).not.toContainText(/venue:\s/i);
 

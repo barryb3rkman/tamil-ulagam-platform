@@ -109,7 +109,9 @@ test.describe("public Initiatives overview page", () => {
         name: "Building an ecosystem for every dimension of Tamil life.",
       }),
     ).toBeVisible();
-    await expect(page.getByText("Building the foundation")).toBeVisible();
+    await expect(page.locator("main")).not.toContainText(
+      /planned|proposed|building the foundation/i,
+    );
     await expect(page.getByRole("contentinfo")).toBeVisible();
 
     const primaryNavigation = page.getByRole("navigation", {

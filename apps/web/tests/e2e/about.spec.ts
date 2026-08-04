@@ -77,7 +77,9 @@ test.describe("public About page", () => {
       ).toHaveCount(1);
     }
     await expect(page.getByText("யாதும் ஊரே யாவரும் கேளிர்")).toBeVisible();
-    await expect(page.getByText("Building the foundation")).toBeVisible();
+    await expect(page.locator("main")).not.toContainText(
+      /planned|proposed|building the foundation/i,
+    );
     await expect(page.getByRole("contentinfo")).toBeVisible();
     await expect(
       page.getByRole("link", { name: "Explore Our Vision" }),

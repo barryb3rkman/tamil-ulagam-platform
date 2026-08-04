@@ -1,9 +1,4 @@
-import {
-  Badge,
-  Container,
-  ImageWithFallback,
-  LinkButton,
-} from "@tamil-ulagam/ui";
+import { Container, ImageWithFallback, LinkButton } from "@tamil-ulagam/ui";
 
 import { images } from "@/config/images";
 import { tamilIdContent } from "@/content/tamil-id";
@@ -30,11 +25,6 @@ export function TamilIdHero() {
             <p className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
               {hero.eyebrow}
             </p>
-            <div className="mt-5">
-              <Badge className="bg-heritage-gold/14 text-heritage-gold border-heritage-gold/28 border">
-                {hero.status}
-              </Badge>
-            </div>
             <h1
               id="tamil-id-title"
               className="mt-6 max-w-xl text-5xl leading-[0.99] font-semibold tracking-[-0.045em] text-balance sm:text-6xl lg:text-[4.35rem]"
@@ -72,7 +62,7 @@ export function TamilIdHero() {
           <div className="relative w-full max-w-[26rem]">
             <ImageWithFallback
               asset={images[hero.imageKey]}
-              fallbackLabel="Tamil ID concept preview"
+              fallbackLabel="Tamil ID digital membership visual"
               priority
               sizes="(min-width: 1024px) 34vw, (min-width: 640px) 52vw, 78vw"
               className="aspect-[3/4] h-full w-full object-cover shadow-[0_1.5rem_4rem_rgba(0,0,0,0.28)]"

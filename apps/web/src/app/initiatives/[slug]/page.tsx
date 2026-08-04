@@ -37,7 +37,7 @@ export async function generateMetadata({
 
   return createPageMetadata(
     `${initiative.title} Initiative`,
-    `${detail.heroStatement} This Tamil Ulagam initiative is planned and will be introduced only in responsible stages.`,
+    `${detail.heroStatement} Explore its purpose, capabilities and connections across the Tamil Ulagam ecosystem.`,
     initiative.href as `/initiatives/${string}`,
     images[getInitiativeImageKey(detail.slug)],
   );

@@ -1,5 +1,4 @@
 import {
-  Badge,
   Container,
   LinkButton,
   Section,
@@ -8,23 +7,23 @@ import {
 
 import { chaptersContent } from "@/content/chapters";
 
-export function PlannedDirectorySection() {
+export function ChapterRegionsSection() {
   const { directory } = chaptersContent;
 
   return (
-    <Section tone="white" aria-labelledby="planned-directory-title">
+    <Section tone="white" aria-labelledby="chapter-regions-title">
       <Container
         size="wide"
         className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20"
       >
         <SectionHeading
+          id="chapter-regions-title"
           eyebrow={directory.eyebrow}
           title={directory.title}
           description={directory.description}
         />
         <div>
-          <Badge tone="maroon">{directory.status}</Badge>
-          <ul className="border-global-navy/12 mt-7 grid border-t sm:grid-cols-2">
+          <ul className="border-global-navy/12 grid border-t sm:grid-cols-2">
             {directory.areas.map((area) => (
               <li
                 key={area}
@@ -35,8 +34,9 @@ export function PlannedDirectorySection() {
             ))}
           </ul>
           <p className="text-slate mt-7 leading-7">
-            Chapter formation and recognition remain subject to approval. No
-            active chapter count or operating location is claimed here.
+            Chapter recognition complements existing Tamil organisations and
+            does not imply control over them. A listed region does not represent
+            an operating chapter.
           </p>
         </div>
       </Container>
@@ -116,10 +116,7 @@ export function ChapterInterestSection() {
               </li>
             ))}
           </ul>
-          <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.12em] uppercase">
-            {interest.notice}
-          </p>
-          <div className="mt-6 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+          <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center">
             <LinkButton href={interest.primaryCallToAction.href} size="large">
               {interest.primaryCallToAction.label}
             </LinkButton>

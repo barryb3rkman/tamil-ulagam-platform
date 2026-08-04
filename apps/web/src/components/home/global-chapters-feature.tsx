@@ -1,5 +1,4 @@
 import {
-  Badge,
   Container,
   ImageWithFallback,
   LinkButton,
@@ -28,9 +27,6 @@ export function GlobalChaptersFeature() {
             <p className="mt-6 max-w-xl text-lg leading-8 text-white/72">
               {chapters.description}
             </p>
-            <Badge tone="maroon" className="mt-7 bg-white/10 text-white">
-              Planned network
-            </Badge>
             <div className="mt-9 flex flex-wrap gap-5">
               <LinkButton
                 href="/chapters"
@@ -54,7 +50,7 @@ export function GlobalChaptersFeature() {
           <div className="mt-10 min-h-[300px] overflow-hidden lg:mt-0 lg:min-h-[520px]">
             <ImageWithFallback
               asset={images.globalChapters}
-              fallbackLabel="Global chapters concept image"
+              fallbackLabel="Global Tamil chapter network"
               sizes="(min-width: 1024px) 55vw, 100vw"
               className="h-full w-full object-cover"
             />

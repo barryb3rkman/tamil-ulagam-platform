@@ -6,7 +6,7 @@ export const homepageContent = {
     eyebrowEnglish: "TAMIL ULAGAM GLOBAL FEDERATION",
     title: "Connecting the Global Tamil Community",
     description:
-      "Tamil Ulagam is building a global digital bridge through technology, culture and collaboration—connecting people, organisations, knowledge and opportunity across borders.",
+      "Tamil Ulagam is a global digital bridge connecting people, organisations, knowledge and opportunity through technology, culture and collaboration.",
   },
   visionSignals: [
     "Connect",
@@ -42,18 +42,18 @@ export const homepageContent = {
   why: {
     title: "A global community deserves a global digital home.",
     description:
-      "Tamil communities thrive across countries and generations, yet connections between people, organisations, knowledge and opportunity remain fragmented. Tamil Ulagam is being built as a trusted digital bridge for one connected future.",
+      "Tamil communities thrive across countries and generations, yet connections between people, organisations, knowledge and opportunity remain fragmented. Tamil Ulagam forms a trusted digital bridge for one connected future.",
   },
   tamilId: {
-    eyebrow: "PLANNED DIGITAL MEMBERSHIP",
+    eyebrow: "DIGITAL MEMBERSHIP",
     title: "One membership. A world of connection.",
     description:
-      "Tamil ID is envisioned as a secure digital membership credential connecting members with chapters, events, organisations and future partner services.",
+      "Tamil ID connects one secure digital membership credential with chapters, events, organisations and community experiences.",
     features: [
       "Secure membership identity",
       "Privacy-conscious verification",
       "Global chapter connection",
-      "Future events and member benefits",
+      "Events and member access",
     ],
   },
   initiatives: {
@@ -87,18 +87,18 @@ export const homepageContent = {
     eyebrow: "GLOBAL CHAPTER VISION",
     title: "One organisation. Every continent.",
     description:
-      "Tamil Ulagam aims to connect local Tamil communities through trusted country and city chapters operating within one shared global federation.",
+      "Tamil Ulagam connects local Tamil communities through trusted country and city chapters within one shared global federation.",
   },
   mobile: {
-    eyebrow: "FUTURE MOBILE PLATFORM",
+    eyebrow: "MOBILE PLATFORM",
     title: "The Tamil community, always within reach.",
     description:
-      "The future Tamil Ulagam mobile experience will bring digital membership, chapter updates, events, community news and opportunities into one connected application.",
+      "The Tamil Ulagam mobile experience brings digital membership, chapter updates, events, community news and opportunities into one connected application vision.",
     features: [
       "Tamil ID access",
       "Chapter and event updates",
       "Community announcements",
-      "Future services and opportunities",
+      "Services and opportunities",
     ],
   },
   partnership: {
@@ -109,7 +109,7 @@ export const homepageContent = {
   stories: {
     title: "Stories that carry a global community forward.",
     description:
-      "Tamil Ulagam will highlight community achievements, intergenerational knowledge, cultural journeys and meaningful global contributions.",
+      "Tamil Ulagam’s editorial vision highlights community achievements, intergenerational knowledge, cultural journeys and meaningful global contributions.",
   },
   finalCta: {
     title: "The Tamil world is everywhere. Now it can have one home.",

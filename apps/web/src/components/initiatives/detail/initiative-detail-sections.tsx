@@ -6,7 +6,6 @@ import {
 } from "@tamil-ulagam/ui";
 import Link from "next/link";
 
-import { InitiativeStatusBadge } from "@/components/initiative-status-badge";
 import {
   getInitiativeEcosystemGroup,
   type InitiativeDetail,
@@ -68,13 +67,13 @@ export function InitiativeCapabilitiesSection({
       id="capabilities"
       className="scroll-mt-24"
       tone={dark ? "navy" : "ivory"}
-      aria-label="Planned capabilities"
+      aria-label="Initiative capabilities"
     >
       <Container>
         <SectionHeading
-          eyebrow="INTENDED FUTURE EXPERIENCE"
-          title="Planned capabilities, introduced in stages."
-          description="These are future capability areas, not services currently available through Tamil Ulagam."
+          eyebrow="INITIATIVE CAPABILITIES"
+          title="Connected capabilities shaped around trust and community value."
+          description="Each capability contributes to the initiative’s purpose and the wider Tamil Ulagam ecosystem."
           className={dark ? "[&>h2]:text-white [&>p]:text-white/75" : undefined}
         />
         <ol
@@ -249,7 +248,6 @@ export function RelatedInitiatives({
                   <p className="text-slate mt-3 leading-7">
                     {entry.relationship}
                   </p>
-                  <InitiativeStatusBadge status={entry.initiative.status} />
                   <span className="text-global-navy decoration-heritage-gold mt-6 inline-block font-semibold underline decoration-2 underline-offset-4">
                     Explore the vision
                   </span>
@@ -329,7 +327,7 @@ export function InitiativeFinalCta({
       <Container className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
         <div>
           <p className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
-            BUILDING THE FOUNDATION
+            ONE CONNECTED ECOSYSTEM
           </p>
           <h2
             id="initiative-final-cta-title"
@@ -339,7 +337,7 @@ export function InitiativeFinalCta({
           </h2>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-white/76">
             Explore the wider initiative ecosystem or begin a conversation about
-            the responsible conditions needed for future participation.
+            responsible participation and collaboration.
           </p>
         </div>
         <div className="flex flex-wrap gap-3 lg:justify-end">

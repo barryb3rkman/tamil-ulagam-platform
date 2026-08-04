@@ -24,7 +24,7 @@ export function RegistrationAttendanceSection() {
         />
         <div>
           <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
-            Possible future registration models
+            Participation models
           </p>
           <ul className="border-global-navy/12 mt-5 grid border-t sm:grid-cols-2">
             {registration.models.map((model) => (
@@ -192,7 +192,7 @@ export function HybridArchiveSection() {
         />
         <div>
           <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
-            Potential future support
+            Participation support
           </p>
           <ul className="border-global-navy/12 mt-5 grid border-t sm:grid-cols-2">
             {hybridArchive.possibilities.map((item) => (
@@ -243,7 +243,7 @@ export function EventStatusSection() {
         />
         <div>
           <h3 className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
-            Proposed public statuses
+            Public statuses
           </h3>
           <ul className="mt-5 flex flex-wrap gap-3">
             {statusModel.publicStatuses.map((status) => (
@@ -258,7 +258,7 @@ export function EventStatusSection() {
             ))}
           </ul>
           <h3 className="text-heritage-gold mt-9 text-sm font-semibold tracking-[0.14em] uppercase">
-            Proposed administrative statuses
+            Administrative statuses
           </h3>
           <ul className="mt-5 flex flex-wrap gap-3">
             {statusModel.administrativeStatuses.map((status) => (

@@ -15,22 +15,15 @@ describe("public Partners page", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       partnersContent.hero.title,
     );
-    expect(screen.getByText(partnersContent.hero.status)).toBeVisible();
     expect(screen.getByText(partnersContent.hero.caption)).toBeVisible();
     for (const key of partnersEditorialImageKeys) {
       expect(screen.getByRole("img", { name: images[key].alt })).toBeVisible();
     }
   });
 
-  it("keeps public relationship claims and early discussion language honest", () => {
+  it("keeps public relationship claims and discussion language honest", () => {
     render(<PartnersPage />);
 
-    expect(
-      screen.getByText(
-        "No approved partner directory is being presented on this page at this stage.",
-      ),
-    ).toBeVisible();
-    expect(screen.getByText(partnersContent.interest.notice)).toBeVisible();
     expect(
       screen.getByText(partnersContent.boundaries.statement),
     ).toBeVisible();
@@ -39,6 +32,9 @@ describe("public Partners page", () => {
     ).not.toBeInTheDocument();
     expect(
       screen.queryByRole("img", { name: /logo/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/planned|proposed|approval pending/i),
     ).not.toBeInTheDocument();
   });
 

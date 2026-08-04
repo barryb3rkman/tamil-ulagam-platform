@@ -16,8 +16,8 @@ import { createPageMetadata } from "@/config/metadata";
 import { newsContent } from "@/content/news";
 
 export const metadata: Metadata = createPageMetadata(
-  "News | Tamil Ulagam’s Planned Public Editorial Platform",
-  "Explore Tamil Ulagam’s planned space for community news, announcements, diaspora updates and Tamil and English cultural and institutional stories.",
+  "News | Tamil Ulagam Public Editorial Platform",
+  "Explore Tamil Ulagam community news, announcements, diaspora updates and Tamil and English cultural and institutional stories.",
   "/news",
   images[newsContent.hero.imageKey],
 );

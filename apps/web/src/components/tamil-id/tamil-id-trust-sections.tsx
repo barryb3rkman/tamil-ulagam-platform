@@ -160,10 +160,7 @@ export function TamilIdAccessSection() {
           className="[&>h2]:text-white [&>p]:text-white/74"
         />
         <div>
-          <Badge className="bg-heritage-gold/14 text-heritage-gold border-heritage-gold/28 border">
-            {access.status}
-          </Badge>
-          <ul className="mt-7 grid border-t border-white/16 sm:grid-cols-2">
+          <ul className="grid border-t border-white/16 sm:grid-cols-2">
             {access.areas.map((area) => (
               <li
                 key={area}

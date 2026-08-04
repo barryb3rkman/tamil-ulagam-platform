@@ -17,5 +17,5 @@ export { ChaptersHero } from "./chapters-hero";
 export {
   ChapterInterestSection,
   ChapterReadinessSection,
-  PlannedDirectorySection,
+  ChapterRegionsSection,
 } from "./chapters-directory-sections";

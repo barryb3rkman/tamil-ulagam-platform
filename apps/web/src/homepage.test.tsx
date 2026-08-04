@@ -25,7 +25,7 @@ describe("public homepage composition", () => {
     ).toHaveAttribute("href", "/initiatives");
   });
 
-  it("renders all pillars and initiative statuses from typed content", () => {
+  it("renders all pillars and initiatives from typed content", () => {
     render(<HomePage />);
 
     for (const title of ["Connect", "Empower", "Preserve"]) {
@@ -44,7 +44,6 @@ describe("public homepage composition", () => {
       expect(
         screen.getAllByRole("heading", { name: initiative.title, level: 3 }),
       ).toHaveLength(isMobileFeatured ? 2 : 1);
-      expect(screen.getAllByText("Planned").length).toBeGreaterThan(0);
     }
     expect(
       screen
@@ -67,11 +66,10 @@ describe("public homepage composition", () => {
     expect(
       homepageContent.initiatives.presentation.mobileFeatured,
     ).toHaveLength(4);
+    expect(screen.getByText("DIGITAL MEMBERSHIP")).toBeVisible();
     expect(
-      screen.getByText(
-        "Concept preview only — Tamil ID is not currently active.",
-      ),
-    ).toBeVisible();
+      screen.queryByText(/planned|in development|concept preview/i),
+    ).not.toBeInTheDocument();
   });
 
   it("keeps the hero desktop and mobile assets configured", () => {

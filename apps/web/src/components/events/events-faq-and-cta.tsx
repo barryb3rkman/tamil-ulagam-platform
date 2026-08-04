@@ -17,7 +17,7 @@ export function EventsFaq() {
         <SectionHeading
           id="events-faq-title"
           eyebrow="FREQUENTLY ASKED QUESTIONS"
-          title="Clear answers for a planned events platform."
+          title="Clear answers about Tamil Ulagam events."
         />
         <dl className="border-global-navy/12 divide-global-navy/12 border-y">
           {eventsContent.faqs.map((faq) => (

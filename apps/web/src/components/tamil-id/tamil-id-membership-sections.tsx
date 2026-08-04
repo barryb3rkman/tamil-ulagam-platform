@@ -14,7 +14,7 @@ export function TamilIdJourney() {
           description={journey.description}
         />
         <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.14em] uppercase">
-          Proposed journey
+          Membership journey
         </p>
         <ol className="border-global-navy/12 mt-5 grid border-t md:grid-cols-2 xl:grid-cols-4">
           {journey.steps.map((step) => (
@@ -72,8 +72,8 @@ export function TamilIdCredentialPreview() {
             ))}
           </div>
           <p className="mt-6 text-sm leading-6 text-white/62">
-            Example labels only. They do not represent an active credential or a
-            real member record.
+            Illustrative labels show the information hierarchy; they do not
+            represent a real member record.
           </p>
         </div>
       </Container>

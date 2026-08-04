@@ -30,6 +30,7 @@ artifacts/contact-page-review/
 artifacts/legal-pages-review/
 artifacts/ppt-content-alignment-review/
 artifacts/final-premium-visual-qa/
+artifacts/showcase-language-cleanup/
 
 # Environment files
 .env
