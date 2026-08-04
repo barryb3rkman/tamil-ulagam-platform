@@ -20,12 +20,12 @@ export function LegalDocumentNavigation({
         <h2 className="text-global-navy text-sm font-semibold tracking-[0.14em] uppercase">
           On this page
         </h2>
-        <ol className="border-global-navy/12 mt-5 border-t">
+        <ol className="border-global-navy/12 mt-5 max-h-[28rem] overflow-y-auto overscroll-contain border-t pr-2 sm:grid sm:max-h-[32rem] sm:grid-cols-2 sm:gap-x-6 lg:block lg:max-h-[calc(100vh-10rem)] lg:pr-2">
           {sections.map((section) => (
             <li key={section.id} className="border-global-navy/12 border-b">
               <a
                 href={`#${section.id}`}
-                className="focus-visible:ring-focus hover:text-interactive-blue grid grid-cols-[2rem_1fr] gap-3 rounded-sm py-3 text-sm leading-6 transition-colors focus-visible:outline-none"
+                className="focus-visible:ring-focus hover:text-interactive-blue grid min-h-12 grid-cols-[2rem_1fr] items-center gap-3 rounded-sm py-3 text-[0.9375rem] leading-6 transition-colors focus-visible:outline-none"
               >
                 <span className="text-heritage-gold font-semibold">
                   {section.number}

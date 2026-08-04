@@ -223,4 +223,36 @@ test.describe("draft public legal pages", () => {
       }
     }
   });
+
+  test("keeps long legal tables of contents compact and navigable", async ({
+    page,
+  }) => {
+    const contents = page.getByRole("navigation", {
+      name: `${privacyPolicy.title} table of contents`,
+    });
+    const sectionList = contents.locator("ol");
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/privacy", { waitUntil: "domcontentloaded" });
+    const mobileDimensions = await sectionList.evaluate((element) => ({
+      clientHeight: element.clientHeight,
+      scrollHeight: element.scrollHeight,
+    }));
+    expect(mobileDimensions.clientHeight).toBeLessThan(
+      mobileDimensions.scrollHeight,
+    );
+    await contents.getByRole("link", { name: "Individual rights" }).focus();
+    await expect(page.locator(":focus")).toContainText("Individual rights");
+
+    await page.setViewportSize({ width: 768, height: 1024 });
+    await page.goto("/privacy", { waitUntil: "domcontentloaded" });
+    const firstItem = await sectionList.locator("li").nth(0).boundingBox();
+    const secondItem = await sectionList.locator("li").nth(1).boundingBox();
+    expect(firstItem?.y).toBeCloseTo(secondItem?.y ?? 0, 0);
+
+    await page.setViewportSize({ width: 1440, height: 800 });
+    await page.goto("/privacy", { waitUntil: "domcontentloaded" });
+    const desktopList = await sectionList.boundingBox();
+    expect(desktopList?.height ?? 0).toBeLessThan(800 - 112);
+  });
 });

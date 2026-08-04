@@ -2,6 +2,23 @@ import { Container, Section, SectionHeading } from "@tamil-ulagam/ui";
 
 import { newsContent } from "@/content/news";
 
+function getPublicationTypeLayout(index: number) {
+  switch (index) {
+    case 0:
+      return "md:border-r md:pr-6 xl:col-span-2";
+    case 1:
+      return "md:pl-6 xl:col-span-2 xl:border-r xl:pr-6";
+    case 2:
+      return "md:border-r md:pr-6 xl:col-span-2 xl:border-r-0 xl:pl-6 xl:pr-0";
+    case 3:
+      return "md:pl-6 xl:col-span-3 xl:border-r xl:pl-0 xl:pr-6";
+    case 4:
+      return "md:col-span-2 xl:col-span-3 xl:pl-6";
+    default:
+      return "md:px-6 xl:col-span-2";
+  }
+}
+
 export function NewsroomDefinitionSection() {
   const { definition } = newsContent;
 
@@ -68,11 +85,15 @@ export function PublicationTypesSection() {
           eyebrow={publicationTypes.eyebrow}
           title={publicationTypes.title}
         />
-        <ol className="border-global-navy/12 mt-10 grid border-t md:grid-cols-2 xl:grid-cols-3">
+        <ol
+          data-publication-type-grid
+          className="border-global-navy/12 mt-10 grid border-t md:grid-cols-2 xl:grid-cols-6"
+        >
           {publicationTypes.items.map((item, index) => (
             <li
               key={item.title}
-              className="border-global-navy/12 border-b py-6 md:px-6 md:odd:pl-0 xl:border-r xl:[&:nth-child(3n)]:border-r-0 xl:[&:nth-child(3n+1)]:pl-0"
+              data-publication-type-card
+              className={`border-global-navy/12 border-b py-6 ${getPublicationTypeLayout(index)}`}
             >
               <span className="text-heritage-gold text-sm font-semibold tracking-[0.14em]">
                 {String(index + 1).padStart(2, "0")}

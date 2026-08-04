@@ -40,11 +40,11 @@ export function SiteFooter() {
               <h2 className="text-heritage-gold text-sm font-semibold tracking-[0.12em] uppercase">
                 {group.label}
               </h2>
-              <ul className="mt-4 grid gap-3">
+              <ul className="mt-4 grid gap-2">
                 {group.children?.map((entry) => (
                   <li key={entry.href}>
                     <Link
-                      className="focus-visible:ring-focus rounded-sm text-sm text-white/75 transition-colors hover:text-white focus-visible:outline-none"
+                      className="focus-visible:ring-focus inline-flex min-h-9 items-center rounded-sm text-[0.9375rem] text-white/82 transition-colors hover:text-white focus-visible:outline-none"
                       href={entry.href}
                     >
                       {entry.label}
@@ -57,7 +57,7 @@ export function SiteFooter() {
         </nav>
       </Container>
       <div className="border-t border-white/12">
-        <Container className="flex flex-col gap-2 py-5 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
+        <Container className="flex flex-col gap-2 py-5 text-sm text-white/70 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {new Date().getFullYear()} {siteContent.name}
           </p>

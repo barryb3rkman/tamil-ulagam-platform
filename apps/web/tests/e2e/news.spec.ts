@@ -144,4 +144,51 @@ test.describe("public News page", () => {
       ).toBe(true);
     }
   });
+
+  test("balances publication types without an empty final grid cell", async ({
+    page,
+  }) => {
+    const grid = page.locator("[data-publication-type-grid]");
+    const cards = grid.locator("[data-publication-type-card]");
+
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.goto("/news", { waitUntil: "domcontentloaded" });
+    await grid.scrollIntoViewIfNeeded();
+    await expect(grid).toBeVisible();
+    const desktopGrid = await grid.boundingBox();
+    const desktopCards = await cards.evaluateAll((elements) =>
+      elements.map((element) => {
+        const rectangle = element.getBoundingClientRect();
+        return {
+          bottom: rectangle.bottom,
+          left: rectangle.left,
+          right: rectangle.right,
+          top: rectangle.top,
+          width: rectangle.width,
+        };
+      }),
+    );
+
+    expect(desktopGrid).not.toBeNull();
+    expect(desktopCards).toHaveLength(5);
+    expect(desktopCards[0]?.top).toBeCloseTo(desktopCards[2]?.top ?? 0, 0);
+    expect(desktopCards[3]?.top).toBeCloseTo(desktopCards[4]?.top ?? 0, 0);
+    expect(desktopCards[3]?.top ?? 0).toBeGreaterThanOrEqual(
+      desktopCards[0]?.bottom ?? 0,
+    );
+    expect(desktopCards[3]?.width).toBeCloseTo(desktopCards[4]?.width ?? 0, 0);
+    expect(desktopCards[3]?.left).toBeCloseTo(desktopGrid?.x ?? 0, 0);
+    expect(desktopCards[4]?.right).toBeCloseTo(
+      (desktopGrid?.x ?? 0) + (desktopGrid?.width ?? 0),
+      0,
+    );
+
+    await page.setViewportSize({ width: 768, height: 1024 });
+    await page.goto("/news", { waitUntil: "domcontentloaded" });
+    await grid.scrollIntoViewIfNeeded();
+    const tabletGrid = await grid.boundingBox();
+    const finalTabletCard = await cards.last().boundingBox();
+    expect(finalTabletCard?.width).toBeCloseTo(tabletGrid?.width ?? 0, 0);
+    expect(finalTabletCard?.x).toBeCloseTo(tabletGrid?.x ?? 0, 0);
+  });
 });
