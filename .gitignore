@@ -31,6 +31,7 @@ artifacts/legal-pages-review/
 artifacts/ppt-content-alignment-review/
 artifacts/final-premium-visual-qa/
 artifacts/showcase-language-cleanup/
+artifacts/premium-motion-review/
 
 # Environment files
 .env

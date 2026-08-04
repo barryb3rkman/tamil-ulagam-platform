@@ -5,16 +5,19 @@ import { cx } from "./utils";
 export interface SectionProps extends ComponentPropsWithoutRef<"section"> {
   readonly tone?: "ivory" | "white" | "navy";
   readonly spacing?: "compact" | "standard" | "generous";
+  readonly motion?: "reveal" | "static";
 }
 
 export function Section({
   className,
+  motion = "reveal",
   spacing = "standard",
   tone = "ivory",
   ...props
 }: SectionProps) {
   return (
     <section
+      data-motion-reveal={motion === "reveal" ? "section" : undefined}
       className={cx(
         tone === "ivory" && "bg-warm-ivory text-charcoal",
         tone === "white" && "text-charcoal bg-white",

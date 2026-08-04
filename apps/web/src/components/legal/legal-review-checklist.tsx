@@ -8,7 +8,11 @@ interface LegalReviewChecklistProps {
 
 export function LegalReviewChecklist({ checklist }: LegalReviewChecklistProps) {
   return (
-    <Section tone="navy" aria-labelledby="legal-review-checklist-title">
+    <Section
+      tone="navy"
+      motion="static"
+      aria-labelledby="legal-review-checklist-title"
+    >
       <Container size="wide">
         <div className="grid gap-10 lg:grid-cols-[0.68fr_1.32fr] lg:gap-20">
           <div>

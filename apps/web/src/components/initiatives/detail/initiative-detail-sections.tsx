@@ -229,7 +229,10 @@ export function RelatedInitiatives({
           eyebrow="RELATED INITIATIVES"
           title="Connected pathways across one ecosystem."
         />
-        <ul className="mt-8 grid gap-4 lg:grid-cols-3">
+        <ul
+          data-motion-group="stagger"
+          className="mt-8 grid gap-4 lg:grid-cols-3"
+        >
           {related.map((entry) => {
             const group = getInitiativeEcosystemGroup(entry.slug);
 
@@ -237,7 +240,7 @@ export function RelatedInitiatives({
               <li key={entry.slug}>
                 <Link
                   href={`/initiatives/${entry.slug}`}
-                  className="border-global-navy/12 hover:border-heritage-maroon focus-visible:ring-focus block h-full border p-6 transition-colors focus-visible:outline-none"
+                  className="motion-card border-global-navy/12 focus-visible:ring-focus block h-full border p-6 focus-visible:outline-none"
                 >
                   <p className="text-heritage-maroon text-xs font-semibold tracking-[0.14em] uppercase">
                     {group.title}
@@ -278,7 +281,7 @@ export function InitiativePreviousNext({
       <Container className="grid gap-4 sm:grid-cols-2">
         {previous ? (
           <Link
-            className="border-global-navy/14 hover:border-heritage-maroon focus-visible:ring-focus border p-5 transition-colors focus-visible:outline-none"
+            className="motion-card border-global-navy/14 focus-visible:ring-focus border p-5 focus-visible:outline-none"
             href={previous.href}
             aria-label={`Previous initiative: ${previous.title}`}
           >
@@ -294,7 +297,7 @@ export function InitiativePreviousNext({
         )}
         {next ? (
           <Link
-            className="border-global-navy/14 hover:border-heritage-maroon focus-visible:ring-focus border p-5 text-right transition-colors focus-visible:outline-none"
+            className="motion-card border-global-navy/14 focus-visible:ring-focus border p-5 text-right focus-visible:outline-none"
             href={next.href}
             aria-label={`Next initiative: ${next.title}`}
           >

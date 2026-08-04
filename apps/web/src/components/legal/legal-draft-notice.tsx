@@ -11,6 +11,7 @@ export function LegalDraftNotice({ warning }: LegalDraftNoticeProps) {
     <Section
       tone="ivory"
       spacing="compact"
+      motion="static"
       aria-labelledby="legal-draft-notice-title"
     >
       <Container size="wide">

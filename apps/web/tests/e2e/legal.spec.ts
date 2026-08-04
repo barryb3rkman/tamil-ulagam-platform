@@ -246,6 +246,13 @@ test.describe("draft public legal pages", () => {
 
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto("/privacy", { waitUntil: "domcontentloaded" });
+    await expect
+      .poll(() =>
+        page
+          .locator("[data-route-transition]")
+          .evaluate((element) => element.getAnimations().length),
+      )
+      .toBe(0);
     const firstItem = await sectionList.locator("li").nth(0).boundingBox();
     const secondItem = await sectionList.locator("li").nth(1).boundingBox();
     expect(firstItem?.y).toBeCloseTo(secondItem?.y ?? 0, 0);

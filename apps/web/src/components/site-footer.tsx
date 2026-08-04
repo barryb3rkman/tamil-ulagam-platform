@@ -44,7 +44,7 @@ export function SiteFooter() {
                 {group.children?.map((entry) => (
                   <li key={entry.href}>
                     <Link
-                      className="focus-visible:ring-focus inline-flex min-h-9 items-center rounded-sm text-[0.9375rem] text-white/82 transition-colors hover:text-white focus-visible:outline-none"
+                      className="motion-editorial-link focus-visible:ring-focus inline-flex min-h-9 items-center rounded-sm text-[0.9375rem] text-white/82 hover:text-white focus-visible:outline-none"
                       href={entry.href}
                     >
                       {entry.label}

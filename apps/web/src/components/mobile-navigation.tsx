@@ -14,15 +14,27 @@ export interface MobileNavigationProps {
 
 export function MobileNavigation({ entries }: MobileNavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
   const toggleButtonRef = useRef<HTMLButtonElement>(null);
+
+  const openMenu = () => {
+    setIsMounted(true);
+    window.requestAnimationFrame(() => setIsOpen(true));
+  };
+
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
 
   useEffect(() => {
     if (!isOpen) {
       return;
     }
 
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     firstLinkRef.current?.focus();
 
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -34,6 +46,7 @@ export function MobileNavigation({ entries }: MobileNavigationProps) {
 
     document.addEventListener("keydown", closeOnEscape);
     return () => {
+      document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", closeOnEscape);
     };
   }, [isOpen]);
@@ -45,23 +58,40 @@ export function MobileNavigation({ entries }: MobileNavigationProps) {
         type="button"
         aria-controls="mobile-navigation-panel"
         aria-expanded={isOpen}
-        className="rounded-button border-global-navy/20 text-global-navy hover:bg-global-navy/5 focus-visible:ring-focus grid size-11 place-items-center border transition-colors focus-visible:outline-none"
+        data-state={isOpen ? "open" : "closed"}
+        className="motion-control rounded-button border-global-navy/20 text-global-navy hover:bg-global-navy/5 focus-visible:ring-focus grid size-11 place-items-center border focus-visible:outline-none"
         onClick={() => {
-          setIsOpen((current) => !current);
+          if (isOpen) {
+            closeMenu();
+          } else {
+            openMenu();
+          }
         }}
       >
         <VisuallyHidden>{isOpen ? "Close menu" : "Open menu"}</VisuallyHidden>
-        <span aria-hidden="true" className="grid gap-1.5">
-          <span className="block h-0.5 w-5 rounded-full bg-current" />
-          <span className="block h-0.5 w-5 rounded-full bg-current" />
-          <span className="block h-0.5 w-5 rounded-full bg-current" />
+        <span aria-hidden="true" className="motion-menu-icon grid gap-1.5">
+          <span className="motion-menu-line block h-0.5 w-5 rounded-full bg-current" />
+          <span className="motion-menu-line block h-0.5 w-5 rounded-full bg-current" />
+          <span className="motion-menu-line block h-0.5 w-5 rounded-full bg-current" />
         </span>
       </button>
 
-      {isOpen ? (
+      {isMounted ? (
         <div
           id="mobile-navigation-panel"
-          className="border-global-navy/10 bg-warm-ivory shadow-navigation absolute inset-x-0 top-full z-50 border-t"
+          data-state={isOpen ? "open" : "closed"}
+          aria-hidden={!isOpen}
+          inert={!isOpen ? true : undefined}
+          className="motion-mobile-panel border-global-navy/10 bg-warm-ivory shadow-navigation absolute inset-x-0 top-full z-50 border-t"
+          onTransitionEnd={(event) => {
+            if (
+              event.propertyName === "opacity" &&
+              !isOpen &&
+              event.currentTarget === event.target
+            ) {
+              setIsMounted(false);
+            }
+          }}
         >
           <nav aria-label="Mobile primary navigation" className="px-5 py-6">
             <ul className="grid gap-1">
@@ -79,7 +109,7 @@ export function MobileNavigation({ entries }: MobileNavigationProps) {
                         : undefined
                     }
                     onClick={() => {
-                      setIsOpen(false);
+                      closeMenu();
                     }}
                   >
                     {entry.label}
@@ -95,7 +125,7 @@ export function MobileNavigation({ entries }: MobileNavigationProps) {
                               pathname === child.href ? "page" : undefined
                             }
                             onClick={() => {
-                              setIsOpen(false);
+                              closeMenu();
                             }}
                           >
                             {child.label}

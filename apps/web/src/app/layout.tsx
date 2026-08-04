@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { MotionRuntime } from "@/components/motion/motion-runtime";
 import { defaultMetadata } from "@/config/metadata";
 
 import "./globals.css";
@@ -35,8 +36,13 @@ export interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" className={`${englishFont.variable} ${tamilFont.variable}`}>
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${englishFont.variable} ${tamilFont.variable}`}
+    >
       <body>
+        <MotionRuntime />
         <a
           href="#main-content"
           className="rounded-button bg-deep-navy focus:ring-focus fixed top-3 left-3 z-[100] -translate-y-24 px-4 py-3 font-semibold text-white transition-transform focus:translate-y-0 focus:outline-none"
@@ -46,7 +52,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
           <main id="main-content" className="flex-1" tabIndex={-1}>
-            {children}
+            <div data-route-transition="enter">{children}</div>
           </main>
           <SiteFooter />
         </div>

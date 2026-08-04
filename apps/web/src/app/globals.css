@@ -38,9 +38,19 @@
   --tu-shadow-card: 0 1rem 2.5rem rgba(6, 29, 50, 0.08);
   --tu-shadow-navigation: 0 1.25rem 3rem rgba(6, 29, 50, 0.13);
 
-  --tu-transition-fast: 120ms;
-  --tu-transition-standard: 180ms;
-  --tu-transition-slow: 280ms;
+  --tu-motion-instant: 100ms;
+  --tu-motion-fast: 180ms;
+  --tu-motion-base: 280ms;
+  --tu-motion-medium: 420ms;
+  --tu-motion-slow: 560ms;
+  --tu-motion-reveal-distance: 20px;
+  --tu-motion-hover-distance: 3px;
+  --tu-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --tu-ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --tu-transition-fast: var(--tu-motion-instant);
+  --tu-transition-standard: var(--tu-motion-fast);
+  --tu-transition-slow: var(--tu-motion-base);
 
   --tu-focus-ring-width: 3px;
   --tu-focus-ring-offset: 2px;
@@ -105,12 +115,6 @@ html {
   scroll-behavior: smooth;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-}
-
 body {
   min-height: 100vh;
   background: var(--tu-color-warm-ivory);
@@ -135,4 +139,273 @@ body {
 
 #devtools-indicator {
   display: none !important;
+}
+
+@keyframes tu-hero-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes tu-hero-image-enter {
+  from {
+    opacity: 0;
+    transform: scale(1.015);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.motion-ready [data-route-transition] > section:first-child h1,
+.motion-ready [data-route-transition] > section:first-child nav,
+.motion-ready [data-route-transition] > section:first-child h1 ~ p,
+.motion-ready [data-route-transition] > section:first-child h1 ~ div {
+  animation: tu-hero-enter var(--tu-motion-medium) var(--tu-ease-premium) both;
+}
+
+.motion-ready [data-route-transition] > section:first-child nav {
+  animation-delay: 40ms;
+}
+
+.motion-ready [data-route-transition] > section:first-child h1 {
+  animation-delay: 90ms;
+}
+
+.motion-ready [data-route-transition] > section:first-child h1 ~ p {
+  animation-delay: 150ms;
+}
+
+.motion-ready [data-route-transition] > section:first-child h1 ~ div {
+  animation-delay: 210ms;
+}
+
+.motion-ready [data-route-transition] > section:first-child img {
+  animation: tu-hero-image-enter var(--tu-motion-slow) var(--tu-ease-premium)
+    180ms both;
+}
+
+.motion-ready[data-motion-preference="standard"]
+  [data-motion-reveal]:not([data-motion-complete="true"]) {
+  opacity: 0.01;
+  transform: translate3d(0, var(--tu-motion-reveal-distance), 0);
+}
+
+.motion-ready[data-motion-preference="standard"]
+  [data-motion-group]:not([data-motion-complete="true"])
+  > * {
+  opacity: 0.01;
+  transform: translate3d(0, 14px, 0);
+}
+
+.motion-control {
+  transition:
+    color var(--tu-motion-fast) var(--tu-ease-standard),
+    background-color var(--tu-motion-fast) var(--tu-ease-standard),
+    border-color var(--tu-motion-fast) var(--tu-ease-standard),
+    box-shadow var(--tu-motion-fast) var(--tu-ease-standard),
+    transform var(--tu-motion-instant) var(--tu-ease-standard);
+}
+
+.motion-control:active:not(:disabled) {
+  transform: translate3d(0, 1px, 0);
+}
+
+.motion-editorial-link {
+  background-image: linear-gradient(
+    var(--tu-color-heritage-gold),
+    var(--tu-color-heritage-gold)
+  );
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 38% 2px;
+  padding-bottom: 0.2rem;
+  transition:
+    color var(--tu-motion-fast) var(--tu-ease-standard),
+    background-size var(--tu-motion-base) var(--tu-ease-premium),
+    transform var(--tu-motion-instant) var(--tu-ease-standard);
+}
+
+.motion-editorial-link:hover,
+.motion-editorial-link:focus-visible {
+  background-size: 100% 2px;
+}
+
+.motion-card {
+  transition:
+    transform var(--tu-motion-base) var(--tu-ease-premium),
+    border-color var(--tu-motion-fast) var(--tu-ease-standard),
+    box-shadow var(--tu-motion-base) var(--tu-ease-premium);
+}
+
+.motion-card:hover,
+.motion-card:focus-within {
+  border-color: color-mix(
+    in srgb,
+    var(--tu-color-heritage-maroon) 45%,
+    transparent
+  );
+  box-shadow: 0 1.15rem 2.8rem rgba(6, 29, 50, 0.11);
+  transform: translate3d(0, calc(var(--tu-motion-hover-distance) * -1), 0);
+}
+
+.motion-card .motion-card-image {
+  transition: transform var(--tu-motion-slow) var(--tu-ease-premium);
+}
+
+.motion-card:hover .motion-card-image,
+.motion-card:focus-within .motion-card-image {
+  transform: scale(1.015);
+}
+
+.motion-arrow {
+  transition: transform var(--tu-motion-fast) var(--tu-ease-premium);
+}
+
+.group:hover .motion-arrow,
+.group:focus-within .motion-arrow {
+  transform: translate3d(4px, 0, 0);
+}
+
+.motion-site-header {
+  min-height: var(--tu-navigation-height);
+  transition:
+    background-color var(--tu-motion-base) var(--tu-ease-standard),
+    border-color var(--tu-motion-base) var(--tu-ease-standard),
+    box-shadow var(--tu-motion-base) var(--tu-ease-standard);
+}
+
+.motion-site-header[data-scrolled="true"] {
+  border-color: color-mix(
+    in srgb,
+    var(--tu-color-global-navy) 16%,
+    transparent
+  );
+  background: color-mix(in srgb, var(--tu-color-warm-ivory) 92%, transparent);
+  box-shadow: 0 0.45rem 1.4rem rgba(6, 29, 50, 0.07);
+  backdrop-filter: blur(12px);
+}
+
+.motion-mobile-panel {
+  transform-origin: top;
+  transition:
+    opacity var(--tu-motion-base) var(--tu-ease-premium),
+    transform var(--tu-motion-base) var(--tu-ease-premium),
+    visibility 0s linear var(--tu-motion-base);
+}
+
+.motion-mobile-panel[data-state="closed"] {
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(0, -8px, 0);
+}
+
+.motion-mobile-panel[data-state="open"] {
+  visibility: visible;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: 0s;
+}
+
+.motion-menu-line {
+  transform-origin: center;
+  transition:
+    opacity var(--tu-motion-fast) var(--tu-ease-standard),
+    transform var(--tu-motion-base) var(--tu-ease-premium);
+}
+
+button[data-state="open"] .motion-menu-line:first-child {
+  transform: translate3d(0, 8px, 0) rotate(45deg);
+}
+
+button[data-state="open"] .motion-menu-line:nth-child(2) {
+  opacity: 0;
+}
+
+button[data-state="open"] .motion-menu-line:last-child {
+  transform: translate3d(0, -8px, 0) rotate(-45deg);
+}
+
+[data-roadmap-phase] {
+  position: relative;
+}
+
+[data-roadmap-phase]::before {
+  position: absolute;
+  inset-block: 1.5rem;
+  left: -1rem;
+  width: 3px;
+  background: var(--tu-color-heritage-gold);
+  content: "";
+  opacity: 0;
+  transform: scaleY(0.35);
+  transform-origin: top;
+  transition:
+    opacity var(--tu-motion-base) var(--tu-ease-standard),
+    transform var(--tu-motion-medium) var(--tu-ease-premium);
+}
+
+[data-roadmap-phase][data-roadmap-active="true"]::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+footer a {
+  text-underline-offset: 0.28em;
+  text-decoration-color: color-mix(
+    in srgb,
+    var(--tu-color-heritage-gold) 75%,
+    transparent
+  );
+  text-decoration-thickness: 1px;
+}
+
+footer a:hover,
+footer a:focus-visible {
+  text-decoration-line: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-delay: 0ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-motion-reveal],
+  [data-motion-group] > *,
+  [data-route-transition],
+  [data-route-transition] > section:first-child h1,
+  [data-route-transition] > section:first-child nav,
+  [data-route-transition] > section:first-child h1 ~ p,
+  [data-route-transition] > section:first-child h1 ~ div,
+  [data-route-transition] > section:first-child img,
+  .motion-card,
+  .motion-card .motion-card-image,
+  .motion-arrow,
+  .motion-mobile-panel,
+  .motion-menu-line {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  [data-roadmap-phase]::before {
+    transform: none;
+  }
 }

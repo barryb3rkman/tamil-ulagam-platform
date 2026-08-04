@@ -18,7 +18,7 @@ export function LegalDocument({ document }: LegalDocumentProps) {
     <>
       <LegalPageHeader document={document} />
       <LegalDraftNotice warning={document.warning} />
-      <Section tone="ivory" spacing="compact">
+      <Section tone="ivory" spacing="compact" motion="static">
         <Container
           size="wide"
           className="grid gap-10 lg:grid-cols-[18rem_minmax(0,1fr)] lg:gap-16 xl:gap-20"

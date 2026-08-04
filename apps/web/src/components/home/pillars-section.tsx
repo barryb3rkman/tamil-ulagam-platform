@@ -18,11 +18,14 @@ export function PillarsSection() {
           title="Connect. Empower. Preserve."
           description="A shared direction for a global Tamil community, shaped with care and built for the long term."
         />
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div
+          data-motion-group="stagger"
+          className="mt-12 grid gap-6 md:grid-cols-3"
+        >
           {homepageContent.pillars.map((pillar) => (
             <article
               key={pillar.title}
-              className="group border-global-navy/10 shadow-card overflow-hidden border bg-white transition-transform duration-300 hover:-translate-y-1"
+              className="motion-card group border-global-navy/10 shadow-card overflow-hidden border bg-white"
             >
               <Link
                 href={pillar.href}
@@ -33,7 +36,7 @@ export function PillarsSection() {
                     asset={images[pillar.imageKey as ImageKey]}
                     fallbackLabel={`${pillar.title} image`}
                     sizes="(min-width: 768px) 33vw, 100vw"
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    className="motion-card-image h-full w-full object-cover"
                   />
                 </div>
                 <div className="p-6 sm:p-7">
@@ -48,10 +51,7 @@ export function PillarsSection() {
                   </p>
                   <span className="text-global-navy decoration-heritage-gold mt-6 inline-flex items-center text-sm font-semibold underline decoration-2 underline-offset-4">
                     Explore the direction{" "}
-                    <span
-                      aria-hidden="true"
-                      className="ml-2 transition-transform group-hover:translate-x-1"
-                    >
+                    <span aria-hidden="true" className="motion-arrow ml-2">
                       →
                     </span>
                   </span>

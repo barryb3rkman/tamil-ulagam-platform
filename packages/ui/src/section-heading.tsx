@@ -26,6 +26,7 @@ export function SectionHeading({
 
   return (
     <div
+      data-motion-rule="heading"
       className={cx(
         "max-w-3xl",
         align === "center" && "mx-auto text-center",

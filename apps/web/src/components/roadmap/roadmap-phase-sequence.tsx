@@ -24,9 +24,12 @@ export function RoadmapPhaseSequence() {
           description="Each phase is directional rather than date-bound. Advancement depends on governance, quality, community need and operational readiness."
         />
         <ol className="border-global-navy/12 divide-global-navy/12 mt-12 border-y">
-          {roadmapPhases.map((phase) => (
+          {roadmapPhases.map((phase, index) => (
             <li
               key={phase.id}
+              data-roadmap-phase={phase.id}
+              data-roadmap-active={index === 0 ? "true" : undefined}
+              data-motion-reveal="phase"
               className="grid gap-6 py-9 lg:grid-cols-[7rem_minmax(0,0.78fr)_minmax(0,1.22fr)] lg:gap-10 lg:py-12"
             >
               <div>

@@ -23,7 +23,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         type={type}
         className={cx(
-          "rounded-button duration-standard focus-visible:ring-focus inline-flex items-center justify-center font-semibold transition-colors focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-55",
+          "motion-control rounded-button focus-visible:ring-focus inline-flex items-center justify-center font-semibold focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-55",
           variant === "primary" &&
             "bg-global-navy hover:bg-deep-navy text-white",
           variant === "secondary" &&

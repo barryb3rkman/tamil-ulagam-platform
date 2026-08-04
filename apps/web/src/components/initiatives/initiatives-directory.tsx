@@ -30,6 +30,7 @@ export function InitiativesDirectory() {
         </div>
         <ul
           data-testid="initiatives-directory"
+          data-motion-group="stagger"
           className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4"
         >
           {initiatives.map((initiative, index) => {
@@ -37,7 +38,7 @@ export function InitiativesDirectory() {
 
             return (
               <li key={initiative.slug}>
-                <article className="border-global-navy/12 group hover:shadow-card flex h-full flex-col border bg-white p-6 transition-shadow">
+                <article className="motion-card border-global-navy/12 group flex h-full flex-col border bg-white p-6">
                   <span className="text-heritage-gold text-sm font-semibold tracking-[0.12em]">
                     0{index + 1}
                   </span>
@@ -53,10 +54,7 @@ export function InitiativesDirectory() {
                     className="mt-6 self-start text-sm"
                   >
                     Explore the vision
-                    <span
-                      aria-hidden="true"
-                      className="ml-2 transition-transform group-hover:translate-x-1"
-                    >
+                    <span aria-hidden="true" className="motion-arrow ml-2">
                       →
                     </span>
                   </LinkButton>

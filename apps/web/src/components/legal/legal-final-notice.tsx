@@ -10,7 +10,11 @@ interface LegalFinalNoticeProps {
 
 export function LegalFinalNotice({ document }: LegalFinalNoticeProps) {
   return (
-    <Section tone="white" aria-labelledby="legal-final-notice-title">
+    <Section
+      tone="white"
+      motion="static"
+      aria-labelledby="legal-final-notice-title"
+    >
       <Container size="narrow">
         <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
           {document.finalNotice.eyebrow}
