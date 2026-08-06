@@ -6,8 +6,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import { LanguageSelector } from "./language-selector";
-
 export interface MobileNavigationProps {
   readonly entries: readonly NavigationEntry[];
 }
@@ -137,9 +135,6 @@ export function MobileNavigation({ entries }: MobileNavigationProps) {
                 </li>
               ))}
             </ul>
-            <div className="border-global-navy/10 text-global-navy mt-5 border-t pt-5">
-              <LanguageSelector />
-            </div>
           </nav>
         </div>
       ) : null}

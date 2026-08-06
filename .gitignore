@@ -32,6 +32,7 @@ artifacts/ppt-content-alignment-review/
 artifacts/final-premium-visual-qa/
 artifacts/showcase-language-cleanup/
 artifacts/premium-motion-review/
+artifacts/remove-language-switch-review/
 
 # Environment files
 .env

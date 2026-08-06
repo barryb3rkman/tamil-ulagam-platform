@@ -71,7 +71,7 @@ The PPT was extracted read-only in a system temporary directory. Editable text a
 - Sitemap includes all 21 routes through static paths and the eight typed initiative entries (`apps/web/src/app/sitemap.ts:6-32`). Robots permit indexing (`apps/web/src/app/robots.ts:5-15`); this makes unresolved public wording materially launch-relevant.
 - Image alt text and concept captions describe generic scenes or explicitly say “concept”; they do not identify people, locations or partners (`apps/web/src/config/images.ts:3-239`, `apps/web/src/content/tamil-id.ts:47-52`, `apps/web/src/content/chapters.ts:31-36`).
 - “Planned”, “future”, “proposed”, “in development” and “not currently available” recur frequently. This repetition is justified on transactional/high-risk routes, but some editorial sections could later be consolidated after formal service states exist. Classification K is secondary, not a recommendation to remove safeguards now.
-- The language selector exposes English and Tamil only (`apps/web/src/content/site.ts:10`), while the PPT proposes English, Tamil, Sinhala and Malayalam on slide 6. This is a scoped omission, not a contradiction or claim of four-language availability.
+- No public language selector is shown because language switching is not implemented. Tamil and English font foundations and future editorial practices remain documented without claiming multilingual availability, while the PPT proposes English, Tamil, Sinhala and Malayalam on slide 6.
 
 ## Direct support and faithful expansion
 
@@ -109,7 +109,7 @@ No material website-to-PPT contradiction was found when planned-status language 
 | 3   | 2,000+ years of heritage              | Absent as a number                                                               | H; external verification                      |
 | 4   | Second-largest linguistic diaspora    | Absent                                                                           | H/G; ranking evidence required                |
 | 5   | ₹50,000 Cr+ annual contribution       | Absent                                                                           | H/G/L; financial evidence required            |
-| 6   | Four-language portal                  | Only English/Tamil placeholder architecture; no four-language availability claim | H/C; founder/product approval                 |
+| 6   | Four-language portal                  | No visible language switch; multilingual availability is currently unimplemented | H/C; founder/product approval                 |
 | 7   | Real-time announcements               | News/notifications are planned                                                   | H/J                                           |
 | 8   | Global organisation directory         | Future directory concept only                                                    | H/C/J                                         |
 | 9   | Live streaming hub                    | Future streaming support only on events initiative                               | H/C/F                                         |

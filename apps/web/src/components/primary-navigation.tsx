@@ -14,7 +14,7 @@ export function PrimaryNavigation({ entries }: PrimaryNavigationProps) {
   return (
     <nav
       aria-label="Primary navigation"
-      className="hidden items-center gap-2 lg:flex"
+      className="hidden items-center gap-2 lg:flex lg:justify-self-end xl:justify-self-center"
     >
       {entries.map((entry) => {
         const isCurrent =
