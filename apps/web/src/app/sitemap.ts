@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { getSiteUrl } from "@/config/metadata";
+import { getAbsoluteSiteUrl } from "@/config/metadata";
 import { initiatives } from "@/content/initiatives";
 
 const staticPaths = [
@@ -18,15 +18,16 @@ const staticPaths = [
   "/terms",
 ] as const;
 
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUrl = getSiteUrl();
   const paths = [
     ...staticPaths,
     ...initiatives.map((initiative) => initiative.href),
   ];
 
   return paths.map((path) => ({
-    url: new URL(path || "/", siteUrl).toString(),
+    url: getAbsoluteSiteUrl(path || "/"),
     changeFrequency: path === "" ? "weekly" : "monthly",
     priority: path === "" ? 1 : 0.7,
   }));

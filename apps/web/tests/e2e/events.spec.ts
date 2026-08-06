@@ -7,6 +7,7 @@ import { eventsEditorialImageKeys, images } from "@/config/images";
 import { eventsContent } from "@/content/events";
 
 import { scrollThroughPage, verifyPageImages } from "./helpers/homepage-media";
+import { getCanonicalRouteHref } from "./helpers/routes";
 
 const reviewViewports = [
   { width: 1920, height: 1080 },
@@ -97,10 +98,13 @@ test.describe("public Events page", () => {
     await expect(page).toHaveURL(/#events-model$/);
     await expect(
       page.getByRole("link", { name: "Explore Global Events" }).first(),
-    ).toHaveAttribute("href", "/initiatives/global-events");
+    ).toHaveAttribute(
+      "href",
+      getCanonicalRouteHref("/initiatives/global-events"),
+    );
     await expect(
       page.getByRole("link", { name: "Contact Tamil Ulagam" }).first(),
-    ).toHaveAttribute("href", "/contact");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/contact"));
     await expect(page.locator("#devtools-indicator")).toBeHidden();
 
     await scrollThroughPage(page, eventsEditorialImageKeys);

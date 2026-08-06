@@ -9,10 +9,32 @@ export function getSiteUrl(): URL {
   const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL ?? fallbackSiteUrl;
 
   try {
-    return new URL(configuredUrl);
+    const siteUrl = new URL(configuredUrl);
+
+    if (siteUrl.protocol !== "http:" && siteUrl.protocol !== "https:") {
+      return new URL(fallbackSiteUrl);
+    }
+
+    siteUrl.hash = "";
+    siteUrl.search = "";
+    siteUrl.pathname = `${siteUrl.pathname.replace(/\/+$/, "")}/`;
+
+    return siteUrl;
   } catch {
     return new URL(fallbackSiteUrl);
   }
+}
+
+export function getAbsoluteSiteUrl(path: `/${string}` | "/"): string {
+  const siteUrl = getSiteUrl();
+  const relativePath = path === "/" ? "" : path.replace(/^\/+/, "");
+  const isFilePath = /\/[^/]+\.[^/]+$/.test(path);
+  const canonicalPath =
+    relativePath && !isFilePath && !relativePath.endsWith("/")
+      ? `${relativePath}/`
+      : relativePath;
+
+  return new URL(canonicalPath, siteUrl).toString();
 }
 
 export const defaultMetadata: Metadata = {
@@ -31,7 +53,7 @@ export const defaultMetadata: Metadata = {
     "Tamil federation",
   ],
   alternates: {
-    canonical: "/",
+    canonical: getAbsoluteSiteUrl("/"),
   },
   openGraph: {
     type: "website",
@@ -39,7 +61,7 @@ export const defaultMetadata: Metadata = {
     siteName: siteContent.name,
     title: siteContent.name,
     description: siteContent.description,
-    url: "/",
+    url: getAbsoluteSiteUrl("/"),
   },
   robots: {
     index: true,
@@ -53,20 +75,22 @@ export function createPageMetadata(
   path: `/${string}` | "/",
   socialImage?: ImageMetadata,
 ): Metadata {
+  const absolutePageUrl = getAbsoluteSiteUrl(path);
+
   return {
     title,
     description,
     alternates: {
-      canonical: path,
+      canonical: absolutePageUrl,
     },
     openGraph: {
       title,
       description,
-      url: path,
+      url: absolutePageUrl,
       images: socialImage
         ? [
             {
-              url: socialImage.path,
+              url: getAbsoluteSiteUrl(socialImage.path),
               width: socialImage.width,
               height: socialImage.height,
               alt: socialImage.alt,

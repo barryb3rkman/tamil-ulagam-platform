@@ -7,3 +7,6 @@ export type {
   RoadmapPhase,
   SocialLink,
 } from "./content";
+
+export { withBasePath } from "./public-path";
+export { isNavigationPathCurrent } from "./navigation-path";

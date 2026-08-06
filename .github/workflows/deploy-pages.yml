@@ -1,0 +1,108 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_BASE_PATH: /tamil-ulagam-platform
+      NEXT_PUBLIC_SITE_URL: https://barryb3rkman.github.io/tamil-ulagam-platform
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Activate pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.17.0 --activate
+          pnpm --version
+
+      - name: Resolve pnpm store
+        id: pnpm-store
+        shell: bash
+        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache pnpm store
+        uses: actions/cache@v6
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Type-check
+        run: pnpm typecheck
+
+      - name: Run unit tests
+        run: pnpm test
+
+      - name: Build static site
+        run: pnpm build:pages
+
+      - name: Verify static export
+        shell: bash
+        run: |
+          required_files=(
+            apps/web/out/index.html
+            apps/web/out/404.html
+            apps/web/out/about/index.html
+            apps/web/out/initiatives/index.html
+            apps/web/out/tamil-id/index.html
+            apps/web/out/roadmap/index.html
+            apps/web/out/privacy/index.html
+            apps/web/out/terms/index.html
+            apps/web/out/icon.svg
+            apps/web/out/sitemap.xml
+            apps/web/out/robots.txt
+          )
+          for required_file in "${required_files[@]}"; do
+            test -f "$required_file"
+          done
+          test -d apps/web/out/_next/static
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: apps/web/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

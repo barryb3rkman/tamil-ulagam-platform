@@ -6,6 +6,7 @@ import { expect, test } from "@playwright/test";
 import { aboutEditorialImageKeys } from "@/config/images";
 
 import { scrollThroughPage, verifyPageImages } from "./helpers/homepage-media";
+import { getCanonicalRouteHref } from "./helpers/routes";
 
 const reviewViewports = [
   { width: 1920, height: 1080 },
@@ -83,10 +84,10 @@ test.describe("public About page", () => {
     await expect(page.getByRole("contentinfo")).toBeVisible();
     await expect(
       page.getByRole("link", { name: "Explore Our Vision" }),
-    ).toHaveAttribute("href", "/about#vision-mission");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/about#vision-mission"));
     await expect(
       page.getByRole("link", { name: "View Full Roadmap" }),
-    ).toHaveAttribute("href", "/roadmap");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/roadmap"));
 
     const primaryNavigation = page.getByRole("navigation", {
       name: "Primary navigation",

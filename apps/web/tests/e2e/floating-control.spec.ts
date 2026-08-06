@@ -6,6 +6,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { aboutEditorialImageKeys } from "@/config/images";
 
 import { scrollThroughPage, verifyPageImages } from "./helpers/homepage-media";
+import { getCanonicalRouteHref } from "./helpers/routes";
 
 const publicRoutes = [
   "/",
@@ -33,7 +34,7 @@ async function visitPublicRoute(page: Page, route: string) {
   expect(
     new URL(page.url()).pathname,
     `${route} did not complete navigation`,
-  ).toBe(route);
+  ).toBe(getCanonicalRouteHref(route));
 
   const mainContent = page.locator("main#main-content");
   await expect(

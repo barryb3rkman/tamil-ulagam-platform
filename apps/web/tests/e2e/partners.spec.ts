@@ -7,6 +7,7 @@ import { images, partnersEditorialImageKeys } from "@/config/images";
 import { partnersContent } from "@/content/partners";
 
 import { scrollThroughPage, verifyPageImages } from "./helpers/homepage-media";
+import { getCanonicalRouteHref } from "./helpers/routes";
 
 const reviewViewports = [
   { width: 1920, height: 1080 },
@@ -98,13 +99,13 @@ test.describe("public Partners page", () => {
     await expect(page).toHaveURL(/#partnership-model$/);
     await expect(
       page.getByRole("link", { name: "View the Roadmap" }).first(),
-    ).toHaveAttribute("href", "/roadmap");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/roadmap"));
     await expect(
       page.getByRole("link", { name: "Explore Initiatives" }).first(),
-    ).toHaveAttribute("href", "/initiatives");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/initiatives"));
     await expect(
       page.getByRole("link", { name: "Contact Tamil Ulagam" }).first(),
-    ).toHaveAttribute("href", "/contact");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/contact"));
     await expect(page.locator("#devtools-indicator")).toBeHidden();
 
     await scrollThroughPage(page, partnersEditorialImageKeys);

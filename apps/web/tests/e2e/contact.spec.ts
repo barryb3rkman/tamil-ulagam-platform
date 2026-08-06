@@ -6,6 +6,7 @@ import { expect, test } from "@playwright/test";
 import { contactContent } from "@/content/contact";
 
 import { scrollThroughPage } from "./helpers/homepage-media";
+import { getCanonicalRouteHref } from "./helpers/routes";
 
 const reviewViewports = [
   { width: 1920, height: 1080 },
@@ -92,7 +93,7 @@ test.describe("public Contact page", () => {
         .getByRole("link", {
           name: "Contact",
         }),
-    ).toHaveAttribute("href", "/contact");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/contact"));
 
     await page.keyboard.press("Tab");
     await expect(page.locator(":focus")).toHaveText("Skip to main content");

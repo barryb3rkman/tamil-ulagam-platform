@@ -7,6 +7,7 @@ import { images, newsEditorialImageKeys } from "@/config/images";
 import { newsContent } from "@/content/news";
 
 import { scrollThroughPage, verifyPageImages } from "./helpers/homepage-media";
+import { getCanonicalRouteHref } from "./helpers/routes";
 
 const reviewViewports = [
   { width: 1920, height: 1080 },
@@ -114,13 +115,13 @@ test.describe("public News page", () => {
     await expect(page).toHaveURL(/#editorial-model$/);
     await expect(
       page.getByRole("link", { name: "Explore Partnerships" }).first(),
-    ).toHaveAttribute("href", "/partners");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/partners"));
     await expect(
       page.getByRole("link", { name: "Contact Tamil Ulagam" }).first(),
-    ).toHaveAttribute("href", "/contact");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/contact"));
     await expect(
       page.getByRole("link", { name: "Learn About Tamil Ulagam" }),
-    ).toHaveAttribute("href", "/about");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/about"));
     await expect(page.locator("#devtools-indicator")).toBeHidden();
 
     await scrollThroughPage(page, newsEditorialImageKeys);

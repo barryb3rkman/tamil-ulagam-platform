@@ -29,4 +29,4 @@ pnpm build
 pnpm test:e2e
 ```
 
-See [local development](docs/operations/local-development.md), [repository structure](docs/architecture/repository-structure.md), and [public website scope](docs/product/public-website-scope.md) for details.
+See [local development](docs/operations/local-development.md), [GitHub Pages deployment](docs/deployment/github-pages.md), [repository structure](docs/architecture/repository-structure.md), and [public website scope](docs/product/public-website-scope.md) for details.

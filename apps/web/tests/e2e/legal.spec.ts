@@ -9,6 +9,8 @@ import {
   type LegalPolicyDocument,
 } from "@/content/legal";
 
+import { getCanonicalRouteHref } from "./helpers/routes";
+
 const responsiveViewports = [
   { width: 1920, height: 1080 },
   { width: 1440, height: 1000 },
@@ -131,16 +133,16 @@ test.describe("draft public legal pages", () => {
     await expect(page.locator(":focus")).toHaveText("Skip to main content");
     await expect(
       page.getByRole("link", { name: "Read the draft Terms of Use" }),
-    ).toHaveAttribute("href", "/terms");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/terms"));
 
     const footer = page.getByRole("navigation", { name: "Footer navigation" });
     await expect(footer.getByRole("link", { name: "Privacy" })).toHaveAttribute(
       "href",
-      "/privacy",
+      getCanonicalRouteHref("/privacy"),
     );
     await expect(footer.getByRole("link", { name: "Terms" })).toHaveAttribute(
       "href",
-      "/terms",
+      getCanonicalRouteHref("/terms"),
     );
 
     const termsResponse = await page.request.get("/terms");
@@ -181,7 +183,7 @@ test.describe("draft public legal pages", () => {
     ] as const;
     for (const route of expectedRoutes) {
       await expect(
-        page.locator(`main a[href="${route}"]`).first(),
+        page.locator(`main a[href="${getCanonicalRouteHref(route)}"]`).first(),
       ).toBeVisible();
       const response = await page.request.get(route);
       expect(response.status(), `${route} should resolve`).toBeLessThan(400);

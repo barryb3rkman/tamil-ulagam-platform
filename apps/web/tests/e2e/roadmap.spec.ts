@@ -8,6 +8,7 @@ import { roadmapPageContent } from "@/content/roadmap-page";
 import { roadmapPhases } from "@/content/roadmap";
 
 import { scrollThroughPage, verifyPageImages } from "./helpers/homepage-media";
+import { getCanonicalRouteHref } from "./helpers/routes";
 
 const reviewViewports = [
   { width: 1920, height: 1080 },
@@ -97,19 +98,19 @@ test.describe("public Roadmap page", () => {
     await expect(page).toHaveURL(/#roadmap-phases$/);
     await expect(
       page.getByRole("link", { name: "Explore Tamil ID" }).first(),
-    ).toHaveAttribute("href", "/tamil-id");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/tamil-id"));
     await expect(
       page.getByRole("link", { name: "Explore Chapters" }).first(),
-    ).toHaveAttribute("href", "/chapters");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/chapters"));
     await expect(
       page.getByRole("link", { name: "Explore Initiatives" }).first(),
-    ).toHaveAttribute("href", "/initiatives");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/initiatives"));
     await expect(
       page.getByRole("link", { name: "Partner With Tamil Ulagam" }),
-    ).toHaveAttribute("href", "/partners");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/partners"));
     await expect(
       page.getByRole("link", { name: "Contact Us" }).first(),
-    ).toHaveAttribute("href", "/contact");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/contact"));
     await expect(page.locator("#devtools-indicator")).toBeHidden();
 
     await scrollThroughPage(page, roadmapEditorialImageKeys);

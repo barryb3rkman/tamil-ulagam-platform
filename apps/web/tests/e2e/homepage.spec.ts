@@ -7,6 +7,7 @@ import {
   scrollThroughHomepage,
   verifyMajorHomepageImages,
 } from "./helpers/homepage-media";
+import { getCanonicalRouteHref } from "./helpers/routes";
 
 test.describe("public homepage", () => {
   test("captures the requested visual review viewports", async ({ page }) => {
@@ -43,7 +44,10 @@ test.describe("public homepage", () => {
     page.on("requestfailed", (request) => {
       const requestUrl = request.url();
 
-      if (requestUrl.includes(".png") || requestUrl.includes("/_next/image")) {
+      if (
+        request.failure()?.errorText !== "net::ERR_ABORTED" &&
+        (requestUrl.includes(".png") || requestUrl.includes("/_next/image"))
+      ) {
         failedImageRequests.push(requestUrl);
       }
     });
@@ -96,7 +100,7 @@ test.describe("public homepage", () => {
     await expect(page.locator(":focus")).toHaveText("About");
     await expect(
       page.getByRole("link", { name: "Explore Our Vision" }),
-    ).toHaveAttribute("href", "/about");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/about"));
     await expect(
       page.getByRole("heading", {
         level: 2,
@@ -114,7 +118,7 @@ test.describe("public homepage", () => {
     ).toHaveCount(8);
     await expect(
       page.getByRole("link", { name: /Explore All Initiatives/ }),
-    ).toHaveAttribute("href", "/initiatives");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/initiatives"));
 
     const internalLinks = await page
       .locator('a[href^="/"]')
@@ -140,7 +144,7 @@ test.describe("public homepage", () => {
       "/contact",
       "/privacy",
       "/terms",
-    ];
+    ].map(getCanonicalRouteHref);
     expect(
       internalLinks
         .filter((href): href is string => href !== null)

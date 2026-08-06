@@ -7,6 +7,7 @@ import { images, tamilIdEditorialImageKeys } from "@/config/images";
 import { tamilIdContent } from "@/content/tamil-id";
 
 import { scrollThroughPage, verifyPageImages } from "./helpers/homepage-media";
+import { getCanonicalRouteHref } from "./helpers/routes";
 
 const reviewViewports = [
   { width: 1920, height: 1080 },
@@ -94,10 +95,10 @@ test.describe("public Tamil ID concept page", () => {
     await expect(page.locator(":focus")).toHaveText("Understand the Tamil ID");
     await expect(
       page.getByRole("link", { name: "View the Roadmap" }),
-    ).toHaveAttribute("href", "/roadmap");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/roadmap"));
     await expect(
       page.getByRole("link", { name: "Partner With Tamil Ulagam" }),
-    ).toHaveAttribute("href", "/partners");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/partners"));
     await page.getByRole("link", { name: "Understand the Tamil ID" }).click();
     await expect(page).toHaveURL(/#what-is-tamil-id$/);
     await expect(page.locator("#devtools-indicator")).toBeHidden();

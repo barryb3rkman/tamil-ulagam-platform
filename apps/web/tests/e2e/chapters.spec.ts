@@ -7,6 +7,7 @@ import { chaptersEditorialImageKeys, images } from "@/config/images";
 import { chaptersContent } from "@/content/chapters";
 
 import { scrollThroughPage, verifyPageImages } from "./helpers/homepage-media";
+import { getCanonicalRouteHref } from "./helpers/routes";
 
 const reviewViewports = [
   { width: 1920, height: 1080 },
@@ -95,7 +96,7 @@ test.describe("public Chapters page", () => {
     await expect(page).toHaveURL(/#chapter-vision$/);
     await expect(
       page.locator("main").getByRole("link", { name: "Partner With Us" }),
-    ).toHaveAttribute("href", "/partners");
+    ).toHaveAttribute("href", getCanonicalRouteHref("/partners"));
     await expect(page.locator("#devtools-indicator")).toBeHidden();
 
     await scrollThroughPage(page, chaptersEditorialImageKeys);

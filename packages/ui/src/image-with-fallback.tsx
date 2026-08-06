@@ -1,10 +1,16 @@
 "use client";
 
-import type { ImageMetadata } from "@tamil-ulagam/shared";
+import { withBasePath, type ImageMetadata } from "@tamil-ulagam/shared";
 import Image, { getImageProps, type ImageProps } from "next/image";
 import { useState, type CSSProperties } from "react";
 
 import { cx } from "./utils";
+
+declare const process: {
+  readonly env: {
+    readonly NEXT_PUBLIC_BASE_PATH?: string;
+  };
+};
 
 export interface ImageWithFallbackProps extends Omit<
   ImageProps,
@@ -40,6 +46,8 @@ export function ImageWithFallback({
   style,
   ...props
 }: ImageWithFallbackProps) {
+  const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+  const desktopSrc = withBasePath(asset.path, publicBasePath);
   const [hasLoadError, setHasLoadError] = useState(false);
   const shouldShowPlaceholder = !asset.available || hasLoadError;
   const shouldPrioritize = priority ?? asset.aboveFold;
@@ -93,6 +101,10 @@ export function ImageWithFallback({
   }
 
   if (asset.mobileAlternative) {
+    const mobileSrcWithBasePath = withBasePath(
+      asset.mobilePath,
+      publicBasePath,
+    );
     const {
       props: { sizes: mobileSizes, src: mobileSrc, srcSet: mobileSrcSet },
     } = getImageProps({
@@ -101,7 +113,7 @@ export function ImageWithFallback({
       loader: props.loader,
       quality: props.quality,
       sizes,
-      src: asset.mobilePath,
+      src: mobileSrcWithBasePath,
       unoptimized: props.unoptimized,
       width: asset.mobileWidth,
     });
@@ -126,7 +138,7 @@ export function ImageWithFallback({
             setHasLoadError(true);
           }}
           sizes={sizes}
-          src={asset.path}
+          src={desktopSrc}
           style={responsiveStyle}
           width={asset.width}
         />
@@ -146,7 +158,7 @@ export function ImageWithFallback({
         setHasLoadError(true);
       }}
       sizes={sizes}
-      src={asset.path}
+      src={desktopSrc}
       style={responsiveStyle}
       width={asset.width}
     />

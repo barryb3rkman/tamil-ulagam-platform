@@ -6,6 +6,8 @@ import { expect, test, type Page } from "@playwright/test";
 import { initiativesEditorialImageKeys, images } from "@/config/images";
 import { initiatives } from "@/content/initiatives";
 
+import { getCanonicalRouteHref } from "./helpers/routes";
+
 const reviewViewports = [
   { width: 1920, height: 1080 },
   { width: 1440, height: 1000 },
@@ -127,7 +129,7 @@ test.describe("public Initiatives overview page", () => {
       await expect(page.getByText(initiative.title).first()).toBeVisible();
       await expect(
         page.getByRole("link", { name: new RegExp(initiative.title) }).first(),
-      ).toHaveAttribute("href", initiative.href);
+      ).toHaveAttribute("href", getCanonicalRouteHref(initiative.href));
     }
 
     await loadInitiativeImages(page);

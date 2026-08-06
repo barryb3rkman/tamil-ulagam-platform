@@ -12,6 +12,7 @@ import {
 } from "@/content/initiative-details";
 
 import { scrollThroughPage, verifyPageImages } from "./helpers/homepage-media";
+import { getCanonicalRouteHref } from "./helpers/routes";
 
 const standardDesktop = { width: 1440, height: 1000 };
 const standardMobile = { width: 390, height: 844 };
@@ -31,7 +32,7 @@ const representativeViewports = [
 const representativeSlugs = ["healthcare", "jobs", "arts-culture"] as const;
 
 function getRoute(slug: (typeof initiativeDetailSlugs)[number]) {
-  return getInitiativeDetailIdentity(slug).href;
+  return getCanonicalRouteHref(getInitiativeDetailIdentity(slug).href);
 }
 
 async function waitForHeroImage(
@@ -90,7 +91,7 @@ async function verifyDetailRoute(
   ).toHaveAttribute("href", "#capabilities");
   await expect(
     page.getByRole("link", { name: detail.secondaryCallToAction.label }),
-  ).toHaveAttribute("href", "/partners");
+  ).toHaveAttribute("href", getCanonicalRouteHref("/partners"));
   const primaryNavigation = page.getByRole("navigation", {
     name: "Primary navigation",
   });

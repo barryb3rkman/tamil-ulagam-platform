@@ -1,6 +1,9 @@
 "use client";
 
-import type { NavigationEntry } from "@tamil-ulagam/shared";
+import {
+  isNavigationPathCurrent,
+  type NavigationEntry,
+} from "@tamil-ulagam/shared";
 import { VisuallyHidden } from "@tamil-ulagam/ui";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -100,9 +103,7 @@ export function MobileNavigation({ entries }: MobileNavigationProps) {
                     className="rounded-button text-global-navy hover:bg-global-navy/5 focus-visible:ring-focus block px-3 py-3 text-base font-semibold focus-visible:outline-none"
                     href={entry.href}
                     aria-current={
-                      pathname === entry.href ||
-                      (entry.href === "/initiatives" &&
-                        pathname.startsWith("/initiatives/"))
+                      isNavigationPathCurrent(pathname, entry.href)
                         ? "page"
                         : undefined
                     }
@@ -120,7 +121,9 @@ export function MobileNavigation({ entries }: MobileNavigationProps) {
                             className="rounded-button text-charcoal hover:bg-global-navy/5 focus-visible:ring-focus block px-3 py-2 text-sm focus-visible:outline-none"
                             href={child.href}
                             aria-current={
-                              pathname === child.href ? "page" : undefined
+                              isNavigationPathCurrent(pathname, child.href)
+                                ? "page"
+                                : undefined
                             }
                             onClick={() => {
                               closeMenu();

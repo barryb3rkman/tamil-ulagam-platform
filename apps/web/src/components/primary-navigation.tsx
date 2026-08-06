@@ -1,6 +1,9 @@
 "use client";
 
-import type { NavigationEntry } from "@tamil-ulagam/shared";
+import {
+  isNavigationPathCurrent,
+  type NavigationEntry,
+} from "@tamil-ulagam/shared";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -17,10 +20,7 @@ export function PrimaryNavigation({ entries }: PrimaryNavigationProps) {
       className="hidden items-center gap-2 lg:flex lg:justify-self-end xl:justify-self-center"
     >
       {entries.map((entry) => {
-        const isCurrent =
-          pathname === entry.href ||
-          (entry.href === "/initiatives" &&
-            pathname.startsWith("/initiatives/"));
+        const isCurrent = isNavigationPathCurrent(pathname, entry.href);
 
         return (
           <Link
