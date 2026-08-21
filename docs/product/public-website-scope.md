@@ -18,9 +18,9 @@ The first release creates the permanent public website foundation for Tamil Ulag
 
 - Internal page redesigns and future service UX
 - Database and data migrations
-- Authentication, Tamil ID registration, and membership
+- Production authentication, Tamil ID registration, and membership
 - CMS and editorial workflows
-- Payments, applications, directories, or administration
+- Payments, public directories, or production administration
 - Jobs, healthcare, education, business, or other transactional services
 - Mobile applications
 
@@ -50,7 +50,11 @@ The Contact page explains future enquiry categories, information guidance, routi
 
 The Privacy Policy and Terms of Use pages are public draft foundations for review. They document current public-site limitations, potential future responsibilities and the decisions required before personal-data processing or binding service terms begin. They do not establish an approved legal entity, effective date, contact route, governing law, processor list, retention schedule, legal basis or regulatory-compliance claim. Qualified legal, governance, security and operational review must replace or materially update the drafts before they govern a production service.
 
-The current release does not need a database or authentication because it stores no member state and performs no privileged transaction. Adding them now would create security and operational responsibilities before the relevant governance and product requirements exist.
+## Frontend enrollment demonstration
+
+The repository now includes a separately bounded organisation-enrollment MVP at `/signup`, `/login`, `/register`, `/dashboard`, and `/admin`. It demonstrates account creation, dynamic organisation registration, review, submission and administrative status changes with typed mock data stored only in the local browser. It does not create a real account, transmit an application, verify an organisation, protect the admin area, or make enrollment operational.
+
+The current release still does not need a database or production authentication because it performs no server-side privileged transaction. Adding those systems now would create security and operational responsibilities before the relevant governance and product requirements exist. The frontend service boundary is designed so an approved identity and database implementation can replace mock persistence later.
 
 ## Honest representation
 

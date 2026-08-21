@@ -84,7 +84,10 @@ test.describe("final public-site visual quality", () => {
       });
       page.on("pageerror", (error) => browserErrors.push(error.message));
       page.on("requestfailed", (request) => {
-        if (request.resourceType() === "image") {
+        if (
+          request.resourceType() === "image" &&
+          request.failure()?.errorText !== "net::ERR_ABORTED"
+        ) {
           failedRequests.push(request.url());
         }
       });

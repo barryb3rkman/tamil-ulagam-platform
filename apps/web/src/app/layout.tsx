@@ -2,10 +2,10 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Noto_Sans_Tamil } from "next/font/google";
 import type { ReactNode } from "react";
 
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
+import { RouteFrame } from "@/components/application/route-frame";
 import { MotionRuntime } from "@/components/motion/motion-runtime";
 import { defaultMetadata } from "@/config/metadata";
+import { PlatformProvider } from "@/features/enrollment/platform-provider";
 
 import "./globals.css";
 
@@ -42,20 +42,16 @@ export default function RootLayout({ children }: RootLayoutProps) {
       className={`${englishFont.variable} ${tamilFont.variable}`}
     >
       <body>
-        <MotionRuntime />
-        <a
-          href="#main-content"
-          className="rounded-button bg-deep-navy focus:ring-focus fixed top-3 left-3 z-[100] -translate-y-24 px-4 py-3 font-semibold text-white transition-transform focus:translate-y-0 focus:outline-none"
-        >
-          Skip to main content
-        </a>
-        <div className="flex min-h-screen flex-col">
-          <SiteHeader />
-          <main id="main-content" className="flex-1" tabIndex={-1}>
-            <div data-route-transition="enter">{children}</div>
-          </main>
-          <SiteFooter />
-        </div>
+        <PlatformProvider>
+          <MotionRuntime />
+          <a
+            href="#main-content"
+            className="rounded-button bg-deep-navy focus:ring-focus fixed top-3 left-3 z-[100] -translate-y-24 px-4 py-3 font-semibold text-white transition-transform focus:translate-y-0 focus:outline-none"
+          >
+            Skip to main content
+          </a>
+          <RouteFrame>{children}</RouteFrame>
+        </PlatformProvider>
       </body>
     </html>
   );

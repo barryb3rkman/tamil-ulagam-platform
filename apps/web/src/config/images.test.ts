@@ -57,6 +57,17 @@ describe("image registry", () => {
     expect(images.aboutHero.mobileAlternative).toBe(false);
   });
 
+  it("keeps the Tamil-authentic portal image at its verified portrait dimensions", () => {
+    expect(images.portalAuthHero).toMatchObject({
+      path: "/images/tamil-ulagam/portal/portal-auth-hero-tamil.png",
+      width: 1122,
+      height: 1402,
+      aspectRatio: "1122/1402",
+      objectPosition: "50% 50%",
+      available: true,
+    });
+  });
+
   it("keeps every major homepage editorial asset available", () => {
     expect(homepageEditorialImageKeys).toEqual([
       "whyTamilUlagam",

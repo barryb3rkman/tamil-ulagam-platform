@@ -68,7 +68,14 @@ describe("draft public legal pages", () => {
       expect(screen.getByText(item)).toBeVisible();
     }
     expect(screen.getByText("Account information")).toBeVisible();
-    expect(screen.getByText("No membership account creation")).toBeVisible();
+    expect(
+      screen.getByText("No production membership account creation"),
+    ).toBeVisible();
+    expect(
+      screen.getByText(
+        "The demonstration stores mock records in the visitor’s browser. It does not create a production account or transmit an organisation application to Tamil Ulagam.",
+      ),
+    ).toBeVisible();
     expect(
       screen.getByRole("link", { name: "Review the current Contact guidance" }),
     ).toHaveAttribute("href", "/contact");

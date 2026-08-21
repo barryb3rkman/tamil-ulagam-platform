@@ -198,12 +198,14 @@ export const privacyPolicy = {
       number: "03",
       title: "Current public website",
       paragraphs: [
-        "The current website consists of public informational pages describing Tamil Ulagam’s mission, planned platform and draft operating foundations. It does not currently provide interactive service workflows.",
+        "The current website consists of public informational pages describing Tamil Ulagam’s mission, planned platform and draft operating foundations. Its organisation-enrollment experience is a local demonstration only and does not provide a live transactional service.",
+        "The demonstration stores mock records in the visitor’s browser. It does not create a production account or transmit an organisation application to Tamil Ulagam.",
         "The hosting and operational configuration must be reviewed before launch to confirm what technical information may be processed. This draft does not make an unverified claim that technical logs or similar operational records are absent.",
       ],
       itemIntroduction: "The current public release provides:",
       items: [
-        "No membership account creation",
+        "No production membership account creation",
+        "No live organisation application submission",
         "No working contact form",
         "No chapter application",
         "No event registration",

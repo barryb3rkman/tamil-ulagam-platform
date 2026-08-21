@@ -53,7 +53,7 @@ export function MobileNavigation({ entries }: MobileNavigationProps) {
   }, [isOpen]);
 
   return (
-    <div className="lg:hidden">
+    <div className="min-[85rem]:hidden">
       <button
         ref={toggleButtonRef}
         type="button"
@@ -83,7 +83,7 @@ export function MobileNavigation({ entries }: MobileNavigationProps) {
           data-state={isOpen ? "open" : "closed"}
           aria-hidden={!isOpen}
           inert={!isOpen ? true : undefined}
-          className="motion-mobile-panel border-global-navy/10 bg-warm-ivory shadow-navigation absolute inset-x-0 top-full z-50 border-t"
+          className="motion-mobile-panel border-global-navy/10 bg-warm-ivory shadow-navigation absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-var(--tu-navigation-height))] overflow-y-auto overscroll-contain border-t"
           onTransitionEnd={(event) => {
             if (
               event.propertyName === "opacity" &&
@@ -137,6 +137,26 @@ export function MobileNavigation({ entries }: MobileNavigationProps) {
                   ) : null}
                 </li>
               ))}
+            </ul>
+            <ul className="border-global-navy/10 mt-5 grid gap-3 border-t pt-5 sm:grid-cols-2">
+              <li>
+                <Link
+                  className="border-global-navy/25 text-global-navy hover:bg-global-navy/5 focus-visible:ring-focus rounded-button flex min-h-11 items-center justify-center border px-4 py-3 text-center text-sm font-semibold focus-visible:outline-none"
+                  href="/login"
+                  onClick={closeMenu}
+                >
+                  Login
+                </Link>
+              </li>
+              <li>
+                <Link
+                  className="bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button flex min-h-11 items-center justify-center px-4 py-3 text-center text-sm font-semibold text-white focus-visible:outline-none"
+                  href="/signup"
+                  onClick={closeMenu}
+                >
+                  Register Organisation
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>

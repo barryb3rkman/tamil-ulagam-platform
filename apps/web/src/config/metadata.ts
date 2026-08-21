@@ -100,3 +100,17 @@ export function createPageMetadata(
     },
   };
 }
+
+export function createApplicationMetadata(
+  title: string,
+  description: string,
+  path: `/${string}`,
+): Metadata {
+  return {
+    ...createPageMetadata(title, description, path),
+    robots: {
+      index: false,
+      follow: false,
+    },
+  };
+}

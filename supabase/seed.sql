@@ -1,0 +1,3 @@
+-- Intentionally empty. Deterministic demo organizations remain test-only in the
+-- frontend mock repository. Add non-sensitive local Auth/database fixtures only
+-- with an executable integration-test harness.

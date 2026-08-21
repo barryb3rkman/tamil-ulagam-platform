@@ -84,6 +84,7 @@ test.describe("public homepage", () => {
     page.on("requestfailed", (request) => {
       failedRequests.push(`${request.method()} ${request.url()}`);
     });
+    await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto("/");
 
     await expect(
@@ -144,6 +145,8 @@ test.describe("public homepage", () => {
       "/contact",
       "/privacy",
       "/terms",
+      "/login",
+      "/signup",
     ].map(getCanonicalRouteHref);
     expect(
       internalLinks

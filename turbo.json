@@ -3,7 +3,12 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "env": ["NEXT_PUBLIC_BASE_PATH", "NEXT_PUBLIC_SITE_URL"],
+      "env": [
+        "NEXT_PUBLIC_BASE_PATH",
+        "NEXT_PUBLIC_SITE_URL",
+        "NEXT_PUBLIC_SUPABASE_URL",
+        "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"
+      ],
       "outputs": [".next/**", "!.next/cache/**", "out/**", "dist/**"]
     },
     "dev": {

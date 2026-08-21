@@ -43,7 +43,10 @@ export function SiteHeader() {
         data-scrolled={isScrolled}
         className="motion-site-header border-global-navy/10 bg-warm-ivory sticky top-0 z-40 border-b"
       >
-        <Container className="min-h-navigation flex items-center justify-between gap-6 lg:grid lg:grid-cols-[auto_1fr] xl:grid-cols-[1fr_auto_1fr]">
+        <Container
+          size="wide"
+          className="min-h-navigation flex items-center justify-between gap-4 min-[85rem]:grid min-[85rem]:grid-cols-[auto_minmax(0,1fr)_auto] min-[85rem]:gap-2"
+        >
           <Link
             className="group focus-visible:ring-focus inline-flex items-center gap-3 rounded-sm focus-visible:outline-none"
             href="/"
@@ -67,12 +70,26 @@ export function SiteHeader() {
 
           <PrimaryNavigation entries={primaryNavigation} />
 
-          <Link
-            href="/partners"
-            className="motion-control bg-heritage-maroon hover:bg-deep-navy focus-visible:ring-focus rounded-button hidden min-h-10 items-center px-4 py-2 text-sm font-semibold text-white focus-visible:outline-none xl:inline-flex xl:justify-self-end"
-          >
-            Partner With Us
-          </Link>
+          <div className="hidden items-center gap-2 min-[85rem]:flex min-[85rem]:justify-self-end">
+            <Link
+              href="/login"
+              className="motion-control text-global-navy hover:bg-global-navy/5 hover:text-heritage-maroon focus-visible:ring-focus rounded-button inline-flex min-h-10 items-center px-2.5 py-2 text-sm font-semibold focus-visible:outline-none"
+            >
+              Login
+            </Link>
+            <Link
+              href="/signup"
+              className="motion-control bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button inline-flex min-h-10 items-center px-3.5 py-2 text-sm font-semibold whitespace-nowrap text-white focus-visible:outline-none"
+            >
+              Register Organisation
+            </Link>
+            <Link
+              href="/partners"
+              className="motion-control bg-heritage-maroon hover:bg-deep-navy focus-visible:ring-focus rounded-button inline-flex min-h-10 items-center px-4 py-2 text-sm font-semibold whitespace-nowrap text-white focus-visible:outline-none"
+            >
+              Partner With Us
+            </Link>
+          </div>
           <MobileNavigation entries={primaryNavigation} />
         </Container>
       </header>

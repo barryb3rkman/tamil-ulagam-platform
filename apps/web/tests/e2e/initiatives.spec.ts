@@ -103,6 +103,7 @@ test.describe("public Initiatives overview page", () => {
         failedImageRequests.push(requestUrl);
       }
     });
+    await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto("/initiatives");
 
     await expect(

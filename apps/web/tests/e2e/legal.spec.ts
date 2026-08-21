@@ -107,7 +107,15 @@ test.describe("draft public legal pages", () => {
 
     await expectSharedDraftState(page, privacyPolicy);
     await expect(
-      page.getByText("No membership account creation", { exact: true }),
+      page.getByText("No production membership account creation", {
+        exact: true,
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByText(
+        "The demonstration stores mock records in the visitor’s browser. It does not create a production account or transmit an organisation application to Tamil Ulagam.",
+        { exact: true },
+      ),
     ).toBeVisible();
     await expect(
       page.getByText("Account information", { exact: true }),

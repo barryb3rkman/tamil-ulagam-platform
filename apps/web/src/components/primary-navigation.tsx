@@ -17,7 +17,7 @@ export function PrimaryNavigation({ entries }: PrimaryNavigationProps) {
   return (
     <nav
       aria-label="Primary navigation"
-      className="hidden items-center gap-2 lg:flex lg:justify-self-end xl:justify-self-center"
+      className="hidden items-center gap-1 min-[85rem]:flex min-[85rem]:justify-self-center min-[100rem]:gap-2"
     >
       {entries.map((entry) => {
         const isCurrent = isNavigationPathCurrent(pathname, entry.href);
@@ -26,7 +26,7 @@ export function PrimaryNavigation({ entries }: PrimaryNavigationProps) {
           <Link
             key={entry.href}
             aria-current={isCurrent ? "page" : undefined}
-            className={`rounded-button focus-visible:ring-focus px-3.5 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none ${
+            className={`rounded-button focus-visible:ring-focus px-3 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none min-[100rem]:px-3.5 ${
               isCurrent
                 ? "bg-global-navy text-white"
                 : "text-global-navy hover:bg-global-navy/5 hover:text-heritage-maroon"

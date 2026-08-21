@@ -54,6 +54,7 @@ test.describe("public About page", () => {
         failedImageRequests.push(requestUrl);
       }
     });
+    await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto("/about");
 
     await expect(

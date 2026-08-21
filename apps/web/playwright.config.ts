@@ -33,6 +33,8 @@ export default defineConfig({
     command: `exec ./node_modules/.bin/next dev --port ${port}`,
     env: {
       TAMIL_ULAGAM_E2E: "1",
+      NEXT_PUBLIC_ENROLLMENT_BACKEND:
+        process.env.NEXT_PUBLIC_ENROLLMENT_BACKEND ?? "mock",
     },
     url: baseURL,
     reuseExistingServer: false,

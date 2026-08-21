@@ -23,6 +23,27 @@ const publicRoutes = [
   "terms/",
 ] as const;
 
+const applicationRoutes = [
+  "login/",
+  "signup/",
+  "forgot-password/",
+  "auth/callback/",
+  "register/",
+  "register/review/",
+  "dashboard/",
+  "dashboard/registration/",
+  "dashboard/account/",
+  "admin/",
+  "admin/registrations/",
+  "admin/registrations/registration-toronto/",
+  "admin/registrations/registration-learning/",
+  "admin/registrations/registration-anbu/",
+  "admin/registrations/registration-enterprise/",
+  "admin/registrations/registration-foundation/",
+  "admin/registrations/registration-current/",
+  "admin/registrations/review/",
+] as const;
+
 test("all exported public routes support direct navigation", async ({
   page,
 }) => {
@@ -32,6 +53,18 @@ test("all exported public routes support direct navigation", async ({
     });
 
     expect(response?.status(), route || "homepage").toBe(200);
+    await expect(page.locator("main")).toBeVisible();
+  }
+});
+
+test("all exported application routes support project-subpath navigation", async ({
+  page,
+}) => {
+  for (const route of applicationRoutes) {
+    const response = await page.goto(`./${route}`, {
+      waitUntil: "domcontentloaded",
+    });
+    expect(response?.status(), route).toBe(200);
     await expect(page.locator("main")).toBeVisible();
   }
 });
@@ -53,6 +86,7 @@ test("project-site navigation and assets retain the repository base path", async
     }
   });
 
+  await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("./", { waitUntil: "networkidle" });
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await expect(page.getByRole("button", { name: "Open menu" })).toBeHidden();
@@ -85,7 +119,9 @@ test("mobile project-site rendering has working navigation and no overflow", asy
   const menuButton = page.getByRole("button", { name: "Open menu" });
   await expect(menuButton).toBeVisible();
   await menuButton.click();
-  await expect(page.getByRole("navigation", { name: "Mobile" })).toBeVisible();
+  await expect(
+    page.getByRole("navigation", { name: "Mobile primary navigation" }),
+  ).toBeVisible();
   await expect(page.getByText("English / தமிழ்", { exact: true })).toHaveCount(
     0,
   );

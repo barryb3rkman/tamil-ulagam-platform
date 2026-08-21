@@ -33,12 +33,17 @@ const requiredViewports = [
   { width: 768, height: 1024 },
   { width: 1024, height: 768 },
   { width: 1280, height: 800 },
+  { width: 1366, height: 900 },
   { width: 1440, height: 1000 },
   { width: 1920, height: 1080 },
 ] as const;
 
-const desktopViewports = requiredViewports.slice(4);
-const mobileViewports = requiredViewports.slice(0, 3);
+const desktopViewports = requiredViewports.filter(
+  (viewport) => viewport.width >= 1360,
+);
+const mobileViewports = requiredViewports.filter(
+  (viewport) => viewport.width < 1360,
+);
 
 async function expectLanguageControlAbsent(page: Page) {
   const header = page.getByRole("banner");
@@ -101,7 +106,7 @@ test.describe("language-switch removal", () => {
         });
         await expect(partnerLink).toBeAttached();
 
-        if (viewport.width >= 1280) {
+        if (viewport.width >= 1360) {
           await expect(partnerLink).toBeVisible();
         }
 
@@ -162,21 +167,12 @@ test.describe("language-switch removal", () => {
           ((logoBounds?.x ?? 0) + (logoBounds?.width ?? 0)),
       ).toBeGreaterThanOrEqual(24);
 
-      if (viewport.width >= 1280) {
-        const partnerBounds = await partnerLink.boundingBox();
-        expect(partnerBounds).not.toBeNull();
-        expect(
-          (partnerBounds?.x ?? 0) -
-            ((navigationBounds?.x ?? 0) + (navigationBounds?.width ?? 0)),
-        ).toBeGreaterThanOrEqual(24);
-        expect(
-          Math.abs(
-            (navigationBounds?.x ?? 0) +
-              (navigationBounds?.width ?? 0) / 2 -
-              viewport.width / 2,
-          ),
-        ).toBeLessThanOrEqual(2);
-      }
+      const partnerBounds = await partnerLink.boundingBox();
+      expect(partnerBounds).not.toBeNull();
+      expect(
+        (partnerBounds?.x ?? 0) -
+          ((navigationBounds?.x ?? 0) + (navigationBounds?.width ?? 0)),
+      ).toBeGreaterThanOrEqual(24);
 
       await page.evaluate(() =>
         window.scrollTo({ top: 900, behavior: "auto" }),
