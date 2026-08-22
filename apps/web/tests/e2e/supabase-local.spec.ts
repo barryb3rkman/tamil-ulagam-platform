@@ -15,12 +15,17 @@ const reviewer = {
   password: "LocalReviewer!2048Aa",
 } as const;
 
-async function signIn(page: Page, email: string, password: string) {
+async function signIn(
+  page: Page,
+  email: string,
+  password: string,
+  expectedUrl: RegExp = /\/(?:dashboard|register)\/?$/,
+) {
   await page.goto("/login");
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign In" }).click();
-  await expect(page).toHaveURL(/\/(?:dashboard|register)\/?$/);
+  await expect(page).toHaveURL(expectedUrl);
 }
 
 async function signOut(page: Page) {
@@ -138,7 +143,7 @@ test.describe("local Supabase browser enrollment", () => {
     ).toBeVisible();
 
     await signOut(page);
-    await signIn(page, reviewer.email, reviewer.password);
+    await signIn(page, reviewer.email, reviewer.password, /\/admin\/?$/);
     await page.goto("/admin/registrations");
     await expect(page.getByText("Nila Global Services")).toBeVisible();
     await page.getByRole("link", { name: "Review" }).click();
@@ -170,7 +175,7 @@ test.describe("local Supabase browser enrollment", () => {
     ).toBeVisible();
 
     await signOut(page);
-    await signIn(page, reviewer.email, reviewer.password);
+    await signIn(page, reviewer.email, reviewer.password, /\/admin\/?$/);
     await page.goto("/admin/registrations");
     await page.getByRole("link", { name: "Review" }).click();
     await page.getByRole("button", { name: "Mark Under Review" }).click();

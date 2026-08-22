@@ -221,7 +221,13 @@ export function LoginForm() {
         return;
       }
       setState("success");
-      router.push(result.hasApplication ? "/dashboard" : "/register");
+      router.push(
+        result.hasApplication
+          ? "/dashboard"
+          : result.canReview
+            ? "/admin"
+            : "/register",
+      );
     } catch (error: unknown) {
       setState("error");
       setFormError(

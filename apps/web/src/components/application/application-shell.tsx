@@ -8,16 +8,23 @@ import type { ReactNode } from "react";
 import { images } from "@/config/images";
 import { usePlatform } from "@/features/enrollment/platform-provider";
 
-const memberNavigation = [
+interface PortalNavigationItem {
+  readonly href: string;
+  readonly label: string;
+  /** A cross-area mode switch (e.g. Administration, My Organisation) rather than a tab within the current area. */
+  readonly variant?: "context";
+}
+
+const baseMemberNavigation: readonly PortalNavigationItem[] = [
   { href: "/dashboard", label: "Overview" },
   { href: "/dashboard/registration", label: "Registration" },
   { href: "/dashboard/account", label: "Account" },
-] as const;
+];
 
-const adminNavigation = [
+const baseAdminNavigation: readonly PortalNavigationItem[] = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/registrations", label: "Registration queue" },
-] as const;
+];
 
 export function ApplicationShell({
   children,
@@ -38,7 +45,29 @@ export function ApplicationShell({
     selectOrganisation,
     signOut,
   } = usePlatform();
-  const navigation = area === "admin" ? adminNavigation : memberNavigation;
+  // Review capability and organisation membership come from the platform
+  // provider's authorization result, not from any client-only or spoofable
+  // state. They only ever decide whether a nav link is *shown* — the
+  // destination routes remain protected by backend RLS regardless.
+  const hasMemberWorkspace = availableOrganisations.length > 0;
+  const navigation: readonly PortalNavigationItem[] =
+    area === "admin"
+      ? hasMemberWorkspace
+        ? [
+            ...baseAdminNavigation,
+            {
+              href: "/dashboard",
+              label: "My Organisation",
+              variant: "context",
+            },
+          ]
+        : baseAdminNavigation
+      : canReviewApplications
+        ? [
+            ...baseMemberNavigation,
+            { href: "/admin", label: "Administration", variant: "context" },
+          ]
+        : baseMemberNavigation;
   const areaLabel = area === "admin" ? "Administration" : "Organisation Portal";
 
   return (
@@ -184,7 +213,14 @@ export function ApplicationShell({
                   pathname.startsWith(`${item.href}/`));
 
               return (
-                <li key={item.href}>
+                <li
+                  key={item.href}
+                  className={
+                    item.variant === "context"
+                      ? "lg:border-global-navy/10 col-span-full lg:mt-2 lg:border-t lg:pt-3"
+                      : undefined
+                  }
+                >
                   <Link
                     href={item.href}
                     aria-current={current ? "page" : undefined}

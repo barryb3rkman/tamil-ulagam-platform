@@ -48,6 +48,7 @@ type PlatformBackendKind = "mock" | "supabase" | "unavailable";
 type PlatformLoginResult =
   | (Extract<RuntimeAuthResult, { readonly ok: true }> & {
       readonly hasApplication: boolean;
+      readonly canReview: boolean;
     })
   | Extract<RuntimeAuthResult, { readonly ok: false }>;
 
@@ -205,7 +206,7 @@ export function PlatformProvider({
       setCanReviewApplications(reviewer);
       setPlatformError("");
     }
-    return nextState;
+    return { state: nextState, canReview: reviewer };
   }, []);
 
   useEffect(() => {
@@ -327,11 +328,11 @@ export function PlatformProvider({
         const runtime = requireServices();
         const result = await runtime.auth.login(input);
         if (!result.ok) return result;
-        const nextState = await refresh(runtime);
+        const { state: nextState, canReview } = await refresh(runtime);
         const hasApplication = nextState.registrations.some(
           (registration) => registration.applicantUserId === result.user.id,
         );
-        return { ...result, hasApplication };
+        return { ...result, hasApplication, canReview };
       },
       requestPasswordReset: async (email, captchaToken) => {
         await requireServices().auth.requestPasswordReset(email, captchaToken);
