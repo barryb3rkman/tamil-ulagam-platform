@@ -28,6 +28,7 @@ test.describe("organisation enrollment MVP", () => {
     await page.getByLabel("Email address").fill("nila.raj@example.org");
     await page.locator('input[type="password"]').first().fill("TamilMvp1!");
     await page.getByLabel("Confirm password").fill("TamilMvp1!");
+    await page.getByRole("checkbox", { name: /Terms of Use/ }).check();
     await page.getByRole("button", { name: "Create account" }).click();
     await expect(
       page.getByRole("heading", { name: "Account created" }),
@@ -37,48 +38,41 @@ test.describe("organisation enrollment MVP", () => {
       .getByRole("button", { name: "Start organisation registration" })
       .click();
 
+    // Step 1 — Organisation
     await page.getByLabel("Business / Company").check();
-    await page.getByRole("button", { name: "Save progress" }).click();
-    await expect(page.getByText("Progress saved.")).toBeVisible();
-    await page.reload();
-    await expect(page.getByLabel("Business / Company")).toBeChecked();
-    await page.getByRole("button", { name: "Continue" }).click();
-
     await page.getByLabel("Organisation name").fill("Nila Global Services");
     await page.getByLabel("Country").fill("Canada");
     await page.getByLabel("State / Province / Region").fill("Ontario");
     await page.getByLabel("City").fill("Toronto");
-    await page.getByLabel("Street address").fill("125 Community Street");
-    await page.getByLabel("Official email").fill("office@nilaglobal.example");
-    await page.getByLabel("Official phone").fill("+1 416 555 0199");
     await page
       .getByLabel("Short description")
       .fill(
         "A professional services company supporting international community organisations.",
       );
-    await page.getByLabel("Unregistered / informal organisation").check();
+    await page.getByRole("button", { name: "Save progress" }).click();
+    await expect(page.getByText("Progress saved.")).toBeVisible();
+    await page.reload();
+    await expect(page.getByLabel("Business / Company")).toBeChecked();
+    await expect(page.getByLabel("Organisation name")).toHaveValue(
+      "Nila Global Services",
+    );
     await page.getByRole("button", { name: "Continue" }).click();
 
+    // Step 2 — Contact & representative
+    await page.getByLabel("Official email").fill("office@nilaglobal.example");
+    await page.getByLabel("Official phone").fill("+1 416 555 0199");
+    await page.getByLabel("Representative full name").fill("Nila Raj");
+    await page.getByLabel(/^Phone/).fill("+1 416 555 0188");
+    await page.getByLabel("Representative role").selectOption("leadership");
+    await page.getByRole("button", { name: "Continue" }).click();
+
+    // Step 3 — Registration & trust
+    await page.getByLabel("Unregistered / informal organisation").check();
     await page.getByLabel("Business type").selectOption("Private Company");
     await page.getByLabel("Industry").selectOption("Professional Services");
     await page
-      .getByLabel("Products / services description")
-      .fill("Advisory and digital programme services.");
-    await page.getByRole("button", { name: "Continue" }).click();
-
-    await page.getByLabel("Phone").fill("+1 416 555 0188");
-    await page.getByLabel("Designation").fill("Founder");
-    await page
-      .getByLabel("Relationship to organisation")
-      .selectOption("founder");
-    await page
       .getByLabel(
-        "I confirm that I am authorised to submit this organisation's information.",
-      )
-      .check();
-    await page
-      .getByLabel(
-        "I confirm that the information provided is accurate to the best of my knowledge.",
+        "I confirm that I am authorised to represent this organisation and that the information provided is accurate.",
       )
       .check();
     await page.getByRole("button", { name: "Review registration" }).click();

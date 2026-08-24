@@ -29,6 +29,7 @@ export function createDemoUser(): UserProfile {
     email: demoCredentials.email,
     phone: "+1 416 555 0142",
     country: "Canada",
+    termsAcceptedAt: seededAt,
     createdAt: seededAt,
   };
 }
@@ -155,6 +156,8 @@ export function createEmptyOrganisation(id: string, now: string): Organisation {
     registrationAuthority: "",
     registrationCountry: "",
     logoPreview: "",
+    officialEmailVerifiedAt: null,
+    officialEmailVerificationSentAt: null,
     createdAt: now,
     updatedAt: now,
   };
@@ -207,6 +210,7 @@ export function createSeedState(): MockPlatformState {
       email: `representative${index + 2}@example.org`,
       phone: `+1 416 555 01${50 + index}`,
       country: index === 1 ? "United Kingdom" : "Canada",
+      termsAcceptedAt: seededAt,
       createdAt: seededAt,
     })),
   ];

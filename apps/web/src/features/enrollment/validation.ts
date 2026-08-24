@@ -19,6 +19,7 @@ export function validateSignup(input: {
   readonly email: string;
   readonly password: string;
   readonly confirmPassword: string;
+  readonly termsAccepted: boolean;
 }): ValidationErrors {
   const errors: ValidationErrors = {};
   if (input.fullName.trim().length < 2) {
@@ -30,6 +31,9 @@ export function validateSignup(input: {
   if (passwordError) errors.password = passwordError;
   if (input.confirmPassword !== input.password) {
     errors.confirmPassword = "Passwords do not match.";
+  }
+  if (!input.termsAccepted) {
+    errors.termsAccepted = "Agree to the Terms of Use and Privacy Policy.";
   }
   return errors;
 }
@@ -77,7 +81,15 @@ export function validateLogin(input: {
   return errors;
 }
 
-export function validateOrganisation(
+// Lean V2 intake spans three wizard steps, each writing to the same
+// Organisation record. Step-scoped validators only check the fields that
+// step actually asks for, so an earlier step's "Continue" is never
+// blocked by a later step's still-empty fields. validateOrganisation
+// combines both — used at final review, where everything must be valid
+// together.
+
+// Step 1 — Organisation: name, country, region, city, description.
+export function validateOrganisationIdentity(
   organisation: Organisation,
 ): ValidationErrors {
   const errors: ValidationErrors = {};
@@ -86,23 +98,11 @@ export function validateOrganisation(
     ["country", "Enter the country."],
     ["region", "Enter the state, province or region."],
     ["city", "Enter the city."],
-    ["streetAddress", "Enter the street address."],
-    ["officialPhone", "Enter the official phone number."],
     ["description", "Add a short organisation description."],
-    ["registrationStatus", "Select the registration status."],
   ];
   required.forEach(([key, message]) => {
     if (!String(organisation[key]).trim()) errors[key] = message;
   });
-  const emailError = validateEmail(organisation.officialEmail);
-  if (emailError) errors.officialEmail = emailError;
-  if (
-    organisation.website &&
-    !websitePattern.test(organisation.website.trim())
-  ) {
-    errors.website =
-      "Use a full website URL beginning with http:// or https://.";
-  }
   if (
     organisation.yearEstablished &&
     (!/^\d{4}$/.test(organisation.yearEstablished) ||
@@ -114,21 +114,54 @@ export function validateOrganisation(
   if (organisation.description.trim().length > 600) {
     errors.description = "Keep the description within 600 characters.";
   }
-  if (organisation.registrationStatus === "registered") {
-    if (!organisation.registrationNumber.trim()) {
-      errors.registrationNumber =
-        "Enter the registration or incorporation number.";
-    }
-    if (!organisation.registrationAuthority.trim()) {
-      errors.registrationAuthority = "Enter the registration authority.";
-    }
-    if (!organisation.registrationCountry.trim()) {
-      errors.registrationCountry = "Enter the registration country.";
-    }
+  return errors;
+}
+
+// Step 2 — Contact & representative: official email/phone, website format.
+export function validateOrganisationContact(
+  organisation: Organisation,
+): ValidationErrors {
+  const errors: ValidationErrors = {};
+  const emailError = validateEmail(organisation.officialEmail);
+  if (emailError) errors.officialEmail = emailError;
+  if (!organisation.officialPhone.trim()) {
+    errors.officialPhone = "Enter the official phone number.";
+  }
+  if (
+    organisation.website &&
+    !websitePattern.test(organisation.website.trim())
+  ) {
+    errors.website =
+      "Use a full website URL beginning with http:// or https://.";
   }
   return errors;
 }
 
+// Step 3 — Registration & trust.
+export function validateOrganisationTrust(
+  organisation: Organisation,
+): ValidationErrors {
+  const errors: ValidationErrors = {};
+  if (!organisation.registrationStatus) {
+    errors.registrationStatus = "Select the registration status.";
+  }
+  return errors;
+}
+
+export function validateOrganisation(
+  organisation: Organisation,
+): ValidationErrors {
+  return {
+    ...validateOrganisationIdentity(organisation),
+    ...validateOrganisationContact(organisation),
+    ...validateOrganisationTrust(organisation),
+  };
+}
+
+// Lean V2 intake: one or two classifying questions per category. Every
+// richer field (activities, membership size, licensing detail, employee
+// size, and so on) remains a valid, optional column for post-verification
+// profile enrichment — it is simply not asked, or required, at intake.
 export function validateCategoryProfile(
   profile: OrganisationCategoryProfile | null,
 ): ValidationErrors {
@@ -137,55 +170,22 @@ export function validateCategoryProfile(
   switch (profile.category) {
     case "tamil_community":
       if (!profile.subtype) errors.subtype = "Select an organisation subtype.";
-      if (profile.primaryActivities.length === 0) {
-        errors.primaryActivities = "Select at least one primary activity.";
-      }
       break;
     case "education":
       if (!profile.institutionType)
         errors.institutionType = "Select an institution type.";
-      if (!profile.governanceType)
-        errors.governanceType = "Select a governance type.";
-      if (!profile.tamilProgrammesOffered) {
-        errors.tamilProgrammesOffered = "Select yes or no.";
-      }
-      if (
-        profile.tamilProgrammesOffered === "yes" &&
-        !profile.tamilProgrammesDescription.trim()
-      ) {
-        errors.tamilProgrammesDescription =
-          "Describe the Tamil-related programmes.";
-      }
       break;
     case "healthcare":
       if (!profile.facilityType)
         errors.facilityType = "Select a facility type.";
-      if (!profile.ownershipType)
-        errors.ownershipType = "Select an ownership type.";
-      if (profile.systemsOfMedicine.length === 0) {
-        errors.systemsOfMedicine = "Select at least one system of healthcare.";
-      }
-      if (!profile.mainServices.trim())
-        errors.mainServices = "Describe the main specialties or services.";
-      if (!profile.licensed) errors.licensed = "Select the licensing status.";
-      if (profile.licensed === "yes") {
-        if (!profile.licenceNumber.trim())
-          errors.licenceNumber = "Enter the licence number.";
-        if (!profile.licensingAuthority.trim())
-          errors.licensingAuthority = "Enter the licensing authority.";
-      }
       break;
     case "business":
       if (!profile.businessType)
         errors.businessType = "Select a business type.";
       if (!profile.industry) errors.industry = "Select an industry.";
-      if (!profile.productsServices.trim())
-        errors.productsServices = "Describe the products or services.";
       break;
     case "nonprofit":
       if (!profile.subtype) errors.subtype = "Select an organisation subtype.";
-      if (profile.primaryAreas.length === 0)
-        errors.primaryAreas = "Select at least one primary area of work.";
       break;
     case "other":
       if (!profile.organisationType.trim())
@@ -197,26 +197,48 @@ export function validateCategoryProfile(
   return errors;
 }
 
-export function validateRepresentative(
+// Lean V2 intake: full name, role, and phone, collected on the Contact &
+// representative step. Email is populated from the authenticated account
+// rather than asked again; designation remains a valid, optional column
+// for later profile enrichment.
+export function validateRepresentativeIdentity(
   representative: OrganisationRepresentative,
 ): ValidationErrors {
   const errors: ValidationErrors = {};
   if (!representative.fullName.trim())
     errors.fullName = "Enter the representative's full name.";
-  const emailError = validateEmail(representative.email);
-  if (emailError) errors.email = emailError;
   if (!representative.phone.trim())
     errors.phone = "Enter the representative's phone number.";
-  if (!representative.designation.trim())
-    errors.designation = "Enter the representative's designation.";
   if (!representative.relationship)
-    errors.relationship = "Select the relationship to the organisation.";
-  if (!representative.authorisedDeclaration)
-    errors.authorisedDeclaration =
-      "Confirm that you are authorised to submit this information.";
-  if (!representative.accuracyDeclaration)
-    errors.accuracyDeclaration = "Confirm that the information is accurate.";
+    errors.relationship = "Select the representative's role.";
   return errors;
+}
+
+// The two declarations are affirmed together through a single combined
+// consent checkbox on the Registration & trust step, but both underlying
+// flags are still recorded — see the single "declaration" error key,
+// which the UI maps to one checkbox controlling both.
+export function validateDeclaration(
+  representative: OrganisationRepresentative,
+): ValidationErrors {
+  const errors: ValidationErrors = {};
+  if (
+    !representative.authorisedDeclaration ||
+    !representative.accuracyDeclaration
+  ) {
+    errors.declaration =
+      "Confirm that you are authorised to represent this organisation and that the information is accurate.";
+  }
+  return errors;
+}
+
+export function validateRepresentative(
+  representative: OrganisationRepresentative,
+): ValidationErrors {
+  return {
+    ...validateRepresentativeIdentity(representative),
+    ...validateDeclaration(representative),
+  };
 }
 
 export function isValid(errors: ValidationErrors): boolean {

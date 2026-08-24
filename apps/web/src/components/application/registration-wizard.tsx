@@ -2,7 +2,6 @@
 
 import type {
   Organisation,
-  OrganisationCategory,
   OrganisationCategoryProfile,
   OrganisationRepresentative,
 } from "@tamil-ulagam/shared";
@@ -18,7 +17,7 @@ import {
   nonprofitOptions,
   organisationCategories,
   registrationStatusOptions,
-  representativeRelationships,
+  representativeRoleOptions,
   tamilCommunityOptions,
 } from "@/content/enrollment";
 import { images } from "@/config/images";
@@ -26,8 +25,11 @@ import { usePlatform } from "@/features/enrollment/platform-provider";
 import {
   isValid,
   validateCategoryProfile,
-  validateOrganisation,
-  validateRepresentative,
+  validateDeclaration,
+  validateOrganisationContact,
+  validateOrganisationIdentity,
+  validateOrganisationTrust,
+  validateRepresentativeIdentity,
   type ValidationErrors,
 } from "@/features/enrollment/validation";
 
@@ -37,7 +39,6 @@ import {
   FormError,
   FormSection,
   FormSubsection,
-  MultiSelect,
   RadioGroup,
   SelectField,
   TextareaField,
@@ -48,6 +49,52 @@ import { RegistrationStatusBadge } from "./registration-status-badge";
 
 const asOptions = (values: readonly string[]) =>
   values.map((value) => ({ value, label: value }));
+
+type RepresentativeRole = (typeof representativeRoleOptions)[number]["value"];
+
+/**
+ * The wizard offers four simplified role groupings; the stored value is
+ * still the full eight-value enum so historical records and admin review
+ * keep exact meaning. See content/enrollment.ts for the full list used
+ * for display.
+ */
+function roleToRelationship(
+  role: RepresentativeRole | "",
+): OrganisationRepresentative["relationship"] {
+  switch (role) {
+    case "leadership":
+      return "president";
+    case "staff_administrator":
+      return "administrator";
+    case "authorised_representative":
+      return "authorised_representative";
+    case "other":
+      return "other";
+    default:
+      return "";
+  }
+}
+
+function relationshipToRole(
+  relationship: OrganisationRepresentative["relationship"],
+): RepresentativeRole | "" {
+  switch (relationship) {
+    case "founder":
+    case "president":
+    case "director":
+    case "secretary":
+      return "leadership";
+    case "administrator":
+    case "employee":
+      return "staff_administrator";
+    case "authorised_representative":
+      return "authorised_representative";
+    case "other":
+      return "other";
+    default:
+      return "";
+  }
+}
 
 export function RegistrationWizard() {
   const router = useRouter();
@@ -63,7 +110,7 @@ export function RegistrationWizard() {
     updateOrganisation,
     updateRepresentative,
   } = usePlatform();
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [organisation, setOrganisation] = useState<Organisation | null>(null);
   const [profile, setProfile] = useState<OrganisationCategoryProfile | null>(
     null,
@@ -89,7 +136,7 @@ export function RegistrationWizard() {
   }, [currentApplication, currentUser, ensureDraft, isHydrated, platformError]);
 
   useEffect(() => {
-    if (!currentApplication) return;
+    if (!currentApplication || !currentUser) return;
     if (
       initializedApplicationRef.current === currentApplication.registration.id
     ) {
@@ -100,11 +147,25 @@ export function RegistrationWizard() {
       initializedApplicationRef.current = applicationId;
       setOrganisation(currentApplication.organisation);
       setProfile(currentApplication.registration.categoryProfile);
-      setRepresentative(currentApplication.registration.representative);
-      setStep(currentApplication.registration.currentStep);
+      setRepresentative({
+        ...currentApplication.registration.representative,
+        email:
+          currentApplication.registration.representative.email ||
+          currentUser.email,
+      });
+      // Older in-progress drafts may carry a step value from the
+      // previous five-stage wizard (up to 4). The lean wizard only has
+      // three data-entry steps; anything beyond that resumes at the
+      // last one rather than being lost.
+      setStep(
+        Math.min(
+          3,
+          Math.max(1, currentApplication.registration.currentStep),
+        ) as 1 | 2 | 3,
+      );
     }, 0);
     return () => window.clearTimeout(initializationTask);
-  }, [currentApplication]);
+  }, [currentApplication, currentUser]);
 
   if (!isHydrated) {
     return <RegistrationLoading />;
@@ -149,7 +210,7 @@ export function RegistrationWizard() {
     !["draft", "needs_changes"].includes(currentApplication.registration.status)
   ) {
     return (
-      <RegistrationFrame currentStep={5}>
+      <RegistrationFrame currentStep={4}>
         <div className="rounded-card border-global-navy/12 shadow-card bg-white p-7 sm:p-10">
           <RegistrationStatusBadge
             status={currentApplication.registration.status}
@@ -172,7 +233,7 @@ export function RegistrationWizard() {
     );
   }
 
-  const moveTo = async (nextStep: 1 | 2 | 3 | 4) => {
+  const moveTo = async (nextStep: 1 | 2 | 3) => {
     await updateCurrentStep(nextStep);
     setStep(nextStep);
     setErrors({});
@@ -184,11 +245,18 @@ export function RegistrationWizard() {
     setPending(true);
     setErrors({});
     try {
-      if (step === 1 && organisation.category)
+      if (step === 1 && organisation.category) {
         await updateCategory(organisation.category);
-      if (step === 2) await updateOrganisation(organisation);
-      if (step === 3 && profile) await updateCategoryProfile(profile);
-      if (step === 4) await updateRepresentative(representative);
+        await updateOrganisation(organisation);
+      }
+      if (step === 2) {
+        await updateOrganisation(organisation);
+        await updateRepresentative(representative);
+      }
+      if (step === 3) {
+        if (profile) await updateCategoryProfile(profile);
+        await updateOrganisation(organisation);
+      }
       setNotice("Progress saved.");
     } catch (error: unknown) {
       setErrors({
@@ -210,31 +278,15 @@ export function RegistrationWizard() {
         setErrors({ category: "Choose an organisation category." });
         return;
       }
-      setPending(true);
-      try {
-        const updated = await updateCategory(organisation.category);
-        setProfile(updated.registration.categoryProfile);
-        await moveTo(2);
-      } catch (error: unknown) {
-        setErrors({
-          form:
-            error instanceof Error
-              ? error.message
-              : "The organisation category could not be saved.",
-        });
-      } finally {
-        setPending(false);
-      }
-      return;
-    }
-    if (step === 2) {
-      const nextErrors = validateOrganisation(organisation);
+      const nextErrors = validateOrganisationIdentity(organisation);
       setErrors(nextErrors);
       if (!isValid(nextErrors)) return;
       setPending(true);
       try {
+        const updated = await updateCategory(organisation.category);
+        setProfile(updated.registration.categoryProfile);
         await updateOrganisation(organisation);
-        await moveTo(3);
+        await moveTo(2);
       } catch (error: unknown) {
         setErrors({
           form:
@@ -247,31 +299,44 @@ export function RegistrationWizard() {
       }
       return;
     }
-    if (step === 3) {
-      const nextErrors = validateCategoryProfile(profile);
+    if (step === 2) {
+      const organisationErrors = validateOrganisationContact(organisation);
+      const representativeErrors =
+        validateRepresentativeIdentity(representative);
+      const nextErrors = { ...organisationErrors, ...representativeErrors };
       setErrors(nextErrors);
-      if (!isValid(nextErrors) || !profile) return;
+      if (!isValid(nextErrors)) return;
       setPending(true);
       try {
-        await updateCategoryProfile(profile);
-        await moveTo(4);
+        await updateOrganisation(organisation);
+        await updateRepresentative(representative);
+        await moveTo(3);
       } catch (error: unknown) {
         setErrors({
           form:
             error instanceof Error
               ? error.message
-              : "Category details could not be saved.",
+              : "Contact and representative details could not be saved.",
         });
       } finally {
         setPending(false);
       }
       return;
     }
-    const nextErrors = validateRepresentative(representative);
+    const trustErrors = validateOrganisationTrust(organisation);
+    const categoryErrors = validateCategoryProfile(profile);
+    const declarationErrors = validateDeclaration(representative);
+    const nextErrors = {
+      ...trustErrors,
+      ...categoryErrors,
+      ...declarationErrors,
+    };
     setErrors(nextErrors);
-    if (!isValid(nextErrors)) return;
+    if (!isValid(nextErrors) || !profile) return;
     setPending(true);
     try {
+      await updateOrganisation(organisation);
+      if (profile) await updateCategoryProfile(profile);
       await updateRepresentative(representative);
       router.push("/register/review");
     } catch (error: unknown) {
@@ -279,7 +344,7 @@ export function RegistrationWizard() {
         form:
           error instanceof Error
             ? error.message
-            : "Representative details could not be saved.",
+            : "Registration details could not be saved.",
       });
       setPending(false);
     }
@@ -294,43 +359,38 @@ export function RegistrationWizard() {
           ) : null}
         </div>
         {step === 1 ? (
-          <CategoryStep
-            category={organisation.category}
-            error={errors.category}
-            onChange={(category) =>
-              setOrganisation({ ...organisation, category })
-            }
-          />
-        ) : null}
-        {step === 2 ? (
-          <OrganisationDetailsStep
+          <OrganisationStep
             organisation={organisation}
             errors={errors}
             onChange={setOrganisation}
           />
         ) : null}
-        {step === 3 && profile ? (
-          <CategoryDetailsStep
-            profile={profile}
-            errors={errors}
-            onChange={setProfile}
-          />
-        ) : null}
-        {step === 4 ? (
-          <RepresentativeStep
+        {step === 2 ? (
+          <ContactRepresentativeStep
+            organisation={organisation}
             representative={representative}
             errors={errors}
-            onChange={setRepresentative}
+            onOrganisationChange={setOrganisation}
+            onRepresentativeChange={setRepresentative}
+          />
+        ) : null}
+        {step === 3 && profile ? (
+          <RegistrationTrustStep
+            organisation={organisation}
+            profile={profile}
+            representative={representative}
+            errors={errors}
+            onOrganisationChange={setOrganisation}
+            onProfileChange={setProfile}
+            onRepresentativeChange={setRepresentative}
           />
         ) : null}
         <FormError message={errors.form ?? ""} />
         <FormActions
-          onBack={
-            step > 1 ? () => void moveTo((step - 1) as 1 | 2 | 3) : undefined
-          }
+          onBack={step > 1 ? () => void moveTo((step - 1) as 1 | 2) : undefined}
           onSave={() => void saveCurrent()}
           pending={pending}
-          nextLabel={step === 4 ? "Review registration" : "Continue"}
+          nextLabel={step === 3 ? "Review registration" : "Continue"}
         />
       </form>
     </RegistrationFrame>
@@ -358,8 +418,8 @@ function RegistrationFrame({
               Register your organisation
             </h1>
             <p className="text-slate mt-3 max-w-2xl leading-7 sm:text-lg sm:leading-8">
-              Build a clear organisation profile for future review. Your
-              progress is saved so you can return later.
+              A few quick questions to get you into review — about 3 to 5
+              minutes. Your progress is saved so you can return later.
             </p>
           </div>
           {currentStep === 1 ? (
@@ -393,74 +453,7 @@ function RegistrationLoading() {
   );
 }
 
-function CategoryStep({
-  category,
-  error,
-  onChange,
-}: {
-  readonly category: OrganisationCategory | "";
-  readonly error?: string;
-  readonly onChange: (category: OrganisationCategory) => void;
-}) {
-  return (
-    <FormSection
-      title="What type of organisation are you registering?"
-      description="Choose the closest category. The next questions will adapt to your selection."
-    >
-      <fieldset className="grid gap-3">
-        <legend className="sr-only">Organisation category</legend>
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {organisationCategories.map((option, index) => {
-            const selected = category === option.value;
-            return (
-              <label
-                key={option.value}
-                className={`motion-card focus-within:ring-focus rounded-card relative min-h-40 cursor-pointer overflow-hidden border p-5 ${selected ? "border-heritage-maroon bg-heritage-maroon/5 shadow-card" : "border-global-navy/12 bg-white"}`}
-              >
-                <span className="flex h-full flex-col">
-                  <input
-                    type="radio"
-                    name="organisation-category"
-                    value={option.value}
-                    checked={category === option.value}
-                    onChange={() => onChange(option.value)}
-                    className="absolute inset-0 z-10 cursor-pointer opacity-0"
-                  />
-                  <span className="mb-6 flex items-center justify-between gap-3">
-                    <span className="text-slate text-xs font-bold tracking-[0.12em]">
-                      0{index + 1}
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      className={`grid size-7 place-items-center rounded-full border text-xs font-bold ${selected ? "border-heritage-maroon bg-heritage-maroon text-white" : "border-global-navy/15 text-transparent"}`}
-                    >
-                      ✓
-                    </span>
-                  </span>
-                  <span className="mt-auto">
-                    <span className="text-global-navy block text-base font-bold">
-                      {option.label}
-                    </span>
-                    <span className="text-slate mt-2 block text-sm leading-6">
-                      {option.description}
-                    </span>
-                  </span>
-                </span>
-              </label>
-            );
-          })}
-        </div>
-        {error ? (
-          <p role="alert" className="text-error text-sm">
-            {error}
-          </p>
-        ) : null}
-      </fieldset>
-    </FormSection>
-  );
-}
-
-function OrganisationDetailsStep({
+function OrganisationStep({
   organisation,
   errors,
   onChange,
@@ -473,45 +466,68 @@ function OrganisationDetailsStep({
     onChange({ ...organisation, [key]: value });
   return (
     <FormSection
-      title="Organisation details"
-      description="Provide official contact and location information. Required information is marked with an asterisk."
+      title="Tell us about your organisation"
+      description="Choose the closest category, then the essentials. Required information is marked with an asterisk."
     >
+      <fieldset className="grid gap-3">
+        <legend className="text-global-navy mb-1 text-sm font-semibold">
+          Organisation category
+          <span className="text-heritage-maroon ml-1" aria-hidden="true">
+            *
+          </span>
+        </legend>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {organisationCategories.map((option) => {
+            const selected = organisation.category === option.value;
+            return (
+              <label
+                key={option.value}
+                className={`motion-card focus-within:ring-focus rounded-card relative min-h-28 cursor-pointer overflow-hidden border p-4 ${selected ? "border-heritage-maroon bg-heritage-maroon/5 shadow-card" : "border-global-navy/12 bg-white"}`}
+              >
+                <input
+                  type="radio"
+                  name="organisation-category"
+                  value={option.value}
+                  checked={selected}
+                  onChange={() => update("category", option.value)}
+                  className="absolute inset-0 z-10 cursor-pointer opacity-0"
+                />
+                <span className="flex h-full flex-col justify-between">
+                  <span className="text-global-navy block text-sm font-bold">
+                    {option.label}
+                  </span>
+                  <span className="text-slate mt-2 block text-xs leading-5">
+                    {option.description}
+                  </span>
+                </span>
+                <span
+                  aria-hidden="true"
+                  className={`absolute top-3 right-3 grid size-6 place-items-center rounded-full border text-xs font-bold ${selected ? "border-heritage-maroon bg-heritage-maroon text-white" : "border-global-navy/15 text-transparent"}`}
+                >
+                  ✓
+                </span>
+              </label>
+            );
+          })}
+        </div>
+        {errors.category ? (
+          <p role="alert" className="text-error text-sm">
+            {errors.category}
+          </p>
+        ) : null}
+      </fieldset>
       <FormSubsection
         title="Organisation profile"
-        description="Tell us how the organisation is known publicly."
+        description="How the organisation is known publicly, and where it's based."
       >
-        <div className="grid gap-5 md:grid-cols-2">
-          <TextField
-            label="Organisation name"
-            required
-            value={organisation.name}
-            error={errors.name}
-            onChange={(event) => update("name", event.target.value)}
-          />
-          <TextField
-            label="Year established"
-            inputMode="numeric"
-            maxLength={4}
-            value={organisation.yearEstablished}
-            error={errors.yearEstablished}
-            onChange={(event) => update("yearEstablished", event.target.value)}
-          />
-        </div>
-        <TextareaField
-          label="Short description"
+        <TextField
+          label="Organisation name"
           required
-          maxLength={600}
-          value={organisation.description}
-          error={errors.description}
-          helperText={`${organisation.description.length}/600 characters`}
-          onChange={(event) => update("description", event.target.value)}
+          value={organisation.name}
+          error={errors.name}
+          onChange={(event) => update("name", event.target.value)}
         />
-      </FormSubsection>
-      <FormSubsection
-        title="Location"
-        description="Use the organisation's principal address."
-      >
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-3">
           <TextField
             label="Country"
             required
@@ -533,25 +549,58 @@ function OrganisationDetailsStep({
             error={errors.city}
             onChange={(event) => update("city", event.target.value)}
           />
-          <TextField
-            label="Postal code"
-            value={organisation.postalCode}
-            onChange={(event) => update("postalCode", event.target.value)}
-          />
-          <div className="md:col-span-2">
-            <TextField
-              label="Street address"
-              required
-              value={organisation.streetAddress}
-              error={errors.streetAddress}
-              onChange={(event) => update("streetAddress", event.target.value)}
-            />
-          </div>
         </div>
+        <TextareaField
+          label="Short description"
+          required
+          maxLength={600}
+          value={organisation.description}
+          error={errors.description}
+          helperText={`${organisation.description.length}/600 characters`}
+          onChange={(event) => update("description", event.target.value)}
+        />
+        <TextField
+          label="Year established"
+          inputMode="numeric"
+          maxLength={4}
+          value={organisation.yearEstablished}
+          error={errors.yearEstablished}
+          helperText="Optional."
+          onChange={(event) => update("yearEstablished", event.target.value)}
+        />
       </FormSubsection>
+    </FormSection>
+  );
+}
+
+function ContactRepresentativeStep({
+  organisation,
+  representative,
+  errors,
+  onOrganisationChange,
+  onRepresentativeChange,
+}: {
+  readonly organisation: Organisation;
+  readonly representative: OrganisationRepresentative;
+  readonly errors: ValidationErrors;
+  readonly onOrganisationChange: (organisation: Organisation) => void;
+  readonly onRepresentativeChange: (
+    representative: OrganisationRepresentative,
+  ) => void;
+}) {
+  const updateOrg = (key: keyof Organisation, value: string) =>
+    onOrganisationChange({ ...organisation, [key]: value });
+  const updateRep = (key: keyof OrganisationRepresentative, value: string) =>
+    onRepresentativeChange({ ...representative, [key]: value });
+  const currentRole = relationshipToRole(representative.relationship);
+  return (
+    <FormSection
+      title="Contact & representative"
+      description="How Tamil Ulagam and reviewers can reach the organisation, and who is registering it."
+    >
       <FormSubsection
-        title="Official contact"
-        description="Provide contact details controlled by the organisation."
+        title="Organisation contact"
+        description="Contact details controlled by the organisation, not a personal address."
       >
         <div className="grid gap-5 md:grid-cols-2">
           <TextField
@@ -560,7 +609,7 @@ function OrganisationDetailsStep({
             required
             value={organisation.officialEmail}
             error={errors.officialEmail}
-            onChange={(event) => update("officialEmail", event.target.value)}
+            onChange={(event) => updateOrg("officialEmail", event.target.value)}
           />
           <TextField
             label="Official phone"
@@ -568,79 +617,63 @@ function OrganisationDetailsStep({
             required
             value={organisation.officialPhone}
             error={errors.officialPhone}
-            onChange={(event) => update("officialPhone", event.target.value)}
+            onChange={(event) => updateOrg("officialPhone", event.target.value)}
           />
           <div className="md:col-span-2">
             <TextField
-              label="Website"
+              label="Website or social link"
               type="url"
               placeholder="https://"
               value={organisation.website}
               error={errors.website}
-              onChange={(event) => update("website", event.target.value)}
+              helperText="Optional."
+              onChange={(event) => updateOrg("website", event.target.value)}
             />
           </div>
         </div>
       </FormSubsection>
       <FormSubsection
-        title="Registration information"
-        description="Tell us whether the organisation has formal legal registration."
+        title="Your details"
+        description="You are registering this organisation as its representative."
       >
-        <RadioGroup
-          label="Registration status"
-          name="registration-status"
-          required
-          value={organisation.registrationStatus}
-          options={registrationStatusOptions}
-          error={errors.registrationStatus}
-          onChange={(event) => update("registrationStatus", event.target.value)}
-        />
-        {organisation.registrationStatus === "registered" ? (
-          <div className="border-heritage-gold/35 grid gap-5 border-l-2 pl-4 md:grid-cols-3">
-            <TextField
-              label="Registration / incorporation number"
-              required
-              value={organisation.registrationNumber}
-              error={errors.registrationNumber}
-              onChange={(event) =>
-                update("registrationNumber", event.target.value)
-              }
-            />
-            <TextField
-              label="Registration authority"
-              required
-              value={organisation.registrationAuthority}
-              error={errors.registrationAuthority}
-              onChange={(event) =>
-                update("registrationAuthority", event.target.value)
-              }
-            />
-            <TextField
-              label="Registration country"
-              required
-              value={organisation.registrationCountry}
-              error={errors.registrationCountry}
-              onChange={(event) =>
-                update("registrationCountry", event.target.value)
-              }
-            />
-          </div>
-        ) : null}
+        <div className="grid gap-5 md:grid-cols-2">
+          <TextField
+            label="Representative full name"
+            required
+            value={representative.fullName}
+            error={errors.fullName}
+            onChange={(event) => updateRep("fullName", event.target.value)}
+          />
+          <TextField
+            label="Phone"
+            type="tel"
+            required
+            value={representative.phone}
+            error={errors.phone}
+            onChange={(event) => updateRep("phone", event.target.value)}
+          />
+          <SelectField
+            label="Representative role"
+            required
+            value={currentRole}
+            options={representativeRoleOptions}
+            error={errors.relationship}
+            onChange={(event) =>
+              onRepresentativeChange({
+                ...representative,
+                relationship: roleToRelationship(
+                  event.target.value as RepresentativeRole,
+                ),
+              })
+            }
+          />
+        </div>
       </FormSubsection>
-      <div className="border-global-navy/12 rounded-button border border-dashed bg-white p-4">
-        <p className="text-global-navy text-sm font-semibold">
-          Organisation logo · optional
-        </p>
-        <p className="text-slate mt-1 text-sm">
-          Logo upload is not part of the current enrollment step and is not
-          required for this registration.
-        </p>
-      </div>
     </FormSection>
   );
 }
 
-function CategoryDetailsStep({
+function CategoryQuestion({
   profile,
   errors,
   onChange,
@@ -652,376 +685,84 @@ function CategoryDetailsStep({
   switch (profile.category) {
     case "tamil_community":
       return (
-        <FormSection title="Tamil / community organisation profile">
-          <SelectField
-            label="Organisation subtype"
-            required
-            value={profile.subtype}
-            options={asOptions(tamilCommunityOptions.subtypes)}
-            error={errors.subtype}
-            onChange={(event) =>
-              onChange({ ...profile, subtype: event.target.value })
-            }
-          />
-          <MultiSelect
-            label="Primary activities"
-            required
-            value={profile.primaryActivities}
-            options={tamilCommunityOptions.activities}
-            error={errors.primaryActivities}
-            onChange={(primaryActivities) =>
-              onChange({ ...profile, primaryActivities })
-            }
-          />
-          <div className="grid gap-5 md:grid-cols-2">
-            <SelectField
-              label="Approximate membership size"
-              value={profile.membershipSize}
-              options={asOptions(tamilCommunityOptions.membershipSizes)}
-              onChange={(event) =>
-                onChange({ ...profile, membershipSize: event.target.value })
-              }
-            />
-            <TextField
-              label="Geographic area served"
-              value={profile.geographicAreaServed}
-              onChange={(event) =>
-                onChange({
-                  ...profile,
-                  geographicAreaServed: event.target.value,
-                })
-              }
-            />
-            <TextField
-              label="President / Chairperson name"
-              value={profile.chairpersonName}
-              onChange={(event) =>
-                onChange({ ...profile, chairpersonName: event.target.value })
-              }
-            />
-            <TextField
-              label="Secretary name"
-              value={profile.secretaryName}
-              onChange={(event) =>
-                onChange({ ...profile, secretaryName: event.target.value })
-              }
-            />
-            <TextField
-              label="Languages used by organisation"
-              value={profile.languages}
-              onChange={(event) =>
-                onChange({ ...profile, languages: event.target.value })
-              }
-            />
-          </div>
-        </FormSection>
+        <SelectField
+          label="Organisation subtype"
+          required
+          value={profile.subtype}
+          options={asOptions(tamilCommunityOptions.subtypes)}
+          error={errors.subtype}
+          onChange={(event) =>
+            onChange({ ...profile, subtype: event.target.value })
+          }
+        />
       );
     case "education":
       return (
-        <FormSection title="Education profile">
-          <div className="grid gap-5 md:grid-cols-2">
-            <SelectField
-              label="Institution type"
-              required
-              value={profile.institutionType}
-              options={asOptions(educationOptions.institutionTypes)}
-              error={errors.institutionType}
-              onChange={(event) =>
-                onChange({ ...profile, institutionType: event.target.value })
-              }
-            />
-            <SelectField
-              label="Ownership / governance type"
-              required
-              value={profile.governanceType}
-              options={asOptions(educationOptions.governanceTypes)}
-              error={errors.governanceType}
-              onChange={(event) =>
-                onChange({ ...profile, governanceType: event.target.value })
-              }
-            />
-          </div>
-          <RadioGroup
-            label="Tamil-related programmes offered?"
-            name="tamil-programmes"
-            required
-            value={profile.tamilProgrammesOffered}
-            options={[
-              { value: "yes", label: "Yes" },
-              { value: "no", label: "No" },
-            ]}
-            error={errors.tamilProgrammesOffered}
-            onChange={(event) =>
-              onChange({
-                ...profile,
-                tamilProgrammesOffered: event.target.value as "yes" | "no",
-              })
-            }
-          />
-          {profile.tamilProgrammesOffered === "yes" ? (
-            <TextareaField
-              label="Describe Tamil-related programmes"
-              required
-              value={profile.tamilProgrammesDescription}
-              error={errors.tamilProgrammesDescription}
-              onChange={(event) =>
-                onChange({
-                  ...profile,
-                  tamilProgrammesDescription: event.target.value,
-                })
-              }
-            />
-          ) : null}
-          <div className="grid gap-5 md:grid-cols-2">
-            <TextField
-              label="Accreditation / recognition authority"
-              value={profile.accreditationAuthority}
-              onChange={(event) =>
-                onChange({
-                  ...profile,
-                  accreditationAuthority: event.target.value,
-                })
-              }
-            />
-            <TextField
-              label="Accreditation / recognition number"
-              value={profile.accreditationNumber}
-              onChange={(event) =>
-                onChange({
-                  ...profile,
-                  accreditationNumber: event.target.value,
-                })
-              }
-            />
-            <TextField
-              label="Student population range"
-              value={profile.studentPopulation}
-              onChange={(event) =>
-                onChange({ ...profile, studentPopulation: event.target.value })
-              }
-            />
-          </div>
-          <MultiSelect
-            label="Primary areas of study"
-            value={profile.studyAreas}
-            options={educationOptions.studyAreas}
-            onChange={(studyAreas) => onChange({ ...profile, studyAreas })}
-          />
-        </FormSection>
+        <SelectField
+          label="Institution type"
+          required
+          value={profile.institutionType}
+          options={asOptions(educationOptions.institutionTypes)}
+          error={errors.institutionType}
+          onChange={(event) =>
+            onChange({ ...profile, institutionType: event.target.value })
+          }
+        />
       );
     case "healthcare":
       return (
-        <FormSection
-          title="Healthcare organisation profile"
-          description="This enrollment does not collect patient information, health records, prescriptions, insurance information or medical histories."
-        >
-          <div className="grid gap-5 md:grid-cols-2">
-            <SelectField
-              label="Facility type"
-              required
-              value={profile.facilityType}
-              options={asOptions(healthcareOptions.facilityTypes)}
-              error={errors.facilityType}
-              onChange={(event) =>
-                onChange({ ...profile, facilityType: event.target.value })
-              }
-            />
-            <SelectField
-              label="Ownership type"
-              required
-              value={profile.ownershipType}
-              options={asOptions(healthcareOptions.ownershipTypes)}
-              error={errors.ownershipType}
-              onChange={(event) =>
-                onChange({ ...profile, ownershipType: event.target.value })
-              }
-            />
-          </div>
-          <MultiSelect
-            label="Systems of medicine / healthcare"
-            required
-            value={profile.systemsOfMedicine}
-            options={healthcareOptions.systems}
-            error={errors.systemsOfMedicine}
-            onChange={(systemsOfMedicine) =>
-              onChange({ ...profile, systemsOfMedicine })
-            }
-          />
-          <TextareaField
-            label="Main specialties / services"
-            required
-            value={profile.mainServices}
-            error={errors.mainServices}
-            onChange={(event) =>
-              onChange({ ...profile, mainServices: event.target.value })
-            }
-          />
-          <RadioGroup
-            label="Is this facility licensed / registered?"
-            name="healthcare-licensed"
-            required
-            value={profile.licensed}
-            options={[
-              { value: "yes", label: "Yes" },
-              { value: "no", label: "No" },
-            ]}
-            error={errors.licensed}
-            onChange={(event) =>
-              onChange({
-                ...profile,
-                licensed: event.target.value as "yes" | "no",
-              })
-            }
-          />
-          {profile.licensed === "yes" ? (
-            <div className="grid gap-5 md:grid-cols-2">
-              <TextField
-                label="Licence / registration number"
-                required
-                value={profile.licenceNumber}
-                error={errors.licenceNumber}
-                onChange={(event) =>
-                  onChange({ ...profile, licenceNumber: event.target.value })
-                }
-              />
-              <TextField
-                label="Licensing authority"
-                required
-                value={profile.licensingAuthority}
-                error={errors.licensingAuthority}
-                onChange={(event) =>
-                  onChange({
-                    ...profile,
-                    licensingAuthority: event.target.value,
-                  })
-                }
-              />
-            </div>
-          ) : null}
-          <div className="grid gap-3 md:grid-cols-2">
-            <CheckboxField
-              label="24×7 service"
-              checked={profile.twentyFourSeven}
-              onChange={(event) =>
-                onChange({ ...profile, twentyFourSeven: event.target.checked })
-              }
-            />
-            <CheckboxField
-              label="Emergency services"
-              checked={profile.emergencyServices}
-              onChange={(event) =>
-                onChange({
-                  ...profile,
-                  emergencyServices: event.target.checked,
-                })
-              }
-            />
-          </div>
-          <TextField
-            label="Number of beds"
-            inputMode="numeric"
-            value={profile.numberOfBeds}
-            onChange={(event) =>
-              onChange({ ...profile, numberOfBeds: event.target.value })
-            }
-          />
-        </FormSection>
+        <SelectField
+          label="Facility type"
+          required
+          value={profile.facilityType}
+          options={asOptions(healthcareOptions.facilityTypes)}
+          error={errors.facilityType}
+          onChange={(event) =>
+            onChange({ ...profile, facilityType: event.target.value })
+          }
+        />
       );
     case "business":
       return (
-        <FormSection title="Business / company profile">
-          <div className="grid gap-5 md:grid-cols-2">
-            <SelectField
-              label="Business type"
-              required
-              value={profile.businessType}
-              options={asOptions(businessOptions.types)}
-              error={errors.businessType}
-              onChange={(event) =>
-                onChange({ ...profile, businessType: event.target.value })
-              }
-            />
-            <SelectField
-              label="Industry"
-              required
-              value={profile.industry}
-              options={asOptions(businessOptions.industries)}
-              error={errors.industry}
-              onChange={(event) =>
-                onChange({ ...profile, industry: event.target.value })
-              }
-            />
-          </div>
-          <TextareaField
-            label="Products / services description"
+        <div className="grid gap-5 md:grid-cols-2">
+          <SelectField
+            label="Business type"
             required
-            value={profile.productsServices}
-            error={errors.productsServices}
+            value={profile.businessType}
+            options={asOptions(businessOptions.types)}
+            error={errors.businessType}
             onChange={(event) =>
-              onChange({ ...profile, productsServices: event.target.value })
+              onChange({ ...profile, businessType: event.target.value })
             }
           />
-          <div className="grid gap-5 md:grid-cols-2">
-            <SelectField
-              label="Employee size range"
-              value={profile.employeeSize}
-              options={asOptions(businessOptions.employeeSizes)}
-              onChange={(event) =>
-                onChange({ ...profile, employeeSize: event.target.value })
-              }
-            />
-            <TextField
-              label="Operating countries"
-              value={profile.operatingCountries}
-              onChange={(event) =>
-                onChange({ ...profile, operatingCountries: event.target.value })
-              }
-            />
-          </div>
-        </FormSection>
+          <SelectField
+            label="Industry"
+            required
+            value={profile.industry}
+            options={asOptions(businessOptions.industries)}
+            error={errors.industry}
+            onChange={(event) =>
+              onChange({ ...profile, industry: event.target.value })
+            }
+          />
+        </div>
       );
     case "nonprofit":
       return (
-        <FormSection title="NGO / non-profit profile">
-          <SelectField
-            label="Organisation subtype"
-            required
-            value={profile.subtype}
-            options={asOptions(nonprofitOptions.subtypes)}
-            error={errors.subtype}
-            onChange={(event) =>
-              onChange({ ...profile, subtype: event.target.value })
-            }
-          />
-          <MultiSelect
-            label="Primary areas of work"
-            required
-            value={profile.primaryAreas}
-            options={nonprofitOptions.areas}
-            error={errors.primaryAreas}
-            onChange={(primaryAreas) => onChange({ ...profile, primaryAreas })}
-          />
-          <div className="grid gap-5 md:grid-cols-2">
-            <TextField
-              label="Beneficiary regions"
-              value={profile.beneficiaryRegions}
-              onChange={(event) =>
-                onChange({ ...profile, beneficiaryRegions: event.target.value })
-              }
-            />
-            <TextField
-              label="Approximate organisation size"
-              value={profile.organisationSize}
-              onChange={(event) =>
-                onChange({ ...profile, organisationSize: event.target.value })
-              }
-            />
-          </div>
-        </FormSection>
+        <SelectField
+          label="Organisation subtype"
+          required
+          value={profile.subtype}
+          options={asOptions(nonprofitOptions.subtypes)}
+          error={errors.subtype}
+          onChange={(event) =>
+            onChange({ ...profile, subtype: event.target.value })
+          }
+        />
       );
     case "other":
       return (
-        <FormSection title="Other organisation profile">
+        <>
           <TextField
             label="Organisation type"
             required
@@ -1040,96 +781,94 @@ function CategoryDetailsStep({
               onChange({ ...profile, primaryPurpose: event.target.value })
             }
           />
-        </FormSection>
+        </>
       );
   }
 }
 
-function RepresentativeStep({
+function RegistrationTrustStep({
+  organisation,
+  profile,
   representative,
   errors,
-  onChange,
+  onOrganisationChange,
+  onProfileChange,
+  onRepresentativeChange,
 }: {
+  readonly organisation: Organisation;
+  readonly profile: OrganisationCategoryProfile;
   readonly representative: OrganisationRepresentative;
   readonly errors: ValidationErrors;
-  readonly onChange: (representative: OrganisationRepresentative) => void;
+  readonly onOrganisationChange: (organisation: Organisation) => void;
+  readonly onProfileChange: (profile: OrganisationCategoryProfile) => void;
+  readonly onRepresentativeChange: (
+    representative: OrganisationRepresentative,
+  ) => void;
 }) {
-  const update = (
-    key: keyof OrganisationRepresentative,
-    value: string | boolean,
-  ) => onChange({ ...representative, [key]: value });
+  const updateOrg = (key: keyof Organisation, value: string) =>
+    onOrganisationChange({ ...organisation, [key]: value });
   return (
     <FormSection
-      title="Representative information"
-      description="You are registering this organisation as an individual representative."
+      title="Registration & trust"
+      description="A little about legal standing, plus one question specific to your organisation type."
     >
       <FormSubsection
-        title="Your details"
-        description="You are registering this organisation as its representative."
+        title="Legal registration"
+        description="Legitimate small and informal Tamil organisations are welcome — this does not block submission."
       >
-        <div className="grid gap-5 md:grid-cols-2">
-          <TextField
-            label="Representative full name"
-            required
-            value={representative.fullName}
-            error={errors.fullName}
-            onChange={(event) => update("fullName", event.target.value)}
-          />
-          <TextField
-            label="Email"
-            type="email"
-            required
-            value={representative.email}
-            error={errors.email}
-            onChange={(event) => update("email", event.target.value)}
-          />
-          <TextField
-            label="Phone"
-            type="tel"
-            required
-            value={representative.phone}
-            error={errors.phone}
-            onChange={(event) => update("phone", event.target.value)}
-          />
-          <TextField
-            label="Designation"
-            required
-            value={representative.designation}
-            error={errors.designation}
-            onChange={(event) => update("designation", event.target.value)}
-          />
-          <SelectField
-            label="Relationship to organisation"
-            required
-            value={representative.relationship}
-            options={representativeRelationships}
-            error={errors.relationship}
-            onChange={(event) => update("relationship", event.target.value)}
-          />
-        </div>
+        <RadioGroup
+          label="Is this organisation formally registered?"
+          name="registration-status"
+          required
+          value={organisation.registrationStatus}
+          options={registrationStatusOptions}
+          error={errors.registrationStatus}
+          onChange={(event) =>
+            updateOrg("registrationStatus", event.target.value)
+          }
+        />
+        {organisation.registrationStatus === "registered" ? (
+          <div className="border-heritage-gold/35 border-l-2 pl-4">
+            <TextField
+              label="Registration / incorporation number"
+              helperText="Optional — reviewers may ask for this later if needed."
+              value={organisation.registrationNumber}
+              error={errors.registrationNumber}
+              onChange={(event) =>
+                updateOrg("registrationNumber", event.target.value)
+              }
+            />
+          </div>
+        ) : null}
       </FormSubsection>
       <FormSubsection
-        title="Authority declarations"
-        description="Both confirmations are required before the application can be submitted."
+        title={`${organisationCategories.find((option) => option.value === profile.category)?.label ?? "Organisation"} details`}
       >
-        <div className="grid gap-3">
-          <CheckboxField
-            label="I confirm that I am authorised to submit this organisation's information."
-            checked={representative.authorisedDeclaration}
-            error={errors.authorisedDeclaration}
-            onChange={(event) =>
-              update("authorisedDeclaration", event.target.checked)
-            }
-          />
-          <CheckboxField
-            label="I confirm that the information provided is accurate to the best of my knowledge."
-            checked={representative.accuracyDeclaration}
-            error={errors.accuracyDeclaration}
-            onChange={(event) =>
-              update("accuracyDeclaration", event.target.checked)
-            }
-          />
-        </div>
+        <CategoryQuestion
+          profile={profile}
+          errors={errors}
+          onChange={onProfileChange}
+        />
+      </FormSubsection>
+      <FormSubsection
+        title="Authority declaration"
+        description="Required before the application can be submitted."
+      >
+        <CheckboxField
+          label="I confirm that I am authorised to represent this organisation and that the information provided is accurate."
+          checked={
+            representative.authorisedDeclaration &&
+            representative.accuracyDeclaration
+          }
+          error={errors.declaration}
+          onChange={(event) =>
+            onRepresentativeChange({
+              ...representative,
+              authorisedDeclaration: event.target.checked,
+              accuracyDeclaration: event.target.checked,
+            })
+          }
+        />
       </FormSubsection>
     </FormSection>
   );

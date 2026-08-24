@@ -173,6 +173,7 @@ describe("Supabase enrollment services", () => {
       fullName: "Nila Raj",
       email: "nila@example.org",
       password: "TamilMvp1!",
+      termsAccepted: true,
     });
 
     expect(result).toEqual(
@@ -226,6 +227,7 @@ describe("Supabase enrollment services", () => {
       fullName: "Nila Raj",
       email: "nila@example.org",
       password: "TamilMvp1!",
+      termsAccepted: true,
       captchaToken: "captcha-token",
     });
     await auth.login({

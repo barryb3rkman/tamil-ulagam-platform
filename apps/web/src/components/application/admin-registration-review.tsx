@@ -1,15 +1,19 @@
 "use client";
 
-import type { RegistrationStatus } from "@tamil-ulagam/shared";
+import type {
+  DuplicateOrganisationSignals,
+  RegistrationStatus,
+} from "@tamil-ulagam/shared";
 import { Button } from "@tamil-ulagam/ui";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { getCategoryLabel } from "@/content/enrollment";
 import { usePlatform } from "@/features/enrollment/platform-provider";
 
 import { ApplicationDetails, formatDate } from "./application-details";
+import { OrganisationEmailVerificationCard } from "./organisation-email-verification";
 import { RegistrationStatusBadge } from "./registration-status-badge";
 import { TextareaField } from "./form-fields";
 
@@ -17,7 +21,12 @@ type ReviewAction = "verify" | "needs_changes" | "reject" | "suspend" | null;
 
 export function AdminRegistrationReview({ id }: { readonly id: string }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const { getApplication, isHydrated, updateApplicationStatus } = usePlatform();
+  const {
+    checkDuplicateSignals,
+    getApplication,
+    isHydrated,
+    updateApplicationStatus,
+  } = usePlatform();
   const searchParams = useSearchParams();
   const applicationId =
     id === "review" ? (searchParams.get("application") ?? "") : id;
@@ -26,7 +35,29 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
   const [error, setError] = useState("");
   const [operationError, setOperationError] = useState("");
   const [pending, setPending] = useState(false);
+  const [duplicateSignals, setDuplicateSignals] =
+    useState<DuplicateOrganisationSignals | null>(null);
   const application = isHydrated ? getApplication(applicationId) : null;
+
+  useEffect(() => {
+    if (!application) return;
+    let active = true;
+    void checkDuplicateSignals({
+      name: application.organisation.name,
+      officialEmail: application.organisation.officialEmail,
+      registrationNumber: application.organisation.registrationNumber,
+      excludeOrganisationId: application.organisation.id,
+    })
+      .then((signals) => {
+        if (active) setDuplicateSignals(signals);
+      })
+      .catch(() => {
+        // Best-effort signal only; review can proceed without it.
+      });
+    return () => {
+      active = false;
+    };
+  }, [application, checkDuplicateSignals]);
 
   if (!isHydrated) return <p role="status">Loading application…</p>;
   if (!application)
@@ -161,8 +192,49 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
           </p>
         </div>
       ) : null}
+      {duplicateSignals &&
+      (duplicateSignals.nameMatch ||
+        duplicateSignals.emailMatch ||
+        duplicateSignals.registrationNumberMatch) ? (
+        <div
+          role="alert"
+          className="border-heritage-gold/40 bg-heritage-gold/10 rounded-card border p-5"
+        >
+          <p className="text-global-navy font-bold">Possible duplicate</p>
+          <ul className="text-slate mt-2 list-disc pl-5 text-sm leading-6">
+            {duplicateSignals.emailMatch ? (
+              <li>Official email matches another organisation.</li>
+            ) : null}
+            {duplicateSignals.nameMatch ? (
+              <li>Similar organisation name already exists.</li>
+            ) : null}
+            {duplicateSignals.registrationNumberMatch ? (
+              <li>Registration number matches another organisation.</li>
+            ) : null}
+          </ul>
+          {duplicateSignals.matches.length > 0 ? (
+            <p className="text-slate mt-2 text-sm">
+              Matched:{" "}
+              {duplicateSignals.matches.map((match) => match.name).join(", ")}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]">
-        <ApplicationDetails application={application} includeTimeline />
+        <div className="grid gap-6">
+          {application.organisation.officialEmail ? (
+            <OrganisationEmailVerificationCard
+              organisationId={application.organisation.id}
+              officialEmail={application.organisation.officialEmail}
+              verifiedAt={application.organisation.officialEmailVerifiedAt}
+              verificationSentAt={
+                application.organisation.officialEmailVerificationSentAt
+              }
+              canRequest={false}
+            />
+          ) : null}
+          <ApplicationDetails application={application} includeTimeline />
+        </div>
         <aside
           aria-label="Application review actions"
           className="border-global-navy/12 rounded-card shadow-card order-first border bg-white p-5 xl:sticky xl:top-24 xl:order-last"

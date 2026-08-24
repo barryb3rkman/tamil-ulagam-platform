@@ -14,6 +14,7 @@ export { isNavigationPathCurrent } from "./navigation-path";
 export type {
   ApplicationReviewEvent,
   BusinessProfile,
+  DuplicateOrganisationSignals,
   EducationProfile,
   EnrollmentPlatformState,
   HealthcareProfile,

@@ -21,6 +21,8 @@ export interface UserProfile {
   email: string;
   phone: string;
   country: string;
+  /** Platform Terms of Use / Privacy Policy consent, set once at signup. Never client-updatable afterward. */
+  readonly termsAcceptedAt: string | null;
   readonly createdAt: string;
 }
 
@@ -43,8 +45,28 @@ export interface Organisation {
   registrationAuthority: string;
   registrationCountry: string;
   logoPreview: string;
+  /**
+   * Organisation-email verification (distinct from account-email
+   * confirmation): proves control of the declared official contact
+   * inbox. A strong admin-visible trust signal, never required to
+   * submit an application.
+   */
+  readonly officialEmailVerifiedAt: string | null;
+  readonly officialEmailVerificationSentAt: string | null;
   readonly createdAt: string;
   updatedAt: string;
+}
+
+/**
+ * Booleans are safe for any authenticated caller (a gentle pre-submission
+ * warning). `matches` is only ever populated for reviewers — ordinary
+ * applicants never receive another organisation's identifying details.
+ */
+export interface DuplicateOrganisationSignals {
+  readonly nameMatch: boolean;
+  readonly emailMatch: boolean;
+  readonly registrationNumberMatch: boolean;
+  readonly matches: readonly { readonly id: string; readonly name: string }[];
 }
 
 export interface OrganisationMembership {

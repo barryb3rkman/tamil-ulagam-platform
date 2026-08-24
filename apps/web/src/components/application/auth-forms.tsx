@@ -28,6 +28,7 @@ export function SignupForm() {
     email: "",
     password: "",
     confirmPassword: "",
+    termsAccepted: false,
   });
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [state, setState] = useState<SubmissionState>("idle");
@@ -168,6 +169,59 @@ export function SignupForm() {
           if (token) setCaptchaError("");
         }}
       />
+      <div className="grid gap-2">
+        <label
+          htmlFor="signup-terms-accepted"
+          className="border-global-navy/15 focus-within:ring-focus rounded-button flex min-h-12 cursor-pointer items-start gap-3 border bg-white px-4 py-3"
+        >
+          <input
+            id="signup-terms-accepted"
+            type="checkbox"
+            required
+            checked={values.termsAccepted}
+            aria-invalid={Boolean(errors.termsAccepted)}
+            aria-describedby={
+              errors.termsAccepted ? "signup-terms-accepted-error" : undefined
+            }
+            className="accent-heritage-maroon mt-0.5 size-5 shrink-0"
+            onChange={(event) =>
+              setValues({ ...values, termsAccepted: event.target.checked })
+            }
+          />
+          <span className="text-charcoal text-sm font-semibold">
+            I agree to the{" "}
+            <Link
+              href="/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(event) => event.stopPropagation()}
+              className="text-global-navy underline underline-offset-4"
+            >
+              Terms of Use
+            </Link>{" "}
+            and{" "}
+            <Link
+              href="/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(event) => event.stopPropagation()}
+              className="text-global-navy underline underline-offset-4"
+            >
+              Privacy Policy
+            </Link>
+            .
+          </span>
+        </label>
+        {errors.termsAccepted ? (
+          <p
+            id="signup-terms-accepted-error"
+            role="alert"
+            className="text-error text-sm"
+          >
+            {errors.termsAccepted}
+          </p>
+        ) : null}
+      </div>
       <Button
         type="submit"
         size="large"

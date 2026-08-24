@@ -25,6 +25,7 @@ function makeUser(overrides: Partial<UserProfile> = {}): UserProfile {
     email: "test@example.org",
     phone: "",
     country: "",
+    termsAcceptedAt: new Date().toISOString(),
     createdAt: new Date().toISOString(),
     ...overrides,
   };
@@ -50,6 +51,8 @@ function makeOrganisation(overrides: Partial<Organisation> = {}): Organisation {
     registrationAuthority: "",
     registrationCountry: "",
     logoPreview: "",
+    officialEmailVerifiedAt: null,
+    officialEmailVerificationSentAt: null,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     ...overrides,

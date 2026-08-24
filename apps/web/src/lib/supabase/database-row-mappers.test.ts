@@ -31,6 +31,8 @@ describe("Supabase enrollment row mappers", () => {
       registration_number: "REG-1",
       registration_authority: "Registry",
       registration_country: "Singapore",
+      official_email_verified_at: null,
+      official_email_verification_sent_at: null,
       created_at: "2026-08-21T00:00:00.000Z",
       updated_at: "2026-08-21T01:00:00.000Z",
     };

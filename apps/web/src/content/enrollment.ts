@@ -104,10 +104,9 @@ export const registrationStatusPresentation: Record<
 };
 
 export const registrationSteps = [
-  "Organisation type",
-  "Organisation details",
-  "Category details",
-  "Representative",
+  "Organisation",
+  "Contact & representative",
+  "Registration & trust",
   "Review & submit",
 ] as const;
 
@@ -123,6 +122,21 @@ export const representativeRelationships = [
   { value: "director", label: "Director" },
   { value: "administrator", label: "Administrator" },
   { value: "employee", label: "Employee" },
+  { value: "authorised_representative", label: "Authorised Representative" },
+  { value: "other", label: "Other" },
+] as const;
+
+/**
+ * Lean V2 intake asks for a simplified role grouping instead of the full
+ * eight-value relationship enum. Each option maps onto one existing enum
+ * value (see mapRepresentativeRole in the wizard) so no stored data or
+ * historical record changes shape. The full `representativeRelationships`
+ * list above stays in use for displaying already-submitted applications,
+ * whatever value they hold.
+ */
+export const representativeRoleOptions = [
+  { value: "leadership", label: "Leadership (founder, president, director)" },
+  { value: "staff_administrator", label: "Staff / Administrator" },
   { value: "authorised_representative", label: "Authorised Representative" },
   { value: "other", label: "Other" },
 ] as const;
@@ -305,5 +319,17 @@ export function getCategoryLabel(category: OrganisationCategory | ""): string {
   return (
     organisationCategories.find((option) => option.value === category)?.label ??
     "Organisation"
+  );
+}
+
+/**
+ * Displays a stored representative relationship using its full, properly
+ * cased label (e.g. "President / Chairperson") rather than the raw enum
+ * value, for both the applicant review page and admin review.
+ */
+export function getRepresentativeRoleLabel(relationship: string): string {
+  return (
+    representativeRelationships.find((option) => option.value === relationship)
+      ?.label ?? relationship.replaceAll("_", " ")
   );
 }

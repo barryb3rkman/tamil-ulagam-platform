@@ -1,4 +1,5 @@
 import type {
+  DuplicateOrganisationSignals,
   EnrollmentPlatformState,
   Organisation,
   OrganisationApplication,
@@ -94,6 +95,17 @@ export interface RuntimeAdminService {
   ): Promise<OrganisationApplication>;
 }
 
+export interface DuplicateSignalsInput {
+  readonly name: string;
+  readonly officialEmail: string;
+  readonly registrationNumber: string;
+  readonly excludeOrganisationId?: string;
+}
+
+export type OrganisationEmailVerificationSendResult =
+  | { readonly ok: true }
+  | { readonly ok: false; readonly reason: "not_configured" | "error" };
+
 export interface PlatformServices {
   readonly kind: "mock" | "supabase";
   readonly auth: RuntimeAuthService;
@@ -102,6 +114,16 @@ export interface PlatformServices {
   readonly admin: RuntimeAdminService;
   readonly snapshot: () => Promise<EnrollmentPlatformState>;
   readonly canReviewApplications: () => Promise<boolean>;
+  readonly checkDuplicateSignals: (
+    input: DuplicateSignalsInput,
+  ) => Promise<DuplicateOrganisationSignals>;
+  readonly requestOrganisationEmailVerification: (
+    organisationId: string,
+  ) => Promise<OrganisationEmailVerificationSendResult>;
+  readonly completeOrganisationEmailVerification: (
+    organisationId: string,
+    token: string,
+  ) => Promise<boolean>;
   readonly onAuthStateChange: (
     listener: (event: RuntimeAuthEvent) => void,
   ) => () => void;
@@ -172,6 +194,39 @@ export function adaptMockPlatformServices(
     },
     snapshot: async () => services.snapshot(),
     canReviewApplications: async () => true,
+    checkDuplicateSignals: async (input) => {
+      const state = services.snapshot();
+      const normalizedName = input.name.trim().toLowerCase();
+      const normalizedEmail = input.officialEmail.trim().toLowerCase();
+      const normalizedNumber = input.registrationNumber.trim().toLowerCase();
+      const others = state.organisations.filter(
+        (organisation) => organisation.id !== input.excludeOrganisationId,
+      );
+      return {
+        nameMatch: others.some(
+          (organisation) =>
+            normalizedName !== "" &&
+            organisation.name.trim().toLowerCase() === normalizedName,
+        ),
+        emailMatch: others.some(
+          (organisation) =>
+            normalizedEmail !== "" &&
+            organisation.officialEmail.trim().toLowerCase() === normalizedEmail,
+        ),
+        registrationNumberMatch: others.some(
+          (organisation) =>
+            normalizedNumber !== "" &&
+            organisation.registrationNumber.trim().toLowerCase() ===
+              normalizedNumber,
+        ),
+        matches: [],
+      };
+    },
+    requestOrganisationEmailVerification: async () => ({
+      ok: false,
+      reason: "not_configured",
+    }),
+    completeOrganisationEmailVerification: async () => false,
     onAuthStateChange: () => () => undefined,
     reset: async () => services.reset(),
   };

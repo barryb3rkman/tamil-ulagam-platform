@@ -215,6 +215,41 @@ export type Database = {
           },
         ];
       };
+      organization_email_verifications: {
+        Row: {
+          consumed_at: string | null;
+          created_at: string;
+          expires_at: string;
+          id: string;
+          organization_id: string;
+          token_hash: string;
+        };
+        Insert: {
+          consumed_at?: string | null;
+          created_at?: string;
+          expires_at: string;
+          id?: string;
+          organization_id: string;
+          token_hash: string;
+        };
+        Update: {
+          consumed_at?: string | null;
+          created_at?: string;
+          expires_at?: string;
+          id?: string;
+          organization_id?: string;
+          token_hash?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "organization_email_verifications_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       organization_healthcare_details: {
         Row: {
           created_at: string;
@@ -434,6 +469,8 @@ export type Database = {
           logo_path: string | null;
           name: string;
           official_email: string;
+          official_email_verification_sent_at: string | null;
+          official_email_verified_at: string | null;
           official_phone: string;
           postal_code: string;
           region: string;
@@ -458,6 +495,8 @@ export type Database = {
           logo_path?: string | null;
           name?: string;
           official_email?: string;
+          official_email_verification_sent_at?: string | null;
+          official_email_verified_at?: string | null;
           official_phone?: string;
           postal_code?: string;
           region?: string;
@@ -482,6 +521,8 @@ export type Database = {
           logo_path?: string | null;
           name?: string;
           official_email?: string;
+          official_email_verification_sent_at?: string | null;
+          official_email_verified_at?: string | null;
           official_phone?: string;
           postal_code?: string;
           region?: string;
@@ -504,6 +545,7 @@ export type Database = {
           full_name: string;
           id: string;
           phone: string;
+          terms_accepted_at: string | null;
           updated_at: string;
         };
         Insert: {
@@ -512,6 +554,7 @@ export type Database = {
           full_name?: string;
           id: string;
           phone?: string;
+          terms_accepted_at?: string | null;
           updated_at?: string;
         };
         Update: {
@@ -520,6 +563,7 @@ export type Database = {
           full_name?: string;
           id?: string;
           phone?: string;
+          terms_accepted_at?: string | null;
           updated_at?: string;
         };
         Relationships: [];
@@ -553,6 +597,15 @@ export type Database = {
       can_manage_organization: {
         Args: { target_organization_id: string };
         Returns: boolean;
+      };
+      check_duplicate_organization_signals: {
+        Args: {
+          candidate_name: string;
+          candidate_official_email?: string;
+          candidate_registration_number?: string;
+          exclude_organization_id?: string;
+        };
+        Returns: Json;
       };
       create_organization_application_draft: {
         Args: {
@@ -590,6 +643,10 @@ export type Database = {
       is_organization_member: {
         Args: { target_organization_id: string };
         Returns: boolean;
+      };
+      issue_organization_email_verification_token: {
+        Args: { target_organization_id: string };
+        Returns: string;
       };
       organization_application_is_editable: {
         Args: { target_organization_id: string };
@@ -662,6 +719,10 @@ export type Database = {
           isOneToOne: true;
           isSetofReturn: false;
         };
+      };
+      verify_organization_email: {
+        Args: { raw_token: string; target_organization_id: string };
+        Returns: boolean;
       };
     };
     Enums: {

@@ -1,9 +1,10 @@
 "use client";
 
+import type { DuplicateOrganisationSignals } from "@tamil-ulagam/shared";
 import { Button } from "@tamil-ulagam/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { usePlatform } from "@/features/enrollment/platform-provider";
 import {
@@ -20,12 +21,35 @@ export function RegistrationReview() {
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const {
+    checkDuplicateSignals,
     currentApplication,
     isHydrated,
     submitRegistration,
     updateCurrentStep,
   } = usePlatform();
   const [error, setError] = useState("");
+  const [duplicateSignals, setDuplicateSignals] =
+    useState<DuplicateOrganisationSignals | null>(null);
+
+  useEffect(() => {
+    if (!currentApplication) return;
+    let active = true;
+    void checkDuplicateSignals({
+      name: currentApplication.organisation.name,
+      officialEmail: currentApplication.organisation.officialEmail,
+      registrationNumber: currentApplication.organisation.registrationNumber,
+      excludeOrganisationId: currentApplication.organisation.id,
+    })
+      .then((signals) => {
+        if (active) setDuplicateSignals(signals);
+      })
+      .catch(() => {
+        // Best-effort: a gentle warning is not worth blocking review on.
+      });
+    return () => {
+      active = false;
+    };
+  }, [checkDuplicateSignals, currentApplication]);
 
   if (!isHydrated)
     return (
@@ -48,7 +72,7 @@ export function RegistrationReview() {
       </ReviewFrame>
     );
 
-  const edit = (step: 1 | 2 | 3 | 4) => {
+  const edit = (step: 1 | 2 | 3) => {
     void updateCurrentStep(step).then(() => router.push("/register"));
   };
   const validateAll = () => {
@@ -96,17 +120,29 @@ export function RegistrationReview() {
           {error}
         </p>
       ) : null}
-      <div className="border-heritage-gold/30 bg-heritage-gold/7 rounded-card mb-6 flex flex-col gap-4 border p-5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-global-navy font-bold">Organisation type</p>
-          <p className="text-slate mt-1 text-sm">
-            Confirm that the selected category best represents the organisation.
+      {duplicateSignals &&
+      (duplicateSignals.nameMatch ||
+        duplicateSignals.emailMatch ||
+        duplicateSignals.registrationNumberMatch) ? (
+        <div
+          role="status"
+          className="border-heritage-gold/40 bg-heritage-gold/10 rounded-card mb-6 border p-5"
+        >
+          <p className="text-global-navy font-bold">Possible duplicate</p>
+          <p className="text-slate mt-1 text-sm leading-6">
+            {duplicateSignals.emailMatch
+              ? "Official email matches another organisation. "
+              : ""}
+            {duplicateSignals.nameMatch
+              ? "Similar organisation name already exists. "
+              : ""}
+            {duplicateSignals.registrationNumberMatch
+              ? "Registration number matches another organisation. "
+              : ""}
+            You can still submit — a reviewer will confirm before verifying.
           </p>
         </div>
-        <Button variant="ghost" onClick={() => edit(1)}>
-          Edit type
-        </Button>
-      </div>
+      ) : null}
       <ApplicationDetails application={currentApplication} onEdit={edit} />
       <div className="bg-deep-navy rounded-card mt-7 grid gap-6 p-6 text-white sm:p-7 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
@@ -178,7 +214,7 @@ function ReviewFrame({ children }: { readonly children: React.ReactNode }) {
           Confirm each section before submitting the organisation for review.
         </p>
       </div>
-      <ProgressIndicator currentStep={5} />
+      <ProgressIndicator currentStep={4} />
       <div>{children}</div>
     </section>
   );

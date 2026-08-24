@@ -50,6 +50,7 @@ describe("enrollment validation", () => {
         email: "not-email",
         password: "short",
         confirmPassword: "different",
+        termsAccepted: false,
       }),
     ).toEqual(
       expect.objectContaining({
@@ -57,6 +58,7 @@ describe("enrollment validation", () => {
         email: expect.any(String),
         password: expect.any(String),
         confirmPassword: expect.any(String),
+        termsAccepted: expect.any(String),
       }),
     );
     expect(
@@ -65,6 +67,7 @@ describe("enrollment validation", () => {
         email: "arun@example.org",
         password: "TamilMvp1!",
         confirmPassword: "TamilMvp1!",
+        termsAccepted: true,
       }),
     ).toEqual({});
   });
@@ -89,39 +92,44 @@ describe("enrollment validation", () => {
     expect(validateCaptchaToken(true, "captcha-token")).toBe("");
   });
 
-  it("enforces conditional organisation and category requirements", () => {
+  it("keeps lean V2 intake fields optional beyond the core classifying question", () => {
+    // Registration number is a strong-optional trust signal, not a
+    // submission blocker, even when the organisation is registered.
     const organisation = createSeedState().organisations[0];
     expect(organisation).toBeDefined();
     expect(
       validateOrganisation({ ...organisation!, registrationNumber: "" })
         .registrationNumber,
-    ).toBeTruthy();
+    ).toBeUndefined();
+
+    // Education only requires the one classifying question at intake;
+    // programme detail, accreditation, and study areas are deferred.
     const education = {
       ...createEmptyCategoryProfile("education"),
       institutionType: "School",
-      governanceType: "Private",
-      tamilProgrammesOffered: "yes" as const,
     };
-    expect(
-      validateCategoryProfile(education).tamilProgrammesDescription,
-    ).toBeTruthy();
+    expect(validateCategoryProfile(education)).toEqual({});
+
+    // Healthcare only requires facility type; licensing detail is
+    // deferred to post-verification profile enrichment.
     const healthcare = {
       ...createEmptyCategoryProfile("healthcare"),
       facilityType: "Clinic",
-      ownershipType: "Private",
-      systemsOfMedicine: ["Modern Medicine"],
-      mainServices: "Primary care",
-      licensed: "yes" as const,
     };
-    expect(validateCategoryProfile(healthcare)).toEqual(
+    expect(validateCategoryProfile(healthcare)).toEqual({});
+
+    // Business is the one category that keeps two classifying questions.
+    expect(
+      validateCategoryProfile(createEmptyCategoryProfile("business")),
+    ).toEqual(
       expect.objectContaining({
-        licenceNumber: expect.any(String),
-        licensingAuthority: expect.any(String),
+        businessType: expect.any(String),
+        industry: expect.any(String),
       }),
     );
   });
 
-  it("requires both representative declarations", () => {
+  it("requires the combined authority declaration", () => {
     const representative = createSeedState().registrations[0]?.representative;
     expect(representative).toBeDefined();
     expect(
@@ -130,12 +138,23 @@ describe("enrollment validation", () => {
         authorisedDeclaration: false,
         accuracyDeclaration: false,
       }),
-    ).toEqual(
-      expect.objectContaining({
-        authorisedDeclaration: expect.any(String),
-        accuracyDeclaration: expect.any(String),
-      }),
-    );
+    ).toEqual(expect.objectContaining({ declaration: expect.any(String) }));
+    // Both underlying flags still have to be true — the single checkbox
+    // sets them together, but validation still checks both.
+    expect(
+      validateRepresentative({
+        ...representative!,
+        authorisedDeclaration: true,
+        accuracyDeclaration: false,
+      }).declaration,
+    ).toBeTruthy();
+    expect(
+      validateRepresentative({
+        ...representative!,
+        authorisedDeclaration: true,
+        accuracyDeclaration: true,
+      }).declaration,
+    ).toBeUndefined();
   });
 });
 
@@ -220,6 +239,7 @@ describe("mock service boundary", () => {
       email: "nila@example.org",
       phone: "",
       country: "",
+      termsAcceptedAt: "2026-08-20T00:00:00.000Z",
       createdAt: "2026-08-20T00:00:00.000Z",
     });
     seed.currentUserId = "user-current";
@@ -272,12 +292,14 @@ describe("status and dashboard presentation", () => {
     render(<ProgressIndicator currentStep={3} />);
 
     expect(
-      screen.getByLabelText("Organisation type, completed"),
+      screen.getByLabelText("Organisation, completed"),
     ).toBeInTheDocument();
-    const currentStep = screen.getByLabelText("Category details, current step");
+    const currentStep = screen.getByLabelText(
+      "Registration & trust, current step",
+    );
     expect(currentStep).toBeInTheDocument();
     expect(
-      screen.getByLabelText("Representative, upcoming"),
+      screen.getByLabelText("Review & submit, upcoming"),
     ).toBeInTheDocument();
     expect(currentStep.closest("li")).toHaveAttribute("aria-current", "step");
   });

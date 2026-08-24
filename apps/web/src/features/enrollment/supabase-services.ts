@@ -119,6 +119,7 @@ function mapAuthUser(user: User, profile: ProfileRow | null): UserProfile {
     email: user.email ?? "",
     phone: profile?.phone ?? user.phone ?? "",
     country: profile?.country ?? "",
+    termsAcceptedAt: profile?.terms_accepted_at ?? null,
     createdAt: profile?.created_at ?? user.created_at,
   };
 }
@@ -326,6 +327,7 @@ async function loadSnapshot(
       email: row.representative_email,
       phone: applicantProfile?.phone || row.representative_phone,
       country: applicantProfile?.country ?? "",
+      termsAcceptedAt: applicantProfile?.terms_accepted_at ?? null,
       createdAt: applicantProfile?.created_at ?? row.created_at,
     });
   }
@@ -453,11 +455,21 @@ export function createSupabasePlatformServices(
 
   const auth = {
     async signup(input: SignupInput): Promise<RuntimeAuthResult> {
+      if (!input.termsAccepted) {
+        return authFailure(
+          new Error(
+            "Agree to the Terms of Use and Privacy Policy to continue.",
+          ),
+        );
+      }
       const { data, error } = await client.auth.signUp({
         email: input.email.trim().toLowerCase(),
         password: input.password,
         options: {
-          data: { full_name: input.fullName.trim() },
+          data: {
+            full_name: input.fullName.trim(),
+            terms_accepted: "true",
+          },
           emailRedirectTo: authCallbackUrl("confirmation"),
           ...(input.captchaToken ? { captchaToken: input.captchaToken } : {}),
         },
@@ -859,6 +871,63 @@ export function createSupabasePlatformServices(
     admin,
     snapshot: () => loadSnapshot(client),
     canReviewApplications: () => hasReviewerRole(client),
+    async checkDuplicateSignals(input) {
+      const { data, error } = await client.rpc(
+        "check_duplicate_organization_signals",
+        {
+          candidate_name: input.name,
+          candidate_official_email: input.officialEmail,
+          candidate_registration_number: input.registrationNumber,
+          exclude_organization_id: input.excludeOrganisationId ?? undefined,
+        },
+      );
+      if (error || !data) {
+        return {
+          nameMatch: false,
+          emailMatch: false,
+          registrationNumberMatch: false,
+          matches: [],
+        };
+      }
+      const result = data as {
+        nameMatch?: boolean;
+        emailMatch?: boolean;
+        registrationNumberMatch?: boolean;
+        matches?: readonly { id: string; name: string }[];
+      };
+      return {
+        nameMatch: Boolean(result.nameMatch),
+        emailMatch: Boolean(result.emailMatch),
+        registrationNumberMatch: Boolean(result.registrationNumberMatch),
+        matches: result.matches ?? [],
+      };
+    },
+    async requestOrganisationEmailVerification(organisationId) {
+      const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+      const redirectPath = new URL(
+        withBasePath("/dashboard/registration", basePath),
+        window.location.origin,
+      ).toString();
+      const { data, error } = await client.functions.invoke(
+        "organization-email-verification",
+        { body: { organizationId: organisationId, redirectPath } },
+      );
+      if (error) return { ok: false, reason: "error" };
+      const result = data as { ok?: boolean; reason?: string } | null;
+      if (result?.ok) return { ok: true };
+      return {
+        ok: false,
+        reason:
+          result?.reason === "not_configured" ? "not_configured" : "error",
+      };
+    },
+    async completeOrganisationEmailVerification(organisationId, token) {
+      const { data, error } = await client.rpc("verify_organization_email", {
+        target_organization_id: organisationId,
+        raw_token: token,
+      });
+      return !error && data === true;
+    },
     onAuthStateChange(listener) {
       const { data } = client.auth.onAuthStateChange((event) => {
         const mappedEvent = mapAuthEvent(event);

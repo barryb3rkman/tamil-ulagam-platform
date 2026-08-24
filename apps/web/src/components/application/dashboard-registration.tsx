@@ -1,14 +1,41 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 import { usePlatform } from "@/features/enrollment/platform-provider";
 
 import { ApplicationDetails } from "./application-details";
+import { OrganisationEmailVerificationCard } from "./organisation-email-verification";
 import { RegistrationStatusBadge } from "./registration-status-badge";
 
 export function DashboardRegistration() {
-  const { currentApplication, isHydrated } = usePlatform();
+  const {
+    completeOrganisationEmailVerification,
+    currentApplication,
+    isHydrated,
+  } = usePlatform();
+  const searchParams = useSearchParams();
+  const [verificationNotice, setVerificationNotice] = useState("");
+  const consumedRef = useRef(false);
+
+  useEffect(() => {
+    const token = searchParams.get("verify_org_email");
+    const organisationId = searchParams.get("organisation");
+    if (!token || !organisationId || consumedRef.current) return;
+    consumedRef.current = true;
+    void completeOrganisationEmailVerification(organisationId, token).then(
+      (verified) => {
+        setVerificationNotice(
+          verified
+            ? "Organisation email verified."
+            : "This verification link is invalid or has expired.",
+        );
+      },
+    );
+  }, [completeOrganisationEmailVerification, searchParams]);
+
   if (!isHydrated) return <p role="status">Loading registration…</p>;
   if (!currentApplication)
     return (
@@ -54,6 +81,22 @@ export function DashboardRegistration() {
             {currentApplication.registration.adminFeedback}
           </p>
         </div>
+      ) : null}
+      {verificationNotice ? (
+        <p role="status" className="text-charcoal text-sm font-semibold">
+          {verificationNotice}
+        </p>
+      ) : null}
+      {currentApplication.organisation.officialEmail ? (
+        <OrganisationEmailVerificationCard
+          organisationId={currentApplication.organisation.id}
+          officialEmail={currentApplication.organisation.officialEmail}
+          verifiedAt={currentApplication.organisation.officialEmailVerifiedAt}
+          verificationSentAt={
+            currentApplication.organisation.officialEmailVerificationSentAt
+          }
+          canRequest
+        />
       ) : null}
       <ApplicationDetails application={currentApplication} includeTimeline />
       {canEdit ? (

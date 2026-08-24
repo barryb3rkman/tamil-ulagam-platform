@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import {
   getCategoryLabel,
+  getRepresentativeRoleLabel,
   registrationStatusPresentation,
 } from "@/content/enrollment";
 
@@ -64,7 +65,7 @@ export function ApplicationDetails({
   includeTimeline = false,
 }: {
   readonly application: OrganisationApplication;
-  readonly onEdit?: (step: 1 | 2 | 3 | 4) => void;
+  readonly onEdit?: (step: 1 | 2 | 3) => void;
   readonly includeTimeline?: boolean;
 }) {
   const { organisation, registration } = application;
@@ -74,13 +75,30 @@ export function ApplicationDetails({
       <DetailGroup
         title="Organisation Details"
         action={
-          onEdit ? { label: "Edit", onClick: () => onEdit(2) } : undefined
+          onEdit ? { label: "Edit", onClick: () => onEdit(1) } : undefined
         }
         items={[
           { label: "Organisation name", value: organisation.name },
           { label: "Category", value: getCategoryLabel(organisation.category) },
+          {
+            label: "Location",
+            value: [
+              organisation.city,
+              organisation.region,
+              organisation.country,
+            ]
+              .filter(Boolean)
+              .join(", "),
+          },
           { label: "Description", value: organisation.description },
-          { label: "Year established", value: organisation.yearEstablished },
+          ...(organisation.yearEstablished
+            ? [
+                {
+                  label: "Year established",
+                  value: organisation.yearEstablished,
+                },
+              ]
+            : []),
         ]}
       />
       <DetailGroup
@@ -91,25 +109,15 @@ export function ApplicationDetails({
         items={[
           { label: "Official email", value: organisation.officialEmail },
           { label: "Official phone", value: organisation.officialPhone },
-          { label: "Website", value: organisation.website },
-          {
-            label: "Address",
-            value: [
-              organisation.streetAddress,
-              organisation.city,
-              organisation.region,
-              organisation.postalCode,
-              organisation.country,
-            ]
-              .filter(Boolean)
-              .join(", "),
-          },
+          ...(organisation.website
+            ? [{ label: "Website", value: organisation.website }]
+            : []),
         ]}
       />
       <DetailGroup
         title="Registration Information"
         action={
-          onEdit ? { label: "Edit", onClick: () => onEdit(2) } : undefined
+          onEdit ? { label: "Edit", onClick: () => onEdit(3) } : undefined
         }
         items={[
           {
@@ -119,18 +127,30 @@ export function ApplicationDetails({
                 ? "Registered organisation"
                 : "Unregistered / informal organisation",
           },
-          {
-            label: "Registration number",
-            value: organisation.registrationNumber,
-          },
-          {
-            label: "Registration authority",
-            value: organisation.registrationAuthority,
-          },
-          {
-            label: "Registration country",
-            value: organisation.registrationCountry,
-          },
+          ...(organisation.registrationNumber
+            ? [
+                {
+                  label: "Registration number",
+                  value: organisation.registrationNumber,
+                },
+              ]
+            : []),
+          ...(organisation.registrationAuthority
+            ? [
+                {
+                  label: "Registration authority",
+                  value: organisation.registrationAuthority,
+                },
+              ]
+            : []),
+          ...(organisation.registrationCountry
+            ? [
+                {
+                  label: "Registration country",
+                  value: organisation.registrationCountry,
+                },
+              ]
+            : []),
         ]}
       />
       {profile ? (
@@ -145,42 +165,41 @@ export function ApplicationDetails({
       <DetailGroup
         title="Representative"
         action={
-          onEdit ? { label: "Edit", onClick: () => onEdit(4) } : undefined
+          onEdit ? { label: "Edit", onClick: () => onEdit(2) } : undefined
         }
         items={[
           { label: "Full name", value: registration.representative.fullName },
           { label: "Email", value: registration.representative.email },
           { label: "Phone", value: registration.representative.phone },
           {
-            label: "Designation",
-            value: registration.representative.designation,
-          },
-          {
-            label: "Relationship",
-            value: registration.representative.relationship.replaceAll(
-              "_",
-              " ",
+            label: "Role",
+            value: getRepresentativeRoleLabel(
+              registration.representative.relationship,
             ),
           },
+          ...(registration.representative.designation
+            ? [
+                {
+                  label: "Designation",
+                  value: registration.representative.designation,
+                },
+              ]
+            : []),
         ]}
       />
       <DetailGroup
-        title="Declarations"
+        title="Declaration"
         action={
-          onEdit ? { label: "Edit", onClick: () => onEdit(4) } : undefined
+          onEdit ? { label: "Edit", onClick: () => onEdit(3) } : undefined
         }
         items={[
           {
-            label: "Authorised to submit",
-            value: registration.representative.authorisedDeclaration
-              ? "Confirmed"
-              : "Not confirmed",
-          },
-          {
-            label: "Information accurate",
-            value: registration.representative.accuracyDeclaration
-              ? "Confirmed"
-              : "Not confirmed",
+            label: "Authorised representative, accurate information",
+            value:
+              registration.representative.authorisedDeclaration &&
+              registration.representative.accuracyDeclaration
+                ? "Confirmed"
+                : "Not confirmed",
           },
         ]}
       />
@@ -241,78 +260,101 @@ export function ApplicationDetails({
   );
 }
 
+// Lean V2 intake only collects one or two classifying fields per
+// category; everything else here is optional profile-enrichment data
+// that may or may not exist yet. To avoid a wall of "Not provided
+// (optional)" rows, enrichment items are only included when they
+// actually have a value — the core intake field(s) always show.
 function categoryItems(
   profile: NonNullable<
     OrganisationApplication["registration"]["categoryProfile"]
   >,
 ): DetailItem[] {
+  const withValue = (items: readonly DetailItem[]) =>
+    items.filter((item) => Boolean(item.value));
+
   switch (profile.category) {
     case "tamil_community":
       return [
         { label: "Subtype", value: profile.subtype },
-        {
-          label: "Primary activities",
-          value: profile.primaryActivities.join(", "),
-        },
-        { label: "Membership size", value: profile.membershipSize },
-        { label: "Area served", value: profile.geographicAreaServed },
-        { label: "Chairperson", value: profile.chairpersonName },
-        { label: "Secretary", value: profile.secretaryName },
-        { label: "Languages", value: profile.languages },
+        ...withValue([
+          {
+            label: "Primary activities",
+            value: profile.primaryActivities.join(", "),
+          },
+          { label: "Membership size", value: profile.membershipSize },
+          { label: "Area served", value: profile.geographicAreaServed },
+          { label: "Chairperson", value: profile.chairpersonName },
+          { label: "Secretary", value: profile.secretaryName },
+          { label: "Languages", value: profile.languages },
+        ]),
       ];
     case "education":
       return [
         { label: "Institution type", value: profile.institutionType },
-        { label: "Governance", value: profile.governanceType },
-        {
-          label: "Tamil programmes",
-          value: profile.tamilProgrammesOffered === "yes" ? "Yes" : "No",
-        },
-        {
-          label: "Programme description",
-          value: profile.tamilProgrammesDescription,
-        },
-        {
-          label: "Recognition authority",
-          value: profile.accreditationAuthority,
-        },
-        { label: "Study areas", value: profile.studyAreas.join(", ") },
+        ...withValue([
+          { label: "Governance", value: profile.governanceType },
+          {
+            label: "Tamil programmes",
+            value:
+              profile.tamilProgrammesOffered === ""
+                ? ""
+                : profile.tamilProgrammesOffered === "yes"
+                  ? "Yes"
+                  : "No",
+          },
+          {
+            label: "Programme description",
+            value: profile.tamilProgrammesDescription,
+          },
+          {
+            label: "Recognition authority",
+            value: profile.accreditationAuthority,
+          },
+          { label: "Study areas", value: profile.studyAreas.join(", ") },
+        ]),
       ];
     case "healthcare":
       return [
         { label: "Facility type", value: profile.facilityType },
-        { label: "Ownership", value: profile.ownershipType },
-        {
-          label: "Systems of healthcare",
-          value: profile.systemsOfMedicine.join(", "),
-        },
-        { label: "Main services", value: profile.mainServices },
-        { label: "Licensed", value: profile.licensed === "yes" ? "Yes" : "No" },
-        { label: "Licence number", value: profile.licenceNumber },
-        { label: "Licensing authority", value: profile.licensingAuthority },
-        {
-          label: "24×7 service",
-          value: profile.twentyFourSeven ? "Yes" : "No",
-        },
-        {
-          label: "Emergency services",
-          value: profile.emergencyServices ? "Yes" : "No",
-        },
+        ...withValue([
+          { label: "Ownership", value: profile.ownershipType },
+          {
+            label: "Systems of healthcare",
+            value: profile.systemsOfMedicine.join(", "),
+          },
+          { label: "Main services", value: profile.mainServices },
+          {
+            label: "Licensed",
+            value:
+              profile.licensed === ""
+                ? ""
+                : profile.licensed === "yes"
+                  ? "Yes"
+                  : "No",
+          },
+          { label: "Licence number", value: profile.licenceNumber },
+          { label: "Licensing authority", value: profile.licensingAuthority },
+        ]),
       ];
     case "business":
       return [
         { label: "Business type", value: profile.businessType },
         { label: "Industry", value: profile.industry },
-        { label: "Products / services", value: profile.productsServices },
-        { label: "Employee size", value: profile.employeeSize },
-        { label: "Operating countries", value: profile.operatingCountries },
+        ...withValue([
+          { label: "Products / services", value: profile.productsServices },
+          { label: "Employee size", value: profile.employeeSize },
+          { label: "Operating countries", value: profile.operatingCountries },
+        ]),
       ];
     case "nonprofit":
       return [
         { label: "Subtype", value: profile.subtype },
-        { label: "Primary areas", value: profile.primaryAreas.join(", ") },
-        { label: "Beneficiary regions", value: profile.beneficiaryRegions },
-        { label: "Organisation size", value: profile.organisationSize },
+        ...withValue([
+          { label: "Primary areas", value: profile.primaryAreas.join(", ") },
+          { label: "Beneficiary regions", value: profile.beneficiaryRegions },
+          { label: "Organisation size", value: profile.organisationSize },
+        ]),
       ];
     case "other":
       return [

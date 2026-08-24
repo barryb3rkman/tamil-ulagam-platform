@@ -261,19 +261,16 @@ function calculateCompletion(
     application.organisation.country,
     application.organisation.region,
     application.organisation.city,
-    application.organisation.streetAddress,
+    application.organisation.description,
     application.organisation.officialEmail,
     application.organisation.officialPhone,
-    application.organisation.description,
     application.organisation.registrationStatus,
     application.registration.categoryProfile,
     application.registration.representative.fullName,
-    application.registration.representative.email,
     application.registration.representative.phone,
-    application.registration.representative.designation,
     application.registration.representative.relationship,
-    application.registration.representative.authorisedDeclaration,
-    application.registration.representative.accuracyDeclaration,
+    application.registration.representative.authorisedDeclaration &&
+      application.registration.representative.accuracyDeclaration,
   ];
   return Math.round((values.filter(Boolean).length / values.length) * 100);
 }

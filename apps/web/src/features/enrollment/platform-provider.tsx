@@ -1,6 +1,7 @@
 "use client";
 
 import type {
+  DuplicateOrganisationSignals,
   EnrollmentPlatformState,
   Organisation,
   OrganisationApplication,
@@ -32,6 +33,8 @@ import {
   adaptMockPlatformServices,
   type AuthCallbackIntent,
   type AuthCallbackResult,
+  type DuplicateSignalsInput,
+  type OrganisationEmailVerificationSendResult,
   type PlatformServices,
   type RuntimeAuthResult,
 } from "./platform-services";
@@ -109,6 +112,16 @@ interface PlatformContextValue {
     feedback?: string,
   ) => Promise<OrganisationApplication>;
   readonly resetDemo: () => Promise<void>;
+  readonly checkDuplicateSignals: (
+    input: DuplicateSignalsInput,
+  ) => Promise<DuplicateOrganisationSignals>;
+  readonly requestOrganisationEmailVerification: (
+    organisationId: string,
+  ) => Promise<OrganisationEmailVerificationSendResult>;
+  readonly completeOrganisationEmailVerification: (
+    organisationId: string,
+    token: string,
+  ) => Promise<boolean>;
 }
 
 const PlatformContext = createContext<PlatformContextValue | null>(null);
@@ -195,23 +208,63 @@ export function PlatformProvider({
   });
   const refreshSequence = useRef(0);
 
+  // `refresh` can be triggered concurrently from more than one source
+  // during startup: the eager initial call below, plus every
+  // `onAuthStateChange` event the backend fires while restoring a
+  // persisted session (e.g. Supabase's own "INITIAL_SESSION" followed
+  // shortly by a same-session "SIGNED_IN"). Whichever call *finishes*
+  // last does not always correspond to the call that *started* last, so
+  // `refreshSequence` identifies the most-recently-started call and every
+  // earlier one is discarded on arrival — this already protected `state`
+  // and `canReviewApplications` from being clobbered by a stale result.
+  // `isHydrated` used to be set independently of this guard (see
+  // `initialise` below, previously in a bare `finally`), so the very
+  // first call to settle — even one whose session lookup raced ahead of
+  // the real session being restored — could permanently latch
+  // `canReviewApplications = false` with `isHydrated = true` and nothing
+  // left to correct it, since no further refresh was guaranteed to
+  // arrive. Setting `isHydrated` from inside this same staleness check
+  // means the UI only ever commits to the outcome of the *latest*
+  // triggered refresh, never an earlier one still in flight — exactly
+  // the "wait for restoration, then decide" behaviour access checks need.
   const refresh = useCallback(async (runtime: PlatformServices) => {
     const sequence = ++refreshSequence.current;
-    const [nextState, reviewer] = await Promise.all([
-      runtime.snapshot(),
-      runtime.canReviewApplications(),
-    ]);
-    if (sequence === refreshSequence.current) {
-      setState(nextState);
-      setCanReviewApplications(reviewer);
-      setPlatformError("");
+    try {
+      const [nextState, reviewer] = await Promise.all([
+        runtime.snapshot(),
+        runtime.canReviewApplications(),
+      ]);
+      if (sequence === refreshSequence.current) {
+        setState(nextState);
+        setCanReviewApplications(reviewer);
+        setPlatformError("");
+        setIsHydrated(true);
+      }
+      return { state: nextState, canReview: reviewer };
+    } catch (error: unknown) {
+      // A failed lookup (expired session, network error) still resolves
+      // the loading state rather than hanging indefinitely. Guarded by
+      // the same staleness check as the success path, so a failure from
+      // an earlier, superseded call can never overwrite the error (or
+      // lack of one) left by whichever call actually is the latest.
+      if (sequence === refreshSequence.current) {
+        setIsHydrated(true);
+        setPlatformError(getPlatformErrorMessage(error));
+      }
+      throw error;
     }
-    return { state: nextState, canReview: reviewer };
   }, []);
 
   useEffect(() => {
     let active = true;
     let unsubscribe: () => void = () => undefined;
+
+    // Tracks whether refresh() was reached at all, so the safety-net
+    // catch below knows whether refresh() already resolved the loading
+    // state itself (in which case re-setting it could clobber a
+    // meanwhile-successful later call) or whether setup never got that
+    // far (in which case nothing else will ever resolve it).
+    let refreshStarted = false;
 
     const initialise = async () => {
       try {
@@ -230,15 +283,51 @@ export function PlatformProvider({
         setServices(runtime);
         setBackendKind(runtime.kind);
         unsubscribe = runtime.onAuthStateChange(() => {
-          void refresh(runtime).catch((error: unknown) => {
-            if (active) setPlatformError(getPlatformErrorMessage(error));
-          });
+          // refresh() already resolves isHydrated/platformError itself
+          // (guarded by sequence) whether it succeeds or fails — this
+          // catch only exists so a rejected promise here can't become an
+          // unhandled rejection.
+          void refresh(runtime).catch(() => undefined);
         });
-        await refresh(runtime);
+        refreshStarted = true;
+        const first = await refresh(runtime);
+
+        // Defense in depth against a narrow, real timing window in the
+        // Supabase browser client's own cookie storage: a freshly-signed-in
+        // session is persisted across several `document.cookie` writes in
+        // a loop (large tokens are chunked), not one atomic write. If a
+        // full page navigation to a protected route (a hard refresh, a
+        // fresh tab from a bookmark, the redirect right after sign-in)
+        // lands while that loop is still mid-flight, the very first read
+        // on the new page can see a partial set of chunks — the SDK's own
+        // storage layer explicitly treats that as "no session" rather
+        // than guessing at a corrupt one. That first read is otherwise
+        // indistinguishable from a genuinely logged-out visitor, so a
+        // single short, bounded re-check (not a retry loop) is the
+        // cheapest reliable way to tell them apart without waiting on an
+        // auth event that this specific race does not guarantee will
+        // fire again. A real anonymous visitor pays this once, in the
+        // background, with no visible effect on public pages that don't
+        // render anything conditioned on `isHydrated`.
+        if (
+          active &&
+          runtime.kind === "supabase" &&
+          !first.state.currentUserId
+        ) {
+          await new Promise((resolve) => setTimeout(resolve, 300));
+          if (active) await refresh(runtime).catch(() => undefined);
+        }
       } catch (error: unknown) {
-        if (active) setPlatformError(getPlatformErrorMessage(error));
-      } finally {
-        if (active) setIsHydrated(true);
+        // If refresh() was reached, it already resolved isHydrated (and
+        // platformError) itself before rethrowing, guarded by the same
+        // staleness check that protects it from a concurrent later call —
+        // redoing that here could overwrite a meanwhile-successful
+        // result. Only a failure BEFORE refresh() ever started (e.g.
+        // constructing the runtime services) needs this fallback.
+        if (active && !refreshStarted) {
+          setPlatformError(getPlatformErrorMessage(error));
+          setIsHydrated(true);
+        }
       }
     };
 
@@ -421,6 +510,15 @@ export function PlatformProvider({
         if (!runtime.reset) return;
         setState(await runtime.reset());
       },
+      checkDuplicateSignals: async (input) =>
+        requireServices().checkDuplicateSignals(input),
+      requestOrganisationEmailVerification: async (organisationId) =>
+        requireServices().requestOrganisationEmailVerification(organisationId),
+      completeOrganisationEmailVerification: async (organisationId, token) =>
+        requireServices().completeOrganisationEmailVerification(
+          organisationId,
+          token,
+        ),
     }),
     [
       applications,

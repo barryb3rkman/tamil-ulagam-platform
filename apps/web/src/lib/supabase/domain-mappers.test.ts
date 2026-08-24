@@ -26,6 +26,8 @@ const organisation: Organisation = {
   registrationAuthority: " Provincial authority ",
   registrationCountry: " Canada ",
   logoPreview: "data:image/png;base64,local-preview",
+  officialEmailVerifiedAt: null,
+  officialEmailVerificationSentAt: null,
   createdAt: "2026-08-21T00:00:00.000Z",
   updatedAt: "2026-08-21T00:00:00.000Z",
 };

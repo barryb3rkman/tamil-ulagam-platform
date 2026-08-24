@@ -55,6 +55,7 @@ export function mapProfileRow(row: ProfileRow, email: string): UserProfile {
     email,
     phone: row.phone,
     country: row.country,
+    termsAcceptedAt: row.terms_accepted_at,
     createdAt: row.created_at,
   };
 }
@@ -79,6 +80,8 @@ export function mapOrganizationRow(row: OrganizationRow): Organisation {
     registrationAuthority: row.registration_authority,
     registrationCountry: row.registration_country,
     logoPreview: row.logo_path ?? "",
+    officialEmailVerifiedAt: row.official_email_verified_at,
+    officialEmailVerificationSentAt: row.official_email_verification_sent_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };

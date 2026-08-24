@@ -23,6 +23,7 @@ export interface SignupInput {
   readonly fullName: string;
   readonly email: string;
   readonly password: string;
+  readonly termsAccepted: boolean;
   readonly captchaToken?: string;
 }
 
@@ -207,6 +208,7 @@ export function createMockPlatformServices(
         email: normalizedEmail,
         phone: "",
         country: "",
+        termsAcceptedAt: input.termsAccepted ? timestamp : null,
         createdAt:
           existingIndex >= 0
             ? (state.users[existingIndex]?.createdAt ?? timestamp)

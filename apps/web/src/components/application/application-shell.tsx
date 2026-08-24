@@ -248,7 +248,18 @@ export function ApplicationShell({
               {platformError}
             </div>
           ) : null}
-          {area === "admin" && isHydrated && !canReviewApplications ? (
+          {area === "admin" && !isHydrated ? (
+            // Session/role restoration is still in flight — never render
+            // admin content *or* a denial until that resolves. Rendering
+            // children here would let real review workflows mount before
+            // access is confirmed; rendering the denial here would treat
+            // "not resolved yet" as "no access", which is exactly the
+            // false-negative this loading state exists to prevent (see
+            // platform-provider.tsx's session-restoration handling).
+            <p role="status" className="text-slate">
+              Loading…
+            </p>
+          ) : area === "admin" && !canReviewApplications ? (
             <section className="border-global-navy/12 rounded-card shadow-card border bg-white p-7 sm:p-9">
               <p className="text-heritage-maroon text-xs font-bold tracking-[0.14em] uppercase">
                 Restricted workspace

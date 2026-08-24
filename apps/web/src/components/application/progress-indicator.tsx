@@ -7,7 +7,7 @@ export function ProgressIndicator({
 }) {
   return (
     <nav aria-label="Registration progress" className="mb-8">
-      <ol className="grid grid-cols-5 gap-1.5 sm:gap-3">
+      <ol className="grid grid-cols-4 gap-1.5 sm:gap-3">
         {registrationSteps.map((step, index) => {
           const number = index + 1;
           const isCurrent = number === currentStep;
@@ -60,8 +60,8 @@ export function ProgressIndicator({
         })}
       </ol>
       <p className="text-global-navy mt-3 text-sm font-semibold md:hidden">
-        Step {currentStep} of 5 <span aria-hidden="true">·</span>{" "}
-        {registrationSteps[currentStep - 1]}
+        Step {currentStep} of {registrationSteps.length}{" "}
+        <span aria-hidden="true">·</span> {registrationSteps[currentStep - 1]}
       </p>
     </nav>
   );
