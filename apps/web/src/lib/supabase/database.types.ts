@@ -306,6 +306,41 @@ export type Database = {
           },
         ];
       };
+      organization_managers: {
+        Row: {
+          granted_at: string;
+          granted_by: string | null;
+          id: string;
+          organization_id: string;
+          role: Database["public"]["Enums"]["organization_membership_role"];
+          user_id: string;
+        };
+        Insert: {
+          granted_at?: string;
+          granted_by?: string | null;
+          id?: string;
+          organization_id: string;
+          role: Database["public"]["Enums"]["organization_membership_role"];
+          user_id: string;
+        };
+        Update: {
+          granted_at?: string;
+          granted_by?: string | null;
+          id?: string;
+          organization_id?: string;
+          role?: Database["public"]["Enums"]["organization_membership_role"];
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "organization_managers_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       organization_members: {
         Row: {
           created_at: string;
@@ -334,6 +369,109 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "organization_members_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      organization_membership_history: {
+        Row: {
+          actor_user_id: string | null;
+          created_at: string;
+          id: string;
+          membership_id: string;
+          new_status: Database["public"]["Enums"]["organization_membership_status"];
+          note: string | null;
+          previous_status:
+            | Database["public"]["Enums"]["organization_membership_status"]
+            | null;
+        };
+        Insert: {
+          actor_user_id?: string | null;
+          created_at?: string;
+          id?: string;
+          membership_id: string;
+          new_status: Database["public"]["Enums"]["organization_membership_status"];
+          note?: string | null;
+          previous_status?:
+            | Database["public"]["Enums"]["organization_membership_status"]
+            | null;
+        };
+        Update: {
+          actor_user_id?: string | null;
+          created_at?: string;
+          id?: string;
+          membership_id?: string;
+          new_status?: Database["public"]["Enums"]["organization_membership_status"];
+          note?: string | null;
+          previous_status?:
+            | Database["public"]["Enums"]["organization_membership_status"]
+            | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "organization_membership_history_membership_id_fkey";
+            columns: ["membership_id"];
+            isOneToOne: false;
+            referencedRelation: "organization_memberships";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      organization_memberships: {
+        Row: {
+          created_at: string;
+          decided_at: string | null;
+          decided_by: string | null;
+          expires_at: string | null;
+          id: string;
+          invited_at: string | null;
+          invited_by: string | null;
+          membership_type:
+            Database["public"]["Enums"]["organization_membership_type"] | null;
+          organization_id: string;
+          requested_at: string | null;
+          status: Database["public"]["Enums"]["organization_membership_status"];
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          decided_at?: string | null;
+          decided_by?: string | null;
+          expires_at?: string | null;
+          id?: string;
+          invited_at?: string | null;
+          invited_by?: string | null;
+          membership_type?:
+            Database["public"]["Enums"]["organization_membership_type"] | null;
+          organization_id: string;
+          requested_at?: string | null;
+          status?: Database["public"]["Enums"]["organization_membership_status"];
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          decided_at?: string | null;
+          decided_by?: string | null;
+          expires_at?: string | null;
+          id?: string;
+          invited_at?: string | null;
+          invited_by?: string | null;
+          membership_type?:
+            Database["public"]["Enums"]["organization_membership_type"] | null;
+          organization_id?: string;
+          requested_at?: string | null;
+          status?: Database["public"]["Enums"]["organization_membership_status"];
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "organization_memberships_organization_id_fkey";
             columns: ["organization_id"];
             isOneToOne: false;
             referencedRelation: "organizations";
@@ -639,18 +777,120 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      decide_organization_membership: {
+        Args: {
+          decision_note?: string;
+          target_membership_id: string;
+          target_status: Database["public"]["Enums"]["organization_membership_status"];
+        };
+        Returns: {
+          created_at: string;
+          decided_at: string | null;
+          decided_by: string | null;
+          expires_at: string | null;
+          id: string;
+          invited_at: string | null;
+          invited_by: string | null;
+          membership_type:
+            Database["public"]["Enums"]["organization_membership_type"] | null;
+          organization_id: string;
+          requested_at: string | null;
+          status: Database["public"]["Enums"]["organization_membership_status"];
+          updated_at: string;
+          user_id: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "organization_memberships";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      invite_organization_member: {
+        Args: {
+          invited_membership_type?: Database["public"]["Enums"]["organization_membership_type"];
+          target_organization_id: string;
+          target_user_id: string;
+        };
+        Returns: {
+          created_at: string;
+          decided_at: string | null;
+          decided_by: string | null;
+          expires_at: string | null;
+          id: string;
+          invited_at: string | null;
+          invited_by: string | null;
+          membership_type:
+            Database["public"]["Enums"]["organization_membership_type"] | null;
+          organization_id: string;
+          requested_at: string | null;
+          status: Database["public"]["Enums"]["organization_membership_status"];
+          updated_at: string;
+          user_id: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "organization_memberships";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       is_application_reviewer: { Args: never; Returns: boolean };
       is_organization_member: {
         Args: { target_organization_id: string };
         Returns: boolean;
       };
+      is_organization_membership_eligible: {
+        Args: { target_organization_id: string };
+        Returns: boolean;
+      };
+      is_platform_admin: { Args: never; Returns: boolean };
       issue_organization_email_verification_token: {
         Args: { target_organization_id: string };
         Returns: string;
       };
+      list_membership_eligible_organizations: {
+        Args: never;
+        Returns: {
+          category: Database["public"]["Enums"]["organization_category"];
+          city: string;
+          country: string;
+          id: string;
+          name: string;
+          region: string;
+        }[];
+      };
       organization_application_is_editable: {
         Args: { target_organization_id: string };
         Returns: boolean;
+      };
+      request_organization_membership: {
+        Args: {
+          requested_membership_type?: Database["public"]["Enums"]["organization_membership_type"];
+          target_organization_id: string;
+        };
+        Returns: {
+          created_at: string;
+          decided_at: string | null;
+          decided_by: string | null;
+          expires_at: string | null;
+          id: string;
+          invited_at: string | null;
+          invited_by: string | null;
+          membership_type:
+            Database["public"]["Enums"]["organization_membership_type"] | null;
+          organization_id: string;
+          requested_at: string | null;
+          status: Database["public"]["Enums"]["organization_membership_status"];
+          updated_at: string;
+          user_id: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "organization_memberships";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
       };
       review_organization_application: {
         Args: {
@@ -682,6 +922,31 @@ export type Database = {
         SetofOptions: {
           from: "*";
           to: "organization_applications";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      revoke_organization_membership: {
+        Args: { decision_note?: string; target_membership_id: string };
+        Returns: {
+          created_at: string;
+          decided_at: string | null;
+          decided_by: string | null;
+          expires_at: string | null;
+          id: string;
+          invited_at: string | null;
+          invited_by: string | null;
+          membership_type:
+            Database["public"]["Enums"]["organization_membership_type"] | null;
+          organization_id: string;
+          requested_at: string | null;
+          status: Database["public"]["Enums"]["organization_membership_status"];
+          updated_at: string;
+          user_id: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "organization_memberships";
           isOneToOne: true;
           isSetofReturn: false;
         };
@@ -736,6 +1001,10 @@ export type Database = {
         | "nonprofit"
         | "other";
       organization_membership_role: "owner" | "admin" | "representative";
+      organization_membership_status:
+        "pending" | "approved" | "rejected" | "revoked";
+      organization_membership_type:
+        "general" | "student" | "lifetime" | "honorary";
       registration_status:
         | "draft"
         | "submitted"
@@ -891,6 +1160,18 @@ export const Constants = {
         "other",
       ],
       organization_membership_role: ["owner", "admin", "representative"],
+      organization_membership_status: [
+        "pending",
+        "approved",
+        "rejected",
+        "revoked",
+      ],
+      organization_membership_type: [
+        "general",
+        "student",
+        "lifetime",
+        "honorary",
+      ],
       registration_status: [
         "draft",
         "submitted",

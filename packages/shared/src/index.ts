@@ -32,3 +32,13 @@ export type {
   TamilCommunityProfile,
   UserProfile,
 } from "./enrollment";
+
+export type {
+  EligibleOrganisation,
+  ManagementGrant,
+  Membership,
+  MembershipHistoryEvent,
+  MembershipStatus,
+  MembershipType,
+  OrganizationManagerRole,
+} from "./membership";
