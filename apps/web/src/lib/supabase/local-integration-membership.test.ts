@@ -383,6 +383,46 @@ localDescribe(
       expect(forbiddenRevoke.error).not.toBeNull();
     });
 
+    it("also blocks a manager of a different organisation from approving/rejecting this one's pending requests", async () => {
+      // A dedicated actor, not member2 — this test deliberately leaves a
+      // pending request in place (both forbidden decisions must not
+      // change it), and member2 already has its own scripted story
+      // later in this file (invite/reject, then the uniqueness-
+      // constraint test) that a stray leftover pending row would break.
+      await createActor("crossOrgTestMember", "Cross Org Test Member");
+      const crossOrgTestMember = actor("crossOrgTestMember");
+      const manager2 = actor("manager2");
+      const outsiderManager = actor("outsiderManager");
+
+      const freshRequest = await crossOrgTestMember.client.rpc(
+        "request_organization_membership",
+        { target_organization_id: org2Id },
+      );
+      expect(freshRequest.error).toBeNull();
+      const pendingId = requireData(freshRequest.data, "fresh pending").id;
+      expect(freshRequest.data?.status).toBe("pending");
+
+      const forbiddenApprove = await outsiderManager.client.rpc(
+        "decide_organization_membership",
+        { target_membership_id: pendingId, target_status: "approved" },
+      );
+      expect(forbiddenApprove.error).not.toBeNull();
+
+      const forbiddenReject = await outsiderManager.client.rpc(
+        "decide_organization_membership",
+        { target_membership_id: pendingId, target_status: "rejected" },
+      );
+      expect(forbiddenReject.error).not.toBeNull();
+
+      // Still pending — neither forbidden call actually changed it.
+      const stillPending = await manager2.client
+        .from("organization_memberships")
+        .select("status")
+        .eq("id", pendingId)
+        .single();
+      expect(stillPending.data?.status).toBe("pending");
+    });
+
     it("lets the organisation's manager revoke an approved membership, and allows re-request afterward", async () => {
       const manager2 = actor("manager2");
       const member1 = actor("member1");
@@ -580,6 +620,148 @@ localDescribe(
         .eq("organization_id", disposableId);
       expect(remainingManagerRow.error).toBeNull();
       expect(remainingManagerRow.data).toEqual([]);
+    });
+
+    it("Phase C2: lets a member leave their own approved membership, and blocks leaving another user's", async () => {
+      await createActor("member3", "Local Member Three");
+      const member3 = actor("member3");
+      const manager2 = actor("manager2");
+      const outsiderManager = actor("outsiderManager");
+
+      const request = await member3.client.rpc(
+        "request_organization_membership",
+        { target_organization_id: org2Id },
+      );
+      expect(request.error).toBeNull();
+      const member3MembershipId = requireData(
+        request.data,
+        "member3 request",
+      ).id;
+
+      const approve = await manager2.client.rpc(
+        "decide_organization_membership",
+        {
+          target_membership_id: member3MembershipId,
+          target_status: "approved",
+        },
+      );
+      expect(approve.error).toBeNull();
+
+      // Another user (not even a manager — just not the owner of this
+      // membership) cannot leave it on someone else's behalf.
+      const outsiderLeave = await outsiderManager.client.rpc(
+        "leave_organization_membership",
+        { target_membership_id: member3MembershipId },
+      );
+      expect(outsiderLeave.error).not.toBeNull();
+
+      // Nor can the organisation's own manager use "leave" as a backdoor
+      // revoke — the RPC only ever matches rows owned by the caller.
+      const managerLeaveAttempt = await manager2.client.rpc(
+        "leave_organization_membership",
+        { target_membership_id: member3MembershipId },
+      );
+      expect(managerLeaveAttempt.error).not.toBeNull();
+
+      const selfLeave = await member3.client.rpc(
+        "leave_organization_membership",
+        {
+          target_membership_id: member3MembershipId,
+          decision_note: "Moving on.",
+        },
+      );
+      expect(selfLeave.error).toBeNull();
+      expect(selfLeave.data).toMatchObject({ status: "revoked" });
+      expect(selfLeave.data?.decided_by).toBe(member3.user.id);
+
+      // Leaving again (already revoked) is rejected, not silently
+      // treated as a no-op success.
+      const secondLeave = await member3.client.rpc(
+        "leave_organization_membership",
+        { target_membership_id: member3MembershipId },
+      );
+      expect(secondLeave.error).not.toBeNull();
+
+      const history = await member3.client
+        .from("organization_membership_history")
+        .select("new_status, actor_user_id, note")
+        .eq("membership_id", member3MembershipId)
+        .order("created_at", { ascending: true });
+      expect(history.error).toBeNull();
+      expect(history.data?.at(-1)).toMatchObject({
+        new_status: "revoked",
+        actor_user_id: member3.user.id,
+        note: "Moving on.",
+      });
+    });
+
+    it("Phase C2: cannot leave a pending (not yet approved) membership", async () => {
+      const member2 = actor("member2");
+
+      const request = await member2.client.rpc(
+        "request_organization_membership",
+        { target_organization_id: org2Id },
+      );
+      expect(request.error).toBeNull();
+      const pendingId = requireData(request.data, "member2 pending request").id;
+      expect(request.data?.status).toBe("pending");
+
+      const leaveAttempt = await member2.client.rpc(
+        "leave_organization_membership",
+        { target_membership_id: pendingId },
+      );
+      expect(leaveAttempt.error).not.toBeNull();
+      expect(leaveAttempt.error?.message).toContain(
+        "Only an approved membership can be left",
+      );
+    });
+
+    it("Phase C2: exposes a Tamil Sangam's subtype in the eligible-organisation projection, without guessing from the name", async () => {
+      const sangamOrg = await admin
+        .from("organizations")
+        .insert({
+          name: "Riverside Cultural Association",
+          category: "tamil_community",
+        })
+        .select("id")
+        .single();
+      expect(sangamOrg.error).toBeNull();
+      const sangamId = requireData(sangamOrg.data, "sangam org").id;
+
+      const sangamApplication = await admin
+        .from("organization_applications")
+        .insert({
+          organization_id: sangamId,
+          submitted_by: actor("member1").user.id,
+          status: "verified",
+          representative_full_name: "Sangam Rep",
+          representative_email: "sangam-rep@tamil-ulagam.test",
+          representative_phone: "+1 416 555 0197",
+          authorization_declaration: true,
+          accuracy_declaration: true,
+          submitted_at: new Date().toISOString(),
+        });
+      expect(sangamApplication.error).toBeNull();
+
+      const sangamDetails = await admin
+        .from("organization_tamil_community_details")
+        .insert({ organization_id: sangamId, subtype: "Tamil Sangam" });
+      expect(sangamDetails.error).toBeNull();
+
+      const list = await actor("member1").client.rpc(
+        "list_membership_eligible_organizations",
+      );
+      expect(list.error).toBeNull();
+      const sangamRow = list.data?.find((row) => row.id === sangamId);
+      expect(sangamRow).toMatchObject({
+        category: "tamil_community",
+        subtype: "Tamil Sangam",
+      });
+
+      // org2 is also tamil_community, but has no recorded subtype — it
+      // must not be misidentified as a Sangam by name-guessing.
+      const org2Row = list.data?.find((row) => row.id === org2Id);
+      expect(org2Row?.subtype).toBeNull();
     });
 
     it("leaves the legacy organization_members table untouched by every new code path exercised above", async () => {

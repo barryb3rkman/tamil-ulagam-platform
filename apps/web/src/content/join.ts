@@ -54,7 +54,7 @@ export const joinJourneys: readonly JoinJourney[] = [
     title: "Join as a Member",
     description:
       "Become part of Tamil Ulagam through a registered organisation or Tamil Sangam.",
-    cta: "See how membership works",
+    cta: "Find your organisation",
     href: "/join/member",
   },
   {

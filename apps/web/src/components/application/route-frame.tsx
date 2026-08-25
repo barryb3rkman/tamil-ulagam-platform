@@ -15,6 +15,7 @@ const applicationRoots = [
   "/login",
   "/register",
   "/signup",
+  "/workspace",
 ] as const;
 
 function isApplicationPath(pathname: string): boolean {

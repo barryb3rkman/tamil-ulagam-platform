@@ -2,7 +2,7 @@
 
 import { Button } from "@tamil-ulagam/ui";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { type FormEvent, useState } from "react";
 
 import { usePlatform } from "@/features/enrollment/platform-provider";
@@ -14,6 +14,7 @@ import {
   validateSignup,
   type ValidationErrors,
 } from "@/features/enrollment/validation";
+import { getSafeReturnTarget, withReturnTarget } from "@/lib/return-target";
 
 import { FormError, TextField } from "./form-fields";
 import { CaptchaChallenge } from "./captcha-challenge";
@@ -22,6 +23,7 @@ type SubmissionState = "idle" | "loading" | "success" | "error";
 
 export function SignupForm() {
   const router = useRouter();
+  const returnTarget = getSafeReturnTarget(useSearchParams().get("next"));
   const { captcha, platformError, signup } = usePlatform();
   const [values, setValues] = useState({
     fullName: "",
@@ -93,13 +95,19 @@ export function SignupForm() {
         </div>
         <Button
           onClick={() =>
-            router.push(requiresEmailConfirmation ? "/login" : "/register")
+            router.push(
+              requiresEmailConfirmation
+                ? withReturnTarget("/login", returnTarget)
+                : (returnTarget ?? "/register"),
+            )
           }
           className="w-fit"
         >
           {requiresEmailConfirmation
             ? "Go to sign in"
-            : "Start organisation registration"}
+            : returnTarget
+              ? "Continue"
+              : "Start organisation registration"}
         </Button>
       </div>
     );
@@ -234,7 +242,7 @@ export function SignupForm() {
         Already have an account?{" "}
         <Link
           className="text-global-navy focus-visible:ring-focus font-semibold underline underline-offset-4"
-          href="/login"
+          href={withReturnTarget("/login", returnTarget)}
         >
           Sign in
         </Link>
@@ -245,6 +253,7 @@ export function SignupForm() {
 
 export function LoginForm() {
   const router = useRouter();
+  const returnTarget = getSafeReturnTarget(useSearchParams().get("next"));
   const { captcha, login, platformError } = usePlatform();
   const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<ValidationErrors>({});
@@ -276,11 +285,12 @@ export function LoginForm() {
       }
       setState("success");
       router.push(
-        result.hasApplication
-          ? "/dashboard"
-          : result.canReview
-            ? "/admin"
-            : "/register",
+        returnTarget ??
+          (result.hasApplication
+            ? "/dashboard"
+            : result.canReview
+              ? "/admin"
+              : "/register"),
       );
     } catch (error: unknown) {
       setState("error");
@@ -357,7 +367,7 @@ export function LoginForm() {
         New to Tamil Ulagam?{" "}
         <Link
           className="text-global-navy focus-visible:ring-focus font-semibold underline underline-offset-4"
-          href="/signup"
+          href={withReturnTarget("/signup", returnTarget)}
         >
           Create an account
         </Link>

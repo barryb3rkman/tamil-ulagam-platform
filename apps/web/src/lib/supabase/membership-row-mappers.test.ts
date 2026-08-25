@@ -5,6 +5,7 @@ import {
   mapManagementGrantRow,
   mapMembershipHistoryRow,
   mapMembershipRow,
+  type EligibleOrganisationRow,
   type OrganizationManagerRow,
   type OrganizationMembershipHistoryRow,
   type OrganizationMembershipRow,
@@ -112,12 +113,13 @@ describe("Supabase membership/management row mappers", () => {
     });
   });
 
-  it("maps the eligible-organisation safe projection", () => {
+  it("maps the eligible-organisation safe projection, including subtype", () => {
     expect(
       mapEligibleOrganisationRow({
         id: "organization-1",
         name: "Toronto Tamil Sangam",
         category: "tamil_community",
+        subtype: "Tamil Sangam",
         city: "Toronto",
         region: "Ontario",
         country: "Canada",
@@ -126,9 +128,30 @@ describe("Supabase membership/management row mappers", () => {
       id: "organization-1",
       name: "Toronto Tamil Sangam",
       category: "tamil_community",
+      subtype: "Tamil Sangam",
       city: "Toronto",
       region: "Ontario",
       country: "Canada",
     });
+  });
+
+  it("treats a null subtype (a non-tamil_community organisation) as an empty string", () => {
+    // The generated Supabase type optimistically declares `subtype` as a
+    // non-nullable string, but a LEFT JOIN against
+    // organization_tamil_community_details genuinely returns SQL NULL
+    // for any non-tamil_community organisation — the cast below reflects
+    // that real runtime shape, which is exactly what the mapper's `?? ""`
+    // is defending against.
+    const row = {
+      id: "organization-2",
+      name: "Example Business",
+      category: "business",
+      subtype: null,
+      city: "Chennai",
+      region: "Tamil Nadu",
+      country: "India",
+    } as unknown as EligibleOrganisationRow;
+
+    expect(mapEligibleOrganisationRow(row)).toMatchObject({ subtype: "" });
   });
 });

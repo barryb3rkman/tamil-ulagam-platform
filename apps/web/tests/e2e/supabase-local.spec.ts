@@ -140,7 +140,15 @@ test.describe("local Supabase browser enrollment", () => {
     await signIn(page, reviewer.email, reviewer.password, /\/admin\/?$/);
     await page.goto("/admin/registrations");
     await expect(page.getByText("Nila Global Services")).toBeVisible();
-    await page.getByRole("link", { name: "Review" }).click();
+    // Scoped to this application's own row: the shared local Supabase
+    // instance may carry other applications/organisations seeded by
+    // other e2e specs (e.g. member-affiliation-lifecycle.spec.ts), so a
+    // page-wide "Review" link locator is no longer reliably singular.
+    await page
+      .getByRole("listitem")
+      .filter({ hasText: "Nila Global Services" })
+      .getByRole("link", { name: "Review" })
+      .click();
     await expect(page).toHaveURL(
       /\/admin\/registrations\/review\/?\?application=/,
     );
@@ -171,7 +179,11 @@ test.describe("local Supabase browser enrollment", () => {
     await signOut(page);
     await signIn(page, reviewer.email, reviewer.password, /\/admin\/?$/);
     await page.goto("/admin/registrations");
-    await page.getByRole("link", { name: "Review" }).click();
+    await page
+      .getByRole("listitem")
+      .filter({ hasText: "Nila Global Services" })
+      .getByRole("link", { name: "Review" })
+      .click();
     await page.getByRole("button", { name: "Mark Under Review" }).click();
     await expect(
       page.getByText("Under Review", { exact: true }).first(),

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 import { LoginForm } from "@/components/application/auth-forms";
 import { AuthShell } from "@/components/application/auth-shell";
@@ -17,7 +18,9 @@ export default function LoginPage() {
       title="Welcome back"
       description="Sign in to your Tamil Ulagam account to continue your organisation enrollment."
     >
-      <LoginForm />
+      <Suspense fallback={<p role="status">Loading…</p>}>
+        <LoginForm />
+      </Suspense>
     </AuthShell>
   );
 }

@@ -849,6 +849,31 @@ export type Database = {
         Args: { target_organization_id: string };
         Returns: string;
       };
+      leave_organization_membership: {
+        Args: { decision_note?: string; target_membership_id: string };
+        Returns: {
+          created_at: string;
+          decided_at: string | null;
+          decided_by: string | null;
+          expires_at: string | null;
+          id: string;
+          invited_at: string | null;
+          invited_by: string | null;
+          membership_type:
+            Database["public"]["Enums"]["organization_membership_type"] | null;
+          organization_id: string;
+          requested_at: string | null;
+          status: Database["public"]["Enums"]["organization_membership_status"];
+          updated_at: string;
+          user_id: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "organization_memberships";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       list_membership_eligible_organizations: {
         Args: never;
         Returns: {
@@ -858,6 +883,19 @@ export type Database = {
           id: string;
           name: string;
           region: string;
+          subtype: string;
+        }[];
+      };
+      list_my_affiliated_organizations: {
+        Args: never;
+        Returns: {
+          category: Database["public"]["Enums"]["organization_category"];
+          city: string;
+          country: string;
+          id: string;
+          name: string;
+          region: string;
+          subtype: string;
         }[];
       };
       organization_application_is_editable: {

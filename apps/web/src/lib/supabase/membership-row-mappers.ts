@@ -73,6 +73,7 @@ export function mapEligibleOrganisationRow(
     id: row.id,
     name: row.name,
     category: row.category ?? "",
+    subtype: row.subtype ?? "",
     city: row.city,
     region: row.region,
     country: row.country,

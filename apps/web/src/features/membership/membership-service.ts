@@ -3,6 +3,7 @@ import type {
   ManagementGrant,
   Membership,
   MembershipHistoryEvent,
+  MembershipRequestSummary,
   MembershipType,
 } from "@tamil-ulagam/shared";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -48,11 +49,27 @@ export interface MembershipService {
   ): Promise<Membership>;
   /** The caller's own membership rows, across every organisation. */
   listMyMemberships(): Promise<Membership[]>;
-  /** Every membership row for one organisation — RLS restricts this to
-   * that organisation's own managers (or a reviewer). */
+  /** Organisation identity (the same safe EligibleOrganisation shape)
+   * for every organisation the caller has ANY membership relationship
+   * with — unlike listEligibleOrganisations, not limited to verified
+   * organisations, so a Member Workspace can still show identity for a
+   * rejected/revoked historical row. Self-scoped server-side; there is
+   * no parameter through which another user's affiliated organisations
+   * could be read. */
+  listMyAffiliatedOrganisations(): Promise<EligibleOrganisation[]>;
+  /** Organisations the given user manages (own use only in practice —
+   * the underlying table's RLS only ever returns the caller's own
+   * management grants for an id-filtered query like this one). Used to
+   * build the manager's own organisation picker. */
+  listMyManagedOrganisations(userId: string): Promise<EligibleOrganisation[]>;
+  /** Every membership row for one organisation, enriched with the
+   * requester's permitted display name — RLS restricts both the
+   * membership rows and the profile lookups to that organisation's own
+   * managers (or a reviewer); a manager of a different organisation
+   * gets an empty result, not an error. */
   listOrganisationMembershipRequests(
     organisationId: string,
-  ): Promise<Membership[]>;
+  ): Promise<MembershipRequestSummary[]>;
   /** An organisation manager invites a specific existing user. */
   inviteMember(
     organisationId: string,
@@ -62,6 +79,10 @@ export interface MembershipService {
   approveMembership(membershipId: string, note?: string): Promise<Membership>;
   rejectMembership(membershipId: string, note?: string): Promise<Membership>;
   revokeMembership(membershipId: string, note?: string): Promise<Membership>;
+  /** The caller ends their OWN approved affiliation. There is no way to
+   * target another user's membership — the RPC verifies ownership
+   * itself, independent of anything this function passes. */
+  leaveMembership(membershipId: string, note?: string): Promise<Membership>;
   /** Audit history for one membership row (own row, or the owning
    * organisation's managers/reviewers). */
   listMembershipHistory(
@@ -117,6 +138,62 @@ export function createMembershipService(
       return (data ?? []).map(mapMembershipRow);
     },
 
+    async listMyAffiliatedOrganisations() {
+      const { data, error } = await client.rpc(
+        "list_my_affiliated_organizations",
+      );
+      if (error) {
+        throw mapSupabaseError(
+          error,
+          "Your affiliated organisations could not be loaded.",
+        );
+      }
+      return (data ?? []).map(mapEligibleOrganisationRow);
+    },
+
+    async listMyManagedOrganisations(userId) {
+      const grants = await client
+        .from("organization_managers")
+        .select("organization_id")
+        .eq("user_id", userId);
+      if (grants.error) {
+        throw mapSupabaseError(
+          grants.error,
+          "Your managed organisations could not be loaded.",
+        );
+      }
+      const organisationIds = [
+        ...new Set((grants.data ?? []).map((row) => row.organization_id)),
+      ];
+      if (organisationIds.length === 0) return [];
+
+      const organisations = await client
+        .from("organizations")
+        .select("id, name, category, city, region, country")
+        .in("id", organisationIds);
+      if (organisations.error) {
+        throw mapSupabaseError(
+          organisations.error,
+          "Your managed organisations could not be loaded.",
+        );
+      }
+      return (organisations.data ?? []).map((row) => ({
+        id: row.id,
+        name: row.name,
+        category: row.category ?? "",
+        // organizations' own row doesn't carry tamil_community_details'
+        // subtype; this picker only needs to distinguish organisations
+        // by name for the manager themselves, who already knows which
+        // one is their Sangam, so the Sangam-specific label is skipped
+        // here rather than adding another join for a picker only the
+        // organisation's own manager ever sees.
+        subtype: "",
+        city: row.city,
+        region: row.region,
+        country: row.country,
+      }));
+    },
+
     async listOrganisationMembershipRequests(organisationId) {
       const { data, error } = await client
         .from("organization_memberships")
@@ -129,7 +206,34 @@ export function createMembershipService(
           "This organisation's membership requests could not be loaded.",
         );
       }
-      return (data ?? []).map(mapMembershipRow);
+      const memberships = (data ?? []).map(mapMembershipRow);
+      if (memberships.length === 0) return [];
+
+      // Enriched here, in the service boundary, rather than leaving each
+      // React component to query profiles independently — one extra
+      // RLS-protected read, reusing the Phase A1
+      // profiles_select_organization_manager_for_member policy (a
+      // manager only ever receives names for members of their own
+      // organisation; RLS silently omits anything else rather than
+      // erroring).
+      const userIds = [...new Set(memberships.map((m) => m.userId))];
+      const profiles = await client
+        .from("profiles")
+        .select("id, full_name")
+        .in("id", userIds);
+      if (profiles.error) {
+        throw mapSupabaseError(
+          profiles.error,
+          "Requester details could not be loaded.",
+        );
+      }
+      const nameById = new Map(
+        (profiles.data ?? []).map((row) => [row.id, row.full_name]),
+      );
+      return memberships.map((membership) => ({
+        ...membership,
+        memberFullName: nameById.get(membership.userId) ?? "",
+      }));
     },
 
     async inviteMember(organisationId, userId, membershipType) {
@@ -199,6 +303,22 @@ export function createMembershipService(
       if (!data) {
         throw new PlatformServiceError(
           "The revocation did not return a result.",
+          "unknown",
+        );
+      }
+      return mapMembershipRow(data);
+    },
+
+    async leaveMembership(membershipId, note) {
+      const { data, error } = await client.rpc(
+        "leave_organization_membership",
+        { target_membership_id: membershipId, decision_note: note },
+      );
+      if (error)
+        throw mapSupabaseError(error, "The membership could not be left.");
+      if (!data) {
+        throw new PlatformServiceError(
+          "Leaving the membership did not return a result.",
           "unknown",
         );
       }

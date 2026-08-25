@@ -22,4 +22,9 @@ export NEXT_PUBLIC_ENROLLMENT_BACKEND
 export SUPABASE_LOCAL_SERVICE_ROLE_KEY
 export RUN_SUPABASE_E2E
 
-exec pnpm --filter @tamil-ulagam/web exec playwright test tests/e2e/supabase-local.spec.ts
+
+# --workers=1: both spec files exercise real, shared local Supabase state
+# (not isolated per test/worker) — running them concurrently risks the
+# exact kind of cross-test interference stateful browser e2e specs are
+# prone to, so this run is deliberately serial.
+exec pnpm --filter @tamil-ulagam/web exec playwright test --workers=1 tests/e2e/supabase-local.spec.ts tests/e2e/member-affiliation-lifecycle.spec.ts

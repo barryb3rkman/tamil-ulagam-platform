@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 
+import { MemberRegistration } from "@/components/member/member-registration";
 import { createPageMetadata } from "@/config/metadata";
-import { MemberJourneyPage } from "@/components/join/member-journey-page";
 
 export const metadata: Metadata = createPageMetadata(
   "Join as a Member",
-  "Member registration is in development. See how you'll join Tamil Ulagam through a registered organisation or Tamil Sangam.",
+  "Search verified Organisations and Tamil Sangams and request to join. Membership becomes active once the organisation approves your request.",
   "/join/member",
 );
 
 export default function JoinMemberPage() {
-  return <MemberJourneyPage />;
+  return <MemberRegistration />;
 }

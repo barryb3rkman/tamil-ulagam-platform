@@ -38,7 +38,9 @@ export type {
   ManagementGrant,
   Membership,
   MembershipHistoryEvent,
+  MembershipRequestSummary,
   MembershipStatus,
   MembershipType,
   OrganizationManagerRole,
 } from "./membership";
+export { isTamilSangam } from "./membership";

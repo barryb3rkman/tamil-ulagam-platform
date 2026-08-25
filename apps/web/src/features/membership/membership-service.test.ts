@@ -22,9 +22,12 @@ const membershipRow = {
   updated_at: "2026-08-25T00:00:00.000Z",
 };
 
+const profileRow = { id: "user-1", full_name: "Nila Raj" };
+
 function makeClient(options: {
   readonly rpcResult?: { data?: unknown; error?: unknown };
   readonly fromResult?: { data?: unknown; error?: unknown };
+  readonly profilesResult?: { data?: unknown; error?: unknown };
 }) {
   const rpc = vi
     .fn()
@@ -39,17 +42,29 @@ function makeClient(options: {
   };
   queryBuilder.select.mockReturnValue(queryBuilder);
   queryBuilder.eq.mockReturnValue(queryBuilder);
-  // .order() is the terminal call in every list method below, so it
-  // resolves the promise (a real supabase-js query builder is thenable
-  // at any point; mocking only the terminal await keeps this simple).
+  // .order() is the terminal call in every organization_memberships list
+  // method below, so it resolves the promise (a real supabase-js query
+  // builder is thenable at any point; mocking only the terminal await
+  // keeps this simple).
   queryBuilder.order.mockResolvedValue(
     options.fromResult ?? { data: [membershipRow], error: null },
   );
 
-  const from = vi.fn().mockReturnValue(queryBuilder);
+  const profilesBuilder = {
+    select: vi.fn(),
+    in: vi.fn(),
+  };
+  profilesBuilder.select.mockReturnValue(profilesBuilder);
+  profilesBuilder.in.mockResolvedValue(
+    options.profilesResult ?? { data: [profileRow], error: null },
+  );
+
+  const from = vi.fn((table: string) =>
+    table === "profiles" ? profilesBuilder : queryBuilder,
+  );
 
   const client = { rpc, from } as unknown as SupabaseClient<Database>;
-  return { client, rpc, from, queryBuilder };
+  return { client, rpc, from, queryBuilder, profilesBuilder };
 }
 
 describe("createMembershipService", () => {
@@ -136,16 +151,49 @@ describe("createMembershipService", () => {
     expect(result[0]).toMatchObject({ id: "membership-1" });
   });
 
-  it("listOrganisationMembershipRequests filters by organisation id", async () => {
-    const { client, queryBuilder } = makeClient({});
+  it("listOrganisationMembershipRequests filters by organisation id and enriches with the requester's name", async () => {
+    const { client, queryBuilder, profilesBuilder } = makeClient({});
     const service = createMembershipService(client);
 
-    await service.listOrganisationMembershipRequests("organization-1");
+    const result =
+      await service.listOrganisationMembershipRequests("organization-1");
 
     expect(queryBuilder.eq).toHaveBeenCalledWith(
       "organization_id",
       "organization-1",
     );
+    expect(profilesBuilder.in).toHaveBeenCalledWith("id", ["user-1"]);
+    expect(result).toEqual([
+      expect.objectContaining({
+        id: "membership-1",
+        memberFullName: "Nila Raj",
+      }),
+    ]);
+  });
+
+  it("listOrganisationMembershipRequests skips the profile lookup entirely when there are no requests", async () => {
+    const { client, from } = makeClient({
+      fromResult: { data: [], error: null },
+    });
+    const service = createMembershipService(client);
+
+    const result =
+      await service.listOrganisationMembershipRequests("organization-1");
+
+    expect(result).toEqual([]);
+    expect(from).not.toHaveBeenCalledWith("profiles");
+  });
+
+  it("leaveMembership calls the dedicated leave RPC", async () => {
+    const { client, rpc } = makeClient({});
+    const service = createMembershipService(client);
+
+    await service.leaveMembership("membership-1", "moving on");
+
+    expect(rpc).toHaveBeenCalledWith("leave_organization_membership", {
+      target_membership_id: "membership-1",
+      decision_note: "moving on",
+    });
   });
 
   it("wraps an RPC error into a PlatformServiceError rather than throwing the raw Postgrest error", async () => {

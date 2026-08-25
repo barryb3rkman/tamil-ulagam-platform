@@ -70,13 +70,42 @@ export interface ManagementGrant {
  * The narrow, safe-projection shape returned by a membership-eligibility
  * search — deliberately not the full Organisation type: no contact
  * details, registration internals, or manager identities. See
- * `list_membership_eligible_organizations` in the Phase A1 migration.
+ * `list_membership_eligible_organizations` in the Phase A1/C2
+ * migrations. `subtype` (Phase C2) is the same free-text classification
+ * field the registration flow already records for tamil_community
+ * organisations (e.g. "Tamil Sangam") — added here, additively, so a
+ * Member Registration directory can tell a Tamil Sangam apart from other
+ * tamil_community organisations without guessing from the name.
  */
 export interface EligibleOrganisation {
   readonly id: string;
   readonly name: string;
   readonly category: OrganisationCategory | "";
+  readonly subtype: string;
   readonly city: string;
   readonly region: string;
   readonly country: string;
+}
+
+/**
+ * True only for a tamil_community organisation whose recorded subtype is
+ * exactly (case/whitespace-insensitively) "Tamil Sangam" — the same
+ * convention value the registration flow already uses. Never derived
+ * from the organisation's name.
+ */
+export function isTamilSangam(organisation: EligibleOrganisation): boolean {
+  return (
+    organisation.category === "tamil_community" &&
+    organisation.subtype.trim().toLowerCase() === "tamil sangam"
+  );
+}
+
+/**
+ * A pending/decided membership row enriched with the minimal requester
+ * identity a manager is permitted to see (per the profiles RLS policy
+ * added in Phase A1) — assembled by the service layer from two
+ * RLS-protected reads, never queried ad hoc by a UI component.
+ */
+export interface MembershipRequestSummary extends Membership {
+  readonly memberFullName: string;
 }

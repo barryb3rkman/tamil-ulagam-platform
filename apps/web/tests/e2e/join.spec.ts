@@ -139,18 +139,32 @@ test.describe("public /join entry hub", () => {
     ).toHaveAttribute("href", getCanonicalRouteHref("/contact"));
   });
 
-  test("Member journey shows the future membership model, not a fake form", async ({
+  test("Member journey shows the real logged-out journey explanation, with safe return-target auth links", async ({
     page,
   }) => {
     await page.goto("/join/member", { waitUntil: "domcontentloaded" });
     await expect(
       page.getByRole("heading", { level: 1, name: "Join as a Member" }),
     ).toBeVisible();
-    await expect(page.getByText("In development")).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "How membership will work" }),
+      page.getByText("Find a registered Organisation or Tamil Sangam"),
     ).toBeVisible();
-    await expect(page.getByText("Organisation approves")).toBeVisible();
+    await expect(
+      page.getByText("The Organisation confirms affiliation"),
+    ).toBeVisible();
+
+    const createAccount = page.getByRole("link", { name: "Create account" });
+    await expect(createAccount).toHaveAttribute(
+      "href",
+      "/signup/?next=%2Fjoin%2Fmember",
+    );
+    const signIn = page.getByRole("link", { name: "Sign in" });
+    await expect(signIn).toHaveAttribute(
+      "href",
+      "/login/?next=%2Fjoin%2Fmember",
+    );
+
+    // No fake submission form on the logged-out journey.
     expect(await page.locator("input, textarea, select").count()).toBe(0);
   });
 
