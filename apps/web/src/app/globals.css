@@ -15,6 +15,20 @@
   --tu-color-warning: #b87416;
   --tu-color-error: #b9363e;
 
+  /*
+   * V3 supporting palette (Phase B1). These four tokens exist to mix
+   * gradients (§ named gradients below) and to tint a small number of
+   * "Deep"-surface accents — they are not meant to become standalone UI
+   * colors in their own right (a button, a link, or a status should
+   * still reach for the foundation palette above first). Keeping them
+   * named and centralized here is what stops each new screen from
+   * inventing its own one-off gradient stop.
+   */
+  --tu-color-indigo-depth: #2c2a5c;
+  --tu-color-crimson-ember: #a8324a;
+  --tu-color-champagne: #efe0bd;
+  --tu-color-teal-depth: #0d3b3f;
+
   --tu-font-english:
     var(--font-inter), Inter, ui-sans-serif, system-ui, -apple-system,
     BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -37,6 +51,24 @@
 
   --tu-shadow-card: 0 1rem 2.5rem rgba(6, 29, 50, 0.08);
   --tu-shadow-navigation: 0 1.25rem 3rem rgba(6, 29, 50, 0.13);
+  /* Surface system (§ Surfaces below): Elevated is one deliberate step
+     up from Card — a stronger shadow plus a hairline gold-tinted
+     border — reserved for the one primary action area a screen has
+     (a decision rail, a completion card), never the default card
+     treatment. */
+  --tu-shadow-elevated: 0 1.5rem 3.5rem rgba(6, 29, 50, 0.16);
+
+  /*
+   * Density (§ Spacing/Density below): "comfortable" is the existing,
+   * unchanged rhythm every current screen already uses — nothing here
+   * changes today's spacing. "compact" exists only for future
+   * data/list-dense surfaces (an admin queue, a membership list) and is
+   * opt-in via the Surface/density utility, never applied globally.
+   */
+  --tu-space-density-comfortable-gap: 1.25rem;
+  --tu-space-density-comfortable-padding: 1.75rem;
+  --tu-space-density-compact-gap: 0.75rem;
+  --tu-space-density-compact-padding: 1rem;
 
   --tu-motion-instant: 100ms;
   --tu-motion-fast: 180ms;
@@ -69,6 +101,10 @@
   --color-success: var(--tu-color-success);
   --color-warning: var(--tu-color-warning);
   --color-error: var(--tu-color-error);
+  --color-indigo-depth: var(--tu-color-indigo-depth);
+  --color-crimson-ember: var(--tu-color-crimson-ember);
+  --color-champagne: var(--tu-color-champagne);
+  --color-teal-depth: var(--tu-color-teal-depth);
 
   --font-english: var(--tu-font-english);
   --font-tamil: var(--tu-font-tamil);
@@ -78,6 +114,12 @@
   --spacing-section: var(--tu-space-section);
   --spacing-section-generous: var(--tu-space-section-generous);
   --spacing-navigation: var(--tu-navigation-height);
+  --spacing-density-comfortable-gap: var(--tu-space-density-comfortable-gap);
+  --spacing-density-comfortable-padding: var(
+    --tu-space-density-comfortable-padding
+  );
+  --spacing-density-compact-gap: var(--tu-space-density-compact-gap);
+  --spacing-density-compact-padding: var(--tu-space-density-compact-padding);
 
   --radius-sm: var(--tu-radius-small);
   --radius-button: var(--tu-radius-button);
@@ -90,6 +132,7 @@
 
   --shadow-card: var(--tu-shadow-card);
   --shadow-navigation: var(--tu-shadow-navigation);
+  --shadow-elevated: var(--tu-shadow-elevated);
 
   --duration-fast: var(--tu-transition-fast);
   --duration-standard: var(--tu-transition-standard);
@@ -101,6 +144,208 @@
     0 0 0 var(--tu-focus-ring-offset) var(--tu-color-white),
     0 0 0 calc(var(--tu-focus-ring-offset) + var(--tu-focus-ring-width))
       var(--tu-color-interactive-blue);
+}
+
+/* ---------------------------------------------------------------------
+ * Named gradients (Phase B1 design system).
+ *
+ * Exactly four, each with one documented job. A screen reaches for one
+ * of these by name — it never blends its own stops. Every gradient is
+ * a 3-stop-or-fewer, ≤90°-hue-span mix restrained to this palette; none
+ * are meant to sit behind body text directly (place a Card/Elevated
+ * surface on top for content, per the Surfaces section below).
+ * --------------------------------------------------------------------- */
+
+/* Federation Night — deep-navy → indigo-depth → a restrained maroon
+   glow. Use for: the platform's most identity-defining "Deep" hero
+   moments (a future /join hub hero, admin operations header) — the
+   default Deep-surface background when a screen wants one. */
+@utility gradient-federation-night {
+  background-image: linear-gradient(
+    135deg,
+    var(--tu-color-deep-navy) 0%,
+    var(--tu-color-indigo-depth) 55%,
+    color-mix(
+        in srgb,
+        var(--tu-color-heritage-maroon) 70%,
+        var(--tu-color-indigo-depth) 30%
+      )
+      100%
+  );
+}
+
+/* Warm Welcome — warm-ivory → champagne. Very low contrast, almost
+   textural. Use for: onboarding stage backgrounds and completion
+   screens — a calm backdrop, never a focal element. */
+@utility gradient-warm-welcome {
+  background-image: linear-gradient(
+    160deg,
+    var(--tu-color-warm-ivory) 0%,
+    var(--tu-color-champagne) 100%
+  );
+}
+
+/* Sangam Dusk — teal-depth → global-navy → a restrained gold glow.
+   Use for: Tamil Sangam-specific hero/banner moments only — this is
+   what gives that journey its own identity without a different brand
+   system. Do not use outside Sangam-specific surfaces. */
+@utility gradient-sangam-dusk {
+  background-image: linear-gradient(
+    135deg,
+    var(--tu-color-teal-depth) 0%,
+    var(--tu-color-global-navy) 65%,
+    color-mix(
+        in srgb,
+        var(--tu-color-heritage-gold) 35%,
+        var(--tu-color-global-navy) 65%
+      )
+      100%
+  );
+}
+
+/* Trust Signal — global-navy → a violet-blue depth → a restrained
+   crimson-ember. Use for: verification/trust-related surfaces (a
+   "verified" state background, a duplicate-signal banner) — ties trust
+   visually to the brand family instead of borrowing a generic
+   green/red. Mostly navy; the crimson-ember appears only as a glow. */
+@utility gradient-trust-signal {
+  background-image: linear-gradient(
+    135deg,
+    var(--tu-color-global-navy) 0%,
+    color-mix(
+        in srgb,
+        var(--tu-color-interactive-blue) 40%,
+        var(--tu-color-indigo-depth) 60%
+      )
+      60%,
+    color-mix(
+        in srgb,
+        var(--tu-color-crimson-ember) 30%,
+        var(--tu-color-indigo-depth) 70%
+      )
+      100%
+  );
+}
+
+/* ---------------------------------------------------------------------
+ * Surface system — exactly four, used everywhere. A component reaches
+ * for one of these by name rather than hand-rolling a shadow/border
+ * combination. Canvas and Card are the existing, unchanged treatments
+ * every current screen already uses; Elevated and Deep are additive.
+ * --------------------------------------------------------------------- */
+
+/* Canvas — the page background. Existing `bg-warm-ivory` usage is this
+   surface; the utility exists so new code can name it explicitly. */
+@utility surface-canvas {
+  background-color: var(--tu-color-warm-ivory);
+  color: var(--tu-color-charcoal);
+}
+
+/* Card — the workhorse surface for most content. Matches the existing
+   `rounded-card` + `shadow-card` + hairline-border pattern already used
+   throughout the app (e.g. application-details.tsx's DetailGroup). */
+@utility surface-card {
+  background-color: var(--tu-color-white);
+  border-radius: var(--tu-radius-card);
+  box-shadow: var(--tu-shadow-card);
+  border: 1px solid
+    color-mix(in srgb, var(--tu-color-global-navy) 12%, transparent);
+  color: var(--tu-color-charcoal);
+}
+
+/* Elevated — one deliberate step up from Card: a stronger shadow and a
+   hairline gold-tinted border. Reserved for the one primary action area
+   a screen has (a decision rail, a completion card) — using it more
+   than once per screen defeats its purpose. */
+@utility surface-elevated {
+  background-color: var(--tu-color-white);
+  border-radius: var(--tu-radius-card);
+  box-shadow: var(--tu-shadow-elevated);
+  border: 1px solid
+    color-mix(in srgb, var(--tu-color-heritage-gold) 30%, transparent);
+  color: var(--tu-color-charcoal);
+}
+
+/* Deep — the existing navy portal-header surface, formalized for reuse
+   in hero/banner moments. White text by default; never used for body
+   content, only identity/hero moments, so it stays special rather than
+   becoming wallpaper. */
+@utility surface-deep {
+  background-color: var(--tu-color-deep-navy);
+  color: var(--tu-color-white);
+  border-radius: var(--tu-radius-large);
+}
+
+/* Glass — a constrained variant that exists ONLY layered over a Deep or
+   gradient surface (never over plain Canvas, where it would just read
+   as low contrast). Use sparingly — a frosted stat chip over a hero,
+   not a general-purpose card style. */
+@utility surface-glass {
+  background-color: color-mix(in srgb, var(--tu-color-white) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tu-color-white) 22%, transparent);
+  backdrop-filter: blur(16px);
+  color: var(--tu-color-white);
+  border-radius: var(--tu-radius-card);
+}
+
+/* ---------------------------------------------------------------------
+ * Typography system additions. Page title, section heading, and body
+ * scales already exist correctly (SectionHeading, existing h1 patterns)
+ * and are unchanged. These three are the genuinely missing scales.
+ * --------------------------------------------------------------------- */
+
+/* Display — reserved for rare, high-impact moments (a journey hub, a
+   completion screen). Deliberately not used for routine page titles;
+   scarcity is what keeps it feeling premium. */
+@utility text-display {
+  font-family: var(--tu-font-english);
+  font-weight: 600;
+  font-size: clamp(2.75rem, 5vw + 1rem, 5rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+/* Label — form labels, nav items, small headers. Slightly more
+   deliberate than the ad hoc `text-sm font-semibold` used inline today. */
+@utility text-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+
+/* Metadata — timestamps, reference IDs, secondary detail. Smaller and
+   more muted than body text so primary/secondary information is
+   visually distinct at a glance (the gap the Stripe-style detail-page
+   pattern depends on). */
+@utility text-metadata {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--tu-color-slate);
+}
+
+/* Numeric — tabular figures for counts/metrics, so digits don't jitter
+   in width as they change. */
+@utility text-numeric {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ---------------------------------------------------------------------
+ * Density (§ Spacing/Density). "Comfortable" matches the padding/gap
+ * every existing card-shaped surface already uses (unchanged); "compact"
+ * is a smaller, opt-in rhythm for future data/list-dense surfaces (an
+ * admin queue, a membership list) — never applied globally.
+ * --------------------------------------------------------------------- */
+
+@utility density-comfortable {
+  padding: var(--tu-space-density-comfortable-padding);
+  gap: var(--tu-space-density-comfortable-gap);
+}
+
+@utility density-compact {
+  padding: var(--tu-space-density-compact-padding);
+  gap: var(--tu-space-density-compact-gap);
 }
 
 * {
@@ -314,6 +559,51 @@ body {
   transition-delay: 0s;
 }
 
+/* Drawer/Sheet foundation — an edge-anchored slide, generalizing the
+   mobile-panel pattern above onto the native <dialog> element.
+   `data-side="bottom"` (default, mobile bottom-sheet) or
+   `data-side="right"` (desktop side drawer). Uses `@starting-style` +
+   `transition-behavior: allow-discrete` to animate the dialog's
+   display/overlay transition — this is the one pattern in the motion
+   system that depends on a comparatively recent CSS feature; browsers
+   without support simply show/hide the sheet instantly (motion is an
+   enhancement here, never required to understand state, matching the
+   accessibility requirement). */
+.motion-sheet {
+  transition:
+    opacity var(--tu-motion-medium) var(--tu-ease-premium),
+    transform var(--tu-motion-medium) var(--tu-ease-premium),
+    overlay var(--tu-motion-medium) var(--tu-ease-premium) allow-discrete,
+    display var(--tu-motion-medium) allow-discrete;
+}
+
+.motion-sheet[data-side="bottom"] {
+  transform: translate3d(0, 100%, 0);
+}
+
+.motion-sheet[data-side="right"] {
+  transform: translate3d(100%, 0, 0);
+}
+
+.motion-sheet[open] {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+}
+
+@starting-style {
+  .motion-sheet[open] {
+    opacity: 0;
+  }
+
+  .motion-sheet[data-side="bottom"][open] {
+    transform: translate3d(0, 100%, 0);
+  }
+
+  .motion-sheet[data-side="right"][open] {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
 .motion-menu-line {
   transform-origin: center;
   transition:
@@ -331,6 +621,124 @@ button[data-state="open"] .motion-menu-line:nth-child(2) {
 
 button[data-state="open"] .motion-menu-line:last-child {
   transform: translate3d(0, -8px, 0) rotate(-45deg);
+}
+
+/* ---------------------------------------------------------------------
+ * V3 motion vocabulary (Phase B1). Extends the existing token/runtime
+ * system above — no new library, no new runtime. Every pattern here
+ * animates only transform/opacity/clip-path (compositor-friendly) and
+ * is reduced to its resolved end-state by the blanket
+ * `prefers-reduced-motion` rule below (the existing global 0.01ms
+ * override already catches all of these); the ambient-drift pattern
+ * additionally gets an explicit `animation: none` since a looping
+ * animation should stop outright, not just play imperceptibly fast.
+ * --------------------------------------------------------------------- */
+
+@keyframes tu-mask-reveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Masked hero reveal — a clip-path wipe rather than an opacity fade,
+   reserved for hero imagery (one signature moment per screen, not every
+   card). Pair with `data-motion-reveal` timing via the runtime, or use
+   standalone via `[data-motion-mask]` on IntersectionObserver-driven
+   elements. */
+[data-motion-mask] {
+  animation: tu-mask-reveal var(--tu-motion-medium) var(--tu-ease-premium) both;
+}
+
+@keyframes tu-progress-fill {
+  from {
+    transform: scaleX(var(--tu-progress-from, 0));
+  }
+  to {
+    transform: scaleX(var(--tu-progress-to, 1));
+  }
+}
+
+/* Progress fill — the active segment of a stepper/progress bar animates
+   its fill rather than snapping. Set `--tu-progress-from`/
+   `--tu-progress-to` (0–1) inline per use. transform-origin must be set
+   to `left` by the consuming component. */
+[data-motion-progress-fill] {
+  animation: tu-progress-fill var(--tu-motion-base) var(--tu-ease-standard) both;
+}
+
+@keyframes tu-gradient-drift {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 100% 50%;
+  }
+}
+
+/* Ambient Deep-gradient drift — an extremely slow, barely-perceptible
+   background-position cycle. Reserved for full-bleed Deep/gradient hero
+   surfaces only (never content surfaces); disabled below the `lg`
+   breakpoint per the mobile motion guardrail (battery/perf, and mobile
+   rarely lingers on a hero long enough to notice it). */
+[data-motion-ambient] {
+  background-size: 160% 160%;
+  animation: tu-gradient-drift 24s ease-in-out infinite alternate;
+}
+
+@media (max-width: 1023.98px) {
+  [data-motion-ambient] {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
+@keyframes tu-skeleton-shimmer {
+  from {
+    background-position: -120% 0;
+  }
+  to {
+    background-position: 120% 0;
+  }
+}
+
+/* Skeleton → content: the shimmer plays while a Skeleton is mounted;
+   the swap to real content is a plain opacity crossfade handled by the
+   consuming component (mount/unmount), not by this keyframe. */
+[data-motion-skeleton] {
+  background-image: linear-gradient(
+    100deg,
+    transparent 35%,
+    color-mix(in srgb, var(--tu-color-white) 55%, transparent) 50%,
+    transparent 65%
+  );
+  background-size: 250% 100%;
+  animation: tu-skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes tu-status-success {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Status/success transition — a brief scale+fade for a state change
+   that's rare and meaningful (a verification success, an approval).
+   Not for routine status badges, which should render instantly. */
+[data-motion-success] {
+  animation: tu-status-success var(--tu-motion-medium) var(--tu-ease-premium)
+    both;
 }
 
 [data-roadmap-phase] {
@@ -400,9 +808,20 @@ footer a:focus-visible {
   .motion-card .motion-card-image,
   .motion-arrow,
   .motion-mobile-panel,
-  .motion-menu-line {
+  .motion-menu-line,
+  [data-motion-mask],
+  [data-motion-success] {
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  [data-motion-mask] {
+    clip-path: none !important;
+  }
+
+  [data-motion-ambient],
+  [data-motion-skeleton] {
+    animation: none !important;
   }
 
   [data-roadmap-phase]::before {

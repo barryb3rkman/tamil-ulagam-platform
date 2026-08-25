@@ -11,6 +11,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
+      // Internal design-system QA surface — never a public destination.
+      disallow: "/dev/",
     },
     sitemap: getAbsoluteSiteUrl("/sitemap.xml"),
     host: siteUrl.origin,

@@ -10,6 +10,7 @@ import { SiteHeader } from "@/components/site-header";
 const applicationRoots = [
   "/admin",
   "/dashboard",
+  "/dev",
   "/forgot-password",
   "/login",
   "/register",
