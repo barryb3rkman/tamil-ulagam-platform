@@ -151,10 +151,10 @@ export function MobileNavigation({ entries }: MobileNavigationProps) {
               <li>
                 <Link
                   className="bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button flex min-h-11 items-center justify-center px-4 py-3 text-center text-sm font-semibold text-white focus-visible:outline-none"
-                  href="/signup"
+                  href="/join"
                   onClick={closeMenu}
                 >
-                  Register Organisation
+                  Join Tamil Ulagam
                 </Link>
               </li>
             </ul>

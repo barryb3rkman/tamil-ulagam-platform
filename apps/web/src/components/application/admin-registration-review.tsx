@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import { getCategoryLabel } from "@/content/enrollment";
+import { getOrganisationDisplayLabel } from "@/content/enrollment";
 import { usePlatform } from "@/features/enrollment/platform-provider";
 
 import { ApplicationDetails, formatDate } from "./application-details";
@@ -175,7 +175,10 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
             {application.organisation.name || "Incomplete organisation"}
           </h1>
           <p className="text-slate mt-2">
-            {getCategoryLabel(application.organisation.category)}
+            {getOrganisationDisplayLabel(
+              application.organisation.category,
+              application.registration.categoryProfile,
+            )}
             <span aria-hidden="true"> · </span>
             {[application.organisation.city, application.organisation.country]
               .filter(Boolean)

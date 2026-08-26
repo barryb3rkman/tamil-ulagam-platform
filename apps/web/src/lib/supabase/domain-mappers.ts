@@ -103,6 +103,8 @@ export function mapCategoryProfileToDatabase(
           chairperson_name: profile.chairpersonName.trim(),
           secretary_name: profile.secretaryName.trim(),
           languages: profile.languages.trim(),
+          network_affiliated: optionalBoolean(profile.networkAffiliated),
+          network_name: profile.networkName.trim(),
         },
       };
     case "education":

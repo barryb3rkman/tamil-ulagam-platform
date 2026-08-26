@@ -15,7 +15,10 @@ import { useMembershipService } from "@/features/membership/use-membership-servi
 import { withReturnTarget } from "@/lib/return-target";
 
 import { MembershipRequestRow } from "./membership-request-row";
-import { organisationLocationLabel } from "./organisation-presentation";
+import {
+  organisationKindLabel,
+  organisationLocationLabel,
+} from "./organisation-presentation";
 
 type DataState = "loading" | "loaded" | "error";
 type Tab = "members" | "managers";
@@ -291,6 +294,8 @@ export function ManagerPeople() {
         {activeOrganisation.name}
       </h1>
       <p className="text-slate mt-2">
+        {organisationKindLabel(activeOrganisation)}
+        <span aria-hidden="true"> · </span>
         {organisationLocationLabel(activeOrganisation)}
       </p>
 

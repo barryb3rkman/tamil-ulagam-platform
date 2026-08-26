@@ -78,10 +78,10 @@ export function SiteHeader() {
               Login
             </Link>
             <Link
-              href="/signup"
+              href="/join"
               className="motion-control bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button inline-flex min-h-10 items-center px-3.5 py-2 text-sm font-semibold whitespace-nowrap text-white focus-visible:outline-none"
             >
-              Register Organisation
+              Join Tamil Ulagam
             </Link>
             <Link
               href="/partners"

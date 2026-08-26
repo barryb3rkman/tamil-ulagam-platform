@@ -117,6 +117,8 @@ export function mapCategoryDetailRow(
         chairpersonName: text(row, "chairperson_name"),
         secretaryName: text(row, "secretary_name"),
         languages: text(row, "languages"),
+        networkAffiliated: optionalBoolean(row, "network_affiliated"),
+        networkName: text(row, "network_name"),
       };
     case "education":
       return {

@@ -2,34 +2,22 @@ import { Container, ImageWithFallback } from "@tamil-ulagam/ui";
 import Link from "next/link";
 
 import { joinImages } from "@/config/join-images";
+import { sangamLoggedOutContent } from "@/content/sangam";
+import { withReturnTarget } from "@/lib/return-target";
 
-import { SangamMark } from "./journey-icons";
-
-const steps = [
-  {
-    title: "Register your Sangam's profile",
-    description:
-      "Your Sangam's name, location, leadership and founding details — the same rigor as an organisation record.",
-  },
-  {
-    title: "Verification and review",
-    description:
-      "A federation reviewer confirms the details before your Sangam goes live, the same review path organisations go through today.",
-  },
-  {
-    title: "Join the Sangam network",
-    description:
-      "Your Sangam gets its own presence within Tamil Ulagam and appears in the wider Sangam network.",
-  },
-];
+import { SangamMark } from "@/components/join/journey-icons";
 
 /**
- * A deliberate pre-launch state for the Tamil Sangam journey — not a
- * generic "Coming Soon" page and not a fake submission form. It states
- * plainly what exists today and previews the real future model, per
- * the Phase C1 brief.
+ * The pre-authentication half of the /join/sangam journey: Sangam Dusk
+ * hero + the real sangam-journey-hero.webp asset (never redesigned into
+ * a generic image card — D1 brief section 16), then the four-step
+ * explanation so a logged-out visitor understands the whole journey
+ * before being asked to create an account, per section 20. Real CTAs —
+ * not the old "In development" pre-launch pill — carry the visitor's
+ * intent to sign in/sign up and back to /join/sangam afterward via the
+ * safe `next=` return-target infrastructure from C2.
  */
-export function SangamJourneyPage() {
+export function SangamLoggedOut() {
   return (
     <>
       <section
@@ -45,31 +33,30 @@ export function SangamJourneyPage() {
               <SangamMark className="size-6" />
             </span>
             <p className="text-heritage-gold mt-6 text-xs font-bold tracking-[0.16em] uppercase">
-              TAMIL SANGAMS
+              {sangamLoggedOutContent.eyebrow}
             </p>
             <h1
               id="sangam-journey-title"
               className="mt-4 text-4xl font-bold tracking-[-0.02em] text-balance sm:text-5xl"
             >
-              Register a Tamil Sangam
+              {sangamLoggedOutContent.title}
             </h1>
             <p className="mt-6 max-w-lg text-lg leading-8 text-white/85">
-              Join the wider Tamil Sangam network and establish your
-              Sangam&rsquo;s presence within Tamil Ulagam.
+              {sangamLoggedOutContent.description}
             </p>
-            <div className="mt-7">
-              {/* StatusBadge's neutral tone is charcoal-on-slate, tuned for
-                  light surfaces — unreadable on this dark gradient hero.
-                  `surface-glass` is the token built for exactly this case
-                  ("a frosted stat chip over a hero"), so this pill uses it
-                  directly rather than a Badge tone meant for Canvas/Card. */}
-              <span className="surface-glass inline-flex w-fit items-center gap-2 px-3 py-1.5 text-xs leading-5 font-semibold tracking-wide">
-                <span
-                  aria-hidden="true"
-                  className="size-1.5 rounded-full bg-current"
-                />
-                In development
-              </span>
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <Link
+                href={withReturnTarget("/signup", "/join/sangam")}
+                className="bg-heritage-gold text-deep-navy focus-visible:ring-focus rounded-button motion-control inline-flex min-h-12 items-center px-6 font-semibold hover:bg-white focus-visible:outline-none"
+              >
+                Create account & begin
+              </Link>
+              <Link
+                href={withReturnTarget("/login", "/join/sangam")}
+                className="surface-glass focus-visible:ring-focus rounded-button motion-control inline-flex min-h-12 items-center px-6 font-semibold focus-visible:outline-none"
+              >
+                Sign in
+              </Link>
             </div>
           </div>
           <div className="rounded-card overflow-hidden">
@@ -91,15 +78,15 @@ export function SangamJourneyPage() {
             id="sangam-journey-how-title"
             className="text-global-navy text-2xl font-bold tracking-[-0.01em] sm:text-3xl"
           >
-            How Sangam registration will work
+            How Sangam registration works
           </h2>
           <p className="text-slate mt-3 max-w-2xl leading-7">
             Tamil Sangams share the same federation foundation as organisations
             — the same verification standard, the same reviewer process — with a
             registration experience built for how Sangams actually operate.
           </p>
-          <ol className="mt-10 grid gap-5 sm:grid-cols-3">
-            {steps.map((step, index) => (
+          <ol className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {sangamLoggedOutContent.steps.map((step, index) => (
               <li key={step.title} className="surface-card p-6">
                 <span className="text-heritage-maroon text-sm font-bold">
                   {String(index + 1).padStart(2, "0")}
@@ -115,10 +102,10 @@ export function SangamJourneyPage() {
           </ol>
           <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
             <Link
-              href="/contact"
+              href={withReturnTarget("/signup", "/join/sangam")}
               className="bg-global-navy rounded-button hover:bg-deep-navy focus-visible:ring-focus inline-flex min-h-11 items-center px-5 py-2.5 font-semibold text-white focus-visible:outline-none"
             >
-              Tell us about your Sangam
+              Begin your Sangam&rsquo;s presence
             </Link>
             <Link
               href="/join"

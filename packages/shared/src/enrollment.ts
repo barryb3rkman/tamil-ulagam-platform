@@ -106,6 +106,18 @@ export interface TamilCommunityProfile {
   chairpersonName: string;
   secretaryName: string;
   languages: string;
+  /**
+   * Tamil Sangam registration (Phase D1) only: "Is your Sangam already
+   * connected to a regional, national or international Tamil
+   * network/federation?" — optional, so "" doubles as both "not
+   * answered" and "prefer not to say" (the same convention already used
+   * by `tamilProgrammesOffered`/`licensed` elsewhere in this file).
+   * Meaningless for a plain tamil_community organisation registered
+   * through the generic Organisation wizard; left "" there.
+   */
+  networkAffiliated: "yes" | "no" | "";
+  /** Only meaningful when networkAffiliated is "yes"; optional even then. */
+  networkName: string;
 }
 
 export interface EducationProfile {
@@ -209,3 +221,24 @@ export interface EnrollmentPlatformState {
 }
 
 export type MockPlatformState = EnrollmentPlatformState;
+
+/**
+ * True only for a tamil_community application whose recorded subtype is
+ * exactly (case/whitespace-insensitively) "Tamil Sangam" — the same rule
+ * `isTamilSangam` (membership.ts) applies to the narrower
+ * `EligibleOrganisation` projection, applied here to the richer
+ * registration-time shape. Never derived from the organisation's name.
+ * Used to keep the Sangam journey's own draft resolution (Phase D1)
+ * from ever being confused with a plain Organisation record, and vice
+ * versa — see ensure_sangam_application_draft and the
+ * currentApplicationFromState exclusion filter in supabase-services.ts/
+ * platform-provider.tsx.
+ */
+export function isTamilSangamProfile(
+  profile: OrganisationCategoryProfile | null,
+): boolean {
+  return (
+    profile?.category === "tamil_community" &&
+    profile.subtype.trim().toLowerCase() === "tamil sangam"
+  );
+}

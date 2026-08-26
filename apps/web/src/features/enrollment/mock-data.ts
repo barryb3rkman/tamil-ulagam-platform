@@ -83,6 +83,8 @@ export function createEmptyCategoryProfile(
         chairpersonName: "",
         secretaryName: "",
         languages: "",
+        networkAffiliated: "",
+        networkName: "",
       };
     case "education":
       return {
@@ -304,7 +306,16 @@ export function createSeedState(): MockPlatformState {
     {
       ...createEmptyCategoryProfile("tamil_community"),
       category: "tamil_community",
-      subtype: "Tamil Sangam",
+      // Deliberately NOT "Tamil Sangam" despite the organisation's own
+      // name — this fixture predates Phase D1 and stands in for an
+      // ordinary Organisation-journey mock user throughout the mock
+      // backend's demo/e2e coverage (see createDemoUser/loginDemo). A
+      // real Tamil Sangam is identified by this field, never by name
+      // (see isTamilSangamProfile) — keeping the two independent here
+      // is itself a small proof of that rule, and avoids this fixture
+      // colliding with the Sangam-specific draft resolution added in
+      // D1 (currentApplicationFromState's Sangam exclusion filter).
+      subtype: "Cultural Organisation",
       primaryActivities: ["Cultural programmes", "Tamil language education"],
       membershipSize: "501–1,000",
       geographicAreaServed: "Greater Toronto Area",

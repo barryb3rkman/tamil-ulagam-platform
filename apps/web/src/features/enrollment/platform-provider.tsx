@@ -11,6 +11,7 @@ import type {
   RegistrationStatus,
   UserProfile,
 } from "@tamil-ulagam/shared";
+import { isTamilSangamProfile } from "@tamil-ulagam/shared";
 import {
   createContext,
   type ReactNode,
@@ -374,10 +375,22 @@ export function PlatformProvider({
     );
   }, [state]);
 
+  // See the identical filter (and its full rationale) in
+  // supabase-services.ts's currentApplicationFromState — kept in sync
+  // here since this hook duplicates that resolution for the values it
+  // exposes directly, rather than reusing it as a service call.
   const currentApplication = useMemo(() => {
     if (!state?.currentUserId) return null;
+    const isSangamOrganisationId = (organisationId: string): boolean => {
+      const registration = state.registrations.find(
+        (item) => item.organisationId === organisationId,
+      );
+      return isTamilSangamProfile(registration?.categoryProfile ?? null);
+    };
     const memberships = state.memberships.filter(
-      (membership) => membership.userId === state.currentUserId,
+      (membership) =>
+        membership.userId === state.currentUserId &&
+        !isSangamOrganisationId(membership.organisationId),
     );
     const membership =
       memberships.find((item) => item.isPrimary) ?? memberships.at(0);

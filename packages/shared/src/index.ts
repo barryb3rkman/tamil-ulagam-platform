@@ -32,6 +32,7 @@ export type {
   TamilCommunityProfile,
   UserProfile,
 } from "./enrollment";
+export { isTamilSangamProfile } from "./enrollment";
 
 export type {
   EligibleOrganisation,

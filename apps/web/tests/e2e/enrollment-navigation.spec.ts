@@ -54,7 +54,7 @@ async function expectVisibleHeaderControlsNotToOverlap(page: Page) {
 }
 
 test.describe("public enrollment navigation", () => {
-  test("provides stable desktop Login and Register Organisation actions", async ({
+  test("provides stable desktop Login and Join Tamil Ulagam actions", async ({
     page,
   }) => {
     for (const viewport of desktopViewports) {
@@ -67,7 +67,7 @@ test.describe("public enrollment navigation", () => {
       });
       const login = header.getByRole("link", { name: "Login", exact: true });
       const register = header.getByRole("link", {
-        name: "Register Organisation",
+        name: "Join Tamil Ulagam",
         exact: true,
       });
       const partner = header.getByRole("link", {
@@ -85,7 +85,7 @@ test.describe("public enrollment navigation", () => {
       );
       await expect(register).toHaveAttribute(
         "href",
-        getCanonicalRouteHref("/signup"),
+        getCanonicalRouteHref("/join"),
       );
       await login.focus();
       await expect(login).toBeFocused();
@@ -117,7 +117,7 @@ test.describe("public enrollment navigation", () => {
         exact: true,
       });
       const register = mobileNavigation.getByRole("link", {
-        name: "Register Organisation",
+        name: "Join Tamil Ulagam",
         exact: true,
       });
 
@@ -137,7 +137,7 @@ test.describe("public enrollment navigation", () => {
       );
       await expect(register).toHaveAttribute(
         "href",
-        getCanonicalRouteHref("/signup"),
+        getCanonicalRouteHref("/join"),
       );
       expect((await login.boundingBox())?.height).toBeGreaterThanOrEqual(44);
       expect((await register.boundingBox())?.height).toBeGreaterThanOrEqual(44);

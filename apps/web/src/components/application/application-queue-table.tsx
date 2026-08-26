@@ -3,7 +3,7 @@
 import type { OrganisationApplication } from "@tamil-ulagam/shared";
 import Link from "next/link";
 
-import { getCategoryLabel } from "@/content/enrollment";
+import { getOrganisationDisplayLabel } from "@/content/enrollment";
 import { usePlatform } from "@/features/enrollment/platform-provider";
 
 import { formatDate } from "./application-details";
@@ -46,7 +46,10 @@ export function ApplicationQueueTable({
                 {application.organisation.name || "Incomplete organisation"}
               </p>
               <p className="text-slate mt-1 text-sm xl:hidden">
-                {getCategoryLabel(application.organisation.category)}
+                {getOrganisationDisplayLabel(
+                  application.organisation.category,
+                  application.registration.categoryProfile,
+                )}
               </p>
             </div>
             <div className="text-sm">
@@ -54,7 +57,10 @@ export function ApplicationQueueTable({
                 Location
               </p>
               <p className="text-charcoal hidden xl:block">
-                {getCategoryLabel(application.organisation.category)}
+                {getOrganisationDisplayLabel(
+                  application.organisation.category,
+                  application.registration.categoryProfile,
+                )}
               </p>
               <p className="text-slate xl:mt-1">
                 {[

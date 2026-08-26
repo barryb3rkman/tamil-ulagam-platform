@@ -556,6 +556,8 @@ export type Database = {
           geographic_area_served: string;
           languages: string;
           membership_size: string;
+          network_affiliated: boolean | null;
+          network_name: string;
           organization_id: string;
           primary_activities: string[];
           secretary_name: string;
@@ -568,6 +570,8 @@ export type Database = {
           geographic_area_served?: string;
           languages?: string;
           membership_size?: string;
+          network_affiliated?: boolean | null;
+          network_name?: string;
           organization_id: string;
           primary_activities?: string[];
           secretary_name?: string;
@@ -580,6 +584,8 @@ export type Database = {
           geographic_area_served?: string;
           languages?: string;
           membership_size?: string;
+          network_affiliated?: boolean | null;
+          network_name?: string;
           organization_id?: string;
           primary_activities?: string[];
           secretary_name?: string;
@@ -802,6 +808,36 @@ export type Database = {
         SetofOptions: {
           from: "*";
           to: "organization_memberships";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      ensure_sangam_application_draft: {
+        Args: never;
+        Returns: {
+          accuracy_declaration: boolean;
+          admin_feedback: string | null;
+          authorization_declaration: boolean;
+          created_at: string;
+          current_step: number;
+          id: string;
+          organization_id: string;
+          representative_designation: string;
+          representative_email: string;
+          representative_full_name: string;
+          representative_phone: string;
+          representative_relationship:
+            Database["public"]["Enums"]["representative_relationship"] | null;
+          reviewed_at: string | null;
+          reviewed_by: string | null;
+          status: Database["public"]["Enums"]["registration_status"];
+          submitted_at: string | null;
+          submitted_by: string;
+          updated_at: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "organization_applications";
           isOneToOne: true;
           isSetofReturn: false;
         };

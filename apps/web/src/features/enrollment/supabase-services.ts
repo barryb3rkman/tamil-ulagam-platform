@@ -8,7 +8,7 @@ import type {
   OrganisationRepresentative,
   UserProfile,
 } from "@tamil-ulagam/shared";
-import { withBasePath } from "@tamil-ulagam/shared";
+import { isTamilSangamProfile, withBasePath } from "@tamil-ulagam/shared";
 import type {
   AuthChangeEvent,
   EmailOtpType,
@@ -366,12 +366,33 @@ function applicationFromState(
   };
 }
 
+// A Tamil Sangam (Phase D1) is registered through its own entry point
+// (ensure_sangam_application_draft) precisely so it never becomes "the"
+// application the generic Organisation journey resolves and edits — see
+// that function's doc comment. This filter is the client-side half of
+// that guarantee: even if a Sangam ever ended up as a caller's primary
+// organisation_members row (e.g. it was their first-ever registration),
+// the Organisation journey's own draft resolution must still skip past
+// it rather than silently editing the Sangam record. A caller with no
+// Sangam at all is completely unaffected — this filter is then a no-op.
+function isSangamOrganisationId(
+  state: EnrollmentPlatformState,
+  organisationId: string,
+): boolean {
+  const registration = state.registrations.find(
+    (item) => item.organisationId === organisationId,
+  );
+  return isTamilSangamProfile(registration?.categoryProfile ?? null);
+}
+
 function currentApplicationFromState(
   state: EnrollmentPlatformState,
 ): OrganisationApplication | null {
   if (!state.currentUserId) return null;
   const memberships = state.memberships.filter(
-    (item) => item.userId === state.currentUserId,
+    (item) =>
+      item.userId === state.currentUserId &&
+      !isSangamOrganisationId(state, item.organisationId),
   );
   const membership =
     memberships.find((item) => item.isPrimary) ?? memberships.at(0);

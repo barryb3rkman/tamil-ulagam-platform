@@ -120,23 +120,34 @@ test.describe("public /join entry hub", () => {
     });
   });
 
-  test("Tamil Sangam journey shows a polished pre-launch surface, not a fake submission form", async ({
+  test("Tamil Sangam journey shows the real logged-out journey explanation, with safe return-target auth links", async ({
     page,
   }) => {
     await page.goto("/join/sangam", { waitUntil: "domcontentloaded" });
     await expect(
       page.getByRole("heading", { level: 1, name: "Register a Tamil Sangam" }),
     ).toBeVisible();
-    await expect(page.getByText("In development")).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "How Sangam registration will work" }),
+      page.getByRole("heading", { name: "How Sangam registration works" }),
     ).toBeVisible();
-    // No form controls anywhere on this page — it must not fake a
-    // working submission flow.
+    await expect(page.getByText("Tell us about your Sangam")).toBeVisible();
+
+    const createAccount = page.getByRole("link", {
+      name: "Create account & begin",
+    });
+    await expect(createAccount).toHaveAttribute(
+      "href",
+      "/signup/?next=%2Fjoin%2Fsangam",
+    );
+    const signIn = page.getByRole("link", { name: "Sign in" });
+    await expect(signIn).toHaveAttribute(
+      "href",
+      "/login/?next=%2Fjoin%2Fsangam",
+    );
+
+    // No fake submission form on the logged-out journey — the real
+    // wizard only appears once authenticated.
     expect(await page.locator("input, textarea, select").count()).toBe(0);
-    await expect(
-      page.getByRole("link", { name: "Tell us about your Sangam" }),
-    ).toHaveAttribute("href", getCanonicalRouteHref("/contact"));
   });
 
   test("Member journey shows the real logged-out journey explanation, with safe return-target auth links", async ({

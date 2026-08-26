@@ -1,7 +1,9 @@
 import type {
   OrganisationCategory,
+  OrganisationCategoryProfile,
   RegistrationStatus,
 } from "@tamil-ulagam/shared";
+import { isTamilSangamProfile } from "@tamil-ulagam/shared";
 
 export interface SelectOption<TValue extends string = string> {
   readonly value: TValue;
@@ -320,6 +322,23 @@ export function getCategoryLabel(category: OrganisationCategory | ""): string {
     organisationCategories.find((option) => option.value === category)?.label ??
     "Organisation"
   );
+}
+
+/**
+ * "Tamil Sangam" for a Sangam-identified application, otherwise the
+ * plain category label (e.g. "Education") — the admin-facing equivalent
+ * of organisationKindLabel (components/member/organisation-presentation.ts),
+ * which works on the narrower EligibleOrganisation projection instead of
+ * an application's own categoryProfile. Reviewers should never see
+ * Sangam-specific data under a generic "Tamil / Community Organisation"
+ * label (D1 brief section 25).
+ */
+export function getOrganisationDisplayLabel(
+  category: OrganisationCategory | "",
+  profile: OrganisationCategoryProfile | null,
+): string {
+  if (isTamilSangamProfile(profile)) return "Tamil Sangam";
+  return getCategoryLabel(category);
 }
 
 /**

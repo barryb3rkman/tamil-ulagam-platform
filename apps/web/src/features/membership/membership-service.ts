@@ -167,27 +167,42 @@ export function createMembershipService(
       ];
       if (organisationIds.length === 0) return [];
 
-      const organisations = await client
-        .from("organizations")
-        .select("id, name, category, city, region, country")
-        .in("id", organisationIds);
+      const [organisations, details] = await Promise.all([
+        client
+          .from("organizations")
+          .select("id, name, category, city, region, country")
+          .in("id", organisationIds),
+        // Phase D1: needed so a manager's People page and Sangam
+        // workspace can tell a Tamil Sangam apart from a plain
+        // tamil_community organisation among the accounts they manage
+        // (organisationKindLabel/isTamilSangam) — one extra, narrow join,
+        // same shape as list_membership_eligible_organizations' own
+        // subtype projection.
+        client
+          .from("organization_tamil_community_details")
+          .select("organization_id, subtype")
+          .in("organization_id", organisationIds),
+      ]);
       if (organisations.error) {
         throw mapSupabaseError(
           organisations.error,
           "Your managed organisations could not be loaded.",
         );
       }
+      if (details.error) {
+        throw mapSupabaseError(
+          details.error,
+          "Your managed organisations could not be loaded.",
+        );
+      }
+      const subtypeByOrganisation = new Map(
+        (details.data ?? []).map((row) => [row.organization_id, row.subtype]),
+      );
       return (organisations.data ?? []).map((row) => ({
         id: row.id,
         name: row.name,
         category: row.category ?? "",
-        // organizations' own row doesn't carry tamil_community_details'
-        // subtype; this picker only needs to distinguish organisations
-        // by name for the manager themselves, who already knows which
-        // one is their Sangam, so the Sangam-specific label is skipped
-        // here rather than adding another join for a picker only the
-        // organisation's own manager ever sees.
-        subtype: "",
+        subtype: subtypeByOrganisation.get(row.id) ?? "",
         city: row.city,
         region: row.region,
         country: row.country,

@@ -147,6 +147,7 @@ test.describe("public homepage", () => {
       "/terms",
       "/login",
       "/signup",
+      "/join",
     ].map(getCanonicalRouteHref);
     expect(
       internalLinks

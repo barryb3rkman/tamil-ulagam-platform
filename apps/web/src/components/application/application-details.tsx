@@ -2,7 +2,7 @@ import type { OrganisationApplication } from "@tamil-ulagam/shared";
 import type { ReactNode } from "react";
 
 import {
-  getCategoryLabel,
+  getOrganisationDisplayLabel,
   getRepresentativeRoleLabel,
   registrationStatusPresentation,
 } from "@/content/enrollment";
@@ -79,7 +79,10 @@ export function ApplicationDetails({
         }
         items={[
           { label: "Organisation name", value: organisation.name },
-          { label: "Category", value: getCategoryLabel(organisation.category) },
+          {
+            label: "Category",
+            value: getOrganisationDisplayLabel(organisation.category, profile),
+          },
           {
             label: "Location",
             value: [
@@ -287,6 +290,17 @@ function categoryItems(
           { label: "Chairperson", value: profile.chairpersonName },
           { label: "Secretary", value: profile.secretaryName },
           { label: "Languages", value: profile.languages },
+          {
+            label: "Network affiliation",
+            value:
+              profile.networkAffiliated === ""
+                ? ""
+                : profile.networkAffiliated === "yes"
+                  ? profile.networkName
+                    ? `Yes — ${profile.networkName}`
+                    : "Yes"
+                  : "No",
+          },
         ]),
       ];
     case "education":
