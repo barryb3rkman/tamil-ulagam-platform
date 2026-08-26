@@ -103,7 +103,7 @@ test.describe("local Supabase browser enrollment", () => {
         "A professional services company supporting international community organisations.",
       );
     await page.getByRole("button", { name: "Save progress" }).click();
-    await expect(page.getByText("Progress saved.")).toBeVisible();
+    await expect(page.getByText("Saved just now.")).toBeVisible();
     await page.reload();
     await expect(page.getByLabel("Business / Company")).toBeChecked();
     await expect(page.getByLabel("Organisation name")).toHaveValue(
@@ -128,10 +128,14 @@ test.describe("local Supabase browser enrollment", () => {
         "I confirm that I am authorised to represent this organisation and that the information provided is accurate.",
       )
       .check();
-    await page.getByRole("button", { name: "Review registration" }).click();
-    await page.getByRole("button", { name: "Submit Registration" }).click();
+    await page.getByRole("button", { name: "Review & submit" }).click();
+    await page.getByRole("button", { name: "Submit registration" }).click();
     await page.getByRole("button", { name: "Confirm submission" }).click();
-    await expect(page).toHaveURL(/\/dashboard\/?$/);
+    // V3: submitting transitions in place into a real status screen at
+    // /register itself rather than bouncing to /dashboard.
+    await expect(
+      page.getByRole("heading", { name: "Registration submitted" }),
+    ).toBeVisible();
     await expect(
       page.getByText("Submitted", { exact: true }).first(),
     ).toBeVisible();
@@ -169,8 +173,8 @@ test.describe("local Supabase browser enrollment", () => {
     ).toBeVisible();
     await page.getByRole("link", { name: "Update Registration" }).click();
     await page.getByLabel("Industry").selectOption("Technology");
-    await page.getByRole("button", { name: "Review registration" }).click();
-    await page.getByRole("button", { name: "Submit Registration" }).click();
+    await page.getByRole("button", { name: "Review & submit" }).click();
+    await page.getByRole("button", { name: "Submit registration" }).click();
     await page.getByRole("button", { name: "Confirm submission" }).click();
     await expect(
       page.getByText("Submitted", { exact: true }).first(),

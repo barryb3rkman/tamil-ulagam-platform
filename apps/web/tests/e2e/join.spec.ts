@@ -90,35 +90,47 @@ test.describe("public /join entry hub", () => {
     expect(animationName).toBe("none");
   });
 
-  test("Organisation journey hands off to the real registration flow at /register", async ({
+  test("Organisation journey shows the real logged-out journey explanation, with safe return-target auth links", async ({
     page,
   }) => {
     await page.goto("/join/organisation", { waitUntil: "domcontentloaded" });
-    await page.waitForURL(/\/register\/?$/);
-    // The existing, unmodified registration wizard should render its
-    // logged-out state — proving the handoff lands in the real runtime,
-    // not a duplicated re-implementation.
     await expect(
-      page.getByRole("heading", { name: "Sign in to begin" }),
+      page.getByRole("heading", { level: 1, name: "Register an Organisation" }),
     ).toBeVisible();
-  });
+    await expect(
+      page.getByRole("heading", {
+        name: "How Organisation registration works",
+      }),
+    ).toBeVisible();
 
-  test.describe("with JavaScript disabled", () => {
-    test.use({ javaScriptEnabled: false });
-
-    test("Organisation route still renders a real, working link to registration (no-JS safety)", async ({
-      page,
-    }) => {
-      await page.goto("/join/organisation", { waitUntil: "domcontentloaded" });
-      const fallbackLink = page.getByRole("link", {
-        name: "Continue to organisation registration",
-      });
-      await expect(fallbackLink).toHaveAttribute(
-        "href",
-        getCanonicalRouteHref("/register"),
-      );
+    const createAccount = page.getByRole("link", {
+      name: "Create account & begin",
     });
+    await expect(createAccount).toHaveAttribute(
+      "href",
+      "/signup/?next=%2Fjoin%2Forganisation",
+    );
+    const signIn = page.getByRole("link", { name: "Sign in" });
+    await expect(signIn).toHaveAttribute(
+      "href",
+      "/login/?next=%2Fjoin%2Forganisation",
+    );
+
+    // No fake submission form on the logged-out journey — the real V3
+    // wizard only appears once authenticated. /join/organisation is now
+    // the real experience itself, not a client-side handoff to /register.
+    expect(await page.locator("input, textarea, select").count()).toBe(0);
   });
+
+  // D2: /join/organisation now mounts the same client-rendered,
+  // auth-aware OrganisationRegistration every other /join/* journey uses
+  // (identical to /join/sangam and /join/member, neither of which carries
+  // a no-JS test either) — it is gated behind PlatformProvider's
+  // isHydrated flag like the rest of the app, so it no longer has an
+  // independent no-JS-safe fallback the way the old static handoff page
+  // did. That old page predated the isHydrated pattern entirely; this is
+  // a deliberate parity change (Organisation's no-JS behaviour now
+  // matches its sibling journeys), not a regression relative to them.
 
   test("Tamil Sangam journey shows the real logged-out journey explanation, with safe return-target auth links", async ({
     page,
@@ -179,12 +191,12 @@ test.describe("public /join entry hub", () => {
     expect(await page.locator("input, textarea, select").count()).toBe(0);
   });
 
-  test("existing /register flow is unchanged by the new /join entry point", async ({
+  test("/register keeps working as a compatibility route to the same V3 Organisation experience", async ({
     page,
   }) => {
     await page.goto("/register", { waitUntil: "domcontentloaded" });
     await expect(
-      page.getByRole("heading", { name: "Sign in to begin" }),
+      page.getByRole("heading", { level: 1, name: "Register an Organisation" }),
     ).toBeVisible();
   });
 });

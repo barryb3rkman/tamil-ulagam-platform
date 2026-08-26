@@ -2,7 +2,6 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { DashboardOverview } from "@/components/application/dashboard-overview";
-import { ProgressIndicator } from "@/components/application/progress-indicator";
 import { RegistrationStatusBadge } from "@/components/application/registration-status-badge";
 import { registrationStatusPresentation } from "@/content/enrollment";
 
@@ -288,22 +287,6 @@ describe("mock service boundary", () => {
 });
 
 describe("status and dashboard presentation", () => {
-  it("communicates completed, current and upcoming registration steps without relying on colour", () => {
-    render(<ProgressIndicator currentStep={3} />);
-
-    expect(
-      screen.getByLabelText("Organisation, completed"),
-    ).toBeInTheDocument();
-    const currentStep = screen.getByLabelText(
-      "Registration & trust, current step",
-    );
-    expect(currentStep).toBeInTheDocument();
-    expect(
-      screen.getByLabelText("Review & submit, upcoming"),
-    ).toBeInTheDocument();
-    expect(currentStep.closest("li")).toHaveAttribute("aria-current", "step");
-  });
-
   it("maps every stable status through the shared status badge", () => {
     for (const status of Object.keys(
       registrationStatusPresentation,

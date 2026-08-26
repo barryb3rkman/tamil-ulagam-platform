@@ -50,7 +50,7 @@ test.describe("organisation enrollment MVP", () => {
         "A professional services company supporting international community organisations.",
       );
     await page.getByRole("button", { name: "Save progress" }).click();
-    await expect(page.getByText("Progress saved.")).toBeVisible();
+    await expect(page.getByText("Saved just now.")).toBeVisible();
     await page.reload();
     await expect(page.getByLabel("Business / Company")).toBeChecked();
     await expect(page.getByLabel("Organisation name")).toHaveValue(
@@ -75,7 +75,7 @@ test.describe("organisation enrollment MVP", () => {
         "I confirm that I am authorised to represent this organisation and that the information provided is accurate.",
       )
       .check();
-    await page.getByRole("button", { name: "Review registration" }).click();
+    await page.getByRole("button", { name: "Review & submit" }).click();
 
     await expect(
       page.getByRole("heading", { name: "Review your registration" }),
@@ -83,13 +83,18 @@ test.describe("organisation enrollment MVP", () => {
     await expect(
       page.getByText("Nila Global Services", { exact: true }).first(),
     ).toBeVisible();
-    await page.getByRole("button", { name: "Submit Registration" }).click();
+    await page.getByRole("button", { name: "Submit registration" }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
     await page.getByRole("button", { name: "Confirm submission" }).click();
-    await expect(page).toHaveURL(/\/dashboard\/?$/);
+    // V3: submitting transitions in place into a real status screen
+    // rather than bouncing to /dashboard (D2 brief section 19/20 — no
+    // "registration complete, goodbye" dead end).
     await expect(
-      page.getByText("Submitted", { exact: true }).first(),
+      page.getByRole("heading", { name: "Registration submitted" }),
     ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Go to Organisation Workspace" }),
+    ).toHaveAttribute("href", "/workspace/organisation/");
   });
 
   test("uses the mock login service and renders the current dashboard status", async ({
@@ -127,7 +132,7 @@ test.describe("organisation enrollment MVP", () => {
     await page.goto("/register");
     await expect(
       page.getByRole("img", {
-        name: /multi-generational group collaborating/i,
+        name: /carved stone architectural detail/i,
       }),
     ).toBeVisible();
 
