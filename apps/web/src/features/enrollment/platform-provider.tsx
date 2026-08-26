@@ -66,6 +66,14 @@ interface PlatformContextValue {
   readonly currentUser: UserProfile | null;
   readonly currentApplication: OrganisationApplication | null;
   readonly applications: OrganisationApplication[];
+  /** Every application the caller is the applicant of or a linked
+   * member/manager of — unlike `applications`, never self-excluded for
+   * reviewers (Phase E1: `applications` doubles as the admin review
+   * queue, which correctly hides a reviewer's own application from
+   * itself; a dual admin+manager account still needs to see their own
+   * organisation in the Organisation Workspace, so that screen reads
+   * from this field instead). */
+  readonly myOrganisationApplications: OrganisationApplication[];
   readonly availableOrganisations: Organisation[];
   readonly signup: (input: SignupInput) => Promise<RuntimeAuthResult>;
   readonly login: (input: LoginInput) => Promise<PlatformLoginResult>;
@@ -363,6 +371,30 @@ export function PlatformProvider({
     });
   }, [backendKind, canReviewApplications, state]);
 
+  // Phase E1: the Organisation Workspace's own "which organisations do I
+  // manage" list — deliberately independent of `applications`' reviewer
+  // self-exclusion above (see the field's doc comment on
+  // PlatformContextValue). Same linkedOrganisationIds membership test,
+  // just never filtered out for a reviewer.
+  const myOrganisationApplications = useMemo(() => {
+    if (!state) return [];
+    const linkedOrganisationIds = new Set(
+      state.memberships
+        .filter((membership) => membership.userId === state.currentUserId)
+        .map((membership) => membership.organisationId),
+    );
+    return state.registrations.flatMap((registration) => {
+      if (
+        registration.applicantUserId !== state.currentUserId &&
+        !linkedOrganisationIds.has(registration.organisationId)
+      ) {
+        return [];
+      }
+      const application = applicationFromState(state, registration.id);
+      return application ? [application] : [];
+    });
+  }, [state]);
+
   const availableOrganisations = useMemo(() => {
     if (!state?.currentUserId) return [];
     const organisationIds = new Set(
@@ -417,6 +449,7 @@ export function PlatformProvider({
       currentUser,
       currentApplication,
       applications,
+      myOrganisationApplications,
       availableOrganisations,
       signup: async (input) => {
         const runtime = requireServices();
@@ -542,6 +575,7 @@ export function PlatformProvider({
       currentApplication,
       currentUser,
       isHydrated,
+      myOrganisationApplications,
       platformError,
       refresh,
       requireServices,

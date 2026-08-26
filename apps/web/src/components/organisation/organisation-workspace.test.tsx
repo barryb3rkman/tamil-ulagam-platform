@@ -119,7 +119,7 @@ function platform(overrides: Record<string, unknown>) {
     isHydrated: true,
     currentUser: null,
     platformError: "",
-    applications: [],
+    myOrganisationApplications: [],
     ...overrides,
   } as unknown as ReturnType<typeof usePlatform>);
 }
@@ -147,7 +147,7 @@ describe("OrganisationWorkspace", () => {
     platform({
       isHydrated: true,
       currentUser: { id: "user-1", fullName: "Nila" },
-      applications: [],
+      myOrganisationApplications: [],
     });
 
     render(<OrganisationWorkspace />);
@@ -171,7 +171,7 @@ describe("OrganisationWorkspace", () => {
     platform({
       isHydrated: true,
       currentUser: { id: "user-1", fullName: "Nila" },
-      applications: [sangam, organisation],
+      myOrganisationApplications: [sangam, organisation],
     });
 
     render(<OrganisationWorkspace />);
@@ -192,7 +192,7 @@ describe("OrganisationWorkspace", () => {
     platform({
       isHydrated: true,
       currentUser: { id: "user-1", fullName: "Nila" },
-      applications: [organisation],
+      myOrganisationApplications: [organisation],
     });
 
     render(<OrganisationWorkspace />);
@@ -210,6 +210,30 @@ describe("OrganisationWorkspace", () => {
     );
   });
 
+  it("shows review feedback from the persisted record when present", async () => {
+    searchParamValue = "org-1";
+    const organisation = makeApplication({
+      id: "org-1",
+      status: "needs_changes",
+    });
+    organisation.registration.adminFeedback =
+      "Confirm the official email address.";
+    platform({
+      isHydrated: true,
+      currentUser: { id: "user-1", fullName: "Nila" },
+      myOrganisationApplications: [organisation],
+    });
+
+    render(<OrganisationWorkspace />);
+
+    await waitFor(() =>
+      expect(screen.getByText("Changes requested")).toBeInTheDocument(),
+    );
+    expect(
+      screen.getByText("Confirm the official email address."),
+    ).toBeInTheDocument();
+  });
+
   it("shows a picker when the account manages more than one organisation", async () => {
     const first = makeApplication({
       id: "org-1",
@@ -222,7 +246,7 @@ describe("OrganisationWorkspace", () => {
     platform({
       isHydrated: true,
       currentUser: { id: "user-1", fullName: "Nila" },
-      applications: [first, second],
+      myOrganisationApplications: [first, second],
     });
 
     render(<OrganisationWorkspace />);

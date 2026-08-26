@@ -1,9 +1,18 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { DashboardOverview } from "@/components/application/dashboard-overview";
 import { RegistrationStatusBadge } from "@/components/application/registration-status-badge";
 import { registrationStatusPresentation } from "@/content/enrollment";
+
+// DashboardOverview is now a client-side router into the relevant V3
+// workspace (Phase E1 brief section 17) rather than a content surface —
+// its own tests exercise that redirect, so next/navigation needs a
+// capturable mock here (the file otherwise never touches routing).
+const routerReplace = vi.fn();
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ replace: routerReplace, push: vi.fn() }),
+}));
 
 import {
   createEmptyCategoryProfile,
@@ -299,7 +308,26 @@ describe("status and dashboard presentation", () => {
     }
   });
 
-  it("renders needs-changes feedback from the shared persisted record", async () => {
+  it("routes a user with exactly one managed organisation straight to its Organisation Workspace", async () => {
+    const state = createSeedState();
+    state.currentUserId = "user-demo";
+    window.localStorage.setItem(mockStorageKey, JSON.stringify(state));
+    render(
+      <PlatformProvider>
+        <DashboardOverview />
+      </PlatformProvider>,
+    );
+    // The demo user manages exactly one application (organisation-toronto,
+    // deliberately not a Tamil Sangam — see mock-data.ts) — unambiguous,
+    // so /dashboard redirects there without asking.
+    await waitFor(() =>
+      expect(routerReplace).toHaveBeenCalledWith(
+        "/workspace/organisation?organization=organisation-toronto",
+      ),
+    );
+  });
+
+  it("still routes to the Organisation Workspace when the application needs changes — the workspace itself owns status/feedback presentation now", async () => {
     const state = createSeedState();
     state.currentUserId = "user-demo";
     const registration = state.registrations.find(
@@ -315,10 +343,9 @@ describe("status and dashboard presentation", () => {
       </PlatformProvider>,
     );
     await waitFor(() =>
-      expect(screen.getByText("Changes requested")).toBeInTheDocument(),
+      expect(routerReplace).toHaveBeenCalledWith(
+        "/workspace/organisation?organization=organisation-toronto",
+      ),
     );
-    expect(
-      screen.getByText("Confirm the official email address."),
-    ).toBeInTheDocument();
   });
 });

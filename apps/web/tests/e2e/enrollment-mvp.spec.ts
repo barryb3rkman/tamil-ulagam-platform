@@ -12,7 +12,12 @@ async function loginDemo(page: Page) {
   await page.getByLabel("Email").fill(demo.email);
   await page.getByLabel("Password").fill(demo.password);
   await page.getByRole("button", { name: "Sign In" }).click();
-  await expect(page).toHaveURL(/\/dashboard\/?$/);
+  // E1: /dashboard is now a router into the relevant V3 workspace rather
+  // than a fixed destination — the demo user has exactly one managed
+  // organisation, so it lands on /workspace/organisation. Wait for
+  // navigation away from /login rather than a specific final URL, the
+  // same convention the real-Supabase specs already use.
+  await page.waitForURL((url) => !url.pathname.startsWith("/login"));
 }
 
 test.describe("organisation enrollment MVP", () => {
@@ -97,14 +102,20 @@ test.describe("organisation enrollment MVP", () => {
     ).toHaveAttribute("href", "/workspace/organisation/");
   });
 
-  test("uses the mock login service and renders the current dashboard status", async ({
+  test("uses the mock login service and routes to the Organisation Workspace", async ({
     page,
   }) => {
     await loginDemo(page);
+    // E1: /dashboard guides an authenticated visitor into their V3
+    // workspace rather than showing status content itself — the demo
+    // user manages exactly one organisation, so this lands unambiguously
+    // on its Organisation Workspace.
+    await expect(page).toHaveURL(
+      /\/workspace\/organisation\/?\?organization=organisation-toronto/,
+    );
     await expect(
-      page.getByRole("heading", { name: "Welcome back, Arun" }),
+      page.getByRole("heading", { name: "Toronto Tamil Sangam" }),
     ).toBeVisible();
-    await expect(page.getByText("Toronto Tamil Sangam")).toBeVisible();
     await expect(
       page.getByText("Under Review", { exact: true }).first(),
     ).toBeVisible();
@@ -137,8 +148,12 @@ test.describe("organisation enrollment MVP", () => {
     ).toBeVisible();
 
     await loginDemo(page);
+    // E1: the demo user lands on the Organisation Workspace, which uses
+    // the new WorkspaceShell chrome (its own "Workspace navigation"),
+    // not the legacy ApplicationShell "Account navigation" — that shell
+    // still exists, just at /dashboard/account, checked separately below.
     await expect(
-      page.getByRole("navigation", { name: "Account navigation" }),
+      page.getByRole("navigation", { name: "Workspace navigation" }),
     ).toBeVisible();
     await expect(
       page.getByRole("navigation", { name: "Primary navigation" }),
@@ -146,10 +161,10 @@ test.describe("organisation enrollment MVP", () => {
     await expect(
       page.getByRole("navigation", { name: "Footer navigation" }),
     ).toHaveCount(0);
+
+    await page.goto("/dashboard/account");
     await expect(
-      page.getByRole("img", {
-        name: /community representatives gathered in discussion/i,
-      }),
+      page.getByRole("navigation", { name: "Account navigation" }),
     ).toBeVisible();
 
     await page.goto("/admin");

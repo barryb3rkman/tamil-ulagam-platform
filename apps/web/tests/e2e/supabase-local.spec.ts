@@ -19,7 +19,12 @@ async function signIn(
   page: Page,
   email: string,
   password: string,
-  expectedUrl: RegExp = /\/(?:dashboard|register)\/?$/,
+  // E1: a submitted/needs_changes/verified applicant's post-login /dashboard
+  // landing now immediately client-redirects on into the Organisation
+  // Workspace — /workspace/ is included here (alongside the pre-existing
+  // /dashboard and /register outcomes) so this default assertion isn't
+  // racing that redirect.
+  expectedUrl: RegExp = /\/(?:dashboard|register|workspace)\/?/,
 ) {
   await page.goto("/login");
   await page.getByLabel("Email").fill(email);
@@ -83,9 +88,14 @@ test.describe("local Supabase browser enrollment", () => {
       page.getByRole("heading", { name: "Account created" }),
     ).toBeVisible();
 
+    // E1: /dashboard now routes an authenticated visitor into the
+    // relevant V3 workspace rather than showing content itself — before
+    // a draft exists, that's the Member workspace (every authenticated
+    // user has one).
     await page.goto("/dashboard");
+    await expect(page).toHaveURL(/\/workspace\/member\/?$/);
     await expect(
-      page.getByText("Welcome, Nila", { exact: true }),
+      page.getByRole("heading", { name: "Your affiliations" }),
     ).toBeVisible();
     await signOut(page);
     await signIn(page, applicant.email, applicant.password);
@@ -167,7 +177,9 @@ test.describe("local Supabase browser enrollment", () => {
 
     await signOut(page);
     await signIn(page, applicant.email, applicant.password);
-    await expect(page).toHaveURL(/\/dashboard\/?$/);
+    // E1: /dashboard redirects on to the Organisation Workspace, the
+    // now-unambiguous single managed organisation.
+    await expect(page).toHaveURL(/\/workspace\/organisation\/?\?organization=/);
     await expect(
       page.getByText("Please confirm the industry selection."),
     ).toBeVisible();
@@ -200,7 +212,7 @@ test.describe("local Supabase browser enrollment", () => {
 
     await signOut(page);
     await signIn(page, applicant.email, applicant.password);
-    await expect(page).toHaveURL(/\/dashboard\/?$/);
+    await expect(page).toHaveURL(/\/workspace\/organisation\/?\?organization=/);
     await expect(
       page.getByText("Verified", { exact: true }).first(),
     ).toBeVisible();

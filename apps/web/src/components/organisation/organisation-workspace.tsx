@@ -21,26 +21,29 @@ import { withReturnTarget } from "@/lib/return-target";
  * link, one clear next action. Not a metrics dashboard. Query-param
  * organisation selection (`?organization=<uuid>`), the same
  * static-export-safe pattern the Sangam workspace and C2's People page
- * already use. Reuses `usePlatform().applications` (already fetched,
- * already scoped to the caller's own organisations) rather than a new
- * service call — deliberately excludes any Tamil Sangam, mirroring the
- * Sangam workspace's inverse filter, so the two workspaces never overlap.
+ * already use. Reuses `usePlatform().myOrganisationApplications`
+ * (already fetched, already scoped to the caller's own organisations —
+ * every application they are the applicant of or a linked member/manager
+ * of, regardless of reviewer status; see that field's own doc comment on
+ * `PlatformContextValue`) rather than a new service call — deliberately
+ * excludes any Tamil Sangam, mirroring the Sangam workspace's inverse
+ * filter, so the two workspaces never overlap.
  */
 export function OrganisationWorkspace() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const requestedOrganisationId = searchParams.get("organization");
 
-  const { applications, currentUser, isHydrated, platformError } =
+  const { myOrganisationApplications, currentUser, isHydrated, platformError } =
     usePlatform();
 
   const myOrganisations = useMemo(
     () =>
-      applications.filter(
+      myOrganisationApplications.filter(
         (application) =>
           !isTamilSangamProfile(application.registration.categoryProfile),
       ),
-    [applications],
+    [myOrganisationApplications],
   );
 
   const active: OrganisationApplication | undefined = useMemo(
