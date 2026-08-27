@@ -6,6 +6,7 @@ import type {
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { usePlatform } from "@/features/enrollment/platform-provider";
+import { useManagementService } from "@/features/management/use-management-service";
 import { useMembershipService } from "@/features/membership/use-membership-service";
 
 import { ManagerPeople } from "./manager-people";
@@ -28,8 +29,13 @@ vi.mock("@/features/membership/use-membership-service", () => ({
   useMembershipService: vi.fn(),
 }));
 
+vi.mock("@/features/management/use-management-service", () => ({
+  useManagementService: vi.fn(),
+}));
+
 const mockedUsePlatform = vi.mocked(usePlatform);
 const mockedUseMembershipService = vi.mocked(useMembershipService);
+const mockedUseManagementService = vi.mocked(useManagementService);
 
 function platform(overrides: Partial<ReturnType<typeof usePlatform>>) {
   mockedUsePlatform.mockReturnValue({
@@ -173,7 +179,9 @@ describe("ManagerPeople", () => {
       listOrganisationMembershipRequests: vi
         .fn()
         .mockResolvedValue([makeRequest()]),
-      listOrganisationManagers: vi.fn().mockResolvedValue([
+    } as unknown as ReturnType<typeof useMembershipService>);
+    mockedUseManagementService.mockReturnValue({
+      listManagers: vi.fn().mockResolvedValue([
         {
           id: "manager-grant-1",
           organisationId: orgA.id,
@@ -181,9 +189,11 @@ describe("ManagerPeople", () => {
           role: "owner",
           grantedAt: "2026-08-25T00:00:00.000Z",
           grantedBy: "manager-1",
+          fullName: "Manager",
         },
       ]),
-    } as unknown as ReturnType<typeof useMembershipService>);
+      listInvitations: vi.fn().mockResolvedValue([]),
+    } as unknown as ReturnType<typeof useManagementService>);
 
     render(<ManagerPeople />);
 
@@ -194,7 +204,12 @@ describe("ManagerPeople", () => {
 
     screen.getByRole("tab", { name: "Managers" }).click();
 
-    await waitFor(() => expect(screen.getByText("Owner")).toBeInTheDocument());
+    // DataTable renders both its desktop <table> and mobile <ul> markup
+    // simultaneously (jsdom applies no real viewport/media-query
+    // filtering), so the same cell text legitimately appears twice.
+    await waitFor(() =>
+      expect(screen.getAllByText("Owner").length).toBeGreaterThan(0),
+    );
     expect(screen.queryByText("Nila Raj")).not.toBeInTheDocument();
   });
 });

@@ -215,6 +215,24 @@ export function PlatformProvider({
   const [captcha, setCaptcha] = useState<CaptchaConfiguration>({
     enabled: false,
   });
+  // Phase G1: myOrganisationApplications below is keyed off
+  // state.memberships, which is sourced from the legacy
+  // organization_members table — the one place a management grant
+  // still lives outside organization_managers, and only ever populated
+  // for the original registrant of a brand-new organisation (see
+  // create_organization_application_draft). A manager who joined
+  // through G1's invite/accept flow never gets an organization_members
+  // row by design, so without this, OrganisationWorkspace would
+  // wrongly tell them "you don't manage an organisation yet" even
+  // though organization_managers (and the WorkspaceSwitcher, which
+  // already reads it correctly) says otherwise. A narrow, additive
+  // fetch straight from organization_managers — not a second
+  // loadSnapshot, not touched by `applications`' own reviewer
+  // self-exclusion semantics — closes that gap for
+  // myOrganisationApplications specifically.
+  const [managerOnlyOrganisationIds, setManagerOnlyOrganisationIds] = useState<
+    ReadonlySet<string>
+  >(new Set());
   const refreshSequence = useRef(0);
 
   // `refresh` can be triggered concurrently from more than one source
@@ -350,6 +368,35 @@ export function PlatformProvider({
   const currentUser =
     state?.users.find((user) => user.id === state.currentUserId) ?? null;
 
+  useEffect(() => {
+    // No synchronous reset on the early-return path: the state already
+    // starts as an empty Set (see useState above), and if a different
+    // user later signs in this same effect re-runs (currentUser is a
+    // dependency) and overwrites it with a fresh fetch — a brief window
+    // of stale IDs immediately after logout is an acceptable trade-off
+    // against a synchronous setState-in-effect call.
+    if (backendKind !== "supabase" || !currentUser) return;
+    let cancelled = false;
+    getSupabaseBrowserClient()
+      .from("organization_managers")
+      .select("organization_id")
+      .eq("user_id", currentUser.id)
+      .then(
+        ({ data }) => {
+          if (cancelled) return;
+          setManagerOnlyOrganisationIds(
+            new Set((data ?? []).map((row) => row.organization_id)),
+          );
+        },
+        () => {
+          if (!cancelled) setManagerOnlyOrganisationIds(new Set());
+        },
+      );
+    return () => {
+      cancelled = true;
+    };
+  }, [backendKind, currentUser]);
+
   const applications = useMemo(() => {
     if (!state) return [];
     const linkedOrganisationIds = new Set(
@@ -375,14 +422,19 @@ export function PlatformProvider({
   // manage" list — deliberately independent of `applications`' reviewer
   // self-exclusion above (see the field's doc comment on
   // PlatformContextValue). Same linkedOrganisationIds membership test,
-  // just never filtered out for a reviewer.
+  // just never filtered out for a reviewer. Phase G1: also includes
+  // managerOnlyOrganisationIds (organization_managers, fetched above) so
+  // a manager who joined through invite/accept — never present in the
+  // legacy organization_members table state.memberships is sourced from
+  // — is recognized here too.
   const myOrganisationApplications = useMemo(() => {
     if (!state) return [];
-    const linkedOrganisationIds = new Set(
-      state.memberships
+    const linkedOrganisationIds = new Set([
+      ...state.memberships
         .filter((membership) => membership.userId === state.currentUserId)
         .map((membership) => membership.organisationId),
-    );
+      ...managerOnlyOrganisationIds,
+    ]);
     return state.registrations.flatMap((registration) => {
       if (
         registration.applicantUserId !== state.currentUserId &&
@@ -393,7 +445,7 @@ export function PlatformProvider({
       const application = applicationFromState(state, registration.id);
       return application ? [application] : [];
     });
-  }, [state]);
+  }, [state, managerOnlyOrganisationIds]);
 
   const availableOrganisations = useMemo(() => {
     if (!state?.currentUserId) return [];

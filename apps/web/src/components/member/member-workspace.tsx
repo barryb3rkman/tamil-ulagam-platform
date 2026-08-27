@@ -11,6 +11,7 @@ import { useMembershipService } from "@/features/membership/use-membership-servi
 import { withReturnTarget } from "@/lib/return-target";
 
 import { AffiliationCard } from "./affiliation-card";
+import { ManagementInvitationsAttention } from "./management-invitations-attention";
 
 type DataState = "loading" | "loaded" | "error";
 
@@ -161,6 +162,10 @@ export function MemberWorkspace() {
             Account settings
           </Link>
         </p>
+      </div>
+
+      <div className="mt-6">
+        <ManagementInvitationsAttention />
       </div>
 
       <div className="mt-8">

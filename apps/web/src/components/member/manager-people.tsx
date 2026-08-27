@@ -3,9 +3,9 @@
 import { Alert, Container, EmptyState, Skeleton } from "@tamil-ulagam/ui";
 import type {
   EligibleOrganisation,
-  ManagementGrant,
   MembershipRequestSummary,
 } from "@tamil-ulagam/shared";
+import { isTamilSangam } from "@tamil-ulagam/shared";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -15,6 +15,7 @@ import { useMembershipService } from "@/features/membership/use-membership-servi
 import { withReturnTarget } from "@/lib/return-target";
 
 import { MembershipRequestRow } from "./membership-request-row";
+import { OrganisationManagers } from "./organisation-managers";
 import {
   organisationKindLabel,
   organisationLocationLabel,
@@ -22,12 +23,6 @@ import {
 
 type DataState = "loading" | "loaded" | "error";
 type Tab = "members" | "managers";
-
-const managerRoleLabel: Record<ManagementGrant["role"], string> = {
-  owner: "Owner",
-  admin: "Admin",
-  representative: "Representative",
-};
 
 /**
  * The smallest coherent manager-facing People surface for Phase C2 —
@@ -57,9 +52,6 @@ export function ManagerPeople() {
     [],
   );
   const [requestsError, setRequestsError] = useState("");
-
-  const [managersState, setManagersState] = useState<DataState>("loading");
-  const [managers, setManagers] = useState<readonly ManagementGrant[]>([]);
 
   // Load the organisations this user manages, to power the picker (no
   // ?organization= yet) and to resolve the current organisation's name.
@@ -127,18 +119,6 @@ export function ManagerPeople() {
             : "Membership requests could not be loaded.",
         );
         setRequestsState("error");
-      });
-
-    membershipService
-      .listOrganisationManagers(activeOrganisation.id)
-      .then((data) => {
-        if (cancelled) return;
-        setManagers(data);
-        setManagersState("loaded");
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setManagersState("error");
       });
 
     return () => {
@@ -357,34 +337,13 @@ export function ManagerPeople() {
               ))}
             </div>
           )
-        ) : managersState === "loading" ? (
-          <Skeleton className="h-32 w-full" />
-        ) : managersState === "error" ? (
-          <Alert tone="error" role="alert">
-            Managers could not be loaded.
-          </Alert>
         ) : (
-          <div className="surface-card px-5">
-            <p className="text-slate px-0 py-3 text-sm">
-              Read-only for now — adding or removing managers isn&rsquo;t
-              available yet.
-            </p>
-            {managers.map((manager) => (
-              <div
-                key={manager.id}
-                className="border-global-navy/10 flex items-center justify-between border-t py-3"
-              >
-                <span className="text-charcoal text-sm">
-                  {manager.userId === currentUser.id
-                    ? "You"
-                    : "Another manager"}
-                </span>
-                <span className="text-slate text-sm font-semibold">
-                  {managerRoleLabel[manager.role]}
-                </span>
-              </div>
-            ))}
-          </div>
+          <OrganisationManagers
+            organisationId={activeOrganisation.id}
+            organisationName={activeOrganisation.name}
+            isSangam={isTamilSangam(activeOrganisation)}
+            currentUserId={currentUser.id}
+          />
         )}
       </div>
     </Container>

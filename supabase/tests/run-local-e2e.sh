@@ -27,4 +27,4 @@ export RUN_SUPABASE_E2E
 # (not isolated per test/worker) — running them concurrently risks the
 # exact kind of cross-test interference stateful browser e2e specs are
 # prone to, so this run is deliberately serial.
-exec pnpm --filter @tamil-ulagam/web exec playwright test --workers=1 tests/e2e/supabase-local.spec.ts tests/e2e/member-affiliation-lifecycle.spec.ts tests/e2e/sangam-registration-lifecycle.spec.ts tests/e2e/organisation-registration-lifecycle.spec.ts tests/e2e/workspace-navigation-lifecycle.spec.ts tests/e2e/workspace-accessibility.spec.ts tests/e2e/federation-admin-operations.spec.ts tests/e2e/admin-keyboard-decision-flows.spec.ts
+exec pnpm --filter @tamil-ulagam/web exec playwright test --workers=1 tests/e2e/supabase-local.spec.ts tests/e2e/member-affiliation-lifecycle.spec.ts tests/e2e/sangam-registration-lifecycle.spec.ts tests/e2e/organisation-registration-lifecycle.spec.ts tests/e2e/workspace-navigation-lifecycle.spec.ts tests/e2e/workspace-accessibility.spec.ts tests/e2e/federation-admin-operations.spec.ts tests/e2e/admin-keyboard-decision-flows.spec.ts tests/e2e/management-lifecycle.spec.ts

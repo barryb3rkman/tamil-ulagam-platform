@@ -394,3 +394,264 @@ test.describe("public join surfaces accessibility (axe)", () => {
     await checkAccessibility(page, "/join/member (logged out)");
   });
 });
+
+test.describe("management administration accessibility (axe)", () => {
+  test.skip(
+    process.env.RUN_SUPABASE_E2E !== "true",
+    "Runs only against the explicit local Supabase environment.",
+  );
+
+  const password = "LocalMgmtA11y!2048Aa";
+  const owner = {
+    email: "local-mgmt-a11y-owner@tamil-ulagam.test",
+    fullName: "Local Mgmt A11y Owner",
+  };
+  const invitee = {
+    email: "local-mgmt-a11y-invitee@tamil-ulagam.test",
+    fullName: "Local Mgmt A11y Invitee",
+  };
+  const coManager = {
+    email: "local-mgmt-a11y-comanager@tamil-ulagam.test",
+    fullName: "Local Mgmt A11y Co-Manager",
+  };
+  let admin: SupabaseClient<Database>;
+  let orgId = "";
+  let orgName = "";
+  let invitationId = "";
+  let coManagerId = "";
+
+  async function signInMgmt(page: Page, email: string) {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/login");
+    await page.getByLabel("Email").fill(email);
+    await page.getByLabel("Password").fill(password);
+    await page.getByRole("button", { name: "Sign In" }).click();
+    await page.waitForURL((url) => !url.pathname.startsWith("/login"));
+  }
+
+  test.beforeAll(async () => {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_LOCAL_SERVICE_ROLE_KEY;
+    if (!url || !serviceRoleKey)
+      throw new Error("Local Supabase not configured.");
+    admin = createClient<Database>(url, serviceRoleKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    async function ensureUser(fixture: { email: string; fullName: string }) {
+      const created = await admin.auth.admin.createUser({
+        email: fixture.email,
+        password,
+        email_confirm: true,
+        user_metadata: { full_name: fixture.fullName },
+      });
+      if (created.error) {
+        const existing = await admin.auth.admin.listUsers();
+        const found = existing.data.users.find(
+          (u) => u.email === fixture.email,
+        );
+        if (!found)
+          throw new Error(`Create ${fixture.email}: ${created.error.message}`);
+        return found.id;
+      }
+      return created.data.user.id;
+    }
+
+    const ownerId = await ensureUser(owner);
+    await ensureUser(invitee);
+
+    orgName = "Local Mgmt A11y Org";
+    const existingOrg = await admin
+      .from("organizations")
+      .select("id")
+      .eq("name", orgName)
+      .maybeSingle();
+    if (existingOrg.data) {
+      orgId = existingOrg.data.id;
+    } else {
+      const org = await admin
+        .from("organizations")
+        .insert({
+          category: "tamil_community",
+          name: orgName,
+          country: "Canada",
+          region: "Ontario",
+          city: "Toronto",
+          official_email: `office-${crypto.randomUUID().slice(0, 8)}@tamil-ulagam.test`,
+          official_phone: "+1 416 555 0111",
+          description: "Management accessibility QA fixture.",
+          registration_status: "informal",
+        })
+        .select("id")
+        .single();
+      if (org.error || !org.data)
+        throw new Error(`Create org: ${org.error?.message}`);
+      orgId = org.data.id;
+      const application = await admin.from("organization_applications").insert({
+        organization_id: orgId,
+        submitted_by: ownerId,
+        status: "verified",
+        representative_full_name: "Local Mgmt A11y Rep",
+        representative_email: owner.email,
+        representative_phone: "+1 416 555 0111",
+        authorization_declaration: true,
+        accuracy_declaration: true,
+        submitted_at: new Date().toISOString(),
+      });
+      if (application.error)
+        throw new Error(`Application: ${application.error.message}`);
+      const grant = await admin.from("organization_managers").insert({
+        organization_id: orgId,
+        user_id: ownerId,
+        role: "owner",
+        granted_by: ownerId,
+      });
+      if (grant.error) throw new Error(`Manager grant: ${grant.error.message}`);
+    }
+
+    const existingInvitation = await admin
+      .from("organization_manager_invitations")
+      .select("id")
+      .eq("organization_id", orgId)
+      .eq("email", invitee.email)
+      .eq("status", "pending")
+      .maybeSingle();
+    if (existingInvitation.data) {
+      invitationId = existingInvitation.data.id;
+    } else {
+      const invitation = await admin
+        .from("organization_manager_invitations")
+        .insert({
+          organization_id: orgId,
+          email: invitee.email,
+          role: "admin",
+          invited_by: ownerId,
+        })
+        .select("id")
+        .single();
+      if (invitation.error || !invitation.data)
+        throw new Error(`Invitation: ${invitation.error?.message}`);
+      invitationId = invitation.data.id;
+    }
+
+    // A second, already-active co-manager (fixture-inserted directly,
+    // not through accept_organization_manager_invitation — this describe
+    // block is scanning UI accessibility, not re-proving the RPC
+    // security matrix local-integration-management.test.ts already
+    // covers) so the role-change/remove/transfer dialogs have a real
+    // target to open against.
+    coManagerId = await ensureUser(coManager);
+    const existingGrant = await admin
+      .from("organization_managers")
+      .select("id")
+      .eq("organization_id", orgId)
+      .eq("user_id", coManagerId)
+      .maybeSingle();
+    if (!existingGrant.data) {
+      const grant = await admin.from("organization_managers").insert({
+        organization_id: orgId,
+        user_id: coManagerId,
+        role: "admin",
+        granted_by: ownerId,
+      });
+      if (grant.error)
+        throw new Error(`Co-manager grant: ${grant.error.message}`);
+    }
+  });
+
+  test("Managers tab — active managers and pending invitations", async ({
+    page,
+  }) => {
+    await signInMgmt(page, owner.email);
+    await page.goto(`/workspace/organisation/people?organization=${orgId}`);
+    await expect(page.getByRole("heading", { name: orgName })).toBeVisible();
+    await page.getByRole("tab", { name: "Managers" }).click();
+    await expect(page.getByText(invitee.email).first()).toBeVisible();
+    await checkAccessibility(
+      page,
+      "Managers tab (active + pending invitations)",
+    );
+  });
+
+  test("Invite manager dialog", async ({ page }) => {
+    await signInMgmt(page, owner.email);
+    await page.goto(`/workspace/organisation/people?organization=${orgId}`);
+    await page.getByRole("tab", { name: "Managers" }).click();
+    await page.getByRole("button", { name: "Invite manager" }).click();
+    await expect(
+      page.getByRole("heading", { name: "Invite a manager" }),
+    ).toBeVisible();
+    await checkAccessibility(page, "Invite manager dialog");
+  });
+
+  test("Management history", async ({ page }) => {
+    await signInMgmt(page, owner.email);
+    await page.goto(`/workspace/organisation/people?organization=${orgId}`);
+    await page.getByRole("tab", { name: "Managers" }).click();
+    await page.getByRole("button", { name: /View management history/ }).click();
+    await checkAccessibility(page, "Management history");
+  });
+
+  test("Recipient's management invitation screen", async ({ page }) => {
+    await signInMgmt(page, invitee.email);
+    await page.goto("/workspace/invitations");
+    await expect(page.getByText(orgName)).toBeVisible();
+    await checkAccessibility(page, "Management invitation recipient screen");
+  });
+
+  test("Role-change confirmation dialog", async ({ page }) => {
+    await signInMgmt(page, owner.email);
+    await page.goto(`/workspace/organisation/people?organization=${orgId}`);
+    await page.getByRole("tab", { name: "Managers" }).click();
+    await page
+      .getByRole("button", { name: "Make Representative" })
+      .first()
+      .click();
+    await expect(
+      page.getByRole("heading", { name: "Change role to Representative?" }),
+    ).toBeVisible();
+    await checkAccessibility(page, "Role-change confirmation dialog");
+  });
+
+  test("Remove-manager confirmation dialog", async ({ page }) => {
+    await signInMgmt(page, owner.email);
+    await page.goto(`/workspace/organisation/people?organization=${orgId}`);
+    await page.getByRole("tab", { name: "Managers" }).click();
+    await page.getByRole("button", { name: "Remove" }).first().click();
+    await expect(
+      page.getByRole("heading", { name: "Remove this manager?" }),
+    ).toBeVisible();
+    await checkAccessibility(page, "Remove-manager confirmation dialog");
+  });
+
+  test("Transfer ownership dialog", async ({ page }) => {
+    await signInMgmt(page, owner.email);
+    await page.goto(`/workspace/organisation/people?organization=${orgId}`);
+    await page.getByRole("tab", { name: "Managers" }).click();
+    await page
+      .getByRole("button", { name: "Transfer ownership" })
+      .first()
+      .click();
+    await expect(
+      page.getByRole("heading", { name: "Transfer ownership" }),
+    ).toBeVisible();
+    await checkAccessibility(page, "Transfer ownership dialog");
+  });
+
+  test.afterAll(async () => {
+    await admin
+      .from("organization_manager_invitations")
+      .delete()
+      .eq("id", invitationId);
+    await admin
+      .from("organization_managers")
+      .delete()
+      .eq("organization_id", orgId)
+      .eq("user_id", coManagerId);
+    const { data } = await admin.auth.admin.listUsers();
+    for (const fixture of [owner, invitee, coManager]) {
+      const found = data.users.find((u) => u.email === fixture.email);
+      if (found) await admin.auth.admin.deleteUser(found.id);
+    }
+  });
+});

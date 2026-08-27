@@ -47,6 +47,16 @@ export type {
 export { isTamilSangam } from "./membership";
 
 export type {
+  ManagementHistoryEvent,
+  ManagementHistoryEventType,
+  ManagerInvitation,
+  ManagerInvitationStatus,
+  ManagerWithProfile,
+  MyManagementInvitation,
+  PreviousOwnerOutcome,
+} from "./management";
+
+export type {
   AdminActivityDomain,
   AdminActivityItem,
   AdminAttentionSummary,

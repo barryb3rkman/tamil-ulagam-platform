@@ -28,7 +28,18 @@ vi.mock("@/lib/supabase/environment", () => ({
   }),
 }));
 vi.mock("@/lib/supabase/client", () => ({
-  getSupabaseBrowserClient: () => ({}),
+  // Phase G1's platform-provider effect calls
+  // .from("organization_managers").select(...).eq(...) directly (see
+  // managerOnlyOrganisationIds) — a minimal thenable chain so that
+  // effect resolves quietly with no rows, matching this file's own
+  // narrow session-restore concern rather than management data.
+  getSupabaseBrowserClient: () => ({
+    from: () => ({
+      select: () => ({
+        eq: () => Promise.resolve({ data: [] }),
+      }),
+    }),
+  }),
 }));
 vi.mock("next/navigation", () => ({
   usePathname: () => "/admin/registrations/review",

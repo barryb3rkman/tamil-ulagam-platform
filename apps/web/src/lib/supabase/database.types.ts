@@ -306,6 +306,125 @@ export type Database = {
           },
         ];
       };
+      organization_manager_history: {
+        Row: {
+          actor_user_id: string | null;
+          created_at: string;
+          event_type: Database["public"]["Enums"]["organization_manager_history_event"];
+          id: string;
+          invitation_id: string | null;
+          manager_user_id: string | null;
+          new_role:
+            Database["public"]["Enums"]["organization_membership_role"] | null;
+          note: string | null;
+          organization_id: string;
+          previous_role:
+            Database["public"]["Enums"]["organization_membership_role"] | null;
+        };
+        Insert: {
+          actor_user_id?: string | null;
+          created_at?: string;
+          event_type: Database["public"]["Enums"]["organization_manager_history_event"];
+          id?: string;
+          invitation_id?: string | null;
+          manager_user_id?: string | null;
+          new_role?:
+            Database["public"]["Enums"]["organization_membership_role"] | null;
+          note?: string | null;
+          organization_id: string;
+          previous_role?:
+            Database["public"]["Enums"]["organization_membership_role"] | null;
+        };
+        Update: {
+          actor_user_id?: string | null;
+          created_at?: string;
+          event_type?: Database["public"]["Enums"]["organization_manager_history_event"];
+          id?: string;
+          invitation_id?: string | null;
+          manager_user_id?: string | null;
+          new_role?:
+            Database["public"]["Enums"]["organization_membership_role"] | null;
+          note?: string | null;
+          organization_id?: string;
+          previous_role?:
+            Database["public"]["Enums"]["organization_membership_role"] | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "organization_manager_history_invitation_id_fkey";
+            columns: ["invitation_id"];
+            isOneToOne: false;
+            referencedRelation: "organization_manager_invitations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "organization_manager_history_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      organization_manager_invitations: {
+        Row: {
+          accepted_at: string | null;
+          accepted_by: string | null;
+          created_at: string;
+          declined_at: string | null;
+          email: string;
+          expires_at: string;
+          id: string;
+          invited_at: string;
+          invited_by: string | null;
+          organization_id: string;
+          revoked_at: string | null;
+          role: Database["public"]["Enums"]["organization_membership_role"];
+          status: Database["public"]["Enums"]["organization_manager_invitation_status"];
+          updated_at: string;
+        };
+        Insert: {
+          accepted_at?: string | null;
+          accepted_by?: string | null;
+          created_at?: string;
+          declined_at?: string | null;
+          email: string;
+          expires_at?: string;
+          id?: string;
+          invited_at?: string;
+          invited_by?: string | null;
+          organization_id: string;
+          revoked_at?: string | null;
+          role: Database["public"]["Enums"]["organization_membership_role"];
+          status?: Database["public"]["Enums"]["organization_manager_invitation_status"];
+          updated_at?: string;
+        };
+        Update: {
+          accepted_at?: string | null;
+          accepted_by?: string | null;
+          created_at?: string;
+          declined_at?: string | null;
+          email?: string;
+          expires_at?: string;
+          id?: string;
+          invited_at?: string;
+          invited_by?: string | null;
+          organization_id?: string;
+          revoked_at?: string | null;
+          role?: Database["public"]["Enums"]["organization_membership_role"];
+          status?: Database["public"]["Enums"]["organization_manager_invitation_status"];
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "organization_manager_invitations_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       organization_managers: {
         Row: {
           granted_at: string;
@@ -818,9 +937,47 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      accept_organization_manager_invitation: {
+        Args: { target_invitation_id: string };
+        Returns: {
+          granted_at: string;
+          granted_by: string | null;
+          id: string;
+          organization_id: string;
+          role: Database["public"]["Enums"]["organization_membership_role"];
+          user_id: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "organization_managers";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       can_manage_organization: {
         Args: { target_organization_id: string };
         Returns: boolean;
+      };
+      change_organization_manager_role: {
+        Args: {
+          new_role: Database["public"]["Enums"]["organization_membership_role"];
+          target_organization_id: string;
+          target_user_id: string;
+        };
+        Returns: {
+          granted_at: string;
+          granted_by: string | null;
+          id: string;
+          organization_id: string;
+          role: Database["public"]["Enums"]["organization_membership_role"];
+          user_id: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "organization_managers";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
       };
       check_duplicate_organization_signals: {
         Args: {
@@ -892,6 +1049,31 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      decline_organization_manager_invitation: {
+        Args: { target_invitation_id: string };
+        Returns: {
+          accepted_at: string | null;
+          accepted_by: string | null;
+          created_at: string;
+          declined_at: string | null;
+          email: string;
+          expires_at: string;
+          id: string;
+          invited_at: string;
+          invited_by: string | null;
+          organization_id: string;
+          revoked_at: string | null;
+          role: Database["public"]["Enums"]["organization_membership_role"];
+          status: Database["public"]["Enums"]["organization_manager_invitation_status"];
+          updated_at: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "organization_manager_invitations";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       ensure_sangam_application_draft: {
         Args: never;
         Returns: {
@@ -940,6 +1122,35 @@ export type Database = {
           can_review_registrations: boolean;
         }[];
       };
+      invite_organization_manager: {
+        Args: {
+          invitee_email: string;
+          invitee_role: Database["public"]["Enums"]["organization_membership_role"];
+          target_organization_id: string;
+        };
+        Returns: {
+          accepted_at: string | null;
+          accepted_by: string | null;
+          created_at: string;
+          declined_at: string | null;
+          email: string;
+          expires_at: string;
+          id: string;
+          invited_at: string;
+          invited_by: string | null;
+          organization_id: string;
+          revoked_at: string | null;
+          role: Database["public"]["Enums"]["organization_membership_role"];
+          status: Database["public"]["Enums"]["organization_manager_invitation_status"];
+          updated_at: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "organization_manager_invitations";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       invite_organization_member: {
         Args: {
           invited_membership_type?: Database["public"]["Enums"]["organization_membership_type"];
@@ -982,6 +1193,10 @@ export type Database = {
       issue_organization_email_verification_token: {
         Args: { target_organization_id: string };
         Returns: string;
+      };
+      leave_organization_management: {
+        Args: { target_organization_id: string };
+        Returns: undefined;
       };
       leave_organization_membership: {
         Args: { decision_note?: string; target_membership_id: string };
@@ -1129,9 +1344,82 @@ export type Database = {
           subtype: string;
         }[];
       };
+      list_my_management_invitations: {
+        Args: never;
+        Returns: {
+          expires_at: string;
+          id: string;
+          invited_at: string;
+          invited_by: string;
+          inviter_name: string;
+          organization_id: string;
+          organization_kind: string;
+          organization_name: string;
+          role: Database["public"]["Enums"]["organization_membership_role"];
+          status: Database["public"]["Enums"]["organization_manager_invitation_status"];
+        }[];
+      };
+      list_organization_management_history: {
+        Args: { target_organization_id: string };
+        Returns: {
+          actor_name: string;
+          actor_user_id: string;
+          created_at: string;
+          event_type: Database["public"]["Enums"]["organization_manager_history_event"];
+          id: string;
+          invitation_id: string;
+          manager_name: string;
+          manager_user_id: string;
+          new_role: Database["public"]["Enums"]["organization_membership_role"];
+          note: string;
+          organization_id: string;
+          previous_role: Database["public"]["Enums"]["organization_membership_role"];
+        }[];
+      };
+      list_organization_manager_invitations: {
+        Args: { target_organization_id: string };
+        Returns: {
+          accepted_at: string | null;
+          accepted_by: string | null;
+          created_at: string;
+          declined_at: string | null;
+          email: string;
+          expires_at: string;
+          id: string;
+          invited_at: string;
+          invited_by: string | null;
+          organization_id: string;
+          revoked_at: string | null;
+          role: Database["public"]["Enums"]["organization_membership_role"];
+          status: Database["public"]["Enums"]["organization_manager_invitation_status"];
+          updated_at: string;
+        }[];
+        SetofOptions: {
+          from: "*";
+          to: "organization_manager_invitations";
+          isOneToOne: false;
+          isSetofReturn: true;
+        };
+      };
+      list_organization_managers: {
+        Args: { target_organization_id: string };
+        Returns: {
+          full_name: string;
+          granted_at: string;
+          granted_by: string;
+          id: string;
+          organization_id: string;
+          role: Database["public"]["Enums"]["organization_membership_role"];
+          user_id: string;
+        }[];
+      };
       organization_application_is_editable: {
         Args: { target_organization_id: string };
         Returns: boolean;
+      };
+      remove_organization_manager: {
+        Args: { target_organization_id: string; target_user_id: string };
+        Returns: undefined;
       };
       request_organization_membership: {
         Args: {
@@ -1191,6 +1479,31 @@ export type Database = {
         SetofOptions: {
           from: "*";
           to: "organization_applications";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      revoke_organization_manager_invitation: {
+        Args: { target_invitation_id: string };
+        Returns: {
+          accepted_at: string | null;
+          accepted_by: string | null;
+          created_at: string;
+          declined_at: string | null;
+          email: string;
+          expires_at: string;
+          id: string;
+          invited_at: string;
+          invited_by: string | null;
+          organization_id: string;
+          revoked_at: string | null;
+          role: Database["public"]["Enums"]["organization_membership_role"];
+          status: Database["public"]["Enums"]["organization_manager_invitation_status"];
+          updated_at: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "organization_manager_invitations";
           isOneToOne: true;
           isSetofReturn: false;
         };
@@ -1265,6 +1578,14 @@ export type Database = {
         };
         Returns: string;
       };
+      transfer_organization_ownership: {
+        Args: {
+          previous_owner_new_role: string;
+          target_organization_id: string;
+          target_user_id: string;
+        };
+        Returns: undefined;
+      };
       transition_partnership_enquiry: {
         Args: {
           target_enquiry_id: string;
@@ -1305,6 +1626,17 @@ export type Database = {
         | "business"
         | "nonprofit"
         | "other";
+      organization_manager_history_event:
+        | "invited"
+        | "invitation_accepted"
+        | "invitation_declined"
+        | "invitation_revoked"
+        | "role_changed"
+        | "manager_removed"
+        | "manager_left"
+        | "ownership_transferred";
+      organization_manager_invitation_status:
+        "pending" | "accepted" | "declined" | "expired" | "revoked";
       organization_membership_role: "owner" | "admin" | "representative";
       organization_membership_status:
         "pending" | "approved" | "rejected" | "revoked";
@@ -1476,6 +1808,23 @@ export const Constants = {
         "business",
         "nonprofit",
         "other",
+      ],
+      organization_manager_history_event: [
+        "invited",
+        "invitation_accepted",
+        "invitation_declined",
+        "invitation_revoked",
+        "role_changed",
+        "manager_removed",
+        "manager_left",
+        "ownership_transferred",
+      ],
+      organization_manager_invitation_status: [
+        "pending",
+        "accepted",
+        "declined",
+        "expired",
+        "revoked",
       ],
       organization_membership_role: ["owner", "admin", "representative"],
       organization_membership_status: [
