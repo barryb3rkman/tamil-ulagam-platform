@@ -99,7 +99,13 @@ test.describe("local Supabase browser enrollment", () => {
     ).toBeVisible();
     await signOut(page);
     await signIn(page, applicant.email, applicant.password);
-    await expect(page).toHaveURL(/\/register\/?$/);
+    // E1.5: a fresh member-only login no longer defaults into Organisation
+    // registration (that used to silently create a blank draft the
+    // moment anyone signed in) — it lands on /dashboard, which routes an
+    // application-less account to the Member workspace. Registration is
+    // now always a deliberate visit to /join/organisation.
+    await expect(page).toHaveURL(/\/workspace\/member\/?$/);
+    await page.goto("/join/organisation");
 
     // Step 1 — Organisation
     await page.getByLabel("Business / Company").check();

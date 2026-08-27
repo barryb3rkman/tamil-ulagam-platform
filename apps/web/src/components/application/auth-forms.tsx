@@ -284,13 +284,25 @@ export function LoginForm() {
         return;
       }
       setState("success");
+      // E1.5: a fresh member-only sign-in (no application, no review
+      // role) used to fall through to /register, whose own bootstrap
+      // effect immediately calls ensureDraft() — silently enrolling
+      // every such visitor as the owner of a blank organisation the
+      // moment they logged in, long before they ever chose a journey.
+      // /dashboard's own compatibility routing (Phase E1) already
+      // handles every case correctly — including "no managed workspace
+      // at all" (→ /workspace/member) — so it replaces the old
+      // no-application branch here. hasApplication still takes priority
+      // over canReview, exactly as before this fix: a dual-role account
+      // (their own organisation *and* a reviewer grant) lands on their
+      // own context first — /admin stays one switcher click away via
+      // its Federation entry — rather than being routed straight past
+      // their own organisation every time they sign in.
       router.push(
         returnTarget ??
-          (result.hasApplication
-            ? "/dashboard"
-            : result.canReview
-              ? "/admin"
-              : "/register"),
+          (!result.hasApplication && result.canReview
+            ? "/admin"
+            : "/dashboard"),
       );
     } catch (error: unknown) {
       setState("error");

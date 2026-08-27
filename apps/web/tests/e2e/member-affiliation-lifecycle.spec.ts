@@ -40,8 +40,10 @@ async function signIn(page: Page, email: string, password: string) {
   // "Signed in" label — that label and the redirect can race, so
   // asserting on it directly is flaky. The exact destination depends on
   // account state (the manager fixture below is also an application
-  // submitter, so it lands on /dashboard; the plain member lands on
-  // /register) — only that it actually left /login matters here.
+  // submitter, so it lands on /dashboard, which routes it on to the
+  // Organisation Workspace; a plain member with no application lands on
+  // /dashboard too, routed on to the Member workspace) — only that it
+  // actually left /login matters here.
   await page.waitForURL((url) => !url.pathname.startsWith("/login"));
 }
 

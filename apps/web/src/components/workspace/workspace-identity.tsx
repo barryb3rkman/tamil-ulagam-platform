@@ -27,6 +27,13 @@ export interface WorkspaceIdentityProps {
    * be resolved (a stale/invalid id) — lets the identity bar still say
    * "Organisation" rather than falling back to something generic. */
   readonly fallbackType: WorkspaceType | null;
+  /** The raw entity id from the URL, if any — distinguishes "no
+   * particular workspace chosen yet" (the multi-workspace picker screen,
+   * `fallbackId` is null) from "a specific id was requested but isn't
+   * one of the caller's own workspaces" (a genuinely stale/invalid link,
+   * `fallbackId` is set but `current` is still null). Only the second
+   * case should read as "Unavailable" — the picker is not an error. */
+  readonly fallbackId: string | null;
 }
 
 /** "You are currently managing X" (brief section 5) — the always-visible
@@ -35,6 +42,7 @@ export function WorkspaceIdentity({
   loading,
   current,
   fallbackType,
+  fallbackId,
 }: WorkspaceIdentityProps) {
   if (loading) {
     return (
@@ -48,7 +56,8 @@ export function WorkspaceIdentity({
   const type = current?.type ?? fallbackType;
   const accent = type ? accentByType[type] : null;
   const label =
-    current?.label ?? (type ? "Unavailable workspace" : "Workspace");
+    current?.label ??
+    (!type ? "Workspace" : fallbackId ? "Unavailable workspace" : "Choose one");
 
   return (
     <div className="flex min-w-0 items-center gap-2.5">

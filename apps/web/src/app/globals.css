@@ -819,6 +819,19 @@ footer a:focus-visible {
     clip-path: none !important;
   }
 
+  /* .motion-sheet (Sheet/WorkspaceSwitcher) uses a `@starting-style`
+     discrete transition rather than a simple opacity/transform pair —
+     the universal `transition-duration: 0.01ms` rule above still applies
+     to it, but a starting-style-driven open can visibly render at its
+     pre-transition (closed) frame for that instant. Force the open state
+     directly so reduced-motion never shows a sheet mid-transition,
+     matching brief section 18: "no hidden content waiting for
+     animation." */
+  .motion-sheet[open] {
+    opacity: 1 !important;
+    transform: translate3d(0, 0, 0) !important;
+  }
+
   [data-motion-ambient],
   [data-motion-skeleton] {
     animation: none !important;

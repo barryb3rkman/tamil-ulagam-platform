@@ -77,11 +77,16 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
             </Link>
             <span className="hidden h-8 w-px bg-white/15 sm:block" />
             {isHydrated && currentUser ? (
-              <div role="group" aria-label="Current workspace">
+              <div
+                role="group"
+                aria-label="Current workspace"
+                className="min-w-0"
+              >
                 <WorkspaceIdentity
                   loading={chromeLoading}
                   current={current}
                   fallbackType={active.type}
+                  fallbackId={active.id}
                 />
               </div>
             ) : (

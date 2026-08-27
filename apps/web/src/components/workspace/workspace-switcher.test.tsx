@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import type { WorkspaceOption } from "@/features/workspace/workspace-options";
 
@@ -28,6 +28,24 @@ beforeAll(() => {
   }
 });
 
+/** jsdom has no real viewport, so `matchMedia` is polyfilled per test to
+ * return a configurable `matches` — lets tests choose mobile vs desktop
+ * explicitly rather than depending on jsdom's default (irrelevant)
+ * window size. */
+function mockMatchMedia(matches: boolean) {
+  window.matchMedia = ((query: string) => ({
+    matches,
+    media: query,
+    onchange: null,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+    addListener: () => undefined,
+    removeListener: () => undefined,
+    dispatchEvent: () => false,
+  })) as unknown as typeof window.matchMedia;
+}
+
+beforeEach(() => mockMatchMedia(true));
 afterEach(cleanup);
 
 const memberOption: WorkspaceOption = {
@@ -156,6 +174,53 @@ describe("WorkspaceSwitcher", () => {
     openSwitcher();
     fireEvent.click(screen.getByRole("link", { name: /^Member/ }));
     expect(document.querySelector("dialog")).not.toHaveAttribute("open");
+  });
+
+  it("opens as a bottom sheet on mobile and a right-side drawer on desktop", () => {
+    mockMatchMedia(false);
+    const { unmount } = render(
+      <WorkspaceSwitcher options={[memberOption]} loading={false} />,
+    );
+    openSwitcher();
+    expect(document.querySelector("dialog")).toHaveAttribute(
+      "data-side",
+      "bottom",
+    );
+    unmount();
+
+    mockMatchMedia(true);
+    render(<WorkspaceSwitcher options={[memberOption]} loading={false} />);
+    openSwitcher();
+    expect(document.querySelector("dialog")).toHaveAttribute(
+      "data-side",
+      "right",
+    );
+  });
+
+  it("keeps a long workspace name truncating rather than overflowing its row", () => {
+    const longOption: WorkspaceOption = {
+      type: "organisation",
+      id: "org-long",
+      label:
+        "International Tamil Education and Cultural Development Foundation",
+      subtitle: "Toronto, Canada",
+      href: "/workspace/organisation?organization=org-long",
+      current: false,
+    };
+    render(
+      <WorkspaceSwitcher
+        options={[memberOption, longOption]}
+        loading={false}
+      />,
+    );
+    openSwitcher();
+    const label = screen.getByText(longOption.label);
+    // The truncating span, and every ancestor up to the <li> grid item,
+    // must allow shrinking below their content's natural width — a
+    // missing min-w-0 anywhere in that chain silently defeats `truncate`
+    // and the name overflows its row uncontained instead.
+    expect(label).toHaveClass("truncate");
+    expect(label.closest("li")).toHaveClass("min-w-0");
   });
 
   it("disables the trigger while loading", () => {

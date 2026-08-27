@@ -175,7 +175,7 @@ function WorkspacePicker({
       <h1 className="text-global-navy mt-2 text-2xl font-bold sm:text-3xl">
         You manage more than one workspace
       </h1>
-      <p className="text-slate mt-2 max-w-xl">
+      <p className="text-charcoal mt-2 max-w-xl">
         Choose the one you want to open — this list always matches what you
         actually manage.
       </p>
@@ -225,7 +225,7 @@ function PickerSection({
 }) {
   return (
     <div>
-      <h2 className="text-slate mb-2 text-[0.68rem] font-bold tracking-[0.14em] uppercase">
+      <h2 className="text-heritage-maroon mb-2 text-[0.68rem] font-bold tracking-[0.14em] uppercase">
         {heading}
       </h2>
       <ul className="grid gap-2 sm:grid-cols-2">
@@ -252,7 +252,7 @@ function DashboardLoading({
   return (
     <div
       role="status"
-      className="rounded-card text-slate shadow-card bg-white p-7"
+      className="rounded-card text-charcoal shadow-card bg-white p-7"
     >
       {label}
     </div>
@@ -265,7 +265,7 @@ function SignedOutDashboard() {
       <h1 className="text-global-navy text-3xl font-bold">
         Sign in to view your dashboard
       </h1>
-      <p className="text-slate mt-3">
+      <p className="text-charcoal mt-3">
         Sign in to access your organisation enrollment workspace.
       </p>
       <Link
