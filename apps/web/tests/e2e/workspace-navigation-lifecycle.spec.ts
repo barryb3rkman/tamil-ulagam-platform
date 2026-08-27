@@ -371,7 +371,7 @@ test.describe("real V3 workspace switching across the five named personas", () =
     await page.getByRole("link", { name: "Federation Admin" }).click();
     await expect(page).toHaveURL(/\/admin\/?$/);
     await expect(
-      page.getByRole("heading", { name: "Admin dashboard" }),
+      page.getByRole("heading", { name: "What needs attention now" }),
     ).toBeVisible();
   });
 

@@ -3,6 +3,11 @@ export { Badge, type BadgeProps } from "./badge";
 export { Button, type ButtonProps } from "./button";
 export { Checkbox, type CheckboxProps } from "./checkbox";
 export { Container, type ContainerProps } from "./container";
+export {
+  DataTable,
+  type DataTableColumn,
+  type DataTableProps,
+} from "./data-table";
 export { Dialog, type DialogProps } from "./dialog";
 export { EmptyState, type EmptyStateProps } from "./empty-state";
 export { FormField, descriptionId, type FormFieldProps } from "./form-field";

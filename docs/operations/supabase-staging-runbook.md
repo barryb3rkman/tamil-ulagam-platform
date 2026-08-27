@@ -18,6 +18,8 @@ Stop if migration history differs unexpectedly, the dry run contains destructive
 
 After push, inspect tables, functions, grants, RLS enablement/policies, Auth trigger behavior, and migration history. Configure Auth only through the separate hosted checklist, then deploy a Preview build with the dedicated staging public URL/key.
 
+For Federation Admin Operations V3, confirm the linked staging project is the known dedicated staging target and the migration history has zero drift before applying `20260827000000_federation_admin_operations.sql`. Verify the create-only anonymous partnership RPC, closed table grants, Admin-only projections, reviewer/Admin capability split and partnership history actor/timestamp behavior with real JWTs. Do not change Auth, SMTP, CAPTCHA or production resources as part of this migration.
+
 ## End-to-end staging smoke sequence
 
 Use disposable applicant, reviewer, and admin accounts and non-sensitive organisation information.

@@ -204,9 +204,7 @@ test.describe("local Supabase real Tamil Sangam registration lifecycle", () => {
         .filter({ hasText: sangamName })
         .getByRole("link", { name: "Review" })
         .click();
-      await expect(reviewerPage).toHaveURL(
-        /\/admin\/registrations\/review\/?\?application=/,
-      );
+      await expect(reviewerPage).toHaveURL(/\/admin\/reviews\/?\?application=/);
       // Reviewer-facing Sangam-specific presentation, not a generic
       // "Tamil / Community Organisation" label (D1 brief section 25).
       await expect(

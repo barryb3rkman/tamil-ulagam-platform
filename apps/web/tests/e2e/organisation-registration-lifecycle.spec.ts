@@ -204,9 +204,7 @@ test.describe("local Supabase real V3 Organisation registration lifecycle", () =
         .filter({ hasText: organisationName })
         .getByRole("link", { name: "Review" })
         .click();
-      await expect(reviewerPage).toHaveURL(
-        /\/admin\/registrations\/review\/?\?application=/,
-      );
+      await expect(reviewerPage).toHaveURL(/\/admin\/reviews\/?\?application=/);
       await reviewerPage
         .getByRole("button", { name: "Request Changes" })
         .click();

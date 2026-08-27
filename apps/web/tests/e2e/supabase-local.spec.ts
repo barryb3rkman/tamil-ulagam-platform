@@ -169,9 +169,7 @@ test.describe("local Supabase browser enrollment", () => {
       .filter({ hasText: "Nila Global Services" })
       .getByRole("link", { name: "Review" })
       .click();
-    await expect(page).toHaveURL(
-      /\/admin\/registrations\/review\/?\?application=/,
-    );
+    await expect(page).toHaveURL(/\/admin\/reviews\/?\?application=/);
     await page.getByRole("button", { name: "Request Changes" }).click();
     await page
       .getByLabel("Feedback message")

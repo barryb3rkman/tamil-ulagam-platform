@@ -4,17 +4,17 @@ import type { OrganisationApplication } from "@tamil-ulagam/shared";
 import Link from "next/link";
 
 import { getOrganisationDisplayLabel } from "@/content/enrollment";
-import { usePlatform } from "@/features/enrollment/platform-provider";
 
 import { formatDate } from "./application-details";
 import { RegistrationStatusBadge } from "./registration-status-badge";
 
 export function ApplicationQueueTable({
   applications,
+  duplicateApplicationIds,
 }: {
   readonly applications: readonly OrganisationApplication[];
+  readonly duplicateApplicationIds?: ReadonlySet<string>;
 }) {
-  const { backendKind } = usePlatform();
   if (applications.length === 0)
     return (
       <div className="rounded-card border-global-navy/12 border bg-white p-7 text-center">
@@ -51,6 +51,11 @@ export function ApplicationQueueTable({
                   application.registration.categoryProfile,
                 )}
               </p>
+              {duplicateApplicationIds?.has(application.registration.id) ? (
+                <p className="text-warning mt-2 text-xs font-semibold">
+                  Possible duplicate signal
+                </p>
+              ) : null}
             </div>
             <div className="text-sm">
               <p className="text-slate mb-1 text-xs font-bold tracking-[0.08em] uppercase xl:hidden">
@@ -94,11 +99,7 @@ export function ApplicationQueueTable({
               />
             </div>
             <Link
-              href={
-                backendKind === "supabase"
-                  ? `/admin/registrations/review?application=${encodeURIComponent(application.registration.id)}`
-                  : `/admin/registrations/${application.registration.id}`
-              }
+              href={`/admin/reviews?application=${encodeURIComponent(application.registration.id)}`}
               className="border-global-navy text-global-navy focus-visible:ring-focus hover:bg-global-navy rounded-button inline-flex min-h-11 items-center justify-center border px-4 py-2 text-sm font-semibold hover:text-white"
             >
               Review

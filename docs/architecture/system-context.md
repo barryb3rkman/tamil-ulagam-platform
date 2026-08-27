@@ -8,6 +8,8 @@ Tamil Ulagam is intended to become a large global digital platform serving Tamil
 
 The system contains one statically exported Next.js application, reusable internal packages, and an organisation-enrollment application layer that can use Supabase Auth and PostgreSQL through a browser-safe service boundary. The repository includes the database migration, RLS rules, restricted lifecycle functions, and deterministic mock services for automated tests and development without Supabase. No hosted database is linked or changed by the repository itself.
 
+The Federation Admin operations layer composes registration reviews, operational Organisation/Tamil Sangam directories, membership escalation, partnership enquiries and immutable lifecycle activity through typed services and narrow Supabase projections. Reviewer and Federation Admin responsibilities remain explicitly distinct.
+
 ```text
 Public visitor
     |

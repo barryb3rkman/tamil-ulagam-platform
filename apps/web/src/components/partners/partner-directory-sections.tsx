@@ -7,6 +7,8 @@ import {
 
 import { partnersContent } from "@/content/partners";
 
+import { PartnershipEnquiryForm } from "./partnership-enquiry-form";
+
 export function InitiativeCollaborationSection() {
   const { initiatives } = partnersContent;
   return (
@@ -112,37 +114,7 @@ export function PartnershipInterestSection() {
           title={interest.title}
           description={interest.description}
         />
-        <div>
-          <ul className="border-global-navy/12 grid border-t sm:grid-cols-2">
-            {interest.areas.map((area) => (
-              <li
-                key={area}
-                className="border-global-navy/12 border-b py-4 leading-7 sm:px-5 sm:odd:pl-0 sm:even:border-l"
-              >
-                {area}
-              </li>
-            ))}
-          </ul>
-          <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center">
-            <LinkButton href={interest.primaryCallToAction.href} size="large">
-              {interest.primaryCallToAction.label}
-            </LinkButton>
-            <LinkButton
-              href={interest.secondaryCallToAction.href}
-              variant="secondary"
-              size="large"
-            >
-              {interest.secondaryCallToAction.label}
-            </LinkButton>
-          </div>
-          <LinkButton
-            href={interest.textCallToAction.href}
-            variant="text"
-            className="mt-6"
-          >
-            {interest.textCallToAction.label}
-          </LinkButton>
-        </div>
+        <PartnershipEnquiryForm />
       </Container>
     </Section>
   );

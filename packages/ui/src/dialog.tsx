@@ -30,6 +30,7 @@ export function Dialog({
   title,
 }: DialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const titleId = useId();
 
   useEffect(() => {
@@ -37,6 +38,7 @@ export function Dialog({
     if (!dialog) return;
     if (open && !dialog.open) {
       dialog.showModal();
+      closeButtonRef.current?.focus();
     } else if (!open && dialog.open) {
       dialog.close();
     }
@@ -57,7 +59,7 @@ export function Dialog({
           <h2 id={titleId} className="text-global-navy text-2xl font-bold">
             {title}
           </h2>
-          <IconButton aria-label="Close" onClick={onClose}>
+          <IconButton ref={closeButtonRef} aria-label="Close" onClick={onClose}>
             <span aria-hidden="true" className="text-xl leading-none">
               &times;
             </span>

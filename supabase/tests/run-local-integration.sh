@@ -20,4 +20,4 @@ export SUPABASE_LOCAL_ANON_KEY
 export SUPABASE_LOCAL_SERVICE_ROLE_KEY
 export RUN_SUPABASE_INTEGRATION
 
-exec pnpm --filter @tamil-ulagam/web exec vitest run src/lib/supabase/local-integration.test.ts src/lib/supabase/local-integration-membership.test.ts src/lib/supabase/local-integration-sangam.test.ts
+exec pnpm --filter @tamil-ulagam/web exec vitest run src/lib/supabase/local-integration.test.ts src/lib/supabase/local-integration-membership.test.ts src/lib/supabase/local-integration-sangam.test.ts src/lib/supabase/local-integration-admin-operations.test.ts

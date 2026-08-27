@@ -4,8 +4,8 @@ import { AdminOverview } from "@/components/application/admin-overview";
 import { createApplicationMetadata } from "@/config/metadata";
 
 export const metadata: Metadata = createApplicationMetadata(
-  "Admin review",
-  "Review Tamil Ulagam organisation registrations.",
+  "Federation Admin",
+  "Operate Tamil Ulagam registration, organisation, Sangam, membership and partnership workflows.",
   "/admin",
 );
 export default function AdminPage() {

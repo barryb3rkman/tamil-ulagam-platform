@@ -45,3 +45,20 @@ export type {
   OrganizationManagerRole,
 } from "./membership";
 export { isTamilSangam } from "./membership";
+
+export type {
+  AdminActivityDomain,
+  AdminActivityItem,
+  AdminAttentionSummary,
+  AdminEntityKind,
+  AdminManagerSummary,
+  AdminMembershipSummary,
+  AdminOrganisationSummary,
+  FederationCapabilities,
+  PartnershipArea,
+  PartnershipEnquiry,
+  PartnershipEnquiryInput,
+  PartnershipHistoryEvent,
+  PartnershipStatus,
+} from "./admin-operations";
+export { partnershipAreas, partnershipStatuses } from "./admin-operations";

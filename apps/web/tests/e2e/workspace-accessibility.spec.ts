@@ -300,7 +300,7 @@ test.describe("workspace shell accessibility (axe)", () => {
     await signIn(page);
     await page.goto("/admin");
     await expect(
-      page.getByRole("heading", { name: "Admin dashboard" }),
+      page.getByRole("heading", { name: "What needs attention now" }),
     ).toBeVisible();
     await checkAccessibility(page, "Admin entry");
   });

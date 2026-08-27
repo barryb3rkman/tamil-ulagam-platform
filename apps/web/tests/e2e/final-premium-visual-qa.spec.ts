@@ -108,6 +108,11 @@ test.describe("final public-site visual quality", () => {
         );
         await expect(page.locator("main h1")).toHaveCount(1);
         await expect(page.locator("main h1")).toBeVisible();
+        if (route.name === "partners") {
+          await expect(
+            page.locator('[data-partnership-form-ready="true"]'),
+          ).toBeVisible();
+        }
         await prepareFullPageCapture(page);
 
         expect(

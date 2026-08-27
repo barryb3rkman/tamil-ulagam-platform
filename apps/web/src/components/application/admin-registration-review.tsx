@@ -21,6 +21,7 @@ type ReviewAction = "verify" | "needs_changes" | "reject" | "suspend" | null;
 
 export function AdminRegistrationReview({ id }: { readonly id: string }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const cancelButtonRef = useRef<HTMLButtonElement>(null);
   const {
     checkDuplicateSignals,
     getApplication,
@@ -59,6 +60,14 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
     };
   }, [application, checkDuplicateSignals]);
 
+  useEffect(() => {
+    if (!action) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (!dialog.open) dialog.showModal();
+    cancelButtonRef.current?.focus();
+  }, [action]);
+
   if (!isHydrated) return <p role="status">Loading application…</p>;
   if (!application)
     return (
@@ -67,7 +76,7 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
           Application not found
         </h1>
         <Link
-          href="/admin/registrations"
+          href="/admin/reviews"
           className="text-global-navy mt-4 inline-flex font-semibold underline underline-offset-4"
         >
           Return to queue
@@ -79,7 +88,6 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
     setAction(nextAction);
     setFeedback("");
     setError("");
-    dialogRef.current?.showModal();
   };
   const completeAction = async () => {
     if (!action) return;
@@ -153,7 +161,7 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
   return (
     <div className="grid gap-6">
       <Link
-        href="/admin/registrations"
+        href="/admin/reviews"
         className="text-global-navy focus-visible:ring-focus w-fit text-sm font-semibold underline underline-offset-4"
       >
         ← Back to registration queue
@@ -350,7 +358,6 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
               <TextareaField
                 label="Feedback message"
                 required
-                autoFocus
                 value={feedback}
                 error={error}
                 onChange={(event) => {
@@ -361,7 +368,11 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
             </div>
           ) : null}
           <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-            <Button variant="ghost" onClick={() => dialogRef.current?.close()}>
+            <Button
+              ref={cancelButtonRef}
+              variant="ghost"
+              onClick={() => dialogRef.current?.close()}
+            >
               Cancel
             </Button>
             <Button

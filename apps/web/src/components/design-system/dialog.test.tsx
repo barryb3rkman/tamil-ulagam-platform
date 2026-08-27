@@ -44,6 +44,7 @@ describe("Dialog", () => {
       screen.getByRole("heading", { name: "Confirm action" }),
     ).toBeInTheDocument();
     expect(screen.getByText("Are you sure?")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Close" })).toHaveFocus();
   });
 
   it("calls onClose when the close button is activated", () => {

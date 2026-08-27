@@ -33,6 +33,7 @@ artifacts/final-premium-visual-qa/
 artifacts/showcase-language-cleanup/
 artifacts/premium-motion-review/
 artifacts/remove-language-switch-review/
+artifacts/federation-admin-f1-review/
 
 # Environment files
 .env

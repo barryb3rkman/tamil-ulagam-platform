@@ -682,6 +682,86 @@ export type Database = {
         };
         Relationships: [];
       };
+      partnership_enquiries: {
+        Row: {
+          country: string;
+          created_at: string;
+          email: string;
+          id: string;
+          message: string;
+          name: string;
+          organization_name: string;
+          partnership_area: Database["public"]["Enums"]["partnership_area"];
+          status: Database["public"]["Enums"]["partnership_status"];
+          updated_at: string;
+        };
+        Insert: {
+          country: string;
+          created_at?: string;
+          email: string;
+          id?: string;
+          message: string;
+          name: string;
+          organization_name?: string;
+          partnership_area: Database["public"]["Enums"]["partnership_area"];
+          status?: Database["public"]["Enums"]["partnership_status"];
+          updated_at?: string;
+        };
+        Update: {
+          country?: string;
+          created_at?: string;
+          email?: string;
+          id?: string;
+          message?: string;
+          name?: string;
+          organization_name?: string;
+          partnership_area?: Database["public"]["Enums"]["partnership_area"];
+          status?: Database["public"]["Enums"]["partnership_status"];
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      partnership_enquiry_history: {
+        Row: {
+          actor_user_id: string | null;
+          created_at: string;
+          enquiry_id: string;
+          id: string;
+          new_status: Database["public"]["Enums"]["partnership_status"];
+          note: string | null;
+          previous_status:
+            Database["public"]["Enums"]["partnership_status"] | null;
+        };
+        Insert: {
+          actor_user_id?: string | null;
+          created_at?: string;
+          enquiry_id: string;
+          id?: string;
+          new_status: Database["public"]["Enums"]["partnership_status"];
+          note?: string | null;
+          previous_status?:
+            Database["public"]["Enums"]["partnership_status"] | null;
+        };
+        Update: {
+          actor_user_id?: string | null;
+          created_at?: string;
+          enquiry_id?: string;
+          id?: string;
+          new_status?: Database["public"]["Enums"]["partnership_status"];
+          note?: string | null;
+          previous_status?:
+            Database["public"]["Enums"]["partnership_status"] | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "partnership_enquiry_history_enquiry_id_fkey";
+            columns: ["enquiry_id"];
+            isOneToOne: false;
+            referencedRelation: "partnership_enquiries";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
           country: string;
@@ -842,6 +922,24 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      get_admin_attention_summary: {
+        Args: never;
+        Returns: {
+          new_partnership_enquiries: number;
+          pending_memberships: number;
+          registration_follow_ups: number;
+          registration_reviews: number;
+          verified_organizations: number;
+          verified_sangams: number;
+        }[];
+      };
+      get_federation_capabilities: {
+        Args: never;
+        Returns: {
+          can_operate_federation: boolean;
+          can_review_registrations: boolean;
+        }[];
+      };
       invite_organization_member: {
         Args: {
           invited_membership_type?: Database["public"]["Enums"]["organization_membership_type"];
@@ -909,6 +1007,103 @@ export type Database = {
           isOneToOne: true;
           isSetofReturn: false;
         };
+      };
+      list_admin_membership_operations: {
+        Args: never;
+        Returns: {
+          created_at: string;
+          decided_at: string;
+          decided_by_name: string;
+          id: string;
+          invited_at: string;
+          member_email: string;
+          member_full_name: string;
+          membership_type: string;
+          organization_id: string;
+          organization_kind: string;
+          organization_name: string;
+          requested_at: string;
+          status: Database["public"]["Enums"]["organization_membership_status"];
+          user_id: string;
+        }[];
+      };
+      list_admin_organization_managers: {
+        Args: { target_organization_id: string };
+        Returns: {
+          full_name: string;
+          granted_at: string;
+          id: string;
+          organization_id: string;
+          role: Database["public"]["Enums"]["organization_membership_role"];
+          user_id: string;
+        }[];
+      };
+      list_admin_organization_operations: {
+        Args: never;
+        Returns: {
+          application_status: Database["public"]["Enums"]["registration_status"];
+          category: Database["public"]["Enums"]["organization_category"];
+          city: string;
+          country: string;
+          description: string;
+          id: string;
+          kind: string;
+          manager_count: number;
+          member_count: number;
+          name: string;
+          network_affiliated: boolean;
+          network_name: string;
+          official_email_verified_at: string;
+          region: string;
+          registration_status: Database["public"]["Enums"]["legal_registration_status"];
+          subtype: string;
+          updated_at: string;
+        }[];
+      };
+      list_admin_partnership_enquiries: {
+        Args: never;
+        Returns: {
+          country: string;
+          created_at: string;
+          email: string;
+          id: string;
+          message: string;
+          name: string;
+          organization_name: string;
+          partnership_area: Database["public"]["Enums"]["partnership_area"];
+          status: Database["public"]["Enums"]["partnership_status"];
+          updated_at: string;
+        }[];
+        SetofOptions: {
+          from: "*";
+          to: "partnership_enquiries";
+          isOneToOne: false;
+          isSetofReturn: true;
+        };
+      };
+      list_admin_partnership_history: {
+        Args: { target_enquiry_id: string };
+        Returns: {
+          actor_name: string;
+          actor_user_id: string;
+          created_at: string;
+          enquiry_id: string;
+          id: string;
+          new_status: Database["public"]["Enums"]["partnership_status"];
+          note: string;
+          previous_status: Database["public"]["Enums"]["partnership_status"];
+        }[];
+      };
+      list_admin_recent_activity: {
+        Args: { activity_limit?: number };
+        Returns: {
+          description: string;
+          domain: string;
+          id: string;
+          occurred_at: string;
+          status: string;
+          title: string;
+        }[];
       };
       list_membership_eligible_organizations: {
         Args: never;
@@ -1059,6 +1254,42 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      submit_partnership_enquiry: {
+        Args: {
+          enquiry_area: Database["public"]["Enums"]["partnership_area"];
+          enquiry_country: string;
+          enquiry_email: string;
+          enquiry_message: string;
+          enquiry_name: string;
+          enquiry_organization_name: string;
+        };
+        Returns: string;
+      };
+      transition_partnership_enquiry: {
+        Args: {
+          target_enquiry_id: string;
+          target_status: Database["public"]["Enums"]["partnership_status"];
+          transition_note?: string;
+        };
+        Returns: {
+          country: string;
+          created_at: string;
+          email: string;
+          id: string;
+          message: string;
+          name: string;
+          organization_name: string;
+          partnership_area: Database["public"]["Enums"]["partnership_area"];
+          status: Database["public"]["Enums"]["partnership_status"];
+          updated_at: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "partnership_enquiries";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       verify_organization_email: {
         Args: { raw_token: string; target_organization_id: string };
         Returns: boolean;
@@ -1079,6 +1310,19 @@ export type Database = {
         "pending" | "approved" | "rejected" | "revoked";
       organization_membership_type:
         "general" | "student" | "lifetime" | "honorary";
+      partnership_area:
+        | "strategic"
+        | "community"
+        | "education"
+        | "healthcare"
+        | "business"
+        | "events"
+        | "technology"
+        | "research"
+        | "sponsorship"
+        | "cultural"
+        | "other";
+      partnership_status: "new" | "in_discussion" | "active" | "declined";
       registration_status:
         | "draft"
         | "submitted"
@@ -1246,6 +1490,20 @@ export const Constants = {
         "lifetime",
         "honorary",
       ],
+      partnership_area: [
+        "strategic",
+        "community",
+        "education",
+        "healthcare",
+        "business",
+        "events",
+        "technology",
+        "research",
+        "sponsorship",
+        "cultural",
+        "other",
+      ],
+      partnership_status: ["new", "in_discussion", "active", "declined"],
       registration_status: [
         "draft",
         "submitted",

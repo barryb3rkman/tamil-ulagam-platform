@@ -315,6 +315,7 @@ test.describe("organisation enrollment MVP", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 375, height: 812 });
+    await loginDemo(page);
     await page.goto("/admin/registrations/registration-toronto");
     await page.getByRole("button", { name: "Request Changes" }).click();
 
