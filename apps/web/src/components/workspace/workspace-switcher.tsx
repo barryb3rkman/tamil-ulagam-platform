@@ -72,7 +72,7 @@ export function WorkspaceSwitcher({
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label="Switch workspace"
-        className="focus-visible:ring-focus rounded-button motion-control flex min-h-11 shrink-0 items-center gap-2 border border-white/20 px-3 py-1.5 text-sm font-semibold text-white hover:border-white/45 disabled:opacity-60"
+        className="focus-visible:ring-focus-inverse rounded-button motion-control flex min-h-11 shrink-0 items-center gap-2 border border-white/20 px-3 py-1.5 text-sm font-semibold text-white hover:border-white/45 disabled:opacity-60"
       >
         {/* Icon-only below sm: on a narrow header the workspace identity
             needs the room far more than this label does — the aria-label

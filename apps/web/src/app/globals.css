@@ -9,9 +9,28 @@
   --tu-color-warm-ivory: #f8f5ee;
   --tu-color-white: #ffffff;
   --tu-color-charcoal: #1c2733;
-  --tu-color-slate: #657381;
+  /*
+   * Darkened from the original #657381 in Phase E1.6: the previous value
+   * cleared AA (4.5:1) against white but fell just short against the
+   * warm-ivory canvas (4.46:1) and failed outright against the champagne
+   * surface used in the Warm Welcome gradient (3.72:1). #54606d holds the
+   * same hue/family (a quiet blue-grey, not a step toward charcoal) while
+   * clearing 4.5:1+ against every real background this token appears on
+   * (warm-ivory 5.90:1, white 6.42:1, champagne 4.91:1), preserving a
+   * clear primary/secondary gap against charcoal (11.6-15.1:1).
+   */
+  --tu-color-slate: #54606d;
   --tu-color-interactive-blue: #246b9e;
-  --tu-color-success: #247a59;
+  /*
+   * Darkened from the original #247a59 in Phase E1.6. That value already
+   * cleared AA as plain text and as white-on-button, but failed against
+   * its own badge/pill tint background (text-success on bg-success/10:
+   * 4.24:1). #1f6b4e clears 4.5:1+ in every role the token is actually
+   * used in — plain text, white text on a solid success button, and text
+   * on its own light tint — so a single value covers it; no split into
+   * separate success/success-strong tokens was needed.
+   */
+  --tu-color-success: #1f6b4e;
   --tu-color-warning: #b87416;
   --tu-color-error: #b9363e;
 
@@ -144,6 +163,27 @@
     0 0 0 var(--tu-focus-ring-offset) var(--tu-color-white),
     0 0 0 calc(var(--tu-focus-ring-offset) + var(--tu-focus-ring-width))
       var(--tu-color-interactive-blue);
+}
+
+/* Phase E1.6: ring-focus's own interactive-blue only measures 2.99:1
+ * against deep-navy and 2.56:1 against global-navy — short of the 3:1
+ * WCAG non-text-contrast minimum a focus indicator needs against the
+ * surface around it. Rather than changing the shared ring-focus default
+ * (which reads fine at 5.2-5.7:1 on the warm-ivory/white surfaces the
+ * vast majority of controls actually sit on), this is a second, explicit
+ * utility for the specific controls that live on a Deep surface
+ * (surface-deep, gradient-federation-night/gradient-sangam-dusk hero
+ * panels, the workspace shell's own deep-navy header) — heritage-gold
+ * reuses a color those surfaces already use for their own accents
+ * (7.8:1 on deep-navy, 6.7:1 on global-navy) rather than introducing a
+ * new one, and the offset color switches to deep-navy so the ring reads
+ * as a floating gold outline, not a white halo fighting the dark fill.
+ */
+@utility ring-focus-inverse {
+  box-shadow:
+    0 0 0 var(--tu-focus-ring-offset) var(--tu-color-deep-navy),
+    0 0 0 calc(var(--tu-focus-ring-offset) + var(--tu-focus-ring-width))
+      var(--tu-color-heritage-gold);
 }
 
 /* ---------------------------------------------------------------------

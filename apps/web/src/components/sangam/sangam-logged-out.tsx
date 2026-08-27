@@ -47,13 +47,13 @@ export function SangamLoggedOut() {
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link
                 href={withReturnTarget("/signup", "/join/sangam")}
-                className="bg-heritage-gold text-deep-navy focus-visible:ring-focus rounded-button motion-control inline-flex min-h-12 items-center px-6 font-semibold hover:bg-white focus-visible:outline-none"
+                className="bg-heritage-gold text-deep-navy focus-visible:ring-focus-inverse rounded-button motion-control inline-flex min-h-12 items-center px-6 font-semibold hover:bg-white focus-visible:outline-none"
               >
                 Create account & begin
               </Link>
               <Link
                 href={withReturnTarget("/login", "/join/sangam")}
-                className="surface-glass focus-visible:ring-focus rounded-button motion-control inline-flex min-h-12 items-center px-6 font-semibold focus-visible:outline-none"
+                className="surface-glass focus-visible:ring-focus-inverse rounded-button motion-control inline-flex min-h-12 items-center px-6 font-semibold focus-visible:outline-none"
               >
                 Sign in
               </Link>

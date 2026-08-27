@@ -5,21 +5,35 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "../../src/lib/supabase/database.types";
 
 /**
- * Phase E1.5 brief sections 13-16 — automated accessibility coverage for
- * the V3 workspace shell/switcher and its core screens, using
- * @axe-core/playwright (added as a dev-only dependency this phase; not
- * previously present — axe-core itself only existed transitively via
- * eslint-plugin-jsx-a11y, a lint-time-only dependency unusable here).
+ * Phase E1.5 brief sections 13-16 (workspace shell coverage) + Phase E1.6
+ * brief sections 7-8 (removing the color-contrast exclusion once the
+ * underlying tokens were fixed, and expanding route coverage to the
+ * public /join surfaces, /register, and a validation-error registration
+ * stage) — automated accessibility coverage using @axe-core/playwright
+ * (added as a dev-only dependency in E1.5; not previously present —
+ * axe-core itself only existed transitively via eslint-plugin-jsx-a11y,
+ * a lint-time-only dependency unusable here).
  *
- * One persona (Organisation + Tamil Sangam manager, also a reviewer)
- * reaches every representative authenticated state named in the brief —
- * Member, Organisation, Sangam, People, Account, Admin, and the
- * switcher's open state — without needing five separate fixture sets.
+ * One authenticated persona (Organisation + Tamil Sangam manager, also a
+ * reviewer) reaches every representative authenticated state — Member,
+ * Organisation, Sangam, People, Account, Admin, the switcher's open
+ * state — without needing five separate fixture sets. A second, fresh
+ * persona (no application of their own) covers /register, including its
+ * empty-form and validation-error-visible states. The public /join
+ * surfaces are scanned unauthenticated, as any visitor would see them.
  *
  * Policy (brief section 14): serious/critical violations fail the test;
  * moderate violations are logged for review, not auto-failed; minor
- * violations are logged only. No rule is disabled globally — any
- * exclusion is scoped to a specific node with a comment explaining why.
+ * violations are logged only. No rule is disabled globally.
+ *
+ * E1.6 update: this spec previously excluded serious color-contrast
+ * violations that matched two exact, known pre-existing foreground
+ * colours (#657381/#247a59 — the old --tu-color-slate/--tu-color-success
+ * values). Phase E1.6 darkened both tokens specifically to clear AA
+ * against every real background they're used on (see globals.css for
+ * the exact values and contrast ratios). That exclusion has been removed
+ * entirely, per brief section 7 — this suite now runs with no
+ * color-based filtering of any kind.
  */
 
 const password = "LocalBrowserA11y!2048Aa";
@@ -30,16 +44,29 @@ const user = {
 const orgName = "Local Browser A11y Org";
 const sangamName = "Local Browser A11y Sangam";
 
-async function signIn(page: Page) {
+// A second, deliberately clean persona — no application, no manager
+// grant, no review role — so /register's own bootstrap draft (and its
+// stage-1 validation-error state) can be scanned without the first
+// persona's already-verified organisation getting in the way.
+const freshRegistrant = {
+  email: "local-browser-a11y-registrant@tamil-ulagam.test",
+  fullName: "Local A11y Registrant",
+};
+
+async function signInAs(page: Page, credentials: { readonly email: string }) {
   // Without this, axe can scan mid-reveal-transition (content still at
   // its data-motion-reveal starting opacity) and flag a false
   // "insufficient contrast" — the animation itself, not the settled UI.
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/login");
-  await page.getByLabel("Email").fill(user.email);
+  await page.getByLabel("Email").fill(credentials.email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign In" }).click();
   await page.waitForURL((url) => !url.pathname.startsWith("/login"));
+}
+
+async function signIn(page: Page) {
+  await signInAs(page, user);
 }
 
 interface AxeViolation {
@@ -54,68 +81,23 @@ interface AxeViolation {
   }[];
 }
 
-/**
- * Known, pre-existing color-contrast shortfall in two design-system
- * tokens — `--tu-color-slate` (#657381, "text-slate", used everywhere
- * for secondary/description copy) and `--tu-color-success` (#247a59,
- * the "Verified" badge) — both from B1's original palette. Confirmed via
- * this same axe run across Member/Organisation/Sangam/People/Account/
- * Admin: every violation left after fixing E1.5's own new code
- * (workspace-switcher.tsx, dashboard-overview.tsx, both moved to
- * text-charcoal/text-heritage-maroon) resolves to one of these two exact
- * foreground colours, on markup this phase never touches
- * (MemberWorkspace, SangamWorkspace/OrganisationWorkspace's location
- * line, ManagerPeople's tabs, AccountForm, AdminOverview, the email-
- * verification "Verified" badge). Properly fixing the tokens means a
- * coordinated, platform-wide colour change — out of scope for a
- * workspace-shell hardening phase that explicitly excludes redesigning
- * Admin or making unscoped product changes. Matched by axe's own
- * reported foreground colour, not by page or copy text, so it stays
- * precise as new pages are added — any *different* colour still fails
- * the build; nothing is disabled by rule.
- */
-const KNOWN_PRE_EXISTING_CONTRAST_FG_COLORS = new Set(["#657381", "#247a59"]);
-
-/** Runs axe against the current page, fails on serious/critical
- * violations (excluding the specific, documented pre-existing findings
- * above), and logs moderate/minor ones for review — the tiered policy
- * the brief specifies rather than a blanket zero-violations gate. */
+/** Runs axe against the current page, fails on any serious/critical
+ * violation, and logs moderate/minor ones for review — the tiered
+ * policy the brief specifies rather than a blanket zero-violations
+ * gate. No violation is filtered by colour, rule, or page. */
 async function checkAccessibility(page: Page, label: string) {
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
     .analyze();
   const violations = results.violations as AxeViolation[];
 
-  const isKnownPreExisting = (violation: AxeViolation) =>
-    violation.id === "color-contrast" &&
-    violation.nodes.every((node) =>
-      node.any.every(
-        (check) =>
-          check.data?.fgColor !== undefined &&
-          KNOWN_PRE_EXISTING_CONTRAST_FG_COLORS.has(check.data.fgColor),
-      ),
-    );
-
   const serious = violations.filter(
-    (v) =>
-      (v.impact === "serious" || v.impact === "critical") &&
-      !isKnownPreExisting(v),
-  );
-  const deferred = violations.filter(
-    (v) =>
-      (v.impact === "serious" || v.impact === "critical") &&
-      isKnownPreExisting(v),
+    (v) => v.impact === "serious" || v.impact === "critical",
   );
   const other = violations.filter(
     (v) => v.impact !== "serious" && v.impact !== "critical",
   );
 
-  if (deferred.length > 0) {
-    console.log(
-      `[axe:${label}] ${deferred.length} known pre-existing violation(s), out of E1.5 scope:`,
-      deferred.map((v) => v.id),
-    );
-  }
   if (other.length > 0) {
     console.log(
       `[axe:${label}] ${other.length} moderate/minor violation(s) — reviewed, not auto-failed:`,
@@ -251,6 +233,24 @@ test.describe("workspace shell accessibility (axe)", () => {
         .insert({ user_id: userId, role: "reviewer" });
       if (role.error) throw new Error(`Grant reviewer: ${role.error.message}`);
     }
+
+    const createdRegistrant = await admin.auth.admin.createUser({
+      email: freshRegistrant.email,
+      password,
+      email_confirm: true,
+      user_metadata: { full_name: freshRegistrant.fullName },
+    });
+    if (createdRegistrant.error) {
+      const existing = await admin.auth.admin.listUsers();
+      const found = existing.data.users.find(
+        (u) => u.email === freshRegistrant.email,
+      );
+      if (!found) {
+        throw new Error(
+          `Create registrant: ${createdRegistrant.error.message}`,
+        );
+      }
+    }
   });
 
   test("Member workspace", async ({ page }) => {
@@ -315,9 +315,82 @@ test.describe("workspace shell accessibility (axe)", () => {
     await checkAccessibility(page, "Workspace switcher open");
   });
 
+  test("Organisation registration at /register (empty stage 1)", async ({
+    page,
+  }) => {
+    await signInAs(page, freshRegistrant);
+    await page.goto("/register");
+    await expect(
+      page.getByRole("heading", { name: "Your Organisation" }),
+    ).toBeVisible();
+    await checkAccessibility(page, "Organisation registration (/register)");
+  });
+
+  test("Organisation registration at /register (validation errors visible)", async ({
+    page,
+  }) => {
+    await signInAs(page, freshRegistrant);
+    await page.goto("/register");
+    await expect(
+      page.getByRole("heading", { name: "Your Organisation" }),
+    ).toBeVisible();
+    // Stage 1 has no category selected and every text field empty —
+    // submitting surfaces the app's own role="alert" validation copy
+    // (the <form noValidate> disables the browser's native validation
+    // bubbles specifically so this state is reachable and scannable).
+    await page.getByRole("button", { name: "Continue" }).click();
+    await expect(page.getByRole("alert").first()).toBeVisible();
+    await checkAccessibility(
+      page,
+      "Organisation registration (validation errors)",
+    );
+  });
+
   test.afterAll(async () => {
     const { data } = await admin.auth.admin.listUsers();
-    const found = data.users.find((u) => u.email === user.email);
-    if (found) await admin.auth.admin.deleteUser(found.id);
+    for (const email of [user.email, freshRegistrant.email]) {
+      const found = data.users.find((u) => u.email === email);
+      if (found) await admin.auth.admin.deleteUser(found.id);
+    }
+  });
+});
+
+test.describe("public join surfaces accessibility (axe)", () => {
+  test.skip(
+    process.env.RUN_SUPABASE_E2E !== "true",
+    "Runs only against the explicit local Supabase environment.",
+  );
+
+  // Unauthenticated — these are the pages any first-time visitor sees,
+  // no fixture setup needed.
+
+  test("/join", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/join");
+    await expect(
+      page.getByRole("heading", { name: "Choose your path" }),
+    ).toBeVisible();
+    await checkAccessibility(page, "/join");
+  });
+
+  test("/join/organisation (logged out)", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/join/organisation");
+    await expect(page.locator("#organisation-journey-title")).toBeVisible();
+    await checkAccessibility(page, "/join/organisation (logged out)");
+  });
+
+  test("/join/sangam (logged out)", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/join/sangam");
+    await expect(page.locator("#sangam-journey-title")).toBeVisible();
+    await checkAccessibility(page, "/join/sangam (logged out)");
+  });
+
+  test("/join/member (logged out)", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/join/member");
+    await expect(page.locator("#member-logged-out-title")).toBeVisible();
+    await checkAccessibility(page, "/join/member (logged out)");
   });
 });

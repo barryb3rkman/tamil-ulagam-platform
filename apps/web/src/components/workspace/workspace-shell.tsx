@@ -65,7 +65,7 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
           <div className="flex min-w-0 items-center gap-3 sm:gap-4">
             <Link
               href="/"
-              className="focus-visible:ring-focus group flex min-w-0 shrink-0 items-center gap-3 rounded-sm"
+              className="focus-visible:ring-focus-inverse group flex min-w-0 shrink-0 items-center gap-3 rounded-sm"
               aria-label="Tamil Ulagam home"
             >
               <span
@@ -101,7 +101,7 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
               <WorkspaceSwitcher options={options} loading={chromeLoading} />
               <Link
                 href="/dashboard/account"
-                className="focus-visible:ring-focus group rounded-button hidden min-h-11 items-center gap-2 px-1.5 sm:flex sm:px-2"
+                className="focus-visible:ring-focus-inverse group rounded-button hidden min-h-11 items-center gap-2 px-1.5 sm:flex sm:px-2"
               >
                 <span
                   aria-hidden="true"
@@ -120,7 +120,7 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
               </Link>
               <button
                 type="button"
-                className="focus-visible:ring-focus hover:border-heritage-gold hover:text-heritage-gold rounded-button min-h-11 border border-white/20 px-3 py-2 text-sm font-semibold transition-colors sm:px-4"
+                className="focus-visible:ring-focus-inverse hover:border-heritage-gold hover:text-heritage-gold rounded-button min-h-11 border border-white/20 px-3 py-2 text-sm font-semibold transition-colors sm:px-4"
                 onClick={() => {
                   void signOut().then(() => router.push("/login"));
                 }}
@@ -131,7 +131,7 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
           ) : isHydrated ? (
             <Link
               href="/login"
-              className="focus-visible:ring-focus rounded-button inline-flex min-h-11 items-center border border-white/20 px-3 text-sm font-semibold hover:border-white/45"
+              className="focus-visible:ring-focus-inverse rounded-button inline-flex min-h-11 items-center border border-white/20 px-3 text-sm font-semibold hover:border-white/45"
             >
               Sign in
             </Link>
