@@ -668,18 +668,60 @@ export type Database = {
           },
         ];
       };
+      organization_social_links: {
+        Row: {
+          created_at: string;
+          id: string;
+          organization_id: string;
+          position: number;
+          url: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          organization_id: string;
+          position?: number;
+          url: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          organization_id?: string;
+          position?: number;
+          url?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "organization_social_links_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       organization_tamil_community_details: {
         Row: {
           chairperson_name: string;
           created_at: string;
           geographic_area_served: string;
           languages: string;
+          member_count: number | null;
           membership_size: string;
           network_affiliated: boolean | null;
           network_name: string;
           organization_id: string;
+          president_email: string;
+          president_full_name: string;
+          president_phone: string;
           primary_activities: string[];
+          registration_document_filename: string;
+          registration_document_path: string | null;
+          registration_document_uploaded_at: string | null;
           secretary_name: string;
+          spoc_email: string;
+          spoc_full_name: string;
+          spoc_phone: string;
           subtype: string;
           updated_at: string;
         };
@@ -688,12 +730,22 @@ export type Database = {
           created_at?: string;
           geographic_area_served?: string;
           languages?: string;
+          member_count?: number | null;
           membership_size?: string;
           network_affiliated?: boolean | null;
           network_name?: string;
           organization_id: string;
+          president_email?: string;
+          president_full_name?: string;
+          president_phone?: string;
           primary_activities?: string[];
+          registration_document_filename?: string;
+          registration_document_path?: string | null;
+          registration_document_uploaded_at?: string | null;
           secretary_name?: string;
+          spoc_email?: string;
+          spoc_full_name?: string;
+          spoc_phone?: string;
           subtype?: string;
           updated_at?: string;
         };
@@ -702,12 +754,22 @@ export type Database = {
           created_at?: string;
           geographic_area_served?: string;
           languages?: string;
+          member_count?: number | null;
           membership_size?: string;
           network_affiliated?: boolean | null;
           network_name?: string;
           organization_id?: string;
+          president_email?: string;
+          president_full_name?: string;
+          president_phone?: string;
           primary_activities?: string[];
+          registration_document_filename?: string;
+          registration_document_path?: string | null;
+          registration_document_uploaded_at?: string | null;
           secretary_name?: string;
+          spoc_email?: string;
+          spoc_full_name?: string;
+          spoc_phone?: string;
           subtype?: string;
           updated_at?: string;
         };
@@ -956,6 +1018,14 @@ export type Database = {
       };
       can_manage_organization: {
         Args: { target_organization_id: string };
+        Returns: boolean;
+      };
+      can_read_sangam_document: {
+        Args: { target_application_id: string };
+        Returns: boolean;
+      };
+      can_write_sangam_document: {
+        Args: { target_application_id: string };
         Returns: boolean;
       };
       change_organization_manager_role: {

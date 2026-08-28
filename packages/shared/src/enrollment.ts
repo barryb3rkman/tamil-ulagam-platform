@@ -118,6 +118,39 @@ export interface TamilCommunityProfile {
   networkAffiliated: "yes" | "no" | "";
   /** Only meaningful when networkAffiliated is "yes"; optional even then. */
   networkName: string;
+  /**
+   * Phase H3 (Tamil Sangam registration V2) — genuinely new Sangam-only
+   * fields. All stay at their empty defaults for a plain tamil_community
+   * organisation registered through the generic Organisation wizard,
+   * which never asks for or writes them — the same "unused elsewhere"
+   * convention chairpersonName/secretaryName above already establish.
+   *
+   * memberCount is kept as a string (not a number) at the domain layer,
+   * matching yearEstablished's own string-for-a-numeric-column
+   * convention — form inputs bind directly to it without a parse step,
+   * and the mapper layer (domain-mappers.ts) is the single place that
+   * converts to/from the underlying integer column.
+   */
+  memberCount: string;
+  spocFullName: string;
+  spocEmail: string;
+  spocPhone: string;
+  presidentFullName: string;
+  presidentEmail: string;
+  presidentPhone: string;
+  /** Storage object path (e.g. "<applicationId>/<generatedName>.pdf") —
+   * never a URL. Resolved to a short-lived signed URL on demand by the
+   * Sangam service; never persisted as a URL anywhere. */
+  registrationDocumentPath: string;
+  /** The original filename the applicant uploaded, kept purely for
+   * display — the storage object's own key is a generated name (H3
+   * brief section 11), never the user-supplied filename. */
+  registrationDocumentFilename: string;
+  readonly registrationDocumentUploadedAt: string;
+  /** Zero or more social profile URLs, in the order the applicant added
+   * them (H3 brief section 16) — Sangam-only, same "stays empty
+   * elsewhere" convention as the rest of this block. */
+  socialLinks: string[];
 }
 
 export interface EducationProfile {

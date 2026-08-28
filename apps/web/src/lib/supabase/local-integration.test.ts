@@ -165,11 +165,23 @@ localDescribe("local Supabase organisation enrollment security", () => {
 
     switch (category) {
       case "tamil_community": {
+        // Deliberately NOT "Tamil Sangam" — that exact (case/whitespace-
+        // insensitive) subtype string is the real identity rule
+        // isTamilSangamProfile()/is_sangam use to distinguish "a real
+        // Tamil Sangam registered through /join/sangam" from "a plain
+        // tamil_community organisation registered through the generic
+        // wizard" (H3 brief section 27; see the D1 migration's own
+        // comment giving "Cultural Organisation" as the example). This
+        // test exercises the generic Organisation flow's category-
+        // agnostic completeness check, not Sangam-specific requirements
+        // (year of commencement, SPOC, President, …) — using the real
+        // Sangam identity string here would incorrectly pull in H3's
+        // Sangam-only submit_organization_application validation.
         const { error } = await actor.client
           .from("organization_tamil_community_details")
           .upsert({
             organization_id: organizationId,
-            subtype: "Tamil Sangam",
+            subtype: "Tamil Cultural Association",
             primary_activities: ["Tamil language education"],
           });
         assertNoError(error, "Save Tamil community details");

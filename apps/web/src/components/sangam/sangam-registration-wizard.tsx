@@ -3,7 +3,6 @@
 import type {
   Organisation,
   OrganisationApplication,
-  OrganisationRepresentative,
   TamilCommunityProfile,
 } from "@tamil-ulagam/shared";
 import {
@@ -25,14 +24,11 @@ import {
   FormActions,
   FormError,
   RadioGroup,
-  SelectField,
   TextField,
-  TextareaField,
 } from "@/components/application/form-fields";
-import { registrationStatusOptions } from "@/content/enrollment";
 import {
   sangamNetworkAffiliationOptions,
-  sangamRepresentativeRoleOptions,
+  sangamRegisteredOptions,
   sangamStageOneContent,
   sangamStages,
   sangamStageThreeContent,
@@ -42,19 +38,28 @@ import { usePlatform } from "@/features/enrollment/platform-provider";
 import { useAutosave } from "@/features/enrollment/use-autosave";
 import {
   isValid,
-  validateDeclaration,
-  validateOrganisationContact,
-  validateOrganisationIdentity,
-  validateOrganisationTrust,
-  validateRepresentativeIdentity,
   type ValidationErrors,
 } from "@/features/enrollment/validation";
+import {
+  normalizeUrl,
+  validatePresident,
+  validateSangamIdentity,
+  validateSangamRegistrationDetails,
+  validateSocialLinks,
+  validateSpoc,
+  validateWebsite,
+} from "@/features/sangam/sangam-validation";
 import { useSangamRegistrationService } from "@/features/sangam/use-sangam-registration-service";
 import { joinImages } from "@/config/join-images";
 
+import {
+  RegistrationDocumentField,
+  type DocumentUploadStatus,
+} from "./registration-document-field";
 import { SangamLoggedOut } from "./sangam-logged-out";
 import { SangamReview } from "./sangam-review";
 import { SangamStatusScreen } from "./sangam-status-screen";
+import { SocialLinksField } from "./social-links-field";
 
 type LoadState = "loading" | "loaded" | "error";
 type Stage = 1 | 2 | 3 | 4;
@@ -62,15 +67,19 @@ type Stage = 1 | 2 | 3 | 4;
 const editableStatuses = new Set(["draft", "needs_changes"]);
 
 /**
- * Top-level /join/sangam orchestrator. Deliberately its own component —
- * not RegistrationWizard reused with an `isSangam` flag — but composed
- * from the same low-level pieces (form-fields.tsx primitives, the
- * unchanged validation.ts functions, the same StageProgress/Alert/
- * Skeleton primitives) per the D1 "share low-level pieces, not
- * page-level UX" rule. Auth-aware: logged out, session restoring, no
- * draft yet, draft in progress, locked while submitted/under review/
- * verified/rejected/suspended, and error/not-configured all render
- * distinct, never-flashing states.
+ * Top-level /join/sangam orchestrator — Phase H3 (Tamil Sangam
+ * registration V2) rewrite. Four stages (About your Sangam /
+ * Registration details / Leadership & contact / Review & submit),
+ * replacing the old three-intake-stage structure that asked for a
+ * generic "Representative" and an "Official Sangam email" — both
+ * retired from the Sangam UX (H3 brief sections 3/4). SPOC is the one
+ * human contact mapped into the shared `representative` concept
+ * (fullName/email/phone/relationship + declaration) purely for storage
+ * compatibility with submit_organization_application; the President is
+ * genuinely new, Sangam-only state living on TamilCommunityProfile.
+ * There is deliberately no separate `representative` state any more —
+ * it is derived at persist-time from `profile`'s SPOC fields plus the
+ * local `declared` flag.
  */
 export function SangamRegistrationWizard() {
   const { currentUser, isHydrated } = usePlatform();
@@ -83,58 +92,56 @@ export function SangamRegistrationWizard() {
   const [stage, setStage] = useState<Stage>(1);
   const [organisation, setOrganisation] = useState<Organisation | null>(null);
   const [profile, setProfile] = useState<TamilCommunityProfile | null>(null);
-  const [representative, setRepresentative] =
-    useState<OrganisationRepresentative | null>(null);
+  const [declared, setDeclared] = useState(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [pending, setPending] = useState(false);
+  const [documentStatus, setDocumentStatus] =
+    useState<DocumentUploadStatus>("idle");
+  const [documentError, setDocumentError] = useState("");
   const initializedRef = useRef<string | null>(null);
 
-  // Autosave (H2 brief sections 13-15) — same mechanism, same reused
-  // hook, as the Organisation wizard (section 14/37: identical behavior,
-  // not a parallel implementation). Replaces the old manual "Save
-  // progress" button. useAutosave must be called unconditionally (Rules
-  // of Hooks) — service/organisation/representative/profile can all
-  // still be null this early (before the draft has loaded), so both the
-  // persist function and `enabled` guard for that explicitly, rather
-  // than this hook call moving below the loading-state early returns
-  // further down.
+  // Autosave (preserved from H2) — text/select/radio/social-link edits
+  // autosave normally through the same shared hook. Document upload is
+  // deliberately NOT part of this: it persists on upload completion via
+  // its own dedicated call (handleDocumentSelect below), so an unrelated
+  // text-field autosave tick can never re-upload the same file (H3 brief
+  // section 23).
   const persistCurrentStage = async () => {
-    if (
-      !service ||
-      !application ||
-      !organisation ||
-      !representative ||
-      !profile
-    ) {
-      return;
-    }
+    if (!service || !application || !organisation || !profile) return;
     if (stage === 1) {
-      await service.updateOrganisation(organisation.id, organisation);
+      await Promise.all([
+        service.updateOrganisation(organisation.id, organisation),
+        service.updateCategoryProfile(organisation.id, profile),
+      ]);
     } else if (stage === 2) {
-      await service.updateOrganisation(organisation.id, organisation);
-      await service.updateRepresentative(
-        application.registration.id,
-        representative,
-      );
-      await service.updateCategoryProfile(organisation.id, profile);
+      await Promise.all([
+        service.updateOrganisation(organisation.id, organisation),
+        service.updateCategoryProfile(organisation.id, profile),
+      ]);
     } else if (stage === 3) {
-      await service.updateOrganisation(organisation.id, organisation);
-      await service.updateCategoryProfile(organisation.id, profile);
-      await service.updateRepresentative(
-        application.registration.id,
-        representative,
-      );
+      const [normalisedOrganisation, normalisedProfile] =
+        sanitiseUrlsForPersistence(organisation, profile);
+      await Promise.all([
+        service.updateOrganisation(
+          normalisedOrganisation.id,
+          normalisedOrganisation,
+        ),
+        service.updateCategoryProfile(
+          normalisedOrganisation.id,
+          normalisedProfile,
+        ),
+        service.updateRepresentative(
+          application.registration.id,
+          spocAsRepresentative(profile, declared),
+        ),
+      ]);
     }
   };
 
   const autosave = useAutosave(
     persistCurrentStage,
-    [organisation, representative, profile],
-    {
-      enabled: Boolean(
-        service && application && organisation && representative && profile,
-      ),
-    },
+    [organisation, profile, declared],
+    { enabled: Boolean(service && application && organisation && profile) },
   );
 
   const load = useCallback(() => {
@@ -164,22 +171,21 @@ export function SangamRegistrationWizard() {
     if (initializedRef.current === application.registration.id) return;
     initializedRef.current = application.registration.id;
     setOrganisation(application.organisation);
-    setProfile(
+    const loadedProfile =
       application.registration.categoryProfile?.category === "tamil_community"
         ? application.registration.categoryProfile
-        : null,
+        : null;
+    setProfile(loadedProfile);
+    setDeclared(
+      application.registration.representative.authorisedDeclaration &&
+        application.registration.representative.accuracyDeclaration,
     );
-    setRepresentative({
-      ...application.registration.representative,
-      email:
-        application.registration.representative.email ||
-        currentUser?.email ||
-        "",
-    });
+    setDocumentStatus(
+      loadedProfile?.registrationDocumentPath ? "uploaded" : "idle",
+    );
     setStage(
       Math.min(4, Math.max(1, application.registration.currentStep)) as Stage,
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- currentUser only used as a one-time email fallback
   }, [application]);
 
   if (!isHydrated) {
@@ -232,7 +238,7 @@ export function SangamRegistrationWizard() {
     );
   }
 
-  if (!application || !organisation || !profile || !representative) {
+  if (!application || !organisation || !profile) {
     return (
       <SangamFrame currentStage={1}>
         <Skeleton className="h-96 w-full" />
@@ -252,15 +258,100 @@ export function SangamRegistrationWizard() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handleRegistrationStatusChange = (value: string) => {
+    const previous = organisation.registrationStatus;
+    // H3 brief section 8: switching from Yes to No must not preserve a
+    // now-irrelevant registration number/document.
+    const clearingDocument = previous === "registered" && value === "informal";
+    setOrganisation({
+      ...organisation,
+      registrationStatus: value as Organisation["registrationStatus"],
+      registrationNumber: clearingDocument
+        ? ""
+        : organisation.registrationNumber,
+    });
+    if (clearingDocument) {
+      if (profile.registrationDocumentPath) {
+        void service.removeRegistrationDocument(organisation.id).catch(() => {
+          // Best-effort — the field is no longer required either way;
+          // a leftover object is cleaned up on the next successful call.
+        });
+      }
+      setProfile({
+        ...profile,
+        registrationDocumentPath: "",
+        registrationDocumentFilename: "",
+        registrationDocumentUploadedAt: "",
+      });
+      setDocumentStatus("idle");
+      setDocumentError("");
+    }
+  };
+
+  const handleDocumentSelect = async (file: File) => {
+    setDocumentStatus("uploading");
+    setDocumentError("");
+    try {
+      const result = await service.uploadRegistrationDocument(
+        organisation.id,
+        application.registration.id,
+        file,
+      );
+      setProfile({
+        ...profile,
+        registrationDocumentPath: result.path,
+        registrationDocumentFilename: result.filename,
+        registrationDocumentUploadedAt: result.uploadedAt,
+      });
+      setDocumentStatus("uploaded");
+    } catch (error: unknown) {
+      setDocumentStatus("error");
+      setDocumentError(
+        error instanceof Error
+          ? error.message
+          : "The registration document could not be uploaded.",
+      );
+    }
+  };
+
+  const handleDocumentRemove = async () => {
+    setDocumentError("");
+    try {
+      await service.removeRegistrationDocument(organisation.id);
+      setProfile({
+        ...profile,
+        registrationDocumentPath: "",
+        registrationDocumentFilename: "",
+        registrationDocumentUploadedAt: "",
+      });
+      setDocumentStatus("idle");
+    } catch (error: unknown) {
+      setDocumentError(
+        error instanceof Error
+          ? error.message
+          : "The registration document could not be removed.",
+      );
+    }
+  };
+
   const submitStage = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (documentStatus === "uploading") {
+      // H3 brief section 24 — Continue must behave safely mid-upload
+      // rather than advancing with a not-yet-confirmed document.
+      setErrors({
+        form: "Wait for the registration document to finish uploading.",
+      });
+      return;
+    }
     if (stage === 1) {
-      const nextErrors = validateOrganisationIdentity(organisation);
+      const nextErrors = validateSangamIdentity(organisation, profile);
       setErrors(nextErrors);
       if (!isValid(nextErrors)) return;
       setPending(true);
       try {
         await service.updateOrganisation(organisation.id, organisation);
+        await service.updateCategoryProfile(organisation.id, profile);
         await moveTo(2);
       } catch (error: unknown) {
         setErrors({
@@ -275,19 +366,16 @@ export function SangamRegistrationWizard() {
       return;
     }
     if (stage === 2) {
-      const nextErrors = {
-        ...validateOrganisationContact(organisation),
-        ...validateRepresentativeIdentity(representative),
-      };
+      const nextErrors = validateSangamRegistrationDetails(
+        organisation,
+        documentStatus === "uploaded" &&
+          Boolean(profile.registrationDocumentPath),
+      );
       setErrors(nextErrors);
       if (!isValid(nextErrors)) return;
       setPending(true);
       try {
         await service.updateOrganisation(organisation.id, organisation);
-        await service.updateRepresentative(
-          application.registration.id,
-          representative,
-        );
         await service.updateCategoryProfile(organisation.id, profile);
         await moveTo(3);
       } catch (error: unknown) {
@@ -295,7 +383,7 @@ export function SangamRegistrationWizard() {
           form:
             error instanceof Error
               ? error.message
-              : "Contact and representative details could not be saved.",
+              : "Registration details could not be saved.",
         });
       } finally {
         setPending(false);
@@ -303,18 +391,34 @@ export function SangamRegistrationWizard() {
       return;
     }
     if (stage === 3) {
-      const nextErrors = {
-        ...validateOrganisationTrust(organisation),
-        ...validateDeclaration(representative),
+      const nextErrors: ValidationErrors = {
+        ...validateSpoc(profile),
+        ...validatePresident(profile),
+        ...validateWebsite(organisation),
       };
+      const socialLinksError = validateSocialLinks(profile.socialLinks);
+      if (socialLinksError) nextErrors.socialLinks = socialLinksError;
+      if (!declared) {
+        nextErrors.declaration =
+          "Confirm that you are authorised to represent this Tamil Sangam and that the information is accurate.";
+      }
       setErrors(nextErrors);
       if (!isValid(nextErrors)) return;
       setPending(true);
       try {
-        await service.updateOrganisation(organisation.id, organisation);
+        const [normalisedOrganisation, normalisedProfile] =
+          sanitiseUrlsForPersistence(organisation, profile);
+        await service.updateOrganisation(
+          normalisedOrganisation.id,
+          normalisedOrganisation,
+        );
+        await service.updateCategoryProfile(
+          normalisedOrganisation.id,
+          normalisedProfile,
+        );
         await service.updateRepresentative(
           application.registration.id,
-          representative,
+          spocAsRepresentative(profile, declared),
         );
         await moveTo(4);
       } catch (error: unknown) {
@@ -322,7 +426,7 @@ export function SangamRegistrationWizard() {
           form:
             error instanceof Error
               ? error.message
-              : "Registration details could not be saved.",
+              : "Leadership and contact details could not be saved.",
         });
       } finally {
         setPending(false);
@@ -339,15 +443,7 @@ export function SangamRegistrationWizard() {
           registration: {
             ...application.registration,
             categoryProfile: profile,
-            // representative must be merged in the same way organisation
-            // and profile are above — application.registration.representative
-            // is only as fresh as the last setApplication() call (initial
-            // load / post-submit reload), while phone/role/declaration are
-            // edited locally and persisted explicitly on stage navigation
-            // without ever refetching. Without this, the review screen
-            // shows stale (often empty) representative data even though
-            // the correct values are already saved server-side.
-            representative,
+            representative: spocAsRepresentative(profile, declared),
           },
         }}
         onEdit={(targetStage) => void moveTo(targetStage)}
@@ -360,30 +456,37 @@ export function SangamRegistrationWizard() {
     <SangamFrame currentStage={stage}>
       <form noValidate onSubmit={submitStage} className="grid gap-6">
         {stage === 1 ? (
-          <StageYourSangam
+          <StageAboutYourSangam
             organisation={organisation}
-            errors={errors}
-            onChange={setOrganisation}
-          />
-        ) : null}
-        {stage === 2 ? (
-          <StageLeadershipReach
-            organisation={organisation}
-            representative={representative}
             profile={profile}
             errors={errors}
             onOrganisationChange={setOrganisation}
-            onRepresentativeChange={setRepresentative}
             onProfileChange={setProfile}
           />
         ) : null}
-        {stage === 3 ? (
-          <StageStandingConfirmation
+        {stage === 2 ? (
+          <StageRegistrationDetails
             organisation={organisation}
-            representative={representative}
+            profile={profile}
+            errors={errors}
+            documentStatus={documentStatus}
+            documentError={documentError}
+            onOrganisationChange={setOrganisation}
+            onProfileChange={setProfile}
+            onRegistrationStatusChange={handleRegistrationStatusChange}
+            onDocumentSelect={(file) => void handleDocumentSelect(file)}
+            onDocumentRemove={() => void handleDocumentRemove()}
+          />
+        ) : null}
+        {stage === 3 ? (
+          <StageLeadershipContact
+            organisation={organisation}
+            profile={profile}
+            declared={declared}
             errors={errors}
             onOrganisationChange={setOrganisation}
-            onRepresentativeChange={setRepresentative}
+            onProfileChange={setProfile}
+            onDeclaredChange={setDeclared}
           />
         ) : null}
         <FormError message={errors.form ?? ""} />
@@ -399,6 +502,55 @@ export function SangamRegistrationWizard() {
       </form>
     </SangamFrame>
   );
+}
+
+/** Maps the SPOC — the Sangam UX's one human contact concept that
+ * corresponds to the shared representative model (H3 brief section 4) —
+ * into the exact shape submit_organization_application and the review
+ * screen already expect. `relationship` is fixed to
+ * "authorised_representative" rather than exposed as a choice: the
+ * Sangam wizard no longer asks "what is your role", it asks for a named
+ * SPOC and a named President as two separate, always-present fields. */
+function spocAsRepresentative(
+  profile: TamilCommunityProfile,
+  declared: boolean,
+) {
+  return {
+    fullName: profile.spocFullName,
+    email: profile.spocEmail,
+    phone: profile.spocPhone,
+    designation: "",
+    relationship: "authorised_representative" as const,
+    authorisedDeclaration: declared,
+    accuracyDeclaration: declared,
+  };
+}
+
+/** Defensive normalization, applied right before either the debounced
+ * autosave or the explicit stage-3 submit talks to the server — a bare
+ * domain (accepted while typing, per H3 brief section 17) violates the
+ * database's own `organizations_website_format`/
+ * `organization_social_links_url_format` check constraints, which
+ * require an explicit http(s):// scheme. The field-level onBlur handlers
+ * already normalize on the way out of each input for a real user, but
+ * autosave can also fire mid-typing (before any blur), so this is a
+ * second, unconditional guarantee rather than the only one. Falls back
+ * to the original (already-validated-or-empty) value when normalization
+ * itself fails, rather than silently dropping user input. */
+function sanitiseUrlsForPersistence(
+  organisation: Organisation,
+  profile: TamilCommunityProfile,
+): [Organisation, TamilCommunityProfile] {
+  const website = organisation.website.trim()
+    ? normalizeUrl(organisation.website) || organisation.website
+    : "";
+  const socialLinks = profile.socialLinks.map((link) =>
+    link.trim() ? normalizeUrl(link) || link : link,
+  );
+  return [
+    { ...organisation, website },
+    { ...profile, socialLinks },
+  ];
 }
 
 function SangamFrame({
@@ -440,17 +592,21 @@ function SangamFrame({
   );
 }
 
-function StageYourSangam({
+function StageAboutYourSangam({
   organisation,
+  profile,
   errors,
-  onChange,
+  onOrganisationChange,
+  onProfileChange,
 }: {
   readonly organisation: Organisation;
+  readonly profile: TamilCommunityProfile;
   readonly errors: ValidationErrors;
-  readonly onChange: (organisation: Organisation) => void;
+  readonly onOrganisationChange: (organisation: Organisation) => void;
+  readonly onProfileChange: (profile: TamilCommunityProfile) => void;
 }) {
-  const update = (key: keyof Organisation, value: string) =>
-    onChange({ ...organisation, [key]: value });
+  const updateOrg = (key: keyof Organisation, value: string) =>
+    onOrganisationChange({ ...organisation, [key]: value });
   return (
     <div className="surface-card grid gap-6 p-5 sm:p-7 lg:p-8">
       <div className="max-w-xl">
@@ -466,92 +622,98 @@ function StageYourSangam({
         required
         value={organisation.name}
         error={errors.name}
-        onChange={(event) => update("name", event.target.value)}
+        onChange={(event) => updateOrg("name", event.target.value)}
       />
+      <div className="grid items-start gap-5 sm:grid-cols-2">
+        <div className="sm:max-w-60">
+          <TextField
+            label="Year of commencement"
+            required
+            inputMode="numeric"
+            maxLength={4}
+            value={organisation.yearEstablished}
+            error={errors.yearEstablished}
+            onChange={(event) =>
+              updateOrg("yearEstablished", event.target.value)
+            }
+          />
+        </div>
+        <div className="sm:max-w-60">
+          <TextField
+            label="Approximate number of members"
+            required
+            inputMode="numeric"
+            maxLength={7}
+            value={profile.memberCount}
+            error={errors.memberCount}
+            onChange={(event) =>
+              onProfileChange({
+                ...profile,
+                memberCount: event.target.value.replace(/[^\d]/g, ""),
+              })
+            }
+          />
+        </div>
+      </div>
       <div className="grid items-start gap-5 sm:grid-cols-3">
         <TextField
           label="Country"
           required
           value={organisation.country}
           error={errors.country}
-          onChange={(event) => update("country", event.target.value)}
+          onChange={(event) => updateOrg("country", event.target.value)}
         />
         <TextField
           label="State / Province / Region"
           required
           value={organisation.region}
           error={errors.region}
-          onChange={(event) => update("region", event.target.value)}
+          onChange={(event) => updateOrg("region", event.target.value)}
         />
         <TextField
           label="City"
           required
           value={organisation.city}
           error={errors.city}
-          onChange={(event) => update("city", event.target.value)}
+          onChange={(event) => updateOrg("city", event.target.value)}
         />
       </div>
-      <div className="sm:max-w-60">
-        <TextField
-          label="Year established"
-          inputMode="numeric"
-          maxLength={4}
-          value={organisation.yearEstablished}
-          error={errors.yearEstablished}
-          onChange={(event) => update("yearEstablished", event.target.value)}
-        />
-      </div>
-      <TextareaField
-        label="Community served"
-        required
-        maxLength={600}
-        value={organisation.description}
-        error={errors.description}
-        helperText={
-          errors.description
-            ? undefined
-            : sangamStageOneContent.descriptionPrompt
-        }
-        onChange={(event) => update("description", event.target.value)}
-      />
     </div>
   );
 }
 
-function StageLeadershipReach({
-  organisation,
-  representative,
-  profile,
+function StageRegistrationDetails({
+  documentError,
+  documentStatus,
   errors,
+  onDocumentRemove,
+  onDocumentSelect,
   onOrganisationChange,
-  onRepresentativeChange,
   onProfileChange,
+  onRegistrationStatusChange,
+  organisation,
+  profile,
 }: {
   readonly organisation: Organisation;
-  readonly representative: OrganisationRepresentative;
   readonly profile: TamilCommunityProfile;
   readonly errors: ValidationErrors;
+  readonly documentStatus: DocumentUploadStatus;
+  readonly documentError: string;
   readonly onOrganisationChange: (organisation: Organisation) => void;
-  readonly onRepresentativeChange: (
-    representative: OrganisationRepresentative,
-  ) => void;
   readonly onProfileChange: (profile: TamilCommunityProfile) => void;
+  readonly onRegistrationStatusChange: (value: string) => void;
+  readonly onDocumentSelect: (file: File) => void;
+  readonly onDocumentRemove: () => void;
 }) {
   const updateOrg = (key: keyof Organisation, value: string) =>
     onOrganisationChange({ ...organisation, [key]: value });
-  const updateRep = (key: keyof OrganisationRepresentative, value: string) =>
-    onRepresentativeChange({ ...representative, [key]: value });
-  // "" (untouched/never answered) never matches an option's own value, so
-  // nothing shows pre-selected until the Sangam explicitly answers —
-  // including "Prefer not to say", which maps back to "" on save. See
-  // TamilCommunityProfile.networkAffiliated's doc comment for why "" also
-  // represents an explicit "prefer not to say" on resume.
   const networkValue =
     profile.networkAffiliated === "yes" || profile.networkAffiliated === "no"
       ? profile.networkAffiliated
       : "";
+  const isRegistered = organisation.registrationStatus === "registered";
   return (
-    <div className="surface-card grid gap-7 p-5 sm:p-7 lg:p-8">
+    <div className="surface-card grid gap-6 p-5 sm:p-7 lg:p-8">
       <div className="max-w-xl">
         <h2 className="text-global-navy text-xl font-bold tracking-[-0.01em] sm:text-2xl">
           {sangamStageTwoContent.title}
@@ -560,82 +722,38 @@ function StageLeadershipReach({
           {sangamStageTwoContent.description}
         </p>
       </div>
-
-      <div className="grid gap-5">
-        <div className="grid items-start gap-5 sm:grid-cols-2">
-          <TextField
-            label="Official Sangam email"
-            type="email"
-            required
-            value={organisation.officialEmail}
-            error={errors.officialEmail}
-            helperText={
-              errors.officialEmail
-                ? undefined
-                : sangamStageTwoContent.officialEmailHelp
-            }
-            onChange={(event) => updateOrg("officialEmail", event.target.value)}
-          />
-          <TextField
-            label="Official phone"
-            type="tel"
-            required
-            value={organisation.officialPhone}
-            error={errors.officialPhone}
-            onChange={(event) => updateOrg("officialPhone", event.target.value)}
-          />
-        </div>
-        <div className="sm:max-w-sm">
-          <TextField
-            label="Website or social link"
-            type="url"
-            placeholder="https://"
-            value={organisation.website}
-            error={errors.website}
-            onChange={(event) => updateOrg("website", event.target.value)}
+      <Alert tone="info">{sangamStageTwoContent.informalNotice}</Alert>
+      <RadioGroup
+        label="Is this Tamil Sangam formally registered?"
+        name="registration-status"
+        required
+        value={organisation.registrationStatus}
+        options={sangamRegisteredOptions}
+        error={errors.registrationStatus}
+        onChange={(event) => onRegistrationStatusChange(event.target.value)}
+      />
+      {isRegistered ? (
+        <div className="border-heritage-gold/35 grid gap-5 border-l-2 pl-4">
+          <div className="sm:max-w-sm">
+            <TextField
+              label="Registration number"
+              required
+              value={organisation.registrationNumber}
+              error={errors.registrationNumber}
+              onChange={(event) =>
+                updateOrg("registrationNumber", event.target.value)
+              }
+            />
+          </div>
+          <RegistrationDocumentField
+            status={documentStatus}
+            filename={profile.registrationDocumentFilename || undefined}
+            error={documentError || errors.registrationDocument}
+            onSelect={onDocumentSelect}
+            onRemove={onDocumentRemove}
           />
         </div>
-      </div>
-
-      <div className="border-global-navy/10 grid gap-5 border-t pt-6">
-        <h3 className="text-global-navy text-base font-bold">
-          Your details as representative
-        </h3>
-        <div className="grid items-start gap-5 sm:grid-cols-2">
-          <TextField
-            label="Representative full name"
-            required
-            value={representative.fullName}
-            error={errors.fullName}
-            onChange={(event) => updateRep("fullName", event.target.value)}
-          />
-          <TextField
-            label="Phone"
-            type="tel"
-            required
-            value={representative.phone}
-            error={errors.phone}
-            onChange={(event) => updateRep("phone", event.target.value)}
-          />
-        </div>
-        <div className="sm:max-w-sm">
-          <SelectField
-            label="Representative role"
-            required
-            value={representative.relationship}
-            options={sangamRepresentativeRoleOptions}
-            error={errors.relationship}
-            onChange={(event) =>
-              onRepresentativeChange({
-                ...representative,
-                relationship: event.target
-                  .value as OrganisationRepresentative["relationship"],
-              })
-            }
-          />
-        </div>
-      </div>
-
+      ) : null}
       <div className="border-global-navy/10 grid gap-4 border-t pt-6">
         <RadioGroup
           label={sangamStageTwoContent.networkQuestion}
@@ -669,26 +787,31 @@ function StageLeadershipReach({
   );
 }
 
-function StageStandingConfirmation({
-  organisation,
-  representative,
+function StageLeadershipContact({
+  declared,
   errors,
+  onDeclaredChange,
   onOrganisationChange,
-  onRepresentativeChange,
+  onProfileChange,
+  organisation,
+  profile,
 }: {
   readonly organisation: Organisation;
-  readonly representative: OrganisationRepresentative;
+  readonly profile: TamilCommunityProfile;
+  readonly declared: boolean;
   readonly errors: ValidationErrors;
   readonly onOrganisationChange: (organisation: Organisation) => void;
-  readonly onRepresentativeChange: (
-    representative: OrganisationRepresentative,
-  ) => void;
+  readonly onProfileChange: (profile: TamilCommunityProfile) => void;
+  readonly onDeclaredChange: (declared: boolean) => void;
 }) {
   const updateOrg = (key: keyof Organisation, value: string) =>
     onOrganisationChange({ ...organisation, [key]: value });
+  const updateProfile = (key: keyof TamilCommunityProfile, value: string) =>
+    onProfileChange({ ...profile, [key]: value });
+
   return (
     <div className="grid gap-6">
-      <div className="surface-card grid gap-6 p-5 sm:p-7 lg:p-8">
+      <div className="surface-card grid gap-7 p-5 sm:p-7 lg:p-8">
         <div className="max-w-xl">
           <h2 className="text-global-navy text-xl font-bold tracking-[-0.01em] sm:text-2xl">
             {sangamStageThreeContent.title}
@@ -697,46 +820,147 @@ function StageStandingConfirmation({
             {sangamStageThreeContent.description}
           </p>
         </div>
-        <Alert tone="info">{sangamStageThreeContent.informalNotice}</Alert>
-        <RadioGroup
-          label="Is your Sangam formally registered?"
-          name="registration-status"
-          required
-          value={organisation.registrationStatus}
-          options={registrationStatusOptions}
-          error={errors.registrationStatus}
-          onChange={(event) =>
-            updateOrg("registrationStatus", event.target.value)
-          }
-        />
-        {organisation.registrationStatus === "registered" ? (
-          <div className="border-heritage-gold/35 border-l-2 pl-4">
+
+        <div className="grid gap-4">
+          <div>
+            <h3 className="text-global-navy text-base font-bold">
+              {sangamStageThreeContent.spocTitle}
+            </h3>
+            <p className="text-slate mt-1 text-sm">
+              {sangamStageThreeContent.spocDescription}
+            </p>
+          </div>
+          <div className="grid items-start gap-5 sm:grid-cols-3">
             <TextField
-              label="Registration number"
-              value={organisation.registrationNumber}
-              error={errors.registrationNumber}
+              label="Full name"
+              required
+              value={profile.spocFullName}
+              error={errors.spocFullName}
               onChange={(event) =>
-                updateOrg("registrationNumber", event.target.value)
+                updateProfile("spocFullName", event.target.value)
+              }
+            />
+            <TextField
+              label="Email"
+              type="email"
+              required
+              value={profile.spocEmail}
+              error={errors.spocEmail}
+              onChange={(event) =>
+                updateProfile("spocEmail", event.target.value)
+              }
+            />
+            <TextField
+              label="Phone"
+              type="tel"
+              required
+              value={profile.spocPhone}
+              error={errors.spocPhone}
+              onChange={(event) =>
+                updateProfile("spocPhone", event.target.value)
               }
             />
           </div>
-        ) : null}
+        </div>
+
+        <div className="border-global-navy/10 grid gap-4 border-t pt-6">
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <div>
+              <h3 className="text-global-navy text-base font-bold">
+                {sangamStageThreeContent.presidentTitle}
+              </h3>
+              <p className="text-slate mt-1 text-sm">
+                {sangamStageThreeContent.presidentDescription}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() =>
+                onProfileChange({
+                  ...profile,
+                  presidentFullName: profile.spocFullName,
+                  presidentEmail: profile.spocEmail,
+                  presidentPhone: profile.spocPhone,
+                })
+              }
+              className="text-global-navy focus-visible:ring-focus text-sm font-semibold underline underline-offset-4"
+            >
+              {sangamStageThreeContent.sameAsSpoc}
+            </button>
+          </div>
+          <div className="grid items-start gap-5 sm:grid-cols-3">
+            <TextField
+              label="Full name"
+              required
+              value={profile.presidentFullName}
+              error={errors.presidentFullName}
+              onChange={(event) =>
+                updateProfile("presidentFullName", event.target.value)
+              }
+            />
+            <TextField
+              label="Email"
+              type="email"
+              required
+              value={profile.presidentEmail}
+              error={errors.presidentEmail}
+              onChange={(event) =>
+                updateProfile("presidentEmail", event.target.value)
+              }
+            />
+            <TextField
+              label="Phone"
+              type="tel"
+              required
+              value={profile.presidentPhone}
+              error={errors.presidentPhone}
+              onChange={(event) =>
+                updateProfile("presidentPhone", event.target.value)
+              }
+            />
+          </div>
+        </div>
+
+        <div className="border-global-navy/10 grid gap-5 border-t pt-6">
+          <h3 className="text-global-navy text-base font-bold">
+            {sangamStageThreeContent.digitalPresenceTitle}
+          </h3>
+          <div className="sm:max-w-md">
+            <TextField
+              label="Website"
+              type="url"
+              placeholder="https://"
+              value={organisation.website}
+              error={errors.website}
+              onChange={(event) => updateOrg("website", event.target.value)}
+              // A bare domain ("sangam.example.com") is accepted while
+              // typing (H3 brief section 17), but the database's own
+              // organizations_website_format check requires an explicit
+              // http(s):// scheme — normalize on blur so what gets
+              // persisted always satisfies it, and so the field visibly
+              // shows the same value that was actually saved.
+              onBlur={(event) => {
+                const normalized = normalizeUrl(event.target.value);
+                if (normalized) updateOrg("website", normalized);
+              }}
+            />
+          </div>
+          <SocialLinksField
+            links={profile.socialLinks}
+            error={errors.socialLinks}
+            onChange={(links) =>
+              onProfileChange({ ...profile, socialLinks: links })
+            }
+          />
+        </div>
       </div>
+
       <div className="surface-elevated grid gap-4 p-5 sm:p-7 lg:p-8">
         <CheckboxField
           label={sangamStageThreeContent.declaration}
-          checked={
-            representative.authorisedDeclaration &&
-            representative.accuracyDeclaration
-          }
+          checked={declared}
           error={errors.declaration}
-          onChange={(event) =>
-            onRepresentativeChange({
-              ...representative,
-              authorisedDeclaration: event.target.checked,
-              accuracyDeclaration: event.target.checked,
-            })
-          }
+          onChange={(event) => onDeclaredChange(event.target.checked)}
         />
       </div>
     </div>

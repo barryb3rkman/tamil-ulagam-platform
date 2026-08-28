@@ -85,6 +85,17 @@ export function createEmptyCategoryProfile(
         languages: "",
         networkAffiliated: "",
         networkName: "",
+        memberCount: "",
+        spocFullName: "",
+        spocEmail: "",
+        spocPhone: "",
+        presidentFullName: "",
+        presidentEmail: "",
+        presidentPhone: "",
+        registrationDocumentPath: "",
+        registrationDocumentFilename: "",
+        registrationDocumentUploadedAt: "",
+        socialLinks: [],
       };
     case "education":
       return {

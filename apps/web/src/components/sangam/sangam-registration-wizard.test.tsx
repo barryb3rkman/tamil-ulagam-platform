@@ -1,4 +1,11 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import type { OrganisationApplication } from "@tamil-ulagam/shared";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -85,6 +92,17 @@ function draftApplication(
         languages: "",
         networkAffiliated: "",
         networkName: "",
+        memberCount: "",
+        spocFullName: "",
+        spocEmail: "",
+        spocPhone: "",
+        presidentFullName: "",
+        presidentEmail: "",
+        presidentPhone: "",
+        registrationDocumentPath: "",
+        registrationDocumentFilename: "",
+        registrationDocumentUploadedAt: "",
+        socialLinks: [],
       },
       representative: {
         fullName: "",
@@ -204,9 +222,7 @@ describe("SangamRegistrationWizard auth-aware states", () => {
     screen.getByRole("button", { name: "Continue" }).click();
 
     await waitFor(() =>
-      expect(
-        screen.getByText("Enter the organisation name."),
-      ).toBeInTheDocument(),
+      expect(screen.getByText("Enter the Sangam's name.")).toBeInTheDocument(),
     );
   });
 
@@ -258,5 +274,132 @@ describe("SangamRegistrationWizard auth-aware states", () => {
     await waitFor(() =>
       expect(screen.getByLabelText(/Sangam name/)).toBeInTheDocument(),
     );
+  });
+});
+
+// Phase H3 (Tamil Sangam registration V2) — new field-model coverage.
+describe("SangamRegistrationWizard V2 fields", () => {
+  function servicePlatformAndMocks() {
+    platform({
+      isHydrated: true,
+      currentUser: {
+        id: "user-1",
+        fullName: "Nila",
+        email: "nila@example.com",
+      },
+    });
+    const service = {
+      ensureDraft: vi.fn(),
+      updateOrganisation: vi.fn().mockResolvedValue(undefined),
+      updateCategoryProfile: vi.fn().mockResolvedValue(undefined),
+      updateRepresentative: vi.fn().mockResolvedValue(undefined),
+      updateCurrentStep: vi.fn().mockResolvedValue(undefined),
+      uploadRegistrationDocument: vi.fn(),
+      removeRegistrationDocument: vi.fn().mockResolvedValue(undefined),
+      getRegistrationDocumentSignedUrl: vi.fn(),
+    };
+    mockedUseSangamRegistrationService.mockReturnValue(
+      service as unknown as ReturnType<typeof useSangamRegistrationService>,
+    );
+    return service;
+  }
+
+  it("Stage 1 asks for year of commencement and approximate member count, not a generic description field", async () => {
+    const service = servicePlatformAndMocks();
+    service.ensureDraft.mockResolvedValue(draftApplication());
+
+    render(<SangamRegistrationWizard />);
+
+    await waitFor(() =>
+      expect(screen.getByLabelText(/Sangam name/)).toBeInTheDocument(),
+    );
+    expect(screen.getByLabelText(/Year of commencement/)).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/Approximate number of members/),
+    ).toBeInTheDocument();
+    expect(screen.queryByLabelText(/Community served/)).not.toBeInTheDocument();
+  });
+
+  it("Stage 2 hides the registration number and document upload when 'No' is selected, and reveals them for 'Yes'", async () => {
+    const service = servicePlatformAndMocks();
+    service.ensureDraft.mockResolvedValue(
+      draftApplication({
+        currentStep: 2,
+        categoryProfile: {
+          ...draftApplication().registration.categoryProfile!,
+        },
+      }),
+    );
+
+    render(<SangamRegistrationWizard />);
+
+    await waitFor(() =>
+      expect(
+        screen.getByText("Is this Tamil Sangam formally registered?"),
+      ).toBeInTheDocument(),
+    );
+    expect(
+      screen.queryByLabelText(/Registration number/),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/Registration document/)).not.toBeInTheDocument();
+
+    const registrationFieldset = screen
+      .getByText("Is this Tamil Sangam formally registered?")
+      .closest("fieldset")!;
+    fireEvent.click(
+      within(registrationFieldset).getByRole("radio", { name: "Yes" }),
+    );
+
+    expect(screen.getByLabelText(/Registration number/)).toBeInTheDocument();
+    expect(screen.getByText(/Registration document/)).toBeInTheDocument();
+  });
+
+  it("Stage 3 collects SPOC and President as two separate named contacts, and 'Same as SPOC' copies SPOC into President", async () => {
+    const service = servicePlatformAndMocks();
+    service.ensureDraft.mockResolvedValue(draftApplication({ currentStep: 3 }));
+
+    render(<SangamRegistrationWizard />);
+
+    await waitFor(() =>
+      expect(
+        screen.getByText("Single Point of Contact (SPOC)"),
+      ).toBeInTheDocument(),
+    );
+    expect(screen.getByText("President")).toBeInTheDocument();
+    // No generic "Representative role" selector any more.
+    expect(
+      screen.queryByLabelText(/Representative role/),
+    ).not.toBeInTheDocument();
+
+    const [spocName, presidentName] = screen.getAllByLabelText(/Full name/);
+    fireEvent.change(spocName!, { target: { value: "Kavitha Selvam" } });
+
+    fireEvent.click(screen.getByRole("button", { name: "Same as SPOC" }));
+
+    expect(presidentName).toHaveValue("Kavitha Selvam");
+  });
+
+  it("Digital presence: 'Add another link' appends a social link input, and its remove control removes it", async () => {
+    const service = servicePlatformAndMocks();
+    service.ensureDraft.mockResolvedValue(draftApplication({ currentStep: 3 }));
+
+    render(<SangamRegistrationWizard />);
+
+    await waitFor(() =>
+      expect(screen.getByText("Digital presence")).toBeInTheDocument(),
+    );
+    expect(
+      screen.queryByLabelText(/Social media link 1/),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "+ Add another link" }));
+    expect(screen.getByLabelText("Social media link 1")).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Remove social media link 1" }),
+    );
+    expect(
+      screen.queryByLabelText(/Social media link 1/),
+    ).not.toBeInTheDocument();
   });
 });

@@ -48,6 +48,16 @@ function optionalBoolean(
   return typeof value === "boolean" ? (value ? "yes" : "no") : "";
 }
 
+function numberAsString(row: CategoryDetailRow, key: string): string {
+  const value = valueAt(row, key);
+  return typeof value === "number" ? String(value) : "";
+}
+
+function timestampOrEmpty(row: CategoryDetailRow, key: string): string {
+  const value = valueAt(row, key);
+  return typeof value === "string" ? value : "";
+}
+
 export function mapProfileRow(row: ProfileRow, email: string): UserProfile {
   return {
     id: row.id,
@@ -119,6 +129,28 @@ export function mapCategoryDetailRow(
         languages: text(row, "languages"),
         networkAffiliated: optionalBoolean(row, "network_affiliated"),
         networkName: text(row, "network_name"),
+        memberCount: numberAsString(row, "member_count"),
+        spocFullName: text(row, "spoc_full_name"),
+        spocEmail: text(row, "spoc_email"),
+        spocPhone: text(row, "spoc_phone"),
+        presidentFullName: text(row, "president_full_name"),
+        presidentEmail: text(row, "president_email"),
+        presidentPhone: text(row, "president_phone"),
+        registrationDocumentPath: text(row, "registration_document_path"),
+        registrationDocumentFilename: text(
+          row,
+          "registration_document_filename",
+        ),
+        registrationDocumentUploadedAt: timestampOrEmpty(
+          row,
+          "registration_document_uploaded_at",
+        ),
+        // Social links are a separate table, fetched and attached by the
+        // caller (sangam-registration-service.ts) — never available from
+        // this single-row detail mapper alone. Defaulting to [] here
+        // keeps every other caller of mapCategoryDetailRow (which never
+        // fetches social links) working unchanged.
+        socialLinks: [],
       };
     case "education":
       return {

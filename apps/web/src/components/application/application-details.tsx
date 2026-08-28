@@ -6,6 +6,7 @@ import {
   getRepresentativeRoleLabel,
   registrationStatusPresentation,
 } from "@/content/enrollment";
+import { RegistrationDocumentViewButton } from "@/components/sangam/registration-document-view-button";
 
 interface DetailItem {
   readonly label: string;
@@ -301,7 +302,38 @@ function categoryItems(
                     : "Yes"
                   : "No",
           },
+          // Phase H3 (Tamil Sangam registration V2) — Sangam-only
+          // fields. Stay empty (and so filtered out by withValue) for a
+          // plain tamil_community organisation registered through the
+          // generic Organisation wizard, which never writes them.
+          { label: "Approximate members", value: profile.memberCount },
+          { label: "SPOC — full name", value: profile.spocFullName },
+          { label: "SPOC — email", value: profile.spocEmail },
+          { label: "SPOC — phone", value: profile.spocPhone },
+          { label: "President — full name", value: profile.presidentFullName },
+          { label: "President — email", value: profile.presidentEmail },
+          { label: "President — phone", value: profile.presidentPhone },
+          {
+            label: "Social media links",
+            value: profile.socialLinks.join(", "),
+          },
         ]),
+        ...(profile.registrationDocumentPath
+          ? [
+              {
+                label: "Registration certificate",
+                value: (
+                  <RegistrationDocumentViewButton
+                    path={profile.registrationDocumentPath}
+                    filename={
+                      profile.registrationDocumentFilename ||
+                      "Registration document"
+                    }
+                  />
+                ),
+              },
+            ]
+          : []),
       ];
     case "education":
       return [

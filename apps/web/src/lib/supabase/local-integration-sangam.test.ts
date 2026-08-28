@@ -331,5 +331,212 @@ localDescribe(
       expect(approve.error).toBeNull();
       expect(requireData(approve.data, "approval").status).toBe("approved");
     });
+
+    // ------------------------------------------------------------------
+    // Phase H3 — Tamil Sangam registration V2: new required-field
+    // server-side enforcement, independent of whatever the client
+    // validates. Continues to use the "founder" actor's own
+    // sangamOrgId/sangamApplicationId draft from the tests above.
+    // ------------------------------------------------------------------
+
+    it("new SPOC/President/member-count columns round-trip through the normal update grant", async () => {
+      const update = await actor("founder")
+        .client.from("organization_tamil_community_details")
+        .update({
+          member_count: 240,
+          spoc_full_name: "Kavitha Selvam",
+          spoc_email: "kavitha@tamil-ulagam.test",
+          spoc_phone: "+1 416 555 0100",
+          president_full_name: "Arun Kumar",
+          president_email: "arun@tamil-ulagam.test",
+          president_phone: "+1 416 555 0111",
+        })
+        .eq("organization_id", sangamOrgId);
+      expect(update.error).toBeNull();
+
+      const read = await admin
+        .from("organization_tamil_community_details")
+        .select(
+          "member_count, spoc_full_name, spoc_email, president_full_name, president_email",
+        )
+        .eq("organization_id", sangamOrgId)
+        .single();
+      expect(read.data).toMatchObject({
+        member_count: 240,
+        spoc_full_name: "Kavitha Selvam",
+        spoc_email: "kavitha@tamil-ulagam.test",
+        president_full_name: "Arun Kumar",
+        president_email: "arun@tamil-ulagam.test",
+      });
+    });
+
+    it("submit_organization_application rejects a Sangam missing SPOC/President details even if the shared representative/declaration fields are already complete", async () => {
+      // Fill in everything the shared (non-Sangam-specific) validation
+      // requires, deliberately leaving SPOC/President incomplete — the
+      // server-side check must still block submission on its own, not
+      // rely on the client ever having asked for them.
+      const orgUpdate = await admin
+        .from("organizations")
+        .update({
+          name: "Riverside Tamil Sangam",
+          country: "Canada",
+          region: "Ontario",
+          city: "Toronto",
+          year_established: 2001,
+          registration_status: "informal",
+        })
+        .eq("id", sangamOrgId);
+      expect(orgUpdate.error).toBeNull();
+      const repUpdate = await admin
+        .from("organization_applications")
+        .update({
+          representative_full_name: "Kavitha Selvam",
+          representative_email: "kavitha@tamil-ulagam.test",
+          representative_phone: "+1 416 555 0100",
+          representative_relationship: "authorised_representative",
+          authorization_declaration: true,
+          accuracy_declaration: true,
+        })
+        .eq("id", sangamApplicationId);
+      expect(repUpdate.error).toBeNull();
+      const clearPresident = await admin
+        .from("organization_tamil_community_details")
+        .update({
+          president_full_name: "",
+          president_email: "",
+          president_phone: "",
+        })
+        .eq("organization_id", sangamOrgId);
+      expect(clearPresident.error).toBeNull();
+
+      const blocked = await actor("founder").client.rpc(
+        "submit_organization_application",
+        { target_application_id: sangamApplicationId },
+      );
+      expect(blocked.error).not.toBeNull();
+      expect(blocked.error?.message ?? "").toMatch(/SPOC and President/i);
+    });
+
+    it("submit_organization_application does NOT require official_email/official_phone for a Sangam (H3 brief section 3)", async () => {
+      const clearEmail = await admin
+        .from("organizations")
+        .update({ official_email: "", official_phone: "" })
+        .eq("id", sangamOrgId);
+      expect(clearEmail.error).toBeNull();
+      const restorePresident = await admin
+        .from("organization_tamil_community_details")
+        .update({
+          president_full_name: "Arun Kumar",
+          president_email: "arun@tamil-ulagam.test",
+          president_phone: "+1 416 555 0111",
+        })
+        .eq("organization_id", sangamOrgId);
+      expect(restorePresident.error).toBeNull();
+
+      const submitted = await actor("founder").client.rpc(
+        "submit_organization_application",
+        { target_application_id: sangamApplicationId },
+      );
+      expect(submitted.error).toBeNull();
+      expect(requireData(submitted.data, "submitted sangam").status).toBe(
+        "submitted",
+      );
+    });
+
+    it("submit_organization_application requires a registration number AND a registration document once a Sangam is marked formally registered", async () => {
+      await createActor("registered-founder", "Registered Sangam Founder");
+      const draft = await actor("registered-founder").client.rpc(
+        "ensure_sangam_application_draft",
+      );
+      const application = requireData(draft.data, "registered sangam draft");
+      const orgId = application.organization_id;
+      const applicationId = application.id;
+
+      const orgUpdate = await admin
+        .from("organizations")
+        .update({
+          name: "Formally Registered Tamil Sangam",
+          country: "Canada",
+          region: "Ontario",
+          city: "Toronto",
+          year_established: 1999,
+          registration_status: "registered",
+          registration_number: "",
+        })
+        .eq("id", orgId);
+      expect(orgUpdate.error).toBeNull();
+      const repUpdate = await admin
+        .from("organization_applications")
+        .update({
+          representative_full_name: "Rep",
+          representative_email: "rep@tamil-ulagam.test",
+          representative_phone: "+1 416 555 0100",
+          representative_relationship: "authorised_representative",
+          authorization_declaration: true,
+          accuracy_declaration: true,
+        })
+        .eq("id", applicationId);
+      expect(repUpdate.error).toBeNull();
+      const detailsUpdate = await admin
+        .from("organization_tamil_community_details")
+        .update({
+          member_count: 50,
+          spoc_full_name: "Rep",
+          spoc_email: "rep@tamil-ulagam.test",
+          spoc_phone: "+1 416 555 0100",
+          president_full_name: "President",
+          president_email: "president@tamil-ulagam.test",
+          president_phone: "+1 416 555 0111",
+        })
+        .eq("organization_id", orgId);
+      expect(detailsUpdate.error).toBeNull();
+
+      // No registration number, no document — blocked.
+      const blockedNoNumber = await actor("registered-founder").client.rpc(
+        "submit_organization_application",
+        { target_application_id: applicationId },
+      );
+      expect(blockedNoNumber.error).not.toBeNull();
+      expect(blockedNoNumber.error?.message ?? "").toMatch(
+        /registration number and registration document/i,
+      );
+
+      // Registration number present, still no document — still blocked.
+      const numberUpdate = await admin
+        .from("organizations")
+        .update({ registration_number: "ON-REG-5521" })
+        .eq("id", orgId);
+      expect(numberUpdate.error).toBeNull();
+      const blockedNoDocument = await actor("registered-founder").client.rpc(
+        "submit_organization_application",
+        { target_application_id: applicationId },
+      );
+      expect(blockedNoDocument.error).not.toBeNull();
+      expect(blockedNoDocument.error?.message ?? "").toMatch(
+        /registration number and registration document/i,
+      );
+
+      // Both present — succeeds. (The document path itself is a Storage
+      // pointer; its actual upload path/RLS is covered end-to-end by
+      // sangam-registration-document-security.spec.ts. Here only the
+      // RPC's own "is a document recorded" check is being proven.)
+      const documentUpdate = await admin
+        .from("organization_tamil_community_details")
+        .update({
+          registration_document_path: `${applicationId}/test-document.pdf`,
+          registration_document_filename: "test-document.pdf",
+          registration_document_uploaded_at: new Date().toISOString(),
+        })
+        .eq("organization_id", orgId);
+      expect(documentUpdate.error).toBeNull();
+      const submitted = await actor("registered-founder").client.rpc(
+        "submit_organization_application",
+        { target_application_id: applicationId },
+      );
+      expect(submitted.error).toBeNull();
+      expect(
+        requireData(submitted.data, "submitted registered sangam").status,
+      ).toBe("submitted");
+    });
   },
 );

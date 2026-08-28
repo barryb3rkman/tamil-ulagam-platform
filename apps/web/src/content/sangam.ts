@@ -1,13 +1,20 @@
 /**
  * Copy and structural data for the real Tamil Sangam registration
- * journey (Phase D1). Kept as data, matching every other content/*.ts
- * module, so copy can be revised without touching component logic.
+ * journey. Kept as data, matching every other content/*.ts module, so
+ * copy can be revised without touching component logic.
+ *
+ * Phase H3 (Tamil Sangam registration V2) rewrote this file's stage
+ * copy for the new four-stage structure (About your Sangam /
+ * Registration details / Leadership & contact / Review & submit),
+ * replacing the old three-intake-stage copy that asked for a generic
+ * "Representative" and an "Official Sangam email" — both retired from
+ * the Sangam UX (H3 brief sections 3/4).
  */
 
 export const sangamStages = [
-  "Your Sangam",
-  "Leadership & Reach",
-  "Standing & Confirmation",
+  "About your Sangam",
+  "Registration details",
+  "Leadership & contact",
   "Review & submit",
 ] as const;
 
@@ -18,42 +25,40 @@ export const sangamLoggedOutContent = {
     "Give your Sangam its own presence within Tamil Ulagam — a global federation of Tamil organisations and community networks.",
   steps: [
     {
-      title: "Tell us about your Sangam",
+      title: "About your Sangam",
       description:
-        "Its name, where it's based, and a short description of the community it serves.",
+        "Its name, when it began, how many members it has, and where it's based.",
     },
     {
-      title: "Leadership & reach",
+      title: "Registration details",
       description:
-        "An official Sangam contact and the representative registering it — plus whether it's already part of a wider Tamil network.",
+        "Whether it's formally registered, and any wider Tamil network it's part of.",
+    },
+    {
+      title: "Leadership & contact",
+      description:
+        "A single point of contact, the Sangam's President, and its digital presence.",
     },
     {
       title: "Federation review",
       description:
         "Our federation team reviews the submission. Informal, not-yet-registered Sangams are welcome — formal registration is a trust signal, not a requirement.",
     },
-    {
-      title: "Your Sangam's presence",
-      description:
-        "Once verified, your Sangam appears in Member Registration search, and members can request to join.",
-    },
   ],
 } as const;
 
 export const sangamStageOneContent = {
-  title: "Your Sangam",
+  title: "About your Sangam",
   description:
-    "The essentials — how your Sangam is known, where it's based, and who it serves.",
-  descriptionPrompt:
-    "Tell us briefly who your Sangam serves and the community it represents.",
+    "The essentials — how your Sangam is known, when it began, and where it's based.",
 } as const;
 
 export const sangamStageTwoContent = {
-  title: "Leadership & reach",
+  title: "Registration details",
   description:
-    "How Tamil Ulagam and reviewers can reach your Sangam, and who is registering it.",
-  officialEmailHelp:
-    "Use your Sangam's official inbox, not your personal email.",
+    "A little about legal standing. Informal, not-yet-registered Sangams are welcome here.",
+  informalNotice:
+    "Many Tamil Sangams operate informally, without formal legal registration — that's completely welcome. Formal registration is a trust signal for reviewers, never a requirement to register.",
   networkQuestion:
     "Is your Sangam already connected to a regional, national or international Tamil network or federation?",
   networkNameHelp: "The network or federation's name.",
@@ -65,12 +70,22 @@ export const sangamNetworkAffiliationOptions = [
   { value: "unspecified", label: "Prefer not to say" },
 ] as const;
 
+export const sangamRegisteredOptions = [
+  { value: "registered", label: "Yes" },
+  { value: "informal", label: "No" },
+] as const;
+
 export const sangamStageThreeContent = {
-  title: "Standing & confirmation",
+  title: "Leadership & contact",
   description:
-    "A little about legal standing. Informal, not-yet-registered Sangams are welcome here.",
-  informalNotice:
-    "Many Tamil Sangams operate informally, without formal legal registration — that's completely welcome. Formal registration is a trust signal for reviewers, never a requirement to register.",
+    "Who Tamil Ulagam and reviewers can reach, and your Sangam's presence online.",
+  spocTitle: "Single Point of Contact (SPOC)",
+  spocDescription: "The main contact for day-to-day communication.",
+  presidentTitle: "President",
+  presidentDescription:
+    "The Sangam's president — this can be the same person as the SPOC.",
+  sameAsSpoc: "Same as SPOC",
+  digitalPresenceTitle: "Digital presence",
   declaration:
     "I confirm that I am authorised to represent this Tamil Sangam and that the information provided is accurate.",
 } as const;
@@ -110,18 +125,3 @@ export const sangamSuccessContent = {
 export const sangamWorkspaceContent = {
   eyebrow: "TAMIL SANGAM",
 } as const;
-
-/**
- * Sangam-appropriate representative role labels, mapped onto the same
- * internal representative_relationship enum the Organisation journey
- * already uses — no new database enum values for label differences
- * alone (D1 brief section 7). "President / Chair" intentionally maps to
- * the same "president" value the Organisation journey's "Leadership"
- * grouping already uses.
- */
-export const sangamRepresentativeRoleOptions = [
-  { value: "president", label: "President / Chair" },
-  { value: "secretary", label: "Secretary / Administrator" },
-  { value: "authorised_representative", label: "Authorised Representative" },
-  { value: "other", label: "Other" },
-] as const;

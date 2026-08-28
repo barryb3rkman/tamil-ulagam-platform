@@ -131,18 +131,17 @@ test.describe("local Supabase real Tamil Sangam registration lifecycle", () => {
         registrantPage.getByRole("link", { name: /Create account & begin/ }),
       ).toHaveCount(0);
 
-      // Stage 1 — Your Sangam
+      // Stage 1 — About your Sangam (H3: name, year, member count, location)
       await registrantPage.getByLabel(/Sangam name/).fill(sangamName);
+      await registrantPage.getByLabel(/Year of commencement/).fill("2005");
+      await registrantPage
+        .getByLabel(/Approximate number of members/)
+        .fill("180");
       await registrantPage.getByLabel(/Country/).fill("Canada");
       await registrantPage
         .getByLabel(/State \/ Province \/ Region/)
         .fill("Nova Scotia");
       await registrantPage.getByLabel(/City/).fill("Halifax");
-      await registrantPage
-        .getByLabel(/Community served/)
-        .fill(
-          "Serves Tamil families across the Halifax region with language classes and cultural events.",
-        );
       // H2 section 40 (Sangam repeats the Organisation wizard's autosave
       // check): no "Save progress" button exists — wait past the
       // debounce interval (1s) so the last field's own save has actually
@@ -154,28 +153,39 @@ test.describe("local Supabase real Tamil Sangam registration lifecycle", () => {
       await expect(registrantPage.getByLabel(/Sangam name/)).toHaveValue(
         sangamName,
       );
+      await expect(
+        registrantPage.getByLabel(/Approximate number of members/),
+      ).toHaveValue("180");
       await registrantPage.getByRole("button", { name: "Continue" }).click();
 
-      // Stage 2 — Leadership & Reach
-      await registrantPage
-        .getByLabel(/Official Sangam email/)
-        .fill("office@coastal-sangam.example");
-      await registrantPage.getByLabel(/Official phone/).fill("+1 902 555 0133");
-      await registrantPage
-        .getByLabel(/Representative full name/)
-        .fill(registrant.fullName);
-      await registrantPage.getByLabel(/^Phone/).fill("+1 902 555 0144");
-      await registrantPage
-        .getByLabel("Representative role")
-        .selectOption("president");
-      await registrantPage.getByLabel("No", { exact: true }).check();
+      // Stage 2 — Registration details (informal Sangam — no registration
+      // number/document required, per the "informal is valid" rule)
+      await expect(
+        registrantPage.getByText("Is this Tamil Sangam formally registered?"),
+      ).toBeVisible();
+      await registrantPage.getByRole("radio", { name: "No" }).first().check();
       await registrantPage.getByRole("button", { name: "Continue" }).click();
 
-      // Stage 3 — Standing & Confirmation (informal Sangam — no
-      // registration number required, per D1's "informal is valid" rule)
-      await registrantPage
-        .getByLabel("Unregistered / informal organisation")
-        .check();
+      // Stage 3 — Leadership & contact (SPOC + President, no generic
+      // "Representative" concept any more)
+      await expect(
+        registrantPage.getByText("Single Point of Contact (SPOC)"),
+      ).toBeVisible();
+      const [spocName, presidentName] = await registrantPage
+        .getByLabel(/^Full name/)
+        .all();
+      const [spocEmail, presidentEmail] = await registrantPage
+        .getByLabel(/^Email/)
+        .all();
+      const [spocPhone, presidentPhone] = await registrantPage
+        .getByLabel(/^Phone/)
+        .all();
+      await spocName!.fill(registrant.fullName);
+      await spocEmail!.fill(registrant.email);
+      await spocPhone!.fill("+1 902 555 0144");
+      await presidentName!.fill("Coastal Sangam President");
+      await presidentEmail!.fill("president@coastal-sangam.example");
+      await presidentPhone!.fill("+1 902 555 0155");
       await registrantPage
         .getByLabel(
           "I confirm that I am authorised to represent this Tamil Sangam and that the information provided is accurate.",
