@@ -11,9 +11,12 @@ import type {
 import { useId } from "react";
 
 // placeholder:text-slate/90 — see packages/ui/src/input.tsx's
-// controlClassName for why /65 was replaced (AA contrast).
+// controlClassName for why /65 was replaced (AA contrast). min-h-11
+// (44px) rather than packages/ui/Input's min-h-12 — H2 brief: normal
+// one-line fields shouldn't look like textareas; 44px is still a full
+// touch target, just less oversized on desktop-dense forms.
 const controlClass =
-  "motion-control focus-visible:ring-focus border-global-navy/20 bg-warm-ivory/20 text-charcoal placeholder:text-slate/90 hover:border-global-navy/35 min-h-12 w-full rounded-button border px-4 py-2.5 text-base shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] focus-visible:border-interactive-blue focus-visible:bg-white focus-visible:outline-none aria-[invalid=true]:border-error aria-[invalid=true]:bg-error/3 disabled:bg-global-navy/5 disabled:cursor-not-allowed disabled:text-slate";
+  "motion-control focus-visible:ring-focus border-global-navy/20 bg-warm-ivory/20 text-charcoal placeholder:text-slate/90 hover:border-global-navy/35 min-h-11 w-full rounded-button border px-4 py-2 text-base shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] focus-visible:border-interactive-blue focus-visible:bg-white focus-visible:outline-none aria-[invalid=true]:border-error aria-[invalid=true]:bg-error/3 disabled:bg-global-navy/5 disabled:cursor-not-allowed disabled:text-slate";
 
 interface FieldFrameProps {
   readonly id: string;
@@ -24,6 +27,12 @@ interface FieldFrameProps {
   readonly children: ReactNode;
 }
 
+// One platform-wide optional-field convention (H2 brief sections 2/9):
+// the qualifier lives in the label itself, muted, never as a standalone
+// "Optional." helper line. A field is optional whenever the caller
+// doesn't pass `required` — every call site in this codebase already
+// marks genuinely-required fields with `required`, so this is a safe,
+// single source of truth rather than a second flag to keep in sync.
 function FieldFrame({
   children,
   error,
@@ -34,7 +43,7 @@ function FieldFrame({
 }: FieldFrameProps) {
   const descriptionId = `${id}-description`;
   return (
-    <div className="grid gap-2">
+    <div className="grid gap-1.5">
       <label htmlFor={id} className="text-global-navy text-sm font-semibold">
         {label}
         {required ? (
@@ -44,7 +53,12 @@ function FieldFrame({
             </span>
             <span className="sr-only"> (required)</span>
           </>
-        ) : null}
+        ) : (
+          <span className="text-slate ml-1.5 text-xs font-normal">
+            {" "}
+            (optional)
+          </span>
+        )}
       </label>
       {children}
       {error ? (
@@ -52,7 +66,7 @@ function FieldFrame({
           {error}
         </p>
       ) : helperText ? (
-        <p id={descriptionId} className="text-slate text-sm">
+        <p id={descriptionId} className="text-slate max-w-md text-xs leading-5">
           {helperText}
         </p>
       ) : null}
@@ -422,51 +436,99 @@ export function FormSubsection({
   );
 }
 
+export type AutosaveStatus = "idle" | "saving" | "saved" | "error";
+
+function AutosaveIndicator({
+  status,
+  onRetry,
+}: {
+  readonly status: AutosaveStatus;
+  readonly onRetry?: () => void;
+}) {
+  if (status === "idle") return <span aria-live="polite" className="sr-only" />;
+  return (
+    <p
+      aria-live="polite"
+      className="text-slate flex items-center gap-1.5 text-xs font-medium"
+    >
+      {status === "saving" ? (
+        <>
+          <span
+            aria-hidden="true"
+            className="border-slate/40 border-t-slate size-3 animate-spin rounded-full border-2"
+          />
+          Saving…
+        </>
+      ) : status === "saved" ? (
+        <>
+          <span aria-hidden="true" className="text-success">
+            ✓
+          </span>
+          Saved
+        </>
+      ) : (
+        <span className="text-error flex items-center gap-2">
+          Progress couldn&apos;t be saved.
+          {onRetry ? (
+            <button
+              type="button"
+              onClick={onRetry}
+              className="focus-visible:ring-focus rounded-sm font-semibold underline underline-offset-2 focus-visible:outline-none"
+            >
+              Retry
+            </button>
+          ) : null}
+        </span>
+      )}
+    </p>
+  );
+}
+
+// Deliberately not a card (H2 brief section 17/19 — the wizard footer
+// shouldn't read as its own dashboard surface): a slim, top-bordered row
+// that anchors the page without a large white container. Registration
+// autosaves (section 13) — there is no explicit "Save progress" action
+// any more, only a quiet save-status readout next to Continue.
 export function FormActions({
   backLabel = "Back",
   nextLabel = "Continue",
   onBack,
-  onSave,
+  onRetry,
   pending,
+  saveStatus = "idle",
 }: {
   readonly backLabel?: string;
   readonly nextLabel?: string;
   readonly onBack?: () => void;
-  readonly onSave?: () => void;
+  readonly onRetry?: () => void;
   readonly pending?: boolean;
+  readonly saveStatus?: AutosaveStatus;
 }) {
   return (
-    <div className="border-global-navy/12 rounded-card flex flex-col-reverse gap-3 border bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex flex-wrap gap-2">
-        {onBack ? (
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={onBack}
-            className="w-full sm:w-auto"
-          >
-            {backLabel}
-          </Button>
-        ) : null}
-        {onSave ? (
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={onSave}
-            className="w-full sm:w-auto"
-          >
-            Save progress
-          </Button>
-        ) : null}
+    <div className="border-global-navy/12 flex flex-col-reverse gap-3 border-t pt-5 sm:flex-row sm:items-center sm:justify-between">
+      {onBack ? (
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={onBack}
+          className="w-full sm:w-auto"
+        >
+          {backLabel}
+        </Button>
+      ) : (
+        <span aria-hidden="true" />
+      )}
+      <div className="flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center sm:gap-4">
+        <AutosaveIndicator status={saveStatus} onRetry={onRetry} />
+        <Button
+          type="submit"
+          disabled={pending}
+          aria-busy={pending}
+          className="w-full sm:w-auto"
+        >
+          {pending ? "Saving…" : nextLabel}
+        </Button>
       </div>
-      <Button
-        type="submit"
-        disabled={pending}
-        aria-busy={pending}
-        className="w-full sm:w-auto"
-      >
-        {pending ? "Saving…" : nextLabel}
-      </Button>
     </div>
   );
 }

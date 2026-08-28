@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import type { JoinJourney } from "@/content/join";
 
+import type { JourneyOverride } from "./journey-selector";
 import {
   MemberMark,
   OrganisationMark,
@@ -42,24 +43,24 @@ const journeyAccent: Record<
 
 export function JourneyCard({
   journey,
-  resuming,
+  override,
 }: {
   readonly journey: JoinJourney;
-  /** True when the visitor has an in-progress record this journey can
-   * resume — swaps the title/CTA copy to reflect it, per the
-   * auth-aware "surface a contextual resume action" requirement. No
-   * new backend state: this is driven entirely by the platform state
-   * the caller already has. */
-  readonly resuming?: boolean;
+  /** A personalized title/CTA/href for a visitor with a relevant
+   * in-progress or verified record — see join-experience.tsx's
+   * overrideFor(). No new backend state: driven entirely by platform
+   * state the caller already has. */
+  readonly override?: JourneyOverride;
 }) {
   const accent = journeyAccent[journey.id];
   const Icon = accent.icon;
-  const title = (resuming && journey.resumeTitle) || journey.title;
-  const cta = (resuming && journey.resumeCta) || journey.cta;
+  const title = override?.title ?? journey.title;
+  const cta = override?.cta ?? journey.cta;
+  const href = override?.href ?? journey.href;
 
   return (
     <Link
-      href={journey.href}
+      href={href}
       className="group focus-visible:ring-focus rounded-card block focus-visible:outline-none"
     >
       <Surface

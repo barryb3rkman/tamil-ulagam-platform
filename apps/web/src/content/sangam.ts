@@ -53,10 +53,10 @@ export const sangamStageTwoContent = {
   description:
     "How Tamil Ulagam and reviewers can reach your Sangam, and who is registering it.",
   officialEmailHelp:
-    "A Sangam-owned inbox (not a personal address) — this is separate from your own account email.",
+    "Use your Sangam's official inbox, not your personal email.",
   networkQuestion:
     "Is your Sangam already connected to a regional, national or international Tamil network or federation?",
-  networkNameHelp: "Optional — the network or federation's name.",
+  networkNameHelp: "The network or federation's name.",
 } as const;
 
 export const sangamNetworkAffiliationOptions = [

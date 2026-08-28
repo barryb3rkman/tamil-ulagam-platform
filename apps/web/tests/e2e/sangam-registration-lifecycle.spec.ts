@@ -143,6 +143,17 @@ test.describe("local Supabase real Tamil Sangam registration lifecycle", () => {
         .fill(
           "Serves Tamil families across the Halifax region with language classes and cultural events.",
         );
+      // H2 section 40 (Sangam repeats the Organisation wizard's autosave
+      // check): no "Save progress" button exists — wait past the
+      // debounce interval (1s) so the last field's own save has actually
+      // settled, not an earlier field's premature "Saved" flash, then
+      // hard-reload to prove it persisted server-side before continuing.
+      await registrantPage.waitForTimeout(1300);
+      await expect(registrantPage.getByText("Saved")).toBeVisible();
+      await registrantPage.reload();
+      await expect(registrantPage.getByLabel(/Sangam name/)).toHaveValue(
+        sangamName,
+      );
       await registrantPage.getByRole("button", { name: "Continue" }).click();
 
       // Stage 2 — Leadership & Reach

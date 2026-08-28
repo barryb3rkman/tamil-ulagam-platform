@@ -77,7 +77,7 @@ function CategoryQuestion({
       );
     case "business":
       return (
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid items-start gap-5 sm:grid-cols-2">
           <SelectField
             label="Business type"
             required
@@ -189,7 +189,7 @@ export function OrganisationStageStanding({
           <div className="border-heritage-gold/35 border-l-2 pl-4">
             <TextField
               label="Registration / incorporation number"
-              helperText="Optional — reviewers may ask for this later if needed."
+              helperText="Reviewers may ask for this later if needed."
               value={organisation.registrationNumber}
               error={errors.registrationNumber}
               onChange={(event) =>
@@ -198,17 +198,17 @@ export function OrganisationStageStanding({
             />
           </div>
         ) : null}
-      </div>
 
-      <div className="surface-card grid gap-5 p-5 sm:p-7 lg:p-8">
-        <h3 className="text-global-navy text-base font-bold">
-          {categoryLabel} details
-        </h3>
-        <CategoryQuestion
-          profile={profile}
-          errors={errors}
-          onChange={onProfileChange}
-        />
+        <div className="border-global-navy/10 grid gap-5 border-t pt-6">
+          <h3 className="text-global-navy text-base font-bold">
+            {categoryLabel} details
+          </h3>
+          <CategoryQuestion
+            profile={profile}
+            errors={errors}
+            onChange={onProfileChange}
+          />
+        </div>
       </div>
 
       <div className="surface-elevated grid gap-4 p-5 sm:p-7 lg:p-8">

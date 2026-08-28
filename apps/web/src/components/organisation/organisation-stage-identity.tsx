@@ -20,14 +20,14 @@ export function OrganisationStageIdentity({
     onChange({ ...organisation, [key]: value });
 
   return (
-    <div className="grid gap-6">
-      <div className="surface-card grid gap-5 p-5 sm:p-7 lg:p-8">
-        <div className="max-w-xl">
-          <h2 className="text-global-navy text-xl font-bold tracking-[-0.01em] sm:text-2xl">
-            {content.title}
-          </h2>
-          <p className="text-slate mt-2 leading-6">{content.description}</p>
-        </div>
+    <div className="surface-card grid gap-7 p-5 sm:p-7 lg:p-8">
+      <div className="max-w-xl">
+        <h2 className="text-global-navy text-xl font-bold tracking-[-0.01em] sm:text-2xl">
+          {content.title}
+        </h2>
+        <p className="text-slate mt-2 leading-6">{content.description}</p>
+      </div>
+      <div className="grid gap-5">
         <fieldset className="grid gap-3">
           <legend className="text-global-navy mb-1 text-sm font-semibold">
             Organisation category
@@ -89,7 +89,7 @@ export function OrganisationStageIdentity({
         ) : null}
       </div>
 
-      <div className="surface-card grid gap-5 p-5 sm:p-7 lg:p-8">
+      <div className="border-global-navy/10 grid gap-5 border-t pt-6">
         <h3 className="text-global-navy text-base font-bold">
           Organisation profile
         </h3>
@@ -100,7 +100,7 @@ export function OrganisationStageIdentity({
           error={errors.name}
           onChange={(event) => update("name", event.target.value)}
         />
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid items-start gap-5 sm:grid-cols-3">
           <TextField
             label="Country"
             required
@@ -123,15 +123,16 @@ export function OrganisationStageIdentity({
             onChange={(event) => update("city", event.target.value)}
           />
         </div>
-        <TextField
-          label="Year established"
-          inputMode="numeric"
-          maxLength={4}
-          value={organisation.yearEstablished}
-          error={errors.yearEstablished}
-          helperText="Optional."
-          onChange={(event) => update("yearEstablished", event.target.value)}
-        />
+        <div className="sm:max-w-40">
+          <TextField
+            label="Year established"
+            inputMode="numeric"
+            maxLength={4}
+            value={organisation.yearEstablished}
+            error={errors.yearEstablished}
+            onChange={(event) => update("yearEstablished", event.target.value)}
+          />
+        </div>
         <TextareaField
           label="Short description"
           required

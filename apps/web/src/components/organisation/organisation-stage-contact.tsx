@@ -77,15 +77,16 @@ export function OrganisationStageContact({
   const currentRole = relationshipToRole(representative.relationship);
 
   return (
-    <div className="grid gap-6">
-      <div className="surface-card grid gap-5 p-5 sm:p-7 lg:p-8">
-        <div className="max-w-xl">
-          <h2 className="text-global-navy text-xl font-bold tracking-[-0.01em] sm:text-2xl">
-            {content.title}
-          </h2>
-          <p className="text-slate mt-2 leading-6">{content.description}</p>
-        </div>
-        <div className="grid gap-5 md:grid-cols-2">
+    <div className="surface-card grid gap-7 p-5 sm:p-7 lg:p-8">
+      <div className="max-w-xl">
+        <h2 className="text-global-navy text-xl font-bold tracking-[-0.01em] sm:text-2xl">
+          {content.title}
+        </h2>
+        <p className="text-slate mt-2 leading-6">{content.description}</p>
+      </div>
+
+      <div className="grid gap-5">
+        <div className="grid items-start gap-5 sm:grid-cols-2">
           <TextField
             label="Official email"
             type="email"
@@ -105,25 +106,24 @@ export function OrganisationStageContact({
             error={errors.officialPhone}
             onChange={(event) => updateOrg("officialPhone", event.target.value)}
           />
-          <div className="md:col-span-2">
-            <TextField
-              label="Website or social link"
-              type="url"
-              placeholder="https://"
-              value={organisation.website}
-              error={errors.website}
-              helperText="Optional."
-              onChange={(event) => updateOrg("website", event.target.value)}
-            />
-          </div>
+        </div>
+        <div className="sm:max-w-sm">
+          <TextField
+            label="Website or social link"
+            type="url"
+            placeholder="https://"
+            value={organisation.website}
+            error={errors.website}
+            onChange={(event) => updateOrg("website", event.target.value)}
+          />
         </div>
       </div>
 
-      <div className="surface-card grid gap-5 p-5 sm:p-7 lg:p-8">
+      <div className="border-global-navy/10 grid gap-5 border-t pt-6">
         <h3 className="text-global-navy text-base font-bold">
           Your details as representative
         </h3>
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid items-start gap-5 sm:grid-cols-2">
           <TextField
             label="Representative full name"
             required
@@ -140,21 +140,23 @@ export function OrganisationStageContact({
             onChange={(event) => updateRep("phone", event.target.value)}
           />
         </div>
-        <SelectField
-          label="Representative role"
-          required
-          value={currentRole}
-          options={representativeRoleOptions}
-          error={errors.relationship}
-          onChange={(event) =>
-            onRepresentativeChange({
-              ...representative,
-              relationship: roleToRelationship(
-                event.target.value as RepresentativeRole,
-              ),
-            })
-          }
-        />
+        <div className="sm:max-w-sm">
+          <SelectField
+            label="Representative role"
+            required
+            value={currentRole}
+            options={representativeRoleOptions}
+            error={errors.relationship}
+            onChange={(event) =>
+              onRepresentativeChange({
+                ...representative,
+                relationship: roleToRelationship(
+                  event.target.value as RepresentativeRole,
+                ),
+              })
+            }
+          />
+        </div>
       </div>
     </div>
   );

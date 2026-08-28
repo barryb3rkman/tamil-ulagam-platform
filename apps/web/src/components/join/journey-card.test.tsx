@@ -14,8 +14,6 @@ const journey: JoinJourney = {
   description: "For businesses and institutions.",
   cta: "Start registration",
   href: "/join/organisation",
-  resumeTitle: "Continue your registration",
-  resumeCta: "Resume where you left off",
 };
 
 describe("JourneyCard", () => {
@@ -35,8 +33,16 @@ describe("JourneyCard", () => {
     expect(screen.getByText("Start registration")).toBeInTheDocument();
   });
 
-  it("swaps to resume copy when resuming is true and a resume variant exists", () => {
-    render(<JourneyCard journey={journey} resuming />);
+  it("swaps to the override's title/CTA/href when one is supplied", () => {
+    render(
+      <JourneyCard
+        journey={journey}
+        override={{
+          title: "Continue your registration",
+          cta: "Resume where you left off",
+        }}
+      />,
+    );
 
     expect(
       screen.getByRole("heading", { name: "Continue your registration" }),
@@ -45,10 +51,32 @@ describe("JourneyCard", () => {
     expect(
       screen.queryByRole("heading", { name: "Register an Organisation" }),
     ).not.toBeInTheDocument();
+    // No href override supplied — falls back to the journey's own href
+    // (the wizard itself resolves to the in-progress draft).
+    expect(
+      screen.getByRole("link", { name: /Continue your registration/ }),
+    ).toHaveAttribute("href", "/join/organisation");
   });
 
-  it("falls back to the default copy when resuming is true but no resume variant is defined", () => {
-    const journeyWithoutResume: JoinJourney = {
+  it("uses the override's href when one is supplied (e.g. Open workspace)", () => {
+    render(
+      <JourneyCard
+        journey={journey}
+        override={{
+          title: "Open workspace",
+          cta: "Go to your workspace",
+          href: "/workspace/organisation?organization=org-1",
+        }}
+      />,
+    );
+
+    expect(
+      screen.getByRole("link", { name: /Open workspace/ }),
+    ).toHaveAttribute("href", "/workspace/organisation?organization=org-1");
+  });
+
+  it("renders default copy when no override is supplied", () => {
+    const plainJourney: JoinJourney = {
       id: "sangam",
       eyebrow: "TAMIL SANGAMS",
       title: "Register a Tamil Sangam",
@@ -57,7 +85,7 @@ describe("JourneyCard", () => {
       href: "/join/sangam",
     };
 
-    render(<JourneyCard journey={journeyWithoutResume} resuming />);
+    render(<JourneyCard journey={plainJourney} />);
 
     expect(
       screen.getByRole("heading", { name: "Register a Tamil Sangam" }),

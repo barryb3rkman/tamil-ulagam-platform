@@ -17,6 +17,7 @@ import { FormActions, FormError } from "@/components/application/form-fields";
 import { joinImages } from "@/config/join-images";
 import { organisationStages } from "@/content/organisation";
 import { usePlatform } from "@/features/enrollment/platform-provider";
+import { useAutosave } from "@/features/enrollment/use-autosave";
 import {
   isValid,
   validateCategoryProfile,
@@ -75,11 +76,43 @@ export function OrganisationRegistration() {
   const [representative, setRepresentative] =
     useState<OrganisationRepresentative | null>(null);
   const [errors, setErrors] = useState<ValidationErrors>({});
-  const [notice, setNotice] = useState("");
   const [pending, setPending] = useState(false);
   const [draftError, setDraftError] = useState("");
   const [draftAttempt, setDraftAttempt] = useState(0);
   const initializedApplicationRef = useRef<string | null>(null);
+
+  // Autosave (H2 brief sections 13/15) replaces the old manual "Save
+  // progress" button. persistCurrentStage is the same per-stage
+  // persistence the button used to trigger by hand — now the sole save
+  // path, driven by useAutosave's debounce, and also what Back flushes
+  // in moveTo below so an edit is never lost by navigating away before
+  // the debounce fires. useAutosave itself must be called unconditionally
+  // (Rules of Hooks) — organisation/representative/profile can still be
+  // null this early (before the draft has loaded), so the persist
+  // function and the `enabled` flag both guard for that explicitly,
+  // rather than this hook call moving below the loading-state early
+  // returns further down.
+  const persistCurrentStage = async () => {
+    if (!organisation || !representative) return;
+    if (stage === 1 && organisation.category) {
+      await updateCategory(organisation.category);
+      await updateOrganisation(organisation);
+    }
+    if (stage === 2) {
+      await updateOrganisation(organisation);
+      await updateRepresentative(representative);
+    }
+    if (stage === 3) {
+      if (profile) await updateCategoryProfile(profile);
+      await updateOrganisation(organisation);
+    }
+  };
+
+  const autosave = useAutosave(
+    persistCurrentStage,
+    [organisation, representative, profile],
+    { enabled: Boolean(organisation && representative) },
+  );
 
   useEffect(() => {
     if (isHydrated && currentUser && !currentApplication && !platformError) {
@@ -200,45 +233,15 @@ export function OrganisationRegistration() {
   }
 
   const moveTo = async (nextStage: Stage) => {
+    await autosave.flush();
     await updateCurrentStep(nextStage);
     setStage(nextStage);
     setErrors({});
-    setNotice("");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const saveCurrent = async () => {
-    setPending(true);
-    setErrors({});
-    try {
-      if (stage === 1 && organisation.category) {
-        await updateCategory(organisation.category);
-        await updateOrganisation(organisation);
-      }
-      if (stage === 2) {
-        await updateOrganisation(organisation);
-        await updateRepresentative(representative);
-      }
-      if (stage === 3) {
-        if (profile) await updateCategoryProfile(profile);
-        await updateOrganisation(organisation);
-      }
-      setNotice("Saved just now.");
-    } catch (error: unknown) {
-      setErrors({
-        form:
-          error instanceof Error
-            ? error.message
-            : "Progress could not be saved. Please try again.",
-      });
-    } finally {
-      setPending(false);
-    }
   };
 
   const submitStage = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setNotice("");
     if (stage === 1) {
       if (!organisation.category) {
         setErrors({ category: "Choose an organisation category." });
@@ -344,11 +347,6 @@ export function OrganisationRegistration() {
             {currentApplication.registration.adminFeedback}
           </Alert>
         ) : null}
-        <div aria-live="polite" className="min-h-6">
-          {notice ? (
-            <p className="text-success text-sm font-semibold">{notice}</p>
-          ) : null}
-        </div>
         {stage === 1 ? (
           <OrganisationStageIdentity
             organisation={organisation}
@@ -381,8 +379,9 @@ export function OrganisationRegistration() {
           onBack={
             stage > 1 ? () => void moveTo((stage - 1) as Stage) : undefined
           }
-          onSave={() => void saveCurrent()}
+          onRetry={() => void autosave.retry()}
           pending={pending}
+          saveStatus={autosave.status}
           nextLabel={stage === 3 ? "Review & submit" : "Continue"}
         />
       </form>
@@ -400,7 +399,7 @@ function OrganisationFrame({
   return (
     <section className="surface-canvas">
       <div className="mx-auto max-w-[74rem] px-5 py-10 sm:px-7 sm:py-14 lg:px-10">
-        <div className="mb-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.7fr)] lg:items-center">
+        <div className="mb-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.7fr)] lg:items-center">
           <div>
             <p className="text-heritage-maroon text-xs font-bold tracking-[0.16em] uppercase">
               Organisation registration
@@ -410,8 +409,7 @@ function OrganisationFrame({
             </h1>
             <p className="text-slate mt-3 max-w-xl leading-7">
               A few short stages to get your organisation into federation
-              review. Your progress is saved as you go, so you can return
-              anytime.
+              review.
             </p>
           </div>
           {currentStage === 1 ? (

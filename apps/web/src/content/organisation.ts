@@ -54,7 +54,7 @@ export const organisationStageContactContent = {
   description:
     "How Tamil Ulagam and reviewers can reach your organisation, and who is registering it.",
   officialEmailHelp:
-    "An organisation-owned inbox (not a personal address) — separate from your own account email.",
+    "Use your organisation's official inbox, not your personal email.",
 } as const;
 
 export const organisationStageStandingContent = {

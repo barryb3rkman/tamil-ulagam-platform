@@ -118,8 +118,16 @@ test.describe("local Supabase browser enrollment", () => {
       .fill(
         "A professional services company supporting international community organisations.",
       );
-    await page.getByRole("button", { name: "Save progress" }).click();
-    await expect(page.getByText("Saved just now.")).toBeVisible();
+    // H2: registration autosaves — no manual "Save progress" button, and
+    // never click anything to trigger it. The debounce (1s) can fire
+    // once after the radio click alone before the later fields are even
+    // filled, briefly showing "Saved" for that earlier, incomplete
+    // snapshot — waiting past the debounce interval (rather than only
+    // asserting the text appears at some point) ensures the LAST edit's
+    // own save has actually reached Supabase before reloading to prove
+    // it persisted server-side, not just in local component state.
+    await page.waitForTimeout(1300);
+    await expect(page.getByText("Saved")).toBeVisible();
     await page.reload();
     await expect(page.getByLabel("Business / Company")).toBeChecked();
     await expect(page.getByLabel("Organisation name")).toHaveValue(
@@ -133,6 +141,26 @@ test.describe("local Supabase browser enrollment", () => {
     await page.getByLabel("Representative full name").fill("Nila Raj");
     await page.getByLabel(/^Phone/).fill("+1 416 555 0188");
     await page.getByLabel("Representative role").selectOption("leadership");
+    // H2 section 40: navigate Back immediately, before the autosave
+    // debounce would naturally have fired — Back must flush the pending
+    // edit to Supabase itself, not rely on the timer. A hard reload
+    // forces the wizard to rebuild its state entirely from a fresh
+    // fetch, so returning forward again showing the same values proves
+    // the flush actually reached the server, not just that client state
+    // survived the stage change (which was never at risk).
+    await page.getByRole("button", { name: "Back" }).click();
+    await expect(page.getByLabel("Organisation name")).toBeVisible();
+    await page.reload();
+    await expect(page.getByLabel("Organisation name")).toHaveValue(
+      "Nila Global Services",
+    );
+    await page.getByRole("button", { name: "Continue" }).click();
+    await expect(page.getByLabel("Official email")).toHaveValue(
+      "office@nilaglobal.example",
+    );
+    await expect(page.getByLabel("Representative full name")).toHaveValue(
+      "Nila Raj",
+    );
     await page.getByRole("button", { name: "Continue" }).click();
 
     // Step 3 — Registration & trust

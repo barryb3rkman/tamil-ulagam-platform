@@ -54,8 +54,15 @@ test.describe("organisation enrollment MVP", () => {
       .fill(
         "A professional services company supporting international community organisations.",
       );
-    await page.getByRole("button", { name: "Save progress" }).click();
-    await expect(page.getByText("Saved just now.")).toBeVisible();
+    // Registration autosaves — no manual "Save progress" button. The
+    // debounce (1s) can fire once after the radio click alone before the
+    // later fields are even filled, briefly showing "Saved" for that
+    // earlier, incomplete snapshot — waiting past the debounce interval
+    // here (rather than only asserting the text appears at some point)
+    // ensures the LAST edit's own save has actually settled before
+    // reloading to prove persistence.
+    await page.waitForTimeout(1300);
+    await expect(page.getByText("Saved")).toBeVisible();
     await page.reload();
     await expect(page.getByLabel("Business / Company")).toBeChecked();
     await expect(page.getByLabel("Organisation name")).toHaveValue(

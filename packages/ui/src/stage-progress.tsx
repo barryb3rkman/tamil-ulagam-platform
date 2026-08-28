@@ -23,7 +23,7 @@ export function StageProgress({
   stages,
 }: StageProgressProps) {
   return (
-    <nav aria-label={label} className="mb-8">
+    <nav aria-label={label} className="mb-6">
       <ol
         className="grid gap-1.5 sm:gap-3"
         style={{

@@ -20,11 +20,16 @@ describe("JourneySelector", () => {
     }
   });
 
-  it("only swaps the matching journey to its resume copy", () => {
+  it("only swaps the matching journey to its override copy", () => {
     render(
       <JourneySelector
         journeys={joinJourneys}
-        resumingJourneyId="organisation"
+        overrides={{
+          organisation: {
+            title: "Continue your registration",
+            cta: "Resume where you left off",
+          },
+        }}
       />,
     );
 

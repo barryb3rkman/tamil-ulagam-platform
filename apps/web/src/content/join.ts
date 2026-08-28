@@ -21,10 +21,6 @@ export interface JoinJourney {
   readonly description: string;
   readonly cta: string;
   readonly href: `/${string}`;
-  /** Shown instead of `title`/`cta` when the visitor already has a
-   * relevant in-progress record — see join-experience.tsx. */
-  readonly resumeTitle?: string;
-  readonly resumeCta?: string;
 }
 
 export const joinJourneys: readonly JoinJourney[] = [
@@ -36,8 +32,6 @@ export const joinJourneys: readonly JoinJourney[] = [
       "For businesses, education, healthcare, NGOs, cultural institutions, professional bodies and other organisations.",
     cta: "Start registration",
     href: "/join/organisation",
-    resumeTitle: "Continue your registration",
-    resumeCta: "Resume where you left off",
   },
   {
     id: "sangam",

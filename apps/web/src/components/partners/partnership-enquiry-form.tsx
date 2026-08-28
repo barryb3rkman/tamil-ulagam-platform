@@ -147,7 +147,7 @@ export function PartnershipEnquiryForm() {
           onChange={(event) => update("email", event.target.value)}
         />
         <TextField
-          label="Organisation (optional)"
+          label="Organisation"
           autoComplete="organization"
           value={input.organisationName}
           error={errors.organisationName}

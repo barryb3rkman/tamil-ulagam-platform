@@ -39,6 +39,7 @@ import {
   sangamStageTwoContent,
 } from "@/content/sangam";
 import { usePlatform } from "@/features/enrollment/platform-provider";
+import { useAutosave } from "@/features/enrollment/use-autosave";
 import {
   isValid,
   validateDeclaration,
@@ -85,9 +86,56 @@ export function SangamRegistrationWizard() {
   const [representative, setRepresentative] =
     useState<OrganisationRepresentative | null>(null);
   const [errors, setErrors] = useState<ValidationErrors>({});
-  const [notice, setNotice] = useState("");
   const [pending, setPending] = useState(false);
   const initializedRef = useRef<string | null>(null);
+
+  // Autosave (H2 brief sections 13-15) — same mechanism, same reused
+  // hook, as the Organisation wizard (section 14/37: identical behavior,
+  // not a parallel implementation). Replaces the old manual "Save
+  // progress" button. useAutosave must be called unconditionally (Rules
+  // of Hooks) — service/organisation/representative/profile can all
+  // still be null this early (before the draft has loaded), so both the
+  // persist function and `enabled` guard for that explicitly, rather
+  // than this hook call moving below the loading-state early returns
+  // further down.
+  const persistCurrentStage = async () => {
+    if (
+      !service ||
+      !application ||
+      !organisation ||
+      !representative ||
+      !profile
+    ) {
+      return;
+    }
+    if (stage === 1) {
+      await service.updateOrganisation(organisation.id, organisation);
+    } else if (stage === 2) {
+      await service.updateOrganisation(organisation.id, organisation);
+      await service.updateRepresentative(
+        application.registration.id,
+        representative,
+      );
+      await service.updateCategoryProfile(organisation.id, profile);
+    } else if (stage === 3) {
+      await service.updateOrganisation(organisation.id, organisation);
+      await service.updateCategoryProfile(organisation.id, profile);
+      await service.updateRepresentative(
+        application.registration.id,
+        representative,
+      );
+    }
+  };
+
+  const autosave = useAutosave(
+    persistCurrentStage,
+    [organisation, representative, profile],
+    {
+      enabled: Boolean(
+        service && application && organisation && representative && profile,
+      ),
+    },
+  );
 
   const load = useCallback(() => {
     if (!service) return;
@@ -197,50 +245,15 @@ export function SangamRegistrationWizard() {
   }
 
   const moveTo = async (nextStage: Stage) => {
+    await autosave.flush();
     await service.updateCurrentStep(application.registration.id, nextStage);
     setStage(nextStage);
     setErrors({});
-    setNotice("");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const saveCurrent = async () => {
-    setPending(true);
-    setErrors({});
-    try {
-      if (stage === 1) {
-        await service.updateOrganisation(organisation.id, organisation);
-      } else if (stage === 2) {
-        await service.updateOrganisation(organisation.id, organisation);
-        await service.updateRepresentative(
-          application.registration.id,
-          representative,
-        );
-        await service.updateCategoryProfile(organisation.id, profile);
-      } else if (stage === 3) {
-        await service.updateOrganisation(organisation.id, organisation);
-        await service.updateCategoryProfile(organisation.id, profile);
-        await service.updateRepresentative(
-          application.registration.id,
-          representative,
-        );
-      }
-      setNotice("Saved just now.");
-    } catch (error: unknown) {
-      setErrors({
-        form:
-          error instanceof Error
-            ? error.message
-            : "Progress could not be saved. Please try again.",
-      });
-    } finally {
-      setPending(false);
-    }
   };
 
   const submitStage = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setNotice("");
     if (stage === 1) {
       const nextErrors = validateOrganisationIdentity(organisation);
       setErrors(nextErrors);
@@ -337,11 +350,6 @@ export function SangamRegistrationWizard() {
   return (
     <SangamFrame currentStage={stage}>
       <form noValidate onSubmit={submitStage} className="grid gap-6">
-        <div aria-live="polite" className="min-h-6">
-          {notice ? (
-            <p className="text-success text-sm font-semibold">{notice}</p>
-          ) : null}
-        </div>
         {stage === 1 ? (
           <StageYourSangam
             organisation={organisation}
@@ -374,8 +382,9 @@ export function SangamRegistrationWizard() {
           onBack={
             stage > 1 ? () => void moveTo((stage - 1) as Stage) : undefined
           }
-          onSave={() => void saveCurrent()}
+          onRetry={() => void autosave.retry()}
           pending={pending}
+          saveStatus={autosave.status}
           nextLabel={stage === 3 ? "Review & submit" : "Continue"}
         />
       </form>
@@ -393,7 +402,7 @@ function SangamFrame({
   return (
     <section className="gradient-warm-welcome">
       <div className="mx-auto max-w-[74rem] px-5 py-10 sm:px-7 sm:py-14 lg:px-10">
-        <div className="mb-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.7fr)] lg:items-center">
+        <div className="mb-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.7fr)] lg:items-center">
           <div>
             <p className="text-heritage-maroon text-xs font-bold tracking-[0.16em] uppercase">
               Tamil Sangam registration
@@ -402,8 +411,7 @@ function SangamFrame({
               Register your Sangam
             </h1>
             <p className="text-slate mt-3 max-w-xl leading-7">
-              A few short stages to get your Sangam into federation review. Your
-              progress is saved as you go, so you can return anytime.
+              A few short stages to get your Sangam into federation review.
             </p>
           </div>
           {currentStage === 1 ? (
@@ -451,7 +459,7 @@ function StageYourSangam({
         error={errors.name}
         onChange={(event) => update("name", event.target.value)}
       />
-      <div className="grid gap-5 md:grid-cols-3">
+      <div className="grid items-start gap-5 sm:grid-cols-3">
         <TextField
           label="Country"
           required
@@ -474,15 +482,16 @@ function StageYourSangam({
           onChange={(event) => update("city", event.target.value)}
         />
       </div>
-      <TextField
-        label="Year established"
-        inputMode="numeric"
-        maxLength={4}
-        value={organisation.yearEstablished}
-        error={errors.yearEstablished}
-        helperText="Optional."
-        onChange={(event) => update("yearEstablished", event.target.value)}
-      />
+      <div className="sm:max-w-40">
+        <TextField
+          label="Year established"
+          inputMode="numeric"
+          maxLength={4}
+          value={organisation.yearEstablished}
+          error={errors.yearEstablished}
+          onChange={(event) => update("yearEstablished", event.target.value)}
+        />
+      </div>
       <TextareaField
         label="Community served"
         required
@@ -533,17 +542,18 @@ function StageLeadershipReach({
       ? profile.networkAffiliated
       : "";
   return (
-    <div className="grid gap-6">
-      <div className="surface-card grid gap-6 p-5 sm:p-7 lg:p-8">
-        <div className="max-w-xl">
-          <h2 className="text-global-navy text-xl font-bold tracking-[-0.01em] sm:text-2xl">
-            {sangamStageTwoContent.title}
-          </h2>
-          <p className="text-slate mt-2 leading-6">
-            {sangamStageTwoContent.description}
-          </p>
-        </div>
-        <div className="grid gap-5 md:grid-cols-2">
+    <div className="surface-card grid gap-7 p-5 sm:p-7 lg:p-8">
+      <div className="max-w-xl">
+        <h2 className="text-global-navy text-xl font-bold tracking-[-0.01em] sm:text-2xl">
+          {sangamStageTwoContent.title}
+        </h2>
+        <p className="text-slate mt-2 leading-6">
+          {sangamStageTwoContent.description}
+        </p>
+      </div>
+
+      <div className="grid gap-5">
+        <div className="grid items-start gap-5 sm:grid-cols-2">
           <TextField
             label="Official Sangam email"
             type="email"
@@ -565,25 +575,24 @@ function StageLeadershipReach({
             error={errors.officialPhone}
             onChange={(event) => updateOrg("officialPhone", event.target.value)}
           />
-          <div className="md:col-span-2">
-            <TextField
-              label="Website or social link"
-              type="url"
-              placeholder="https://"
-              value={organisation.website}
-              error={errors.website}
-              helperText="Optional."
-              onChange={(event) => updateOrg("website", event.target.value)}
-            />
-          </div>
+        </div>
+        <div className="sm:max-w-sm">
+          <TextField
+            label="Website or social link"
+            type="url"
+            placeholder="https://"
+            value={organisation.website}
+            error={errors.website}
+            onChange={(event) => updateOrg("website", event.target.value)}
+          />
         </div>
       </div>
 
-      <div className="surface-card grid gap-5 p-5 sm:p-7 lg:p-8">
+      <div className="border-global-navy/10 grid gap-5 border-t pt-6">
         <h3 className="text-global-navy text-base font-bold">
           Your details as representative
         </h3>
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid items-start gap-5 sm:grid-cols-2">
           <TextField
             label="Representative full name"
             required
@@ -600,23 +609,25 @@ function StageLeadershipReach({
             onChange={(event) => updateRep("phone", event.target.value)}
           />
         </div>
-        <SelectField
-          label="Representative role"
-          required
-          value={representative.relationship}
-          options={sangamRepresentativeRoleOptions}
-          error={errors.relationship}
-          onChange={(event) =>
-            onRepresentativeChange({
-              ...representative,
-              relationship: event.target
-                .value as OrganisationRepresentative["relationship"],
-            })
-          }
-        />
+        <div className="sm:max-w-sm">
+          <SelectField
+            label="Representative role"
+            required
+            value={representative.relationship}
+            options={sangamRepresentativeRoleOptions}
+            error={errors.relationship}
+            onChange={(event) =>
+              onRepresentativeChange({
+                ...representative,
+                relationship: event.target
+                  .value as OrganisationRepresentative["relationship"],
+              })
+            }
+          />
+        </div>
       </div>
 
-      <div className="surface-card grid gap-4 p-5 sm:p-7 lg:p-8">
+      <div className="border-global-navy/10 grid gap-4 border-t pt-6">
         <RadioGroup
           label={sangamStageTwoContent.networkQuestion}
           name="network-affiliated"
@@ -633,14 +644,16 @@ function StageLeadershipReach({
           }
         />
         {networkValue === "yes" ? (
-          <TextField
-            label="Network or federation name"
-            value={profile.networkName}
-            helperText={sangamStageTwoContent.networkNameHelp}
-            onChange={(event) =>
-              onProfileChange({ ...profile, networkName: event.target.value })
-            }
-          />
+          <div className="sm:max-w-sm">
+            <TextField
+              label="Network or federation name"
+              value={profile.networkName}
+              helperText={sangamStageTwoContent.networkNameHelp}
+              onChange={(event) =>
+                onProfileChange({ ...profile, networkName: event.target.value })
+              }
+            />
+          </div>
         ) : null}
       </div>
     </div>
@@ -691,7 +704,6 @@ function StageStandingConfirmation({
           <div className="border-heritage-gold/35 border-l-2 pl-4">
             <TextField
               label="Registration number"
-              helperText="Optional."
               value={organisation.registrationNumber}
               error={errors.registrationNumber}
               onChange={(event) =>

@@ -3,6 +3,7 @@
 import {
   isNavigationPathCurrent,
   type NavigationEntry,
+  type UserProfile,
 } from "@tamil-ulagam/shared";
 import { VisuallyHidden } from "@tamil-ulagam/ui";
 import Link from "next/link";
@@ -11,9 +12,17 @@ import { useEffect, useRef, useState } from "react";
 
 export interface MobileNavigationProps {
   readonly entries: readonly NavigationEntry[];
+  readonly isHydrated?: boolean;
+  readonly signedIn?: boolean;
+  readonly currentUser?: UserProfile | null;
 }
 
-export function MobileNavigation({ entries }: MobileNavigationProps) {
+export function MobileNavigation({
+  currentUser,
+  entries,
+  isHydrated = false,
+  signedIn = false,
+}: MobileNavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
@@ -138,26 +147,51 @@ export function MobileNavigation({ entries }: MobileNavigationProps) {
                 </li>
               ))}
             </ul>
-            <ul className="border-global-navy/10 mt-5 grid gap-3 border-t pt-5 sm:grid-cols-2">
-              <li>
-                <Link
-                  className="border-global-navy/25 text-global-navy hover:bg-global-navy/5 focus-visible:ring-focus rounded-button flex min-h-11 items-center justify-center border px-4 py-3 text-center text-sm font-semibold focus-visible:outline-none"
-                  href="/login"
-                  onClick={closeMenu}
-                >
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button flex min-h-11 items-center justify-center px-4 py-3 text-center text-sm font-semibold text-white focus-visible:outline-none"
-                  href="/join"
-                  onClick={closeMenu}
-                >
-                  Join Tamil Ulagam
-                </Link>
-              </li>
-            </ul>
+            {isHydrated ? (
+              signedIn && currentUser ? (
+                <ul className="border-global-navy/10 mt-5 grid gap-3 border-t pt-5 sm:grid-cols-2">
+                  <li>
+                    <Link
+                      className="border-global-navy/25 text-global-navy hover:bg-global-navy/5 focus-visible:ring-focus rounded-button flex min-h-11 items-center justify-center border px-4 py-3 text-center text-sm font-semibold focus-visible:outline-none"
+                      href="/dashboard/account"
+                      onClick={closeMenu}
+                    >
+                      Account
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      className="bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button flex min-h-11 items-center justify-center px-4 py-3 text-center text-sm font-semibold text-white focus-visible:outline-none"
+                      href="/workspace/member"
+                      onClick={closeMenu}
+                    >
+                      Open workspace
+                    </Link>
+                  </li>
+                </ul>
+              ) : (
+                <ul className="border-global-navy/10 mt-5 grid gap-3 border-t pt-5 sm:grid-cols-2">
+                  <li>
+                    <Link
+                      className="border-global-navy/25 text-global-navy hover:bg-global-navy/5 focus-visible:ring-focus rounded-button flex min-h-11 items-center justify-center border px-4 py-3 text-center text-sm font-semibold focus-visible:outline-none"
+                      href="/login"
+                      onClick={closeMenu}
+                    >
+                      Login
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      className="bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button flex min-h-11 items-center justify-center px-4 py-3 text-center text-sm font-semibold text-white focus-visible:outline-none"
+                      href="/join"
+                      onClick={closeMenu}
+                    >
+                      Join Tamil Ulagam
+                    </Link>
+                  </li>
+                </ul>
+              )
+            ) : null}
           </nav>
         </div>
       ) : null}
