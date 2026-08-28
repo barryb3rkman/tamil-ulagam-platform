@@ -674,6 +674,23 @@ localDescribe("local Supabase organisation enrollment security", () => {
       representedMembership.error,
       "Create represented reviewer membership",
     );
+    // Phase H1 retired organization_members from the "represented"
+    // authorization check (is_organization_member() now reads
+    // organization_managers only — see
+    // 20260829000000_release_candidate_hardening.sql); a real
+    // represented reviewer always has a canonical grant too (every
+    // registration path dual-writes both tables), so the fixture must
+    // grant it here as well to accurately simulate that state.
+    const representedGrant = await admin.from("organization_managers").insert({
+      organization_id: nonprofit.application.organization_id,
+      user_id: reviewer.user.id,
+      role: "representative",
+      granted_by: reviewer.user.id,
+    });
+    assertNoError(
+      representedGrant.error,
+      "Create represented reviewer manager grant",
+    );
     const representedDecision = await reviewer.client.rpc(
       "review_organization_application",
       {

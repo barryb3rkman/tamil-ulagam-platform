@@ -584,5 +584,114 @@ localDescribe(
         managers.data?.some((row) => row.user_id === outsider.user.id),
       ).toBe(true);
     });
+
+    // -------------------------------------------------------------
+    // Phase H1 — legacy authorization retirement regression coverage
+    // (20260829000000_release_candidate_hardening.sql). A person with
+    // ONLY a legacy organization_members row and no organization_managers
+    // grant is the exact state can_manage_organization()/
+    // is_organization_member() used to authorize via their OR-branch —
+    // this proves that branch is gone, using a real signed-in session,
+    // never a service-role shortcut.
+    // -------------------------------------------------------------
+    it("H1: a legacy-only organization_members row no longer grants any management authority", async () => {
+      const legacyOnly = await createActor(
+        "legacy-only",
+        "Local Mgmt Legacy Only",
+      );
+
+      const legacyInsert = await admin.from("organization_members").insert({
+        organization_id: orgBId,
+        user_id: legacyOnly.user.id,
+        role: "owner",
+        is_primary: false,
+      });
+      expect(legacyInsert.error).toBeNull();
+
+      const canManage = await legacyOnly.client.rpc("can_manage_organization", {
+        target_organization_id: orgBId,
+      });
+      expect(canManage.data).toBe(false);
+
+      const isMember = await legacyOnly.client.rpc("is_organization_member", {
+        target_organization_id: orgBId,
+      });
+      expect(isMember.data).toBe(false);
+
+      const inviteAttempt = await legacyOnly.client.rpc(
+        "invite_organization_manager",
+        {
+          target_organization_id: orgBId,
+          invitee_email: "someone-else@tamil-ulagam.test",
+          invitee_role: "admin",
+        },
+      );
+      expect(inviteAttempt.error).not.toBeNull();
+
+      const removeAttempt = await legacyOnly.client.rpc(
+        "remove_organization_manager",
+        {
+          target_organization_id: orgBId,
+          target_user_id: actor("owner-b").user.id,
+        },
+      );
+      expect(removeAttempt.error).not.toBeNull();
+
+      // The real canonical owner of the same organisation is unaffected.
+      const realOwnerCanManage = await actor("owner-b").client.rpc(
+        "can_manage_organization",
+        { target_organization_id: orgBId },
+      );
+      expect(realOwnerCanManage.data).toBe(true);
+    });
+
+    // -------------------------------------------------------------
+    // Phase H1 — invitation-expiry projection regression coverage.
+    // -------------------------------------------------------------
+    it("H1: list RPCs project an obviously expired invitation as expired, not stale Pending", async () => {
+      const owner = actor("owner-b");
+      const expiredRecipient = await createActor(
+        "expiry-recipient",
+        "Local Mgmt Expiry Recipient",
+      );
+
+      const invite = await owner.client.rpc("invite_organization_manager", {
+        target_organization_id: orgBId,
+        invitee_email: expiredRecipient.email,
+        invitee_role: "admin",
+      });
+      expect(invite.error).toBeNull();
+      const invitationId = requireData(invite.data, "expiry invite").id;
+
+      const backdate = await admin
+        .from("organization_manager_invitations")
+        .update({ expires_at: new Date(Date.now() - 1_000).toISOString() })
+        .eq("id", invitationId);
+      expect(backdate.error).toBeNull();
+
+      const ownerList = await owner.client.rpc(
+        "list_organization_manager_invitations",
+        { target_organization_id: orgBId },
+      );
+      const ownerRow = ownerList.data?.find((row) => row.id === invitationId);
+      expect(ownerRow?.status).toBe("expired");
+
+      const myInvites = await expiredRecipient.client.rpc(
+        "list_my_management_invitations",
+      );
+      expect(myInvites.data?.some((row) => row.id === invitationId)).toBe(
+        false,
+      );
+
+      // The row itself was updated in place, not merely projected —
+      // confirmed by re-reading it as the owner (a second call sees the
+      // already-persisted 'expired' value, not a repeated live sweep).
+      const persisted = await admin
+        .from("organization_manager_invitations")
+        .select("status")
+        .eq("id", invitationId)
+        .single();
+      expect(persisted.data?.status).toBe("expired");
+    });
   },
 );
