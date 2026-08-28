@@ -123,7 +123,7 @@ export function OrganisationStageIdentity({
             onChange={(event) => update("city", event.target.value)}
           />
         </div>
-        <div className="sm:max-w-40">
+        <div className="sm:max-w-60">
           <TextField
             label="Year established"
             inputMode="numeric"

@@ -328,6 +328,15 @@ export function OrganisationRegistration() {
           registration: {
             ...currentApplication.registration,
             categoryProfile: profile,
+            // representative must be merged in the same way organisation
+            // and profile are above — currentApplication.registration.representative
+            // is only as fresh as the last currentApplication load (initial
+            // load / post-submit reload), while phone/role/declaration are
+            // edited locally and persisted explicitly on stage navigation
+            // without ever refetching. Without this, the review screen
+            // shows stale (often empty) representative data even though
+            // the correct values are already saved server-side.
+            representative,
           },
         }}
         onEdit={(targetStage) => void moveTo(targetStage)}

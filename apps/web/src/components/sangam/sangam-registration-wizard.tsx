@@ -339,6 +339,15 @@ export function SangamRegistrationWizard() {
           registration: {
             ...application.registration,
             categoryProfile: profile,
+            // representative must be merged in the same way organisation
+            // and profile are above — application.registration.representative
+            // is only as fresh as the last setApplication() call (initial
+            // load / post-submit reload), while phone/role/declaration are
+            // edited locally and persisted explicitly on stage navigation
+            // without ever refetching. Without this, the review screen
+            // shows stale (often empty) representative data even though
+            // the correct values are already saved server-side.
+            representative,
           },
         }}
         onEdit={(targetStage) => void moveTo(targetStage)}
@@ -482,7 +491,7 @@ function StageYourSangam({
           onChange={(event) => update("city", event.target.value)}
         />
       </div>
-      <div className="sm:max-w-40">
+      <div className="sm:max-w-60">
         <TextField
           label="Year established"
           inputMode="numeric"
