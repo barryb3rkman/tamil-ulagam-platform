@@ -187,6 +187,25 @@ describe("buildWorkspaceOptions", () => {
     expect(options.filter((o) => o.current)).toHaveLength(1);
   });
 
+  it("H4 visual QA fix: a Sangam's People page (shared /workspace/organisation/people route, so active.type is 'organisation') still resolves the Sangam as current, not 'Unavailable workspace'", () => {
+    const options = buildWorkspaceOptions({
+      isAuthenticated: true,
+      canReviewApplications: false,
+      managedOrganisations: [makeOrg(), makeSangam()],
+      // resolveActiveWorkspace reports "organisation" here because
+      // /workspace/organisation/people has no Sangam-specific route —
+      // the exact condition that produced the bug.
+      active: { type: "organisation", id: "sangam-1" },
+    });
+    const current = findCurrentWorkspace(options);
+    expect(current?.id).toBe("sangam-1");
+    expect(current?.type).toBe("sangam");
+    expect(options.filter((o) => o.current)).toHaveLength(1);
+    // The real organisation, with a different id, must never be marked
+    // current just because active.type also says "organisation".
+    expect(options.find((o) => o.type === "organisation")?.current).toBe(false);
+  });
+
   it("orders options Member, Organisations, Sangams, Admin", () => {
     const options = buildWorkspaceOptions({
       isAuthenticated: true,

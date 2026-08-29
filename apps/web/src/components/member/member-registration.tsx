@@ -1,50 +1,84 @@
 "use client";
 
 import { Alert, Container } from "@tamil-ulagam/ui";
-import type { EligibleOrganisation, Membership } from "@tamil-ulagam/shared";
-import { useCallback, useEffect, useState } from "react";
+import type {
+  EligibleOrganisation,
+  MemberProfile,
+  Membership,
+} from "@tamil-ulagam/shared";
+import { type FormEvent, useCallback, useEffect, useState } from "react";
 
 import { usePlatform } from "@/features/enrollment/platform-provider";
+import {
+  isValid,
+  type ValidationErrors,
+} from "@/features/enrollment/validation";
 import { useMembershipService } from "@/features/membership/use-membership-service";
+import { validateMemberProfile } from "@/features/member/member-validation";
 
-import { MemberConfirmRequest } from "./member-confirm-request";
+import {
+  AffiliationTypeStage,
+  type AffiliationType,
+} from "./affiliation-type-stage";
+import {
+  MemberConfirmRequest,
+  type ConnectionAnswer,
+} from "./member-confirm-request";
 import { MemberDirectory, MemberDirectorySkeleton } from "./member-directory";
 import { MemberLoggedOut } from "./member-logged-out";
+import { MemberProfileStage } from "./member-profile-stage";
 import { MemberRequestSuccess } from "./member-request-success";
 
 type DataState = "loading" | "loaded" | "error";
+type Stage = "profile" | "type" | "directory" | "confirm" | "success";
+
+const emptyAnswer: ConnectionAnswer = {
+  connectionType: "",
+  connectionContext: "",
+  connectionContextExtra: "",
+};
 
 /**
- * Auth-aware entry point for /join/member. Three-state discipline
- * throughout, the same lesson the earlier session-restoration bug
- * taught: never render "no membership"/"logged out" content before
- * `isHydrated` resolves, and never flash the wrong thing before
- * correcting it.
- *
- *   isHydrated false          -> loading
- *   isHydrated true, no user  -> MemberLoggedOut
- *   isHydrated true, user,
- *     directory loading       -> loading
- *     directory error         -> retry
- *     directory loaded        -> MemberDirectory / confirm / success
- *       (pending/approved/rejected/revoked are per-organisation card
- *       states inside the directory, not separate top-level screens —
- *       a person can hold several affiliations at once, see item 17 of
- *       the Phase C2 report).
+ * Auth-aware entry point for /join/member — rewritten for Phase H4 as an
+ * AFFILIATION CLAIM flow (H4 brief section 1), not an open-membership
+ * request system: "I already belong to this Organisation/Sangam, connect
+ * that to my account", never "please let me join". Five stages: personal
+ * profile -> where you're already a member -> directory search ->
+ * confirm (with the category-aware connection question inline) ->
+ * success. A person may hold several independently-confirmed
+ * affiliations at once, so a full round trip resets straight back to
+ * the type-choice stage via "Add another affiliation" rather than
+ * re-asking for the profile again.
  */
 export function MemberRegistration() {
   const { isHydrated, currentUser } = usePlatform();
   const membershipService = useMembershipService();
 
   const [dataState, setDataState] = useState<DataState>("loading");
+  const [loadError, setLoadError] = useState("");
+  const [reloadKey, setReloadKey] = useState(0);
+
+  const [stage, setStage] = useState<Stage>("profile");
+  const [profile, setProfile] = useState<MemberProfile>({
+    fullName: "",
+    phone: "",
+    country: "",
+    region: "",
+    city: "",
+  });
+  const [profileErrors, setProfileErrors] = useState<ValidationErrors>({});
+  const [profileFormError, setProfileFormError] = useState("");
+  const [profileSaving, setProfileSaving] = useState(false);
+
+  const [affiliationType, setAffiliationType] =
+    useState<AffiliationType | null>(null);
   const [organisations, setOrganisations] = useState<
     readonly EligibleOrganisation[]
   >([]);
   const [myMemberships, setMyMemberships] = useState<readonly Membership[]>([]);
-  const [loadError, setLoadError] = useState("");
-  const [reloadKey, setReloadKey] = useState(0);
   const [selected, setSelected] = useState<EligibleOrganisation | null>(null);
-  const [justRequested, setJustRequested] =
+  const [answer, setAnswer] = useState<ConnectionAnswer>(emptyAnswer);
+  const [justSubmitted, setJustSubmitted] =
     useState<EligibleOrganisation | null>(null);
 
   useEffect(() => {
@@ -52,11 +86,13 @@ export function MemberRegistration() {
     let cancelled = false;
 
     Promise.all([
+      membershipService.getMyProfile(),
       membershipService.listEligibleOrganisations(),
       membershipService.listMyMemberships(),
     ])
-      .then(([eligibleOrganisations, memberships]) => {
+      .then(([myProfile, eligibleOrganisations, memberships]) => {
         if (cancelled) return;
+        setProfile(myProfile);
         setOrganisations(eligibleOrganisations);
         setMyMemberships(memberships);
         setLoadError("");
@@ -82,16 +118,58 @@ export function MemberRegistration() {
     setReloadKey((value) => value + 1);
   }, []);
 
+  const submitProfile = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const nextErrors = validateMemberProfile(profile);
+    setProfileErrors(nextErrors);
+    if (!isValid(nextErrors)) return;
+    if (!membershipService) return;
+    setProfileSaving(true);
+    setProfileFormError("");
+    try {
+      const saved = await membershipService.updateMyProfile(profile);
+      setProfile(saved);
+      setStage("type");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (error: unknown) {
+      setProfileFormError(
+        error instanceof Error
+          ? error.message
+          : "Your details could not be saved.",
+      );
+    } finally {
+      setProfileSaving(false);
+    }
+  };
+
   const handleConfirm = useCallback(async () => {
     if (!selected || !membershipService) return;
-    const membership = await membershipService.requestMembership(selected.id);
+    const membership = await membershipService.requestMembership(
+      selected.id,
+      undefined,
+      {
+        connectionType: answer.connectionType,
+        connectionContext: answer.connectionContext,
+        connectionContextExtra: answer.connectionContextExtra,
+      },
+    );
     setMyMemberships((previous) => [
       membership,
       ...previous.filter((item) => item.id !== membership.id),
     ]);
-    setJustRequested(selected);
+    setJustSubmitted(selected);
+    setStage("success");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [selected, membershipService, answer]);
+
+  const addAnother = () => {
     setSelected(null);
-  }, [selected, membershipService]);
+    setAnswer(emptyAnswer);
+    setJustSubmitted(null);
+    setAffiliationType(null);
+    setStage("type");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   if (!isHydrated) {
     return (
@@ -117,18 +195,17 @@ export function MemberRegistration() {
     );
   }
 
-  const myMembershipsByOrganisation = new Map<string, Membership>();
-  for (const membership of myMemberships) {
-    if (!myMembershipsByOrganisation.has(membership.organisationId)) {
-      myMembershipsByOrganisation.set(membership.organisationId, membership);
-    }
+  if (dataState === "loading") {
+    return (
+      <Container className="py-16 sm:py-20">
+        <MemberDirectorySkeleton />
+      </Container>
+    );
   }
 
-  return (
-    <Container className="py-16 sm:py-20 lg:py-24">
-      {dataState === "loading" ? (
-        <MemberDirectorySkeleton />
-      ) : dataState === "error" ? (
+  if (dataState === "error") {
+    return (
+      <Container className="py-16 sm:py-20">
         <Alert tone="error" role="alert" title="The directory could not load">
           <p>{loadError}</p>
           <button
@@ -139,22 +216,63 @@ export function MemberRegistration() {
             Try again
           </button>
         </Alert>
-      ) : justRequested ? (
+      </Container>
+    );
+  }
+
+  const myMembershipsByOrganisation = new Map<string, Membership>();
+  for (const membership of myMemberships) {
+    if (!myMembershipsByOrganisation.has(membership.organisationId)) {
+      myMembershipsByOrganisation.set(membership.organisationId, membership);
+    }
+  }
+
+  return (
+    <Container className="py-16 sm:py-20 lg:py-24">
+      {stage === "success" && justSubmitted ? (
         <MemberRequestSuccess
-          organisation={justRequested}
-          onBrowseAgain={() => setJustRequested(null)}
+          organisation={justSubmitted}
+          onAddAnother={addAnother}
         />
-      ) : selected ? (
+      ) : stage === "confirm" && selected ? (
         <MemberConfirmRequest
           organisation={selected}
-          onBack={() => setSelected(null)}
+          profile={profile}
+          answer={answer}
+          onAnswerChange={setAnswer}
+          onBack={() => setStage("directory")}
           onConfirm={handleConfirm}
         />
-      ) : (
+      ) : stage === "directory" && affiliationType ? (
         <MemberDirectory
+          kind={affiliationType}
           organisations={organisations}
           myMembershipsByOrganisation={myMembershipsByOrganisation}
-          onSelect={setSelected}
+          onBack={() => setStage("type")}
+          onSelect={(organisation) => {
+            setSelected(organisation);
+            setAnswer(emptyAnswer);
+            setStage("confirm");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        />
+      ) : stage === "type" ? (
+        <AffiliationTypeStage
+          onSelect={(type) => {
+            setAffiliationType(type);
+            setStage("directory");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          onBack={() => setStage("profile")}
+        />
+      ) : (
+        <MemberProfileStage
+          profile={profile}
+          errors={profileErrors}
+          formError={profileFormError}
+          pending={profileSaving}
+          onChange={setProfile}
+          onSubmit={(event) => void submitProfile(event)}
         />
       )}
     </Container>

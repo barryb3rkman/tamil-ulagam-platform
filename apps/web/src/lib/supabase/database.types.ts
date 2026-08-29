@@ -541,6 +541,9 @@ export type Database = {
       };
       organization_memberships: {
         Row: {
+          connection_context: string;
+          connection_context_extra: string;
+          connection_type: string;
           created_at: string;
           decided_at: string | null;
           decided_by: string | null;
@@ -548,6 +551,7 @@ export type Database = {
           id: string;
           invited_at: string | null;
           invited_by: string | null;
+          member_email: string;
           membership_type:
             Database["public"]["Enums"]["organization_membership_type"] | null;
           organization_id: string;
@@ -557,6 +561,9 @@ export type Database = {
           user_id: string;
         };
         Insert: {
+          connection_context?: string;
+          connection_context_extra?: string;
+          connection_type?: string;
           created_at?: string;
           decided_at?: string | null;
           decided_by?: string | null;
@@ -564,6 +571,7 @@ export type Database = {
           id?: string;
           invited_at?: string | null;
           invited_by?: string | null;
+          member_email?: string;
           membership_type?:
             Database["public"]["Enums"]["organization_membership_type"] | null;
           organization_id: string;
@@ -573,6 +581,9 @@ export type Database = {
           user_id: string;
         };
         Update: {
+          connection_context?: string;
+          connection_context_extra?: string;
+          connection_type?: string;
           created_at?: string;
           decided_at?: string | null;
           decided_by?: string | null;
@@ -580,6 +591,7 @@ export type Database = {
           id?: string;
           invited_at?: string | null;
           invited_by?: string | null;
+          member_email?: string;
           membership_type?:
             Database["public"]["Enums"]["organization_membership_type"] | null;
           organization_id?: string;
@@ -945,29 +957,35 @@ export type Database = {
       };
       profiles: {
         Row: {
+          city: string;
           country: string;
           created_at: string;
           full_name: string;
           id: string;
           phone: string;
+          region: string;
           terms_accepted_at: string | null;
           updated_at: string;
         };
         Insert: {
+          city?: string;
           country?: string;
           created_at?: string;
           full_name?: string;
           id: string;
           phone?: string;
+          region?: string;
           terms_accepted_at?: string | null;
           updated_at?: string;
         };
         Update: {
+          city?: string;
           country?: string;
           created_at?: string;
           full_name?: string;
           id?: string;
           phone?: string;
+          region?: string;
           terms_accepted_at?: string | null;
           updated_at?: string;
         };
@@ -1097,6 +1115,9 @@ export type Database = {
           target_status: Database["public"]["Enums"]["organization_membership_status"];
         };
         Returns: {
+          connection_context: string;
+          connection_context_extra: string;
+          connection_type: string;
           created_at: string;
           decided_at: string | null;
           decided_by: string | null;
@@ -1104,6 +1125,7 @@ export type Database = {
           id: string;
           invited_at: string | null;
           invited_by: string | null;
+          member_email: string;
           membership_type:
             Database["public"]["Enums"]["organization_membership_type"] | null;
           organization_id: string;
@@ -1223,11 +1245,17 @@ export type Database = {
       };
       invite_organization_member: {
         Args: {
+          applicant_connection_context?: string;
+          applicant_connection_context_extra?: string;
+          applicant_connection_type?: string;
           invited_membership_type?: Database["public"]["Enums"]["organization_membership_type"];
           target_organization_id: string;
           target_user_id: string;
         };
         Returns: {
+          connection_context: string;
+          connection_context_extra: string;
+          connection_type: string;
           created_at: string;
           decided_at: string | null;
           decided_by: string | null;
@@ -1235,6 +1263,7 @@ export type Database = {
           id: string;
           invited_at: string | null;
           invited_by: string | null;
+          member_email: string;
           membership_type:
             Database["public"]["Enums"]["organization_membership_type"] | null;
           organization_id: string;
@@ -1271,6 +1300,9 @@ export type Database = {
       leave_organization_membership: {
         Args: { decision_note?: string; target_membership_id: string };
         Returns: {
+          connection_context: string;
+          connection_context_extra: string;
+          connection_type: string;
           created_at: string;
           decided_at: string | null;
           decided_by: string | null;
@@ -1278,6 +1310,7 @@ export type Database = {
           id: string;
           invited_at: string | null;
           invited_by: string | null;
+          member_email: string;
           membership_type:
             Database["public"]["Enums"]["organization_membership_type"] | null;
           organization_id: string;
@@ -1493,10 +1526,16 @@ export type Database = {
       };
       request_organization_membership: {
         Args: {
+          applicant_connection_context?: string;
+          applicant_connection_context_extra?: string;
+          applicant_connection_type?: string;
           requested_membership_type?: Database["public"]["Enums"]["organization_membership_type"];
           target_organization_id: string;
         };
         Returns: {
+          connection_context: string;
+          connection_context_extra: string;
+          connection_type: string;
           created_at: string;
           decided_at: string | null;
           decided_by: string | null;
@@ -1504,6 +1543,7 @@ export type Database = {
           id: string;
           invited_at: string | null;
           invited_by: string | null;
+          member_email: string;
           membership_type:
             Database["public"]["Enums"]["organization_membership_type"] | null;
           organization_id: string;
@@ -1581,6 +1621,9 @@ export type Database = {
       revoke_organization_membership: {
         Args: { decision_note?: string; target_membership_id: string };
         Returns: {
+          connection_context: string;
+          connection_context_extra: string;
+          connection_type: string;
           created_at: string;
           decided_at: string | null;
           decided_by: string | null;
@@ -1588,6 +1631,7 @@ export type Database = {
           id: string;
           invited_at: string | null;
           invited_by: string | null;
+          member_email: string;
           membership_type:
             Database["public"]["Enums"]["organization_membership_type"] | null;
           organization_id: string;

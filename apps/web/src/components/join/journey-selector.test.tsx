@@ -37,10 +37,10 @@ describe("JourneySelector", () => {
       screen.getByRole("heading", { name: "Continue your registration" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Register a Tamil Sangam" }),
+      screen.getByRole("heading", { name: "Tamil Sangam" }),
     ).toBeInTheDocument();
     expect(
-      screen.queryByRole("heading", { name: "Register an Organisation" }),
+      screen.queryByRole("heading", { name: "Organisation" }),
     ).not.toBeInTheDocument();
   });
 });

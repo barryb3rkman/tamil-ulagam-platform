@@ -53,6 +53,10 @@ function makeMembership(overrides: Partial<Membership> = {}): Membership {
     expiresAt: null,
     createdAt: "2026-08-25T00:00:00.000Z",
     updatedAt: "2026-08-25T01:00:00.000Z",
+    memberEmail: "",
+    connectionType: "",
+    connectionContext: "",
+    connectionContextExtra: "",
     ...overrides,
   };
 }
@@ -96,7 +100,7 @@ describe("AffiliationCard", () => {
     await waitFor(() => expect(onLeft).toHaveBeenCalled());
   });
 
-  it("offers a Request again link for a rejected affiliation, not a Leave action", () => {
+  it("offers a Submit again link for a rejected affiliation, not a Leave action", () => {
     mockedUseMembershipService.mockReturnValue(
       {} as unknown as ReturnType<typeof useMembershipService>,
     );
@@ -111,7 +115,7 @@ describe("AffiliationCard", () => {
     expect(
       screen.queryByRole("button", { name: "Leave organisation" }),
     ).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Request again" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Submit again" })).toHaveAttribute(
       "href",
       "/join/member",
     );
@@ -133,12 +137,12 @@ describe("AffiliationCard", () => {
       />,
     );
 
-    expect(screen.getByText("Pending review")).toBeInTheDocument();
+    expect(screen.getByText("Pending confirmation")).toBeInTheDocument();
     expect(
       screen.queryByRole("button", { name: "Leave organisation" }),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByRole("link", { name: "Request again" }),
+      screen.queryByRole("link", { name: "Submit again" }),
     ).not.toBeInTheDocument();
   });
 });

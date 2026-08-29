@@ -31,6 +31,10 @@ function makeMembership(status: Membership["status"]): Membership {
     expiresAt: null,
     createdAt: "2026-08-25T00:00:00.000Z",
     updatedAt: "2026-08-25T00:00:00.000Z",
+    memberEmail: "",
+    connectionType: "",
+    connectionContext: "",
+    connectionContextExtra: "",
   };
 }
 
@@ -41,7 +45,7 @@ describe("OrganisationDiscoveryCard", () => {
       <OrganisationDiscoveryCard organisation={org} onSelect={onSelect} />,
     );
 
-    const button = screen.getByRole("button", { name: "Choose organisation" });
+    const button = screen.getByRole("button", { name: "Select" });
     button.click();
     expect(onSelect).toHaveBeenCalledTimes(1);
   });
@@ -55,9 +59,9 @@ describe("OrganisationDiscoveryCard", () => {
       />,
     );
 
-    expect(screen.getByText("Request pending")).toBeInTheDocument();
+    expect(screen.getByText("Pending confirmation")).toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: "Choose organisation" }),
+      screen.queryByRole("button", { name: "Select" }),
     ).not.toBeInTheDocument();
   });
 
@@ -70,13 +74,13 @@ describe("OrganisationDiscoveryCard", () => {
       />,
     );
 
-    expect(screen.getByText("You're a member")).toBeInTheDocument();
+    expect(screen.getByText("Active")).toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: "Choose organisation" }),
+      screen.queryByRole("button", { name: "Select" }),
     ).not.toBeInTheDocument();
   });
 
-  it("offers a Request again action for a rejected/revoked prior relationship", () => {
+  it("offers a Submit again action for a rejected/revoked prior relationship", () => {
     const onSelect = vi.fn();
     render(
       <OrganisationDiscoveryCard
@@ -86,7 +90,7 @@ describe("OrganisationDiscoveryCard", () => {
       />,
     );
 
-    const button = screen.getByRole("button", { name: "Request again" });
+    const button = screen.getByRole("button", { name: "Submit again" });
     button.click();
     expect(onSelect).toHaveBeenCalledTimes(1);
   });

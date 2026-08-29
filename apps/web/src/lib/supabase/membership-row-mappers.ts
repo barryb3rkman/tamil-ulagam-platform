@@ -49,6 +49,10 @@ export function mapMembershipRow(row: OrganizationMembershipRow): Membership {
     expiresAt: row.expires_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+    memberEmail: row.member_email,
+    connectionType: row.connection_type,
+    connectionContext: row.connection_context,
+    connectionContextExtra: row.connection_context_extra,
   };
 }
 

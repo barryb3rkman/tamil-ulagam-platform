@@ -35,8 +35,11 @@ export type {
 export { isTamilSangamProfile } from "./enrollment";
 
 export type {
+  CategoryConnectionOption,
+  CategoryConnectionQuestion,
   EligibleOrganisation,
   ManagementGrant,
+  MemberProfile,
   Membership,
   MembershipHistoryEvent,
   MembershipRequestSummary,

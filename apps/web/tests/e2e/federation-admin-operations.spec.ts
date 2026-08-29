@@ -252,28 +252,31 @@ test.describe("Federation Admin Operations V3", () => {
       page.getByText(/Membership does not grant management authority/),
     ).toBeVisible();
     const approve = page.getByRole("button", {
-      name: "Approve pending request",
+      name: "Confirm member",
     });
     await approve.focus();
     await page.keyboard.press("Enter");
     await expect(
-      page.getByRole("dialog", { name: "Approve membership?" }),
+      page.getByRole("dialog", { name: "Confirm this member?" }),
     ).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(
-      page.getByRole("dialog", { name: "Approve membership?" }),
+      page.getByRole("dialog", { name: "Confirm this member?" }),
     ).toBeHidden();
     await expect(approve).toBeFocused();
     await page.reload();
     const approveAfterReload = page.getByRole("button", {
-      name: "Approve pending request",
+      name: "Confirm member",
     });
     await approveAfterReload.focus();
     await page.keyboard.press("Space");
     await expect(
-      page.getByRole("dialog", { name: "Approve membership?" }),
+      page.getByRole("dialog", { name: "Confirm this member?" }),
     ).toBeVisible();
-    await page.getByRole("button", { name: "Confirm approval" }).focus();
+    await page
+      .getByRole("dialog", { name: "Confirm this member?" })
+      .getByRole("button", { name: "Confirm member" })
+      .focus();
     await page.keyboard.press("Enter");
     await expect(
       page.getByText("Approved", { exact: true }).first(),
@@ -431,7 +434,7 @@ test.describe("Federation Admin Operations V3", () => {
         await revoke.focus();
         await page.keyboard.press("Space");
         const membershipDialog = page.getByRole("dialog", {
-          name: "Revoke membership?",
+          name: "Revoke affiliation?",
         });
         await expect(membershipDialog).toBeVisible();
         await expectDialogFocusAndHiddenSkipLink(page, membershipDialog);

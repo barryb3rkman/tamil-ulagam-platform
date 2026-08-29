@@ -1,6 +1,7 @@
 import type {
   EligibleOrganisation,
   ManagementGrant,
+  MemberProfile,
   Membership,
   MembershipHistoryEvent,
   MembershipRequestSummary,
@@ -36,16 +37,32 @@ function toDatabaseMembershipType(
   return membershipType ? membershipType : undefined;
 }
 
+export interface AffiliationConnectionInput {
+  readonly connectionType?: string;
+  readonly connectionContext?: string;
+  readonly connectionContextExtra?: string;
+}
+
 export interface MembershipService {
+  /** The caller's own small common profile (H4 brief section 4) —
+   * reads profiles.full_name/phone/country/region/city directly; not
+   * routed through PlatformProvider's broader UserProfile. */
+  getMyProfile(): Promise<MemberProfile>;
+  /** Updates the same narrow set of columns, always as the caller. */
+  updateMyProfile(profile: MemberProfile): Promise<MemberProfile>;
   /** Verified organisations/Sangams a member could request to join —
    * a safe, narrow projection (see EligibleOrganisation). */
   listEligibleOrganisations(): Promise<EligibleOrganisation[]>;
   /** Create (or idempotently re-read) the caller's own pending/approved
    * request for an eligible organisation. Always acts as the caller —
-   * there is no way to pass another user's id. */
+   * there is no way to pass another user's id. The optional connection
+   * fields carry the category-aware "your connection to this
+   * organisation" answer (H4 brief sections 9-17); omitted entirely for
+   * a Sangam or any category with no tailored question. */
   requestMembership(
     organisationId: string,
     membershipType?: MembershipType,
+    connection?: AffiliationConnectionInput,
   ): Promise<Membership>;
   /** The caller's own membership rows, across every organisation. */
   listMyMemberships(): Promise<Membership[]>;
@@ -96,6 +113,61 @@ export function createMembershipService(
   client: SupabaseClient<Database>,
 ): MembershipService {
   return {
+    async getMyProfile() {
+      const { data: userData, error: userError } = await client.auth.getUser();
+      if (userError || !userData.user) {
+        throw new PlatformServiceError(
+          "Authentication is required.",
+          "authentication",
+        );
+      }
+      const { data, error } = await client
+        .from("profiles")
+        .select("full_name, phone, country, region, city")
+        .eq("id", userData.user.id)
+        .maybeSingle();
+      if (error)
+        throw mapSupabaseError(error, "Your profile could not be loaded.");
+      return {
+        fullName: data?.full_name ?? "",
+        phone: data?.phone ?? "",
+        country: data?.country ?? "",
+        region: data?.region ?? "",
+        city: data?.city ?? "",
+      };
+    },
+
+    async updateMyProfile(profile) {
+      const { data: userData, error: userError } = await client.auth.getUser();
+      if (userError || !userData.user) {
+        throw new PlatformServiceError(
+          "Authentication is required.",
+          "authentication",
+        );
+      }
+      const { data, error } = await client
+        .from("profiles")
+        .update({
+          full_name: profile.fullName.trim(),
+          phone: profile.phone.trim(),
+          country: profile.country.trim(),
+          region: profile.region.trim(),
+          city: profile.city.trim(),
+        })
+        .eq("id", userData.user.id)
+        .select("full_name, phone, country, region, city")
+        .single();
+      if (error)
+        throw mapSupabaseError(error, "Your profile could not be saved.");
+      return {
+        fullName: data.full_name,
+        phone: data.phone,
+        country: data.country,
+        region: data.region,
+        city: data.city,
+      };
+    },
+
     async listEligibleOrganisations() {
       const { data, error } = await client.rpc(
         "list_membership_eligible_organizations",
@@ -105,23 +177,28 @@ export function createMembershipService(
       return (data ?? []).map(mapEligibleOrganisationRow);
     },
 
-    async requestMembership(organisationId, membershipType) {
+    async requestMembership(organisationId, membershipType, connection) {
       const { data, error } = await client.rpc(
         "request_organization_membership",
         {
           target_organization_id: organisationId,
           requested_membership_type: toDatabaseMembershipType(membershipType),
+          applicant_connection_type: connection?.connectionType || undefined,
+          applicant_connection_context:
+            connection?.connectionContext || undefined,
+          applicant_connection_context_extra:
+            connection?.connectionContextExtra || undefined,
         },
       );
       if (error) {
         throw mapSupabaseError(
           error,
-          "The membership request could not be sent.",
+          "The affiliation could not be submitted.",
         );
       }
       if (!data) {
         throw new PlatformServiceError(
-          "The membership request did not return a result.",
+          "The affiliation did not return a result.",
           "unknown",
         );
       }
@@ -234,7 +311,7 @@ export function createMembershipService(
       const userIds = [...new Set(memberships.map((m) => m.userId))];
       const profiles = await client
         .from("profiles")
-        .select("id, full_name")
+        .select("id, full_name, phone, country, region, city")
         .in("id", userIds);
       if (profiles.error) {
         throw mapSupabaseError(
@@ -242,13 +319,20 @@ export function createMembershipService(
           "Requester details could not be loaded.",
         );
       }
-      const nameById = new Map(
-        (profiles.data ?? []).map((row) => [row.id, row.full_name]),
+      const profileById = new Map(
+        (profiles.data ?? []).map((row) => [row.id, row]),
       );
-      return memberships.map((membership) => ({
-        ...membership,
-        memberFullName: nameById.get(membership.userId) ?? "",
-      }));
+      return memberships.map((membership) => {
+        const profile = profileById.get(membership.userId);
+        return {
+          ...membership,
+          memberFullName: profile?.full_name ?? "",
+          memberPhone: profile?.phone ?? "",
+          memberCity: profile?.city ?? "",
+          memberRegion: profile?.region ?? "",
+          memberCountry: profile?.country ?? "",
+        };
+      });
     },
 
     async inviteMember(organisationId, userId, membershipType) {

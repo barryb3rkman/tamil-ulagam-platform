@@ -89,11 +89,10 @@ export function JoinExperience() {
               id="join-selector-title"
               className="text-global-navy text-2xl font-bold tracking-[-0.01em] sm:text-3xl"
             >
-              Choose your path
+              Join Tamil Ulagam
             </h2>
             <p className="text-slate mt-2 max-w-xl text-base leading-7">
-              Every path leads to the same federation — pick the one that
-              matches why you&rsquo;re here.
+              Choose how you&rsquo;d like to get started.
             </p>
           </div>
 

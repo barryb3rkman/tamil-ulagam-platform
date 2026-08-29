@@ -285,15 +285,15 @@ export function AdminMembershipOperations() {
         }}
         title={
           action === "approve"
-            ? "Approve membership?"
+            ? "Confirm this member?"
             : action === "reject"
-              ? "Reject membership?"
-              : "Revoke membership?"
+              ? "Mark as not a member?"
+              : "Revoke affiliation?"
         }
       >
         <p className="text-slate leading-7">
           {action === "approve"
-            ? "Confirm this affiliation request. This does not grant Organisation management authority."
+            ? "Confirm this affiliation claim. This does not grant Organisation management authority."
             : "Record a clear reason for the member and the immutable history."}
         </p>
         {action !== "approve" ? (
@@ -324,9 +324,9 @@ export function AdminMembershipOperations() {
             onClick={() => void completeAction()}
           >
             {action === "approve"
-              ? "Confirm approval"
+              ? "Confirm member"
               : action === "reject"
-                ? "Confirm rejection"
+                ? "Not a member"
                 : "Confirm revocation"}
           </Button>
         </div>
@@ -399,10 +399,10 @@ function MembershipDetail({
             {membership.status === "pending" ? (
               <>
                 <Button onClick={() => onAction("approve")}>
-                  Approve pending request
+                  Confirm member
                 </Button>
                 <Button variant="secondary" onClick={() => onAction("reject")}>
-                  Reject pending request
+                  Not a member
                 </Button>
               </>
             ) : membership.status === "approved" ? (

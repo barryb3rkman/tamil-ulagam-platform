@@ -515,7 +515,7 @@ test.describe("F1.5 Admin keyboard QA", () => {
 
     const reachedApprove = await tabUntil(
       page,
-      (i) => i.text === "Approve pending request",
+      (i) => i.text === "Confirm member",
       20,
     );
     expect(reachedApprove).toBe(true);
@@ -524,7 +524,7 @@ test.describe("F1.5 Admin keyboard QA", () => {
     const dialog = page.locator("dialog[open]");
     await expect(dialog).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "Approve membership?" }),
+      page.getByRole("heading", { name: "Confirm this member?" }),
     ).toBeVisible();
     const initialFocus = await activeInfo(page);
     expect(initialFocus?.ariaLabel).toBe("Close");
@@ -539,7 +539,7 @@ test.describe("F1.5 Admin keyboard QA", () => {
 
     const reachedConfirmApproval = await tabUntil(
       page,
-      (i) => i.text === "Confirm approval",
+      (i) => i.text === "Confirm member",
       6,
     );
     expect(reachedConfirmApproval).toBe(true);
@@ -570,7 +570,7 @@ test.describe("F1.5 Admin keyboard QA", () => {
     await page.keyboard.press("Enter");
     await expect(dialog).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "Revoke membership?" }),
+      page.getByRole("heading", { name: "Revoke affiliation?" }),
     ).toBeVisible();
     const tabbedToRevokeTextarea = await tabUntil(
       page,
@@ -602,11 +602,11 @@ test.describe("F1.5 Admin keyboard QA", () => {
       .waitForLoadState("networkidle", { timeout: 5000 })
       .catch(() => undefined);
     await expect(
-      page.getByRole("button", { name: "Reject pending request" }),
+      page.getByRole("button", { name: "Not a member" }),
     ).toBeVisible({ timeout: 10000 });
     const reachedReject = await tabUntil(
       page,
-      (i) => i.text === "Reject pending request",
+      (i) => i.text === "Not a member",
       20,
     );
     expect(reachedReject).toBe(true);
@@ -614,7 +614,7 @@ test.describe("F1.5 Admin keyboard QA", () => {
     await expect(dialog).toBeVisible();
     const tabbedToConfirmRejectEmpty = await tabUntil(
       page,
-      (i) => i.text === "Confirm rejection",
+      (i) => i.text === "Not a member",
       5,
     );
     expect(tabbedToConfirmRejectEmpty).toBe(true);
@@ -637,7 +637,7 @@ test.describe("F1.5 Admin keyboard QA", () => {
     await page.keyboard.type("F1.5 keyboard QA reject reason.");
     const tabbedToConfirmReject = await tabUntil(
       page,
-      (i) => i.text === "Confirm rejection",
+      (i) => i.text === "Not a member",
       5,
     );
     expect(tabbedToConfirmReject).toBe(true);

@@ -1,38 +1,76 @@
 "use client";
 
 import { Alert, StatusBadge, Surface } from "@tamil-ulagam/ui";
-import { isTamilSangam, type EligibleOrganisation } from "@tamil-ulagam/shared";
+import {
+  isTamilSangam,
+  type EligibleOrganisation,
+  type MemberProfile,
+} from "@tamil-ulagam/shared";
 import { useState } from "react";
 
+import { RadioGroup, TextField } from "@/components/application/form-fields";
 import { OrganisationMark, SangamMark } from "@/components/join/journey-icons";
-import { memberConfirmContent } from "@/content/member";
+import {
+  memberConfirmContent,
+  categoryConnectionQuestions,
+} from "@/content/member";
+import type { ValidationErrors } from "@/features/enrollment/validation";
 
 import {
   organisationKindLabel,
   organisationLocationLabel,
 } from "./organisation-presentation";
 
+export interface ConnectionAnswer {
+  readonly connectionType: string;
+  readonly connectionContext: string;
+  readonly connectionContextExtra: string;
+}
+
 /**
- * A focused confirmation surface — not another form. No membership-type
- * selector (deliberately not asked at this stage, see the Phase C2
- * report) and nothing already known from the authenticated profile is
- * re-requested.
+ * Step 4 — "Confirm your affiliation" (H4 brief section 18), not another
+ * form. Shows the member's own details, the selected entity, and (only
+ * when the selected organisation's category has one) the category-aware
+ * connection question inline — this is the one place that question is
+ * ever asked, so it doesn't need its own separate wizard stage.
  */
 export function MemberConfirmRequest({
-  organisation,
+  answer,
+  onAnswerChange,
   onBack,
   onConfirm,
+  organisation,
+  profile,
 }: {
   readonly organisation: EligibleOrganisation;
+  readonly profile: MemberProfile;
+  readonly answer: ConnectionAnswer;
+  readonly onAnswerChange: (answer: ConnectionAnswer) => void;
   readonly onBack: () => void;
   readonly onConfirm: () => Promise<void>;
 }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<ValidationErrors>({});
   const isSangam = isTamilSangam(organisation);
   const Icon = isSangam ? SangamMark : OrganisationMark;
+  const question =
+    !isSangam && organisation.category
+      ? categoryConnectionQuestions[organisation.category]
+      : null;
+  const showContext =
+    question &&
+    (!question.contextOnlyForOptions ||
+      question.contextOnlyForOptions.includes(answer.connectionType));
 
   const confirm = async () => {
+    if (question && !answer.connectionType.trim()) {
+      setFieldErrors({
+        connectionType: "Select the option that best describes you.",
+      });
+      return;
+    }
+    setFieldErrors({});
     setSubmitting(true);
     setError("");
     try {
@@ -41,7 +79,7 @@ export function MemberConfirmRequest({
       setError(
         submitError instanceof Error
           ? submitError.message
-          : "The request could not be sent. Please try again.",
+          : "The affiliation could not be submitted. Please try again.",
       );
       setSubmitting(false);
     }
@@ -64,14 +102,78 @@ export function MemberConfirmRequest({
           {organisationKindLabel(organisation)}
         </p>
         <h2 className="text-global-navy mt-1 text-2xl font-bold">
-          You&rsquo;re requesting to join {organisation.name}.
+          {memberConfirmContent.title}
         </h2>
-        <p className="text-slate mt-2">
+        <p className="text-charcoal mt-2 font-semibold">{organisation.name}</p>
+        <p className="text-slate mt-1">
           {organisationLocationLabel(organisation)}
         </p>
         <div className="mt-3">
           <StatusBadge label="Verified" tone="success" />
         </div>
+
+        <dl className="border-global-navy/10 mt-6 grid gap-4 border-t pt-5 text-sm sm:grid-cols-2">
+          <div>
+            <dt className="text-slate text-xs font-bold tracking-[0.1em] uppercase">
+              Your details
+            </dt>
+            <dd className="text-charcoal mt-1">{profile.fullName}</dd>
+            <dd className="text-charcoal">{profile.phone}</dd>
+          </div>
+          <div>
+            <dt className="text-slate text-xs font-bold tracking-[0.1em] uppercase">
+              Location
+            </dt>
+            <dd className="text-charcoal mt-1">
+              {[profile.city, profile.region, profile.country]
+                .filter(Boolean)
+                .join(", ")}
+            </dd>
+          </div>
+        </dl>
+
+        {question ? (
+          <div className="border-global-navy/10 mt-6 grid gap-4 border-t pt-5">
+            <RadioGroup
+              label={question.prompt}
+              name="connection-type"
+              required
+              value={answer.connectionType}
+              options={question.options}
+              error={fieldErrors.connectionType}
+              onChange={(event) =>
+                onAnswerChange({
+                  ...answer,
+                  connectionType: event.target.value,
+                })
+              }
+            />
+            {showContext && question.contextLabel ? (
+              <TextField
+                label={question.contextLabel}
+                value={answer.connectionContext}
+                onChange={(event) =>
+                  onAnswerChange({
+                    ...answer,
+                    connectionContext: event.target.value,
+                  })
+                }
+              />
+            ) : null}
+            {showContext && question.extraLabel ? (
+              <TextField
+                label={question.extraLabel}
+                value={answer.connectionContextExtra}
+                onChange={(event) =>
+                  onAnswerChange({
+                    ...answer,
+                    connectionContextExtra: event.target.value,
+                  })
+                }
+              />
+            ) : null}
+          </div>
+        ) : null}
 
         <p className="text-charcoal mt-6 leading-7">
           {memberConfirmContent.disclaimer}
@@ -86,12 +188,12 @@ export function MemberConfirmRequest({
         <div className="mt-7 flex flex-wrap items-center gap-4">
           <button
             type="button"
-            onClick={confirm}
+            onClick={() => void confirm()}
             disabled={submitting}
             aria-busy={submitting}
             className="bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button motion-control inline-flex min-h-12 items-center px-6 font-semibold text-white focus-visible:outline-none disabled:opacity-60"
           >
-            {submitting ? "Sending request…" : "Request membership"}
+            {submitting ? "Submitting…" : memberConfirmContent.submitCta}
           </button>
           <button
             type="button"

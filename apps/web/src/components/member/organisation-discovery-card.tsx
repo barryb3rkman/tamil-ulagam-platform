@@ -19,9 +19,9 @@ const relationshipPresentation: Record<
     readonly tone: "neutral" | "success" | "warning" | "maroon";
   }
 > = {
-  pending: { label: "Request pending", tone: "warning" },
-  approved: { label: "You're a member", tone: "success" },
-  rejected: { label: "Request not approved", tone: "neutral" },
+  pending: { label: "Pending confirmation", tone: "warning" },
+  approved: { label: "Active", tone: "success" },
+  rejected: { label: "Not confirmed", tone: "neutral" },
   revoked: { label: "Previously affiliated", tone: "neutral" },
 };
 
@@ -97,7 +97,7 @@ export function OrganisationDiscoveryCard({
               onClick={onSelect}
               className="text-global-navy hover:text-heritage-maroon focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
             >
-              Request again
+              Submit again
             </button>
           ) : null}
         </div>
@@ -107,7 +107,7 @@ export function OrganisationDiscoveryCard({
           onClick={onSelect}
           className="bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button motion-control inline-flex min-h-11 w-full items-center justify-center px-5 text-sm font-semibold text-white focus-visible:outline-none"
         >
-          Choose organisation
+          Select
         </button>
       )}
     </Surface>

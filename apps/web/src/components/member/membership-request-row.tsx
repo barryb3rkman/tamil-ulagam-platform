@@ -11,9 +11,9 @@ const statusPresentation: Record<
     readonly tone: "neutral" | "success" | "warning" | "maroon";
   }
 > = {
-  pending: { label: "Pending review", tone: "warning" },
-  approved: { label: "Approved", tone: "success" },
-  rejected: { label: "Rejected", tone: "neutral" },
+  pending: { label: "Pending confirmation", tone: "warning" },
+  approved: { label: "Active", tone: "success" },
+  rejected: { label: "Not confirmed", tone: "neutral" },
   revoked: { label: "Ended", tone: "neutral" },
 };
 
@@ -30,16 +30,26 @@ function formatDate(value: string | null): string {
   }
 }
 
+function locationLabel(request: MembershipRequestSummary): string {
+  return [request.memberCity, request.memberRegion, request.memberCountry]
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .join(", ");
+}
+
 /**
- * One membership row in the manager's People queue — shows only what
- * the manager is permitted to see (the requester's full name, via the
- * profiles RLS policy the service layer already enforces; no email, no
- * other personal data).
+ * One pending affiliation confirmation in the manager's People queue
+ * (H4 brief section 21) — "Confirm member"/"Not a member", never
+ * "Approve join request". Shows only what a manager is permitted to see
+ * (full name/phone/location via the profiles RLS policy the service
+ * layer already enforces, email captured directly on the affiliation
+ * row at submission time) plus the category-aware connection answer,
+ * when one was asked.
  */
 export function MembershipRequestRow({
-  request,
   onApprove,
   onReject,
+  request,
 }: {
   readonly request: MembershipRequestSummary;
   readonly onApprove: (request: MembershipRequestSummary) => Promise<void>;
@@ -48,6 +58,7 @@ export function MembershipRequestRow({
   const [busy, setBusy] = useState<"approve" | "reject" | null>(null);
   const [error, setError] = useState("");
   const presentation = statusPresentation[request.status];
+  const location = locationLabel(request);
 
   const act = async (action: "approve" | "reject") => {
     setBusy(action);
@@ -58,7 +69,7 @@ export function MembershipRequestRow({
       setError(
         actionError instanceof Error
           ? actionError.message
-          : `The ${action === "approve" ? "approval" : "rejection"} could not be completed.`,
+          : `That decision could not be completed.`,
       );
     } finally {
       setBusy(null);
@@ -67,12 +78,27 @@ export function MembershipRequestRow({
 
   return (
     <div className="border-global-navy/10 density-compact grid gap-3 border-b py-4 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center">
-      <div>
+      <div className="min-w-0">
         <p className="text-global-navy font-semibold">
           {request.memberFullName || "Member"}
         </p>
-        <p className="text-slate text-sm">
-          Requested {formatDate(request.requestedAt ?? request.invitedAt)}
+        <p className="text-slate mt-0.5 text-sm break-words">
+          {[request.memberEmail, request.memberPhone]
+            .filter(Boolean)
+            .join(" · ")}
+        </p>
+        {location ? <p className="text-slate text-sm">{location}</p> : null}
+        {request.connectionType ? (
+          <p className="text-charcoal mt-1 text-sm">
+            {request.connectionType}
+            {request.connectionContext ? ` — ${request.connectionContext}` : ""}
+            {request.connectionContextExtra
+              ? ` (${request.connectionContextExtra})`
+              : ""}
+          </p>
+        ) : null}
+        <p className="text-slate mt-1 text-sm">
+          Submitted {formatDate(request.requestedAt ?? request.invitedAt)}
         </p>
         {error ? (
           <p role="alert" className="text-error mt-1 text-sm font-semibold">
@@ -90,7 +116,7 @@ export function MembershipRequestRow({
             aria-busy={busy === "approve"}
             className="bg-success hover:bg-success/85 focus-visible:ring-focus rounded-button motion-control inline-flex min-h-9 items-center px-4 text-sm font-semibold text-white focus-visible:outline-none disabled:opacity-60"
           >
-            {busy === "approve" ? "Approving…" : "Approve"}
+            {busy === "approve" ? "Confirming…" : "Confirm member"}
           </button>
           <button
             type="button"
@@ -99,7 +125,7 @@ export function MembershipRequestRow({
             aria-busy={busy === "reject"}
             className="border-heritage-maroon text-heritage-maroon hover:bg-heritage-maroon rounded-button motion-control inline-flex min-h-9 items-center border px-4 text-sm font-semibold hover:text-white focus-visible:outline-none disabled:opacity-60"
           >
-            {busy === "reject" ? "Rejecting…" : "Reject"}
+            {busy === "reject" ? "Saving…" : "Not a member"}
           </button>
         </div>
       ) : (

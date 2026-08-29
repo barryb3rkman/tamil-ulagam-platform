@@ -189,13 +189,13 @@ export function MemberWorkspace() {
         ) : sortedMemberships.length === 0 ? (
           <EmptyState
             title="No affiliations yet"
-            description="Find a registered Organisation or Tamil Sangam and request to join."
+            description="Connect your account to a registered Tamil Sangam or Organisation you already belong to."
             action={
               <Link
                 href="/join/member"
                 className="bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button motion-control inline-flex min-h-11 items-center px-5 text-sm font-semibold text-white focus-visible:outline-none"
               >
-                Find an organisation
+                Connect your membership
               </Link>
             }
           />

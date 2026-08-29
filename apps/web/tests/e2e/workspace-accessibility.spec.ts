@@ -53,6 +53,25 @@ const freshRegistrant = {
   fullName: "Local A11y Registrant",
 };
 
+// H4: a third, deliberately clean persona — no profile, no affiliation
+// — so the new five-stage Member Registration flow's authenticated
+// in-flow states (profile, affiliation type, directory, category
+// question, success) can be scanned end to end without colliding with
+// the other personas' own fixtures.
+const memberFlowPersona = {
+  email: "local-browser-a11y-member@tamil-ulagam.test",
+  fullName: "Local A11y Member",
+};
+
+// H4: a fourth persona whose only role is to hold a real *pending*
+// affiliation against `orgName`, so "Pending affiliation confirmations"
+// on Organisation People can be scanned in its populated state, not
+// just its empty one.
+const pendingAffiliationMember = {
+  email: "local-browser-a11y-pending-member@tamil-ulagam.test",
+  fullName: "Local A11y Pending Member",
+};
+
 async function signInAs(page: Page, credentials: { readonly email: string }) {
   // Without this, axe can scan mid-reveal-transition (content still at
   // its data-motion-reveal starting opacity) and flag a false
@@ -67,6 +86,25 @@ async function signInAs(page: Page, credentials: { readonly email: string }) {
 
 async function signIn(page: Page) {
   await signInAs(page, user);
+}
+
+/** H4: fills and submits the Member Registration profile stage (Step 1
+ * always renders first, even once a profile is already saved), landing
+ * on "Where are you already a member?" — shared by every axe scan of a
+ * later stage in the flow. */
+async function completeMemberProfileStage(
+  page: Page,
+  persona: { readonly fullName: string },
+) {
+  await page.goto("/join/member");
+  await page.getByText("Your details").waitFor({ timeout: 15000 });
+  await page.getByLabel("Full name").fill(persona.fullName);
+  await page.getByLabel("Mobile number").fill("+1 416 555 0177");
+  await page.getByLabel("Country").fill("Canada");
+  await page.getByLabel(/State \/ Province \/ Region/).fill("Ontario");
+  await page.getByLabel("City").fill("Toronto");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByText("Where are you already a member?")).toBeVisible();
 }
 
 interface AxeViolation {
@@ -251,6 +289,71 @@ test.describe("workspace shell accessibility (axe)", () => {
         );
       }
     }
+
+    const createdMemberFlow = await admin.auth.admin.createUser({
+      email: memberFlowPersona.email,
+      password,
+      email_confirm: true,
+      user_metadata: { full_name: memberFlowPersona.fullName },
+    });
+    if (createdMemberFlow.error) {
+      const existing = await admin.auth.admin.listUsers();
+      const found = existing.data.users.find(
+        (u) => u.email === memberFlowPersona.email,
+      );
+      if (!found) {
+        throw new Error(
+          `Create member persona: ${createdMemberFlow.error.message}`,
+        );
+      }
+    }
+
+    const createdPendingMember = await admin.auth.admin.createUser({
+      email: pendingAffiliationMember.email,
+      password,
+      email_confirm: true,
+      user_metadata: { full_name: pendingAffiliationMember.fullName },
+    });
+    let pendingMemberId: string;
+    if (createdPendingMember.error) {
+      const existing = await admin.auth.admin.listUsers();
+      const found = existing.data.users.find(
+        (u) => u.email === pendingAffiliationMember.email,
+      );
+      if (!found) {
+        throw new Error(
+          `Create pending member: ${createdPendingMember.error.message}`,
+        );
+      }
+      pendingMemberId = found.id;
+    } else {
+      pendingMemberId = createdPendingMember.data.user.id;
+    }
+
+    const existingPendingMembership = await admin
+      .from("organization_memberships")
+      .select("id")
+      .eq("organization_id", organisationId)
+      .eq("user_id", pendingMemberId)
+      .maybeSingle();
+    if (!existingPendingMembership.data) {
+      const pendingMembership = await admin
+        .from("organization_memberships")
+        .insert({
+          organization_id: organisationId,
+          user_id: pendingMemberId,
+          status: "pending",
+          membership_type: "general",
+          member_email: pendingAffiliationMember.email,
+          connection_type: "Community member",
+          requested_at: new Date().toISOString(),
+        });
+      if (pendingMembership.error) {
+        throw new Error(
+          `Create pending membership: ${pendingMembership.error.message}`,
+        );
+      }
+    }
   });
 
   test("Member workspace", async ({ page }) => {
@@ -285,6 +388,90 @@ test.describe("workspace shell accessibility (axe)", () => {
       page.getByRole("heading", { name: orgName, exact: true }),
     ).toBeVisible();
     await checkAccessibility(page, "Organisation People");
+  });
+
+  // H4: the populated "Pending affiliation confirmations" state — the
+  // Confirm member / Not a member row actions — not just the empty
+  // queue the test above scans.
+  test("Organisation People — pending affiliation confirmation", async ({
+    page,
+  }) => {
+    await signIn(page);
+    await page.goto(
+      `/workspace/organisation/people?organization=${organisationId}`,
+    );
+    await expect(
+      page.getByText("Pending affiliation confirmations"),
+    ).toBeVisible();
+    await expect(
+      page.getByText(pendingAffiliationMember.fullName),
+    ).toBeVisible();
+    await checkAccessibility(
+      page,
+      "Organisation People (pending affiliation confirmation)",
+    );
+  });
+
+  // H4: the new five-stage Member Registration flow's authenticated
+  // in-flow states, driven by a persona with no existing profile or
+  // affiliation (brief section 40).
+  test("Member registration — your details (profile stage)", async ({
+    page,
+  }) => {
+    await signInAs(page, memberFlowPersona);
+    await page.goto("/join/member");
+    await expect(page.getByText("Your details")).toBeVisible();
+    await checkAccessibility(page, "Member registration (profile stage)");
+  });
+
+  test("Member registration — where are you already a member (affiliation type stage)", async ({
+    page,
+  }) => {
+    await signInAs(page, memberFlowPersona);
+    await completeMemberProfileStage(page, memberFlowPersona);
+    await checkAccessibility(
+      page,
+      "Member registration (affiliation type stage)",
+    );
+  });
+
+  test("Member registration — organisation directory (search results)", async ({
+    page,
+  }) => {
+    await signInAs(page, memberFlowPersona);
+    await completeMemberProfileStage(page, memberFlowPersona);
+    await page.getByRole("button", { name: /^Organisation/ }).click();
+    await page.getByLabel("Search", { exact: true }).fill(orgName);
+    await expect(page.getByText(orgName)).toBeVisible();
+    await checkAccessibility(
+      page,
+      "Member registration (organisation directory)",
+    );
+  });
+
+  test("Member registration — confirm affiliation (category question) and success", async ({
+    page,
+  }) => {
+    await signInAs(page, memberFlowPersona);
+    await completeMemberProfileStage(page, memberFlowPersona);
+    await page.getByRole("button", { name: /^Organisation/ }).click();
+    await page.getByLabel("Search", { exact: true }).fill(orgName);
+    await expect(page.getByText(orgName)).toBeVisible();
+    await page.getByRole("button", { name: "Select" }).click();
+    await expect(page.getByText("Confirm your affiliation")).toBeVisible();
+    // orgName is a fixture in the non-Sangam tamil_community category —
+    // its own connection question (community involvement) renders here.
+    await checkAccessibility(
+      page,
+      "Member registration (confirm affiliation, category question)",
+    );
+
+    await page.getByRole("radio", { name: "Community member" }).check();
+    await page.getByRole("button", { name: "Submit affiliation" }).click();
+    await expect(
+      page.getByRole("heading", { name: "Affiliation submitted" }),
+    ).toBeVisible();
+    await checkAccessibility(page, "Member registration (success)");
   });
 
   test("Account", async ({ page }) => {
@@ -348,7 +535,12 @@ test.describe("workspace shell accessibility (axe)", () => {
 
   test.afterAll(async () => {
     const { data } = await admin.auth.admin.listUsers();
-    for (const email of [user.email, freshRegistrant.email]) {
+    for (const email of [
+      user.email,
+      freshRegistrant.email,
+      memberFlowPersona.email,
+      pendingAffiliationMember.email,
+    ]) {
       const found = data.users.find((u) => u.email === email);
       if (found) await admin.auth.admin.deleteUser(found.id);
     }
@@ -368,7 +560,7 @@ test.describe("public join surfaces accessibility (axe)", () => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/join");
     await expect(
-      page.getByRole("heading", { name: "Choose your path" }),
+      page.getByRole("heading", { name: "Join Tamil Ulagam" }),
     ).toBeVisible();
     await checkAccessibility(page, "/join");
   });

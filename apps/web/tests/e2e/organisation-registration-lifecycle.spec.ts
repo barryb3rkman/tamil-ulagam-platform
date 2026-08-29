@@ -279,34 +279,50 @@ test.describe("local Supabase real V3 Organisation registration lifecycle", () =
         }),
       ).toBeVisible();
 
-      // --- Member: discovers the verified organisation, requests to join ---
+      // --- Member: discovers the verified organisation, submits an
+      // affiliation claim (H4 brief — profile -> type -> directory ->
+      // confirm, with the healthcare category's own connection question) ---
       await signIn(memberPage, member.email, member.password);
       await memberPage.goto("/join/member");
+      await memberPage.getByText("Your details").waitFor({ timeout: 15000 });
+      await memberPage.getByLabel("Full name").fill("Local Browser Org Member");
+      await memberPage.getByLabel("Mobile number").fill("+1 416 555 0199");
+      await memberPage.getByLabel("Country").fill("Canada");
       await memberPage
-        .getByLabel(/Search organisations and Tamil Sangams/)
+        .getByLabel(/State \/ Province \/ Region/)
+        .fill("Ontario");
+      await memberPage.getByLabel("City").fill("Toronto");
+      await memberPage.getByRole("button", { name: "Continue" }).click();
+
+      await memberPage.getByRole("button", { name: /^Organisation/ }).click();
+      await memberPage
+        .getByLabel("Search", { exact: true })
         .fill("Local Browser Meridian Health");
       await expect(memberPage.getByText(organisationName)).toBeVisible();
+      await memberPage.getByRole("button", { name: "Select" }).click();
+
+      await expect(
+        memberPage.getByText("Confirm your affiliation"),
+      ).toBeVisible();
+      await memberPage.getByRole("radio", { name: "Community member" }).check();
       await memberPage
-        .getByRole("button", { name: "Choose organisation" })
-        .first()
+        .getByRole("button", { name: "Submit affiliation" })
         .click();
       await expect(
-        memberPage.getByText(`You’re requesting to join ${organisationName}.`),
+        memberPage.getByRole("heading", { name: "Affiliation submitted" }),
       ).toBeVisible();
-      await memberPage
-        .getByRole("button", { name: "Request membership" })
-        .click();
-      await expect(memberPage.getByText("Request sent")).toBeVisible();
 
-      // --- Registrant (the organisation's own manager): approves ---
+      // --- Registrant (the organisation's own manager): confirms ---
       await registrantPage.reload();
       await expect(
         registrantPage.getByText("Local Browser Org Member"),
       ).toBeVisible();
-      await registrantPage.getByRole("button", { name: "Approve" }).click();
-      await expect(registrantPage.getByText("Approved")).toBeVisible();
+      await registrantPage
+        .getByRole("button", { name: "Confirm member" })
+        .click();
+      await expect(registrantPage.getByText("Active")).toBeVisible();
 
-      // --- Member: workspace reflects the approved affiliation ---
+      // --- Member: workspace reflects the active affiliation ---
       await memberPage.goto("/workspace/member");
       await expect(
         memberPage.getByRole("heading", {
@@ -314,7 +330,7 @@ test.describe("local Supabase real V3 Organisation registration lifecycle", () =
           exact: true,
         }),
       ).toBeVisible();
-      await expect(memberPage.getByText("Approved")).toBeVisible();
+      await expect(memberPage.getByText("Active")).toBeVisible();
     } finally {
       await registrantContext.close();
       await reviewerContext.close();

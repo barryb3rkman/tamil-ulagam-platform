@@ -1,44 +1,168 @@
+import type {
+  CategoryConnectionQuestion,
+  OrganisationCategory,
+} from "@tamil-ulagam/shared";
+
 /**
- * Copy for the real Member Registration + affiliation experience (Phase
- * C2). Kept as data, matching the join.ts/homepage.ts convention.
+ * Copy for the real Member Registration + affiliation experience.
+ * Rewritten for Phase H4 — this is an AFFILIATION CLAIM flow ("I already
+ * belong to this Organisation/Sangam, connect that to my account"), not
+ * an open-membership request system. See the H4 brief section 1/2 for
+ * the full product-language rationale.
  */
 
 export const memberLoggedOutContent = {
   eyebrow: "MEMBERSHIP",
-  title: "Join as a Member",
+  title: "Connect your membership",
   description:
-    "Become part of Tamil Ulagam through a registered Organisation or Tamil Sangam.",
+    "If you already belong to a registered Tamil Sangam or Organisation, connect that affiliation to your Tamil Ulagam account.",
   steps: [
     {
-      title: "Find a registered Organisation or Tamil Sangam",
-      description: "Search the directory of verified organisations.",
+      title: "Find your Tamil Sangam or Organisation",
+      description: "Search the directory of verified entities.",
     },
     {
-      title: "Request to join",
-      description: "Send an affiliation request in one step — no long form.",
+      title: "Submit an affiliation claim",
+      description: "Tell us where you already belong — in one short step.",
     },
     {
-      title: "The Organisation confirms affiliation",
+      title: "They confirm your affiliation",
       description:
-        "A manager reviews your request and decides whether to approve it.",
+        "A manager checks that you're genuinely one of their members.",
     },
     {
-      title: "Membership becomes active",
+      title: "Your affiliation becomes active",
+      description: "Once confirmed, it appears in your Member Workspace.",
+    },
+  ],
+} as const;
+
+export const memberProfileContent = {
+  title: "Your details",
+  description: "A few details so the organisation knows who's affiliating.",
+} as const;
+
+export const memberAffiliationTypeContent = {
+  title: "Where are you already a member?",
+  description: "Choose the kind of entity you already belong to.",
+  options: [
+    {
+      value: "sangam",
+      title: "Tamil Sangam",
+      description: "A Tamil Sangam you're already part of.",
+    },
+    {
+      value: "organisation",
+      title: "Organisation",
       description:
-        "Once approved, your affiliation appears in your Member Workspace.",
+        "A business, education, healthcare, non-profit or other organisation.",
     },
   ],
 } as const;
 
 export const memberDirectoryContent = {
-  title: "Find your Organisation or Tamil Sangam",
-  description:
-    "Search by name, city, region or country. Only verified organisations appear here.",
+  sangamTitle: "Find your Tamil Sangam",
+  sangamDescription:
+    "Search by name, city, region or country. Only verified Sangams appear here.",
+  organisationTitle: "Find your Organisation",
+  organisationDescription:
+    "Filter by category, then search by name, city, region or country. Only verified organisations appear here.",
   searchPlaceholder: "Search by name, city, region or country…",
-  searchLabel: "Search organisations and Tamil Sangams",
+  searchLabel: "Search",
+  categoryLabel: "Category",
+  allCategories: "All categories",
+  emptyTitle: "No matching organisation found",
+  emptyDescription: "Check the spelling or location.",
+  noneVerifiedTitle: "None verified yet",
+  noneVerifiedDescription:
+    "No entity of this kind has completed verification yet. Check back soon.",
+  cantFindTitle: "Can't find your organisation?",
+  cantFindDescription:
+    "It may not be registered with Tamil Ulagam yet. A Tamil Sangam or Organisation registers itself — a member can't create one from here.",
 } as const;
 
 export const memberConfirmContent = {
+  title: "Confirm your affiliation",
   disclaimer:
-    "The organisation will review this request. This does not grant organisation-management access.",
+    "Your Tamil Ulagam account will be connected after the selected organisation confirms that you are a member. This does not grant organisation-management access.",
+  submitCta: "Submit affiliation",
 } as const;
+
+export const memberSuccessContent = {
+  eyebrow: "AFFILIATION SUBMITTED",
+  title: "Affiliation submitted",
+  body: "will confirm your membership. You'll see the affiliation in your Member Workspace once it is confirmed.",
+  primaryCta: "Open Member Workspace",
+  secondaryCta: "Add another affiliation",
+} as const;
+
+/**
+ * H4 brief sections 9-17 — keyed by the six canonical
+ * OrganisationCategory values. `null` means no tailored question at all
+ * (section 17: "do NOT invent one" — currently only "other"). A Tamil
+ * Sangam (tamil_community + isTamilSangam) is handled as its own special
+ * case in code, ahead of this map, and asks nothing extra (section 10).
+ */
+export const categoryConnectionQuestions: Readonly<
+  Record<OrganisationCategory, CategoryConnectionQuestion | null>
+> = {
+  tamil_community: {
+    prompt: "Your involvement",
+    options: [
+      { value: "Community member", label: "Community member" },
+      { value: "Volunteer", label: "Volunteer" },
+      { value: "Staff", label: "Staff" },
+      { value: "Other", label: "Other" },
+    ],
+  },
+  education: {
+    prompt: "Your connection to this organisation",
+    options: [
+      { value: "Student", label: "Student" },
+      { value: "Educator", label: "Educator" },
+      { value: "Parent / Guardian", label: "Parent / Guardian" },
+      { value: "Alumni", label: "Alumni" },
+      { value: "Staff", label: "Staff" },
+      { value: "Other", label: "Other" },
+    ],
+    contextLabel: "Course / field of study",
+  },
+  healthcare: {
+    prompt: "Your connection to this organisation",
+    options: [
+      { value: "Healthcare professional", label: "Healthcare professional" },
+      { value: "Staff", label: "Staff" },
+      { value: "Volunteer", label: "Volunteer" },
+      { value: "Community member", label: "Community member" },
+      { value: "Other", label: "Other" },
+    ],
+    contextLabel: "Profession / speciality",
+    contextOnlyForOptions: ["Healthcare professional"],
+  },
+  business: {
+    prompt: "Your professional role",
+    options: [
+      { value: "Business owner / Founder", label: "Business owner / Founder" },
+      { value: "Entrepreneur", label: "Entrepreneur" },
+      { value: "Professional / Employee", label: "Professional / Employee" },
+      { value: "Student", label: "Student" },
+      { value: "Other", label: "Other" },
+    ],
+    contextLabel: "Company / Organisation",
+    extraLabel: "Industry",
+  },
+  nonprofit: {
+    prompt: "How are you involved?",
+    options: [
+      { value: "Community member", label: "Community member" },
+      { value: "Volunteer", label: "Volunteer" },
+      { value: "Staff", label: "Staff" },
+      { value: "Supporter", label: "Supporter" },
+      { value: "Other", label: "Other" },
+    ],
+  },
+  other: null,
+} as const;
+
+/** The Tamil Sangam special case (H4 brief section 10) — no question. */
+export const sangamConnectionQuestion: CategoryConnectionQuestion | null = null;

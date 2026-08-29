@@ -44,6 +44,28 @@ export interface Membership {
   readonly expiresAt: string | null;
   readonly createdAt: string;
   readonly updatedAt: string;
+  /**
+   * Phase H4 — the applicant's own email, captured server-side at
+   * request/invite time (never a live auth.users join a manager could
+   * read arbitrarily) — the same pattern
+   * organization_applications.representative_email already established
+   * for the Organisation journey.
+   */
+  readonly memberEmail: string;
+  /** The selected category-aware "your connection/involvement" answer
+   * (H4 brief sections 9-17) — the human-readable option label itself
+   * (e.g. "Student", "Business owner / Founder"), not a coded enum, the
+   * same free-text-for-low-cardinality convention already used
+   * elsewhere (e.g. organization_tamil_community_details.subtype). "" if
+   * the selected organisation's category has no tailored question. */
+  readonly connectionType: string;
+  /** Optional elaboration on connectionType (course/field of study,
+   * profession/speciality, company). "" if not asked or not answered. */
+  readonly connectionContext: string;
+  /** A second, rarer optional elaboration — currently only used for a
+   * Business organisation's "Industry" (connectionContext there holds
+   * "Company / Organisation"). "" otherwise. */
+  readonly connectionContextExtra: string;
 }
 
 export interface MembershipHistoryEvent {
@@ -108,4 +130,60 @@ export function isTamilSangam(organisation: EligibleOrganisation): boolean {
  */
 export interface MembershipRequestSummary extends Membership {
   readonly memberFullName: string;
+  /** The applicant's own phone, from their profile — visible to a
+   * manager under the same profiles RLS policy that already permits
+   * reading memberFullName for a member of their own organisation. */
+  readonly memberPhone: string;
+  readonly memberCity: string;
+  readonly memberRegion: string;
+  readonly memberCountry: string;
+}
+
+/**
+ * Phase H4 — the small common Member profile (full name, mobile,
+ * country/region/city) collected once on /join/member's own Step 1,
+ * pre-filled from whatever the account already has. Deliberately a
+ * narrow type of its own rather than an extension of the broader
+ * `UserProfile` (enrollment.ts) — that type is threaded through
+ * PlatformProvider/supabase-services.ts/mock-data.ts and every
+ * Organisation/Sangam representative flow; growing it here would widen
+ * this phase's blast radius for no real benefit, since the Member
+ * flow's own service reads/writes the same `profiles` table columns
+ * directly.
+ */
+export interface MemberProfile {
+  fullName: string;
+  phone: string;
+  country: string;
+  region: string;
+  city: string;
+}
+
+export interface CategoryConnectionOption {
+  readonly value: string;
+  readonly label: string;
+}
+
+/**
+ * H4 brief sections 9-17 — the minimal, category-aware "your connection
+ * to this organisation" question set. Keyed by the six canonical
+ * OrganisationCategory values, with tamil_community further split by
+ * isTamilSangam (a Sangam asks nothing extra at all — section 10).
+ * `contextLabel`/`contextPlaceholder` describe the one optional free-text
+ * elaboration a category may offer (course/field, profession/speciality,
+ * company); `extraLabel` is the second, rarer one (Business's
+ * "Industry" only). A category absent from this map (or resolving to
+ * `null`) asks no tailored question at all (section 17 — "do NOT invent
+ * one").
+ */
+export interface CategoryConnectionQuestion {
+  readonly prompt: string;
+  readonly options: readonly CategoryConnectionOption[];
+  readonly contextLabel?: string;
+  readonly contextPlaceholder?: string;
+  /** Only asked when the selected option is in this set — e.g. Healthcare's
+   * "Profession / speciality" only appears for "Healthcare professional". */
+  readonly contextOnlyForOptions?: readonly string[];
+  readonly extraLabel?: string;
+  readonly extraPlaceholder?: string;
 }

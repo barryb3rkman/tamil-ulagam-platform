@@ -4,19 +4,13 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "../../src/lib/supabase/database.types";
 
 /**
- * The real, end-to-end Member Registration + affiliation approval
- * lifecycle (Phase C2), driven through the actual UI against a real
- * local Supabase instance — request → manager sees it → approves →
- * member sees Approved → member leaves → Workspace reflects the ended
- * affiliation. No part of the core lifecycle is mocked; every session
- * used below is a genuine signed-in browser session, not a service-role
- * shortcut.
- *
- * Member and manager each get their own isolated browser context (own
- * cookies/session) rather than sharing one page and signing in/out in
- * sequence — this is the robust, recommended Playwright pattern for a
- * multi-actor flow and avoids the test depending on any particular
- * "sign out" UI affordance.
+ * Phase H4 — Member Registration V2 + affiliation verification. Persona
+ * A (H4 brief section 42): a verified Tamil Sangam already exists, a
+ * member selects it, submits an affiliation claim, the Sangam's own
+ * manager confirms them, and the Member Workspace reflects the active
+ * affiliation — driven through the actual five-stage UI (profile ->
+ * affiliation type -> directory -> confirm -> success), not the old
+ * single-directory-select flow. No part of the core lifecycle is mocked.
  */
 
 const member = {
@@ -29,21 +23,13 @@ const manager = {
   password: "LocalBrowserManager!2048Aa",
 } as const;
 
-const organisationName = "Local Browser Verified Sangam";
+const sangamName = "Local Browser Verified Sangam";
 
 async function signIn(page: Page, email: string, password: string) {
   await page.goto("/login");
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign In" }).click();
-  // Wait for the post-login redirect rather than the button's transient
-  // "Signed in" label — that label and the redirect can race, so
-  // asserting on it directly is flaky. The exact destination depends on
-  // account state (the manager fixture below is also an application
-  // submitter, so it lands on /dashboard, which routes it on to the
-  // Organisation Workspace; a plain member with no application lands on
-  // /dashboard too, routed on to the Member workspace) — only that it
-  // actually left /login matters here.
   await page.waitForURL((url) => !url.pathname.startsWith("/login"));
 }
 
@@ -54,7 +40,7 @@ test.describe("local Supabase real Member Registration lifecycle", () => {
   );
 
   let admin: SupabaseClient<Database>;
-  let organisationId: string;
+  let sangamId: string;
 
   test.beforeAll(async () => {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -88,14 +74,11 @@ test.describe("local Supabase real Member Registration lifecycle", () => {
     const organisation = await admin
       .from("organizations")
       .insert({
-        name: organisationName,
+        name: sangamName,
         category: "tamil_community",
         country: "Canada",
         region: "Ontario",
         city: "Toronto",
-        official_email: "browser-org@tamil-ulagam.test",
-        official_phone: "+1 416 555 0177",
-        description: "A verified organisation for the C2 browser test.",
         registration_status: "informal",
       })
       .select("id")
@@ -105,10 +88,17 @@ test.describe("local Supabase real Member Registration lifecycle", () => {
         `Create organisation: ${organisation.error?.message ?? "no data"}`,
       );
     }
-    organisationId = organisation.data.id;
+    sangamId = organisation.data.id;
+
+    const details = await admin
+      .from("organization_tamil_community_details")
+      .insert({ organization_id: sangamId, subtype: "Tamil Sangam" });
+    if (details.error) {
+      throw new Error(`Create Sangam details: ${details.error.message}`);
+    }
 
     const application = await admin.from("organization_applications").insert({
-      organization_id: organisationId,
+      organization_id: sangamId,
       submitted_by: managerUser.user.id,
       status: "verified",
       representative_full_name: "Local Browser Manager",
@@ -123,7 +113,7 @@ test.describe("local Supabase real Member Registration lifecycle", () => {
     }
 
     const grant = await admin.from("organization_managers").insert({
-      organization_id: organisationId,
+      organization_id: sangamId,
       user_id: managerUser.user.id,
       role: "owner",
     });
@@ -132,7 +122,7 @@ test.describe("local Supabase real Member Registration lifecycle", () => {
     }
   });
 
-  test("request -> manager approves -> member sees Approved -> member leaves", async ({
+  test("Persona A — Sangam member: submit an affiliation claim, manager confirms, Member Workspace becomes Active", async ({
     browser,
   }) => {
     test.setTimeout(120_000);
@@ -143,74 +133,81 @@ test.describe("local Supabase real Member Registration lifecycle", () => {
     const managerPage = await managerContext.newPage();
 
     try {
-      // --- Member: search, select, confirm, request ---
+      // --- Member: profile -> type -> directory -> confirm -> submit ---
       await signIn(memberPage, member.email, member.password);
       await memberPage.goto("/join/member");
+      await memberPage.getByText("Your details").waitFor({ timeout: 15000 });
+      // Account email is never re-asked (H4 brief section 4).
+      await expect(memberPage.getByLabel(/email/i)).toHaveCount(0);
+
+      await memberPage.getByLabel("Full name").fill("Local Browser Member");
+      await memberPage.getByLabel("Mobile number").fill("+1 416 555 0100");
+      await memberPage.getByLabel("Country").fill("Canada");
       await memberPage
-        .getByLabel(/Search organisations and Tamil Sangams/)
-        .fill("Local Browser Verified");
-      await expect(memberPage.getByText(organisationName)).toBeVisible();
-      await memberPage
-        .getByRole("button", { name: "Choose organisation" })
-        .first()
-        .click();
+        .getByLabel(/State \/ Province \/ Region/)
+        .fill("Ontario");
+      await memberPage.getByLabel("City").fill("Toronto");
+      await memberPage.getByRole("button", { name: "Continue" }).click();
+
       await expect(
-        memberPage.getByText(`You’re requesting to join ${organisationName}.`),
+        memberPage.getByText("Where are you already a member?"),
+      ).toBeVisible();
+      await memberPage.getByRole("button", { name: /^Tamil Sangam/ }).click();
+
+      await expect(
+        memberPage.getByText("Find your Tamil Sangam"),
       ).toBeVisible();
       await memberPage
-        .getByRole("button", { name: "Request membership" })
+        .getByLabel("Search", { exact: true })
+        .fill("Local Browser Verified");
+      await expect(memberPage.getByText(sangamName)).toBeVisible();
+      await memberPage.getByRole("button", { name: "Select" }).click();
+
+      await expect(
+        memberPage.getByText("Confirm your affiliation"),
+      ).toBeVisible();
+      // No category question for a Tamil Sangam (H4 brief section 10).
+      await expect(memberPage.getByText("Your involvement")).toHaveCount(0);
+      await memberPage
+        .getByRole("button", { name: "Submit affiliation" })
         .click();
-      await expect(memberPage.getByText("Request sent")).toBeVisible();
-      await expect(memberPage.getByText("Pending review")).toBeVisible();
+
+      await expect(
+        memberPage.getByRole("heading", { name: "Affiliation submitted" }),
+      ).toBeVisible();
+      await expect(memberPage.getByText("Pending confirmation")).toBeVisible();
 
       await memberPage
-        .getByRole("link", { name: "Go to Member Workspace" })
+        .getByRole("link", { name: "Open Member Workspace" })
         .click();
       await expect(memberPage).toHaveURL(/\/workspace\/member\/?$/);
-      // exact: true — an approved affiliation's still-closed "Leave
-      // organisation" confirmation dialog also carries the
-      // organisation's name (in "Leave <name>?"), so a substring match
-      // here would be ambiguous even though the dialog isn't open yet.
       await expect(
-        memberPage.getByRole("heading", {
-          name: organisationName,
-          exact: true,
-        }),
+        memberPage.getByRole("heading", { name: sangamName, exact: true }),
       ).toBeVisible();
-      await expect(memberPage.getByText("Pending review")).toBeVisible();
+      await expect(memberPage.getByText("Pending confirmation")).toBeVisible();
 
-      // --- Manager: sees the request, approves it ---
+      // --- Manager: sees the pending affiliation confirmation, confirms it ---
       await signIn(managerPage, manager.email, manager.password);
       await managerPage.goto(
-        `/workspace/organisation/people?organization=${organisationId}`,
+        `/workspace/organisation/people?organization=${sangamId}`,
       );
       await expect(
-        managerPage.getByRole("heading", {
-          name: organisationName,
-          exact: true,
-        }),
+        managerPage.getByRole("heading", { name: sangamName, exact: true }),
+      ).toBeVisible();
+      await expect(
+        managerPage.getByText("Pending affiliation confirmations"),
       ).toBeVisible();
       await expect(managerPage.getByText("Local Browser Member")).toBeVisible();
-      await managerPage.getByRole("button", { name: "Approve" }).click();
-      await expect(managerPage.getByText("Approved")).toBeVisible();
+      await expect(managerPage.getByText(member.email)).toBeVisible();
+      await managerPage.getByRole("button", { name: "Confirm member" }).click();
+      await expect(managerPage.getByText("Active")).toBeVisible();
 
-      // --- Member: sees the approved affiliation, then leaves ---
+      // --- Member: Member Workspace reflects the active affiliation ---
       await memberPage.goto("/workspace/member");
       await expect(
-        memberPage.getByRole("heading", {
-          name: organisationName,
-          exact: true,
-        }),
+        memberPage.getByRole("heading", { name: sangamName, exact: true }),
       ).toBeVisible();
-      await expect(memberPage.getByText("Approved")).toBeVisible();
-
-      await memberPage
-        .getByRole("button", { name: "Leave organisation" })
-        .click();
-      await memberPage.getByRole("button", { name: "Confirm leave" }).click();
-      await expect(
-        memberPage.getByText("Ended", { exact: true }),
-      ).toBeVisible();
+      await expect(memberPage.getByText("Active")).toBeVisible();
     } finally {
       await memberContext.close();
       await managerContext.close();

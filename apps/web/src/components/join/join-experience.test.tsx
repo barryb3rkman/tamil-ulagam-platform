@@ -116,7 +116,7 @@ describe("JoinExperience auth-aware behavior", () => {
     render(<JoinExperience />);
 
     expect(
-      screen.getByRole("heading", { name: "Register an Organisation" }),
+      screen.getByRole("heading", { name: "Organisation" }),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("heading", { name: "Continue your registration" }),
@@ -180,7 +180,7 @@ describe("JoinExperience auth-aware behavior", () => {
     render(<JoinExperience />);
 
     expect(
-      screen.getByRole("heading", { name: "Register an Organisation" }),
+      screen.getByRole("heading", { name: "Organisation" }),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("heading", { name: "Continue your registration" }),
@@ -200,7 +200,7 @@ describe("JoinExperience auth-aware behavior", () => {
     render(<JoinExperience />);
 
     expect(
-      screen.getByRole("heading", { name: "Register an Organisation" }),
+      screen.getByRole("heading", { name: "Organisation" }),
     ).toBeInTheDocument();
   });
 

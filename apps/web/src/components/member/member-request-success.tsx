@@ -3,20 +3,23 @@ import { isTamilSangam, type EligibleOrganisation } from "@tamil-ulagam/shared";
 import Link from "next/link";
 
 import { OrganisationMark, SangamMark } from "@/components/join/journey-icons";
+import { memberSuccessContent } from "@/content/member";
 
 import { organisationKindLabel } from "./organisation-presentation";
 
 /**
- * A real product state after a request is sent — not a bare "Submitted
- * successfully" toast. Sets accurate expectations (approval is a manager
- * decision, not automatic) and gives the visitor somewhere real to go.
+ * A real product state after an affiliation claim is submitted — not a
+ * bare toast (H4 brief section 20). Sets accurate expectations
+ * (confirmation is the organisation's own decision, not automatic) and
+ * offers "Add another affiliation" since a Member may hold several
+ * concurrent, independently-confirmed affiliations.
  */
 export function MemberRequestSuccess({
+  onAddAnother,
   organisation,
-  onBrowseAgain,
 }: {
   readonly organisation: EligibleOrganisation;
-  readonly onBrowseAgain: () => void;
+  readonly onAddAnother: () => void;
 }) {
   const isSangam = isTamilSangam(organisation);
   const Icon = isSangam ? SangamMark : OrganisationMark;
@@ -36,8 +39,11 @@ export function MemberRequestSuccess({
           ✓
         </span>
         <p className="text-heritage-maroon mt-4 text-xs font-bold tracking-[0.1em] uppercase">
-          Request sent
+          {memberSuccessContent.eyebrow}
         </p>
+        <h2 className="text-global-navy mt-3 text-2xl font-bold">
+          {memberSuccessContent.title}
+        </h2>
         <div className="mt-3 flex items-center justify-center gap-2">
           <span
             aria-hidden="true"
@@ -49,22 +55,19 @@ export function MemberRequestSuccess({
           >
             <Icon className="size-4" />
           </span>
-          <h2 className="text-global-navy text-xl font-bold">
+          <h3 className="text-global-navy text-xl font-bold">
             {organisation.name}
-          </h2>
+          </h3>
         </div>
         <p className="text-slate mt-1 text-sm">
           {organisationKindLabel(organisation)}
         </p>
         <div className="mt-4 flex justify-center">
-          <StatusBadge label="Pending review" tone="warning" />
+          <StatusBadge label="Pending confirmation" tone="warning" />
         </div>
 
         <p className="text-charcoal mx-auto mt-6 max-w-md leading-7">
-          {organisation.name} has received your affiliation request. Membership
-          becomes active only once the organisation approves it. You can leave
-          this page safely — your status is always visible in your Member
-          Workspace.
+          {organisation.name} {memberSuccessContent.body}
         </p>
 
         <div className="mt-7 flex flex-wrap items-center justify-center gap-4">
@@ -72,14 +75,14 @@ export function MemberRequestSuccess({
             href="/workspace/member"
             className="bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button motion-control inline-flex min-h-12 items-center px-6 font-semibold text-white focus-visible:outline-none"
           >
-            Go to Member Workspace
+            {memberSuccessContent.primaryCta}
           </Link>
           <button
             type="button"
-            onClick={onBrowseAgain}
+            onClick={onAddAnother}
             className="text-global-navy focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
           >
-            Browse other organisations
+            {memberSuccessContent.secondaryCta}
           </button>
         </div>
       </Surface>

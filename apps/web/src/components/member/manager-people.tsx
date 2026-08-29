@@ -263,7 +263,9 @@ export function ManagerPeople() {
     );
   }
 
-  const pendingCount = requests.filter((r) => r.status === "pending").length;
+  const pendingRequests = requests.filter((r) => r.status === "pending");
+  const decidedRequests = requests.filter((r) => r.status !== "pending");
+  const pendingCount = pendingRequests.length;
 
   return (
     <Container className="py-12 sm:py-16 lg:py-20">
@@ -295,7 +297,7 @@ export function ManagerPeople() {
               : "text-slate border-transparent"
           }`}
         >
-          Members{pendingCount > 0 ? ` (${pendingCount} pending)` : ""}
+          Affiliations{pendingCount > 0 ? ` (${pendingCount} pending)` : ""}
         </button>
         <button
           type="button"
@@ -322,19 +324,41 @@ export function ManagerPeople() {
             </Alert>
           ) : requests.length === 0 ? (
             <EmptyState
-              title="No membership activity yet"
-              description="Requests to join this organisation will appear here."
+              title="No affiliation activity yet"
+              description="Affiliation claims for this organisation will appear here."
             />
           ) : (
-            <div className="surface-card px-5">
-              {requests.map((request) => (
-                <MembershipRequestRow
-                  key={request.id}
-                  request={request}
-                  onApprove={handleApprove}
-                  onReject={handleReject}
-                />
-              ))}
+            <div className="grid gap-6">
+              {pendingRequests.length > 0 ? (
+                <div className="surface-card px-5">
+                  <h2 className="text-global-navy pt-5 text-base font-bold">
+                    Pending affiliation confirmations
+                  </h2>
+                  {pendingRequests.map((request) => (
+                    <MembershipRequestRow
+                      key={request.id}
+                      request={request}
+                      onApprove={handleApprove}
+                      onReject={handleReject}
+                    />
+                  ))}
+                </div>
+              ) : null}
+              {decidedRequests.length > 0 ? (
+                <div className="surface-card px-5">
+                  <h2 className="text-global-navy pt-5 text-base font-bold">
+                    Other affiliations
+                  </h2>
+                  {decidedRequests.map((request) => (
+                    <MembershipRequestRow
+                      key={request.id}
+                      request={request}
+                      onApprove={handleApprove}
+                      onReject={handleReject}
+                    />
+                  ))}
+                </div>
+              ) : null}
             </div>
           )
         ) : (

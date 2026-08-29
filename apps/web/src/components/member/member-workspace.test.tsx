@@ -46,6 +46,10 @@ function makeMembership(overrides: Partial<Membership> = {}): Membership {
     expiresAt: null,
     createdAt: "2026-08-25T00:00:00.000Z",
     updatedAt: "2026-08-25T01:00:00.000Z",
+    memberEmail: "",
+    connectionType: "",
+    connectionContext: "",
+    connectionContextExtra: "",
     ...overrides,
   };
 }
@@ -98,7 +102,7 @@ describe("MemberWorkspace auth-aware states", () => {
       expect(screen.getByText("No affiliations yet")).toBeInTheDocument(),
     );
     expect(
-      screen.getByRole("link", { name: "Find an organisation" }),
+      screen.getByRole("link", { name: "Connect your membership" }),
     ).toHaveAttribute("href", "/join/member");
   });
 
@@ -124,7 +128,7 @@ describe("MemberWorkspace auth-aware states", () => {
     await waitFor(() =>
       expect(screen.getAllByText("Toronto Tamil Sangam")).toHaveLength(2),
     );
-    const statuses = screen.getAllByText(/Approved|Pending review/);
-    expect(statuses[0]).toHaveTextContent("Approved");
+    const statuses = screen.getAllByText(/Active|Pending confirmation/);
+    expect(statuses[0]).toHaveTextContent("Active");
   });
 });

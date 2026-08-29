@@ -240,30 +240,45 @@ test.describe("local Supabase real Tamil Sangam registration lifecycle", () => {
       ).toBeVisible();
 
       // --- Member: the newly verified Sangam is discoverable and
-      // clearly labelled, requests to join ---
+      // clearly labelled, submits an affiliation claim (H4 brief —
+      // profile -> type -> directory -> confirm; a Tamil Sangam asks no
+      // category-specific question) ---
       await signIn(memberPage, member.email, member.password);
       await memberPage.goto("/join/member");
+      await memberPage.getByText("Your details").waitFor({ timeout: 15000 });
       await memberPage
-        .getByLabel(/Search organisations and Tamil Sangams/)
+        .getByLabel("Full name")
+        .fill("Local Browser Sangam Member");
+      await memberPage.getByLabel("Mobile number").fill("+1 902 555 0199");
+      await memberPage.getByLabel("Country").fill("Canada");
+      await memberPage
+        .getByLabel(/State \/ Province \/ Region/)
+        .fill("Nova Scotia");
+      await memberPage.getByLabel("City").fill("Halifax");
+      await memberPage.getByRole("button", { name: "Continue" }).click();
+
+      await memberPage.getByRole("button", { name: /^Tamil Sangam/ }).click();
+      await memberPage
+        .getByLabel("Search", { exact: true })
         .fill("Local Browser Coastal");
       await expect(memberPage.getByText(sangamName)).toBeVisible();
+      await memberPage.getByRole("button", { name: "Select" }).click();
+
+      await expect(
+        memberPage.getByText("Confirm your affiliation"),
+      ).toBeVisible();
       await expect(
         memberPage.getByText("Tamil Sangam", { exact: true }).first(),
       ).toBeVisible();
       await memberPage
-        .getByRole("button", { name: "Choose organisation" })
-        .first()
+        .getByRole("button", { name: "Submit affiliation" })
         .click();
       await expect(
-        memberPage.getByText(`You’re requesting to join ${sangamName}.`),
+        memberPage.getByRole("heading", { name: "Affiliation submitted" }),
       ).toBeVisible();
-      await memberPage
-        .getByRole("button", { name: "Request membership" })
-        .click();
-      await expect(memberPage.getByText("Request sent")).toBeVisible();
 
-      // --- Registrant (the Sangam's own manager): sees and approves
-      // the request via the same People surface an Organisation manager
+      // --- Registrant (the Sangam's own manager): sees and confirms the
+      // affiliation via the same People surface an Organisation manager
       // uses ---
       await registrantPage.goto("/workspace/sangam");
       await expect(
@@ -279,15 +294,17 @@ test.describe("local Supabase real Tamil Sangam registration lifecycle", () => {
       await expect(
         registrantPage.getByText("Local Browser Sangam Member"),
       ).toBeVisible();
-      await registrantPage.getByRole("button", { name: "Approve" }).click();
-      await expect(registrantPage.getByText("Approved")).toBeVisible();
+      await registrantPage
+        .getByRole("button", { name: "Confirm member" })
+        .click();
+      await expect(registrantPage.getByText("Active")).toBeVisible();
 
-      // --- Member: workspace reflects the approved affiliation ---
+      // --- Member: workspace reflects the active affiliation ---
       await memberPage.goto("/workspace/member");
       await expect(
         memberPage.getByRole("heading", { name: sangamName, exact: true }),
       ).toBeVisible();
-      await expect(memberPage.getByText("Approved")).toBeVisible();
+      await expect(memberPage.getByText("Active")).toBeVisible();
     } finally {
       await registrantContext.close();
       await reviewerContext.close();

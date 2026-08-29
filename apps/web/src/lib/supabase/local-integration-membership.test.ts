@@ -764,6 +764,246 @@ localDescribe(
       expect(org2Row?.subtype).toBeNull();
     });
 
+    // ---------------------------------------------------------------------
+    // Phase H4 — Member Registration V2 + affiliation verification. Fresh
+    // actors/organisations throughout, deliberately independent of the
+    // org1/org2/member1/member2 fixtures above (several of which are
+    // revoked/re-requested by the time this point in the sequential run
+    // is reached), so these assertions can't be accidentally satisfied by
+    // stale shared state.
+    // ---------------------------------------------------------------------
+
+    it("H4: request_organization_membership records the caller's own email and the category-aware connection fields", async () => {
+      const org3 = await admin
+        .from("organizations")
+        .insert({ name: "H4 Connection Fields Org", category: "education" })
+        .select("id")
+        .single();
+      expect(org3.error).toBeNull();
+      const org3Id = requireData(org3.data, "org3").id;
+      const org3Application = await admin
+        .from("organization_applications")
+        .insert({
+          organization_id: org3Id,
+          submitted_by: (await createActor("h4org3owner", "H4 Org3 Owner")).user
+            .id,
+          status: "verified",
+          submitted_at: new Date().toISOString(),
+        });
+      expect(org3Application.error).toBeNull();
+      await admin.from("organization_managers").insert({
+        organization_id: org3Id,
+        user_id: actor("h4org3owner").user.id,
+        role: "owner",
+        granted_by: actor("h4org3owner").user.id,
+      });
+
+      await createActor("h4member1", "H4 Member One");
+      const h4member1 = actor("h4member1");
+
+      const request = await h4member1.client.rpc(
+        "request_organization_membership",
+        {
+          target_organization_id: org3Id,
+          applicant_connection_type: "Student",
+          applicant_connection_context: "Computer Science",
+        },
+      );
+      expect(request.error).toBeNull();
+      const membershipId = requireData(request.data, "connection request").id;
+
+      const row = await admin
+        .from("organization_memberships")
+        .select(
+          "member_email, connection_type, connection_context, connection_context_extra",
+        )
+        .eq("id", membershipId)
+        .single();
+      expect(row.error).toBeNull();
+      expect(row.data).toMatchObject({
+        member_email: h4member1.email,
+        connection_type: "Student",
+        connection_context: "Computer Science",
+        connection_context_extra: "",
+      });
+    });
+
+    it("H4: an approved affiliation grants no management rights — organization_managers stays untouched, and the member cannot act as a manager", async () => {
+      const org4 = await admin
+        .from("organizations")
+        .insert({ name: "H4 Management Separation Org", category: "business" })
+        .select("id")
+        .single();
+      expect(org4.error).toBeNull();
+      const org4Id = requireData(org4.data, "org4").id;
+      await createActor("h4org4owner", "H4 Org4 Owner");
+      const org4Application = await admin
+        .from("organization_applications")
+        .insert({
+          organization_id: org4Id,
+          submitted_by: actor("h4org4owner").user.id,
+          status: "verified",
+          submitted_at: new Date().toISOString(),
+        });
+      expect(org4Application.error).toBeNull();
+      await admin.from("organization_managers").insert({
+        organization_id: org4Id,
+        user_id: actor("h4org4owner").user.id,
+        role: "owner",
+        granted_by: actor("h4org4owner").user.id,
+      });
+
+      await createActor("h4member2", "H4 Member Two");
+      const h4member2 = actor("h4member2");
+      const h4org4owner = actor("h4org4owner");
+
+      const request = await h4member2.client.rpc(
+        "request_organization_membership",
+        { target_organization_id: org4Id },
+      );
+      expect(request.error).toBeNull();
+      const membershipId = requireData(request.data, "h4member2 request").id;
+
+      const approved = await h4org4owner.client.rpc(
+        "decide_organization_membership",
+        { target_membership_id: membershipId, target_status: "approved" },
+      );
+      expect(approved.error).toBeNull();
+      expect(approved.data).toMatchObject({ status: "approved" });
+
+      // No row in organization_managers for the now-active member.
+      const managerRow = await admin
+        .from("organization_managers")
+        .select("id")
+        .eq("organization_id", org4Id)
+        .eq("user_id", h4member2.user.id);
+      expect(managerRow.error).toBeNull();
+      expect(managerRow.data).toHaveLength(0);
+
+      // can_manage_organization-gated actions still reject the member.
+      await createActor("h4member3", "H4 Member Three");
+      const anotherRequest = await actor("h4member3").client.rpc(
+        "request_organization_membership",
+        { target_organization_id: org4Id },
+      );
+      expect(anotherRequest.error).toBeNull();
+      const anotherMembershipId = requireData(
+        anotherRequest.data,
+        "h4member3 request",
+      ).id;
+
+      const memberTriesToDecide = await h4member2.client.rpc(
+        "decide_organization_membership",
+        {
+          target_membership_id: anotherMembershipId,
+          target_status: "approved",
+        },
+      );
+      expect(memberTriesToDecide.error).not.toBeNull();
+
+      const memberTriesToInvite = await h4member2.client.rpc(
+        "invite_organization_member",
+        {
+          target_organization_id: org4Id,
+          target_user_id: actor("h4member3").user.id,
+        },
+      );
+      expect(memberTriesToInvite.error).not.toBeNull();
+    });
+
+    it("H4: a Member can hold two independently-confirmed affiliations at once, each decided by its own organisation's own manager", async () => {
+      const orgA = await admin
+        .from("organizations")
+        .insert({ name: "H4 Multi-Affiliation Org A", category: "nonprofit" })
+        .select("id")
+        .single();
+      const orgB = await admin
+        .from("organizations")
+        .insert({ name: "H4 Multi-Affiliation Org B", category: "healthcare" })
+        .select("id")
+        .single();
+      expect(orgA.error).toBeNull();
+      expect(orgB.error).toBeNull();
+      const orgAId = requireData(orgA.data, "orgA").id;
+      const orgBId = requireData(orgB.data, "orgB").id;
+
+      await createActor("h4ownerA", "H4 Owner A");
+      await createActor("h4ownerB", "H4 Owner B");
+      const abApplications = await admin
+        .from("organization_applications")
+        .insert([
+          {
+            organization_id: orgAId,
+            submitted_by: actor("h4ownerA").user.id,
+            status: "verified",
+            submitted_at: new Date().toISOString(),
+          },
+          {
+            organization_id: orgBId,
+            submitted_by: actor("h4ownerB").user.id,
+            status: "verified",
+            submitted_at: new Date().toISOString(),
+          },
+        ]);
+      expect(abApplications.error).toBeNull();
+      await admin.from("organization_managers").insert([
+        {
+          organization_id: orgAId,
+          user_id: actor("h4ownerA").user.id,
+          role: "owner",
+          granted_by: actor("h4ownerA").user.id,
+        },
+        {
+          organization_id: orgBId,
+          user_id: actor("h4ownerB").user.id,
+          role: "owner",
+          granted_by: actor("h4ownerB").user.id,
+        },
+      ]);
+
+      await createActor("h4multiMember", "H4 Multi Member");
+      const h4multiMember = actor("h4multiMember");
+
+      const requestA = await h4multiMember.client.rpc(
+        "request_organization_membership",
+        { target_organization_id: orgAId },
+      );
+      const requestB = await h4multiMember.client.rpc(
+        "request_organization_membership",
+        { target_organization_id: orgBId },
+      );
+      expect(requestA.error).toBeNull();
+      expect(requestB.error).toBeNull();
+
+      const decideA = await actor("h4ownerA").client.rpc(
+        "decide_organization_membership",
+        {
+          target_membership_id: requireData(requestA.data, "requestA").id,
+          target_status: "approved",
+        },
+      );
+      const decideB = await actor("h4ownerB").client.rpc(
+        "decide_organization_membership",
+        {
+          target_membership_id: requireData(requestB.data, "requestB").id,
+          target_status: "approved",
+        },
+      );
+      expect(decideA.error).toBeNull();
+      expect(decideB.error).toBeNull();
+
+      const activeMemberships = await admin
+        .from("organization_memberships")
+        .select("organization_id, status")
+        .eq("user_id", h4multiMember.user.id)
+        .eq("status", "approved");
+      expect(activeMemberships.error).toBeNull();
+      expect(activeMemberships.data).toHaveLength(2);
+      expect(
+        activeMemberships.data?.map((row) => row.organization_id).sort(),
+      ).toEqual([orgAId, orgBId].sort());
+    });
+
     it("leaves the legacy organization_members table untouched by every new code path exercised above", async () => {
       const legacyRows = await admin
         .from("organization_members")

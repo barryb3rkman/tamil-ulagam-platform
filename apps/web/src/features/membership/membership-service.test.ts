@@ -28,6 +28,7 @@ function makeClient(options: {
   readonly rpcResult?: { data?: unknown; error?: unknown };
   readonly fromResult?: { data?: unknown; error?: unknown };
   readonly profilesResult?: { data?: unknown; error?: unknown };
+  readonly userId?: string;
 }) {
   const rpc = vi
     .fn()
@@ -39,9 +40,13 @@ function makeClient(options: {
     select: vi.fn(),
     eq: vi.fn(),
     order: vi.fn(),
+    maybeSingle: vi.fn(),
+    single: vi.fn(),
+    update: vi.fn(),
   };
   queryBuilder.select.mockReturnValue(queryBuilder);
   queryBuilder.eq.mockReturnValue(queryBuilder);
+  queryBuilder.update.mockReturnValue(queryBuilder);
   // .order() is the terminal call in every organization_memberships list
   // method below, so it resolves the promise (a real supabase-js query
   // builder is thenable at any point; mocking only the terminal await
@@ -49,22 +54,83 @@ function makeClient(options: {
   queryBuilder.order.mockResolvedValue(
     options.fromResult ?? { data: [membershipRow], error: null },
   );
+  queryBuilder.maybeSingle.mockResolvedValue(
+    options.fromResult ?? {
+      data: {
+        full_name: "Nila Raj",
+        phone: "+1 416 555 0100",
+        country: "Canada",
+        region: "Ontario",
+        city: "Toronto",
+      },
+      error: null,
+    },
+  );
+  queryBuilder.single.mockResolvedValue(
+    options.fromResult ?? {
+      data: {
+        full_name: "Nila Raj",
+        phone: "+1 416 555 0100",
+        country: "Canada",
+        region: "Ontario",
+        city: "Toronto",
+      },
+      error: null,
+    },
+  );
 
   const profilesBuilder = {
     select: vi.fn(),
     in: vi.fn(),
+    eq: vi.fn(),
+    update: vi.fn(),
+    maybeSingle: vi.fn(),
+    single: vi.fn(),
   };
   profilesBuilder.select.mockReturnValue(profilesBuilder);
   profilesBuilder.in.mockResolvedValue(
     options.profilesResult ?? { data: [profileRow], error: null },
+  );
+  profilesBuilder.eq.mockReturnValue(profilesBuilder);
+  profilesBuilder.update.mockReturnValue(profilesBuilder);
+  profilesBuilder.maybeSingle.mockResolvedValue(
+    options.fromResult ?? {
+      data: {
+        full_name: "Nila Raj",
+        phone: "+1 416 555 0100",
+        country: "Canada",
+        region: "Ontario",
+        city: "Toronto",
+      },
+      error: null,
+    },
+  );
+  profilesBuilder.single.mockResolvedValue(
+    options.fromResult ?? {
+      data: {
+        full_name: "Nila Raj",
+        phone: "+1 416 555 0100",
+        country: "Canada",
+        region: "Ontario",
+        city: "Toronto",
+      },
+      error: null,
+    },
   );
 
   const from = vi.fn((table: string) =>
     table === "profiles" ? profilesBuilder : queryBuilder,
   );
 
-  const client = { rpc, from } as unknown as SupabaseClient<Database>;
-  return { client, rpc, from, queryBuilder, profilesBuilder };
+  const auth = {
+    getUser: vi.fn().mockResolvedValue({
+      data: { user: { id: options.userId ?? "user-1" } },
+      error: null,
+    }),
+  };
+
+  const client = { rpc, from, auth } as unknown as SupabaseClient<Database>;
+  return { client, rpc, from, queryBuilder, profilesBuilder, auth };
 }
 
 describe("createMembershipService", () => {
@@ -217,5 +283,94 @@ describe("createMembershipService", () => {
     await expect(
       service.requestMembership("organization-1"),
     ).rejects.toBeInstanceOf(PlatformServiceError);
+  });
+
+  // Phase H4 — the small common Member profile + category-aware
+  // connection fields.
+
+  it("getMyProfile reads the caller's own full_name/phone/country/region/city", async () => {
+    const { client, from } = makeClient({});
+    const service = createMembershipService(client);
+
+    const profile = await service.getMyProfile();
+
+    expect(from).toHaveBeenCalledWith("profiles");
+    expect(profile).toEqual({
+      fullName: "Nila Raj",
+      phone: "+1 416 555 0100",
+      country: "Canada",
+      region: "Ontario",
+      city: "Toronto",
+    });
+  });
+
+  it("updateMyProfile writes the same five columns, trimmed", async () => {
+    const { client, profilesBuilder } = makeClient({});
+    const service = createMembershipService(client);
+
+    await service.updateMyProfile({
+      fullName: "  Nila Raj  ",
+      phone: " +1 416 555 0100 ",
+      country: " Canada ",
+      region: " Ontario ",
+      city: " Toronto ",
+    });
+
+    expect(profilesBuilder.update).toHaveBeenCalledWith({
+      full_name: "Nila Raj",
+      phone: "+1 416 555 0100",
+      country: "Canada",
+      region: "Ontario",
+      city: "Toronto",
+    });
+  });
+
+  it("requestMembership passes the category-aware connection fields through to the RPC", async () => {
+    const { client, rpc } = makeClient({});
+    const service = createMembershipService(client);
+
+    await service.requestMembership("organization-1", undefined, {
+      connectionType: "Student",
+      connectionContext: "Computer Science",
+      connectionContextExtra: "",
+    });
+
+    expect(rpc).toHaveBeenCalledWith("request_organization_membership", {
+      target_organization_id: "organization-1",
+      requested_membership_type: undefined,
+      applicant_connection_type: "Student",
+      applicant_connection_context: "Computer Science",
+      applicant_connection_context_extra: undefined,
+    });
+  });
+
+  it("listOrganisationMembershipRequests enriches each row with the requester's phone/location alongside their name", async () => {
+    const { client } = makeClient({
+      profilesResult: {
+        data: [
+          {
+            id: "user-1",
+            full_name: "Nila Raj",
+            phone: "+1 416 555 0100",
+            country: "Canada",
+            region: "Ontario",
+            city: "Toronto",
+          },
+        ],
+        error: null,
+      },
+    });
+    const service = createMembershipService(client);
+
+    const [request] =
+      await service.listOrganisationMembershipRequests("organization-1");
+
+    expect(request).toMatchObject({
+      memberFullName: "Nila Raj",
+      memberPhone: "+1 416 555 0100",
+      memberCountry: "Canada",
+      memberRegion: "Ontario",
+      memberCity: "Toronto",
+    });
   });
 });

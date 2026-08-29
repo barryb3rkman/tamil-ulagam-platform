@@ -1,40 +1,69 @@
 "use client";
 
 import { EmptyState, Skeleton } from "@tamil-ulagam/ui";
-import type { EligibleOrganisation, Membership } from "@tamil-ulagam/shared";
+import {
+  isTamilSangam,
+  type EligibleOrganisation,
+  type Membership,
+  type OrganisationCategory,
+} from "@tamil-ulagam/shared";
 import { useMemo, useState } from "react";
 
+import { organisationCategories } from "@/content/enrollment";
 import { memberDirectoryContent } from "@/content/member";
 
+import type { AffiliationType } from "./affiliation-type-stage";
 import { OrganisationDiscoveryCard } from "./organisation-discovery-card";
 
 /**
- * Search-first discovery. The eligible-organisation directory is fetched
- * once (see member-registration.tsx) and filtered entirely client-side
- * here — a reasonable choice while the verified-organisation count stays
- * in the tens/low hundreds (a handful of network round trips' worth of
- * JSON). If that count grows into the thousands, move filtering to a
- * server-side RPC (e.g. a `search_membership_eligible_organizations`
- * function with `ilike`/trigram indexes) rather than shipping the whole
- * directory to the browser — but building that now, for a directory this
- * size, would be premature.
+ * Search-first directory, scoped by the Step 2 affiliation-type choice
+ * (H4 brief sections 6-8): a Tamil Sangam search only ever shows verified
+ * Sangams; an Organisation search only ever shows verified, non-Sangam
+ * organisations, filterable by category first. The full eligible-
+ * organisation list is fetched once (member-registration.tsx) and
+ * filtered entirely client-side here — the same reasonable choice this
+ * component's own H2-era precedent already documented for a directory
+ * this size; see that comment's own note about moving to a server-side
+ * search RPC if the count grows into the thousands.
  */
 export function MemberDirectory({
-  organisations,
+  kind,
   myMembershipsByOrganisation,
+  onBack,
   onSelect,
+  organisations,
 }: {
+  readonly kind: AffiliationType;
   readonly organisations: readonly EligibleOrganisation[];
   readonly myMembershipsByOrganisation: ReadonlyMap<string, Membership>;
   readonly onSelect: (organisation: EligibleOrganisation) => void;
+  readonly onBack: () => void;
 }) {
   const [query, setQuery] = useState("");
+  const [category, setCategory] = useState<OrganisationCategory | "">("");
+
+  const scoped = useMemo(
+    () =>
+      organisations.filter((organisation) =>
+        kind === "sangam"
+          ? isTamilSangam(organisation)
+          : !isTamilSangam(organisation),
+      ),
+    [organisations, kind],
+  );
 
   const results = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    if (!normalized) return organisations;
-    return organisations.filter((organisation) =>
-      [
+    return scoped.filter((organisation) => {
+      if (
+        kind === "organisation" &&
+        category &&
+        organisation.category !== category
+      ) {
+        return false;
+      }
+      if (!normalized) return true;
+      return [
         organisation.name,
         organisation.city,
         organisation.region,
@@ -42,24 +71,35 @@ export function MemberDirectory({
       ]
         .join(" ")
         .toLowerCase()
-        .includes(normalized),
-    );
-  }, [organisations, query]);
+        .includes(normalized);
+    });
+  }, [scoped, query, category, kind]);
+
+  const title =
+    kind === "sangam"
+      ? memberDirectoryContent.sangamTitle
+      : memberDirectoryContent.organisationTitle;
+  const description =
+    kind === "sangam"
+      ? memberDirectoryContent.sangamDescription
+      : memberDirectoryContent.organisationDescription;
 
   return (
     <div data-motion-reveal="">
+      <button
+        type="button"
+        onClick={onBack}
+        className="text-global-navy focus-visible:ring-focus rounded-button mb-4 text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
+      >
+        Back
+      </button>
       <h2 className="text-global-navy text-2xl font-bold tracking-[-0.01em]">
-        {memberDirectoryContent.title}
+        {title}
       </h2>
-      <p className="text-slate mt-2 max-w-xl">
-        {memberDirectoryContent.description}
-      </p>
+      <p className="text-slate mt-2 max-w-xl">{description}</p>
 
-      <div className="mt-6">
-        <label htmlFor="member-directory-search" className="sr-only">
-          {memberDirectoryContent.searchLabel}
-        </label>
-        <div className="border-global-navy/15 focus-within:ring-focus rounded-button flex items-center gap-3 border bg-white px-4 py-3">
+      <div className="mt-6 grid gap-3 sm:flex sm:items-center">
+        <div className="border-global-navy/15 focus-within:ring-focus rounded-button flex flex-1 items-center gap-3 border bg-white px-4 py-3">
           <span aria-hidden="true" className="text-slate">
             <svg
               viewBox="0 0 20 20"
@@ -75,6 +115,9 @@ export function MemberDirectory({
               />
             </svg>
           </span>
+          <label htmlFor="member-directory-search" className="sr-only">
+            {memberDirectoryContent.searchLabel}
+          </label>
           <input
             id="member-directory-search"
             type="search"
@@ -84,23 +127,47 @@ export function MemberDirectory({
             className="text-charcoal placeholder:text-slate min-w-0 flex-1 border-0 bg-transparent text-sm outline-none"
           />
         </div>
-        <p className="text-slate mt-2 text-sm" aria-live="polite">
-          {results.length === organisations.length
-            ? `${results.length} verified organisation${results.length === 1 ? "" : "s"}`
-            : `${results.length} of ${organisations.length} organisations match "${query}"`}
-        </p>
+        {kind === "organisation" ? (
+          <div className="sm:w-56">
+            <label htmlFor="member-directory-category" className="sr-only">
+              {memberDirectoryContent.categoryLabel}
+            </label>
+            <select
+              id="member-directory-category"
+              value={category}
+              onChange={(event) =>
+                setCategory(event.target.value as OrganisationCategory | "")
+              }
+              className="motion-control focus-visible:ring-focus border-global-navy/20 bg-warm-ivory/20 text-charcoal hover:border-global-navy/35 rounded-button focus-visible:border-interactive-blue min-h-11 w-full border px-4 py-2 text-sm focus-visible:bg-white focus-visible:outline-none"
+            >
+              <option value="">{memberDirectoryContent.allCategories}</option>
+              {organisationCategories
+                .filter((option) => option.value !== "tamil_community")
+                .map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+            </select>
+          </div>
+        ) : null}
       </div>
+      <p className="text-slate mt-2 text-sm" aria-live="polite">
+        {results.length === scoped.length
+          ? `${results.length} verified ${kind === "sangam" ? "Sangam" : "organisation"}${results.length === 1 ? "" : "s"}`
+          : `${results.length} of ${scoped.length} match`}
+      </p>
 
       <div className="mt-6">
-        {organisations.length === 0 ? (
+        {scoped.length === 0 ? (
           <EmptyState
-            title="No verified organisations yet"
-            description="No Organisation or Tamil Sangam has completed verification yet. Check back soon."
+            title={memberDirectoryContent.noneVerifiedTitle}
+            description={memberDirectoryContent.noneVerifiedDescription}
           />
         ) : results.length === 0 ? (
           <EmptyState
-            title="No matches"
-            description="Try a different name, city, region or country."
+            title={memberDirectoryContent.emptyTitle}
+            description={memberDirectoryContent.emptyDescription}
           />
         ) : (
           <ul
@@ -120,6 +187,24 @@ export function MemberDirectory({
             ))}
           </ul>
         )}
+      </div>
+
+      <div className="border-global-navy/12 mt-8 border-t pt-6">
+        <p className="text-global-navy text-sm font-semibold">
+          {memberDirectoryContent.cantFindTitle}
+        </p>
+        <p className="text-slate mt-1 max-w-lg text-sm leading-6">
+          {memberDirectoryContent.cantFindDescription}{" "}
+          <a
+            href={kind === "sangam" ? "/join/sangam" : "/join/organisation"}
+            className="text-global-navy focus-visible:ring-focus underline underline-offset-4"
+          >
+            {kind === "sangam"
+              ? "Tamil Sangam registration"
+              : "Organisation registration"}
+          </a>
+          .
+        </p>
       </div>
     </div>
   );

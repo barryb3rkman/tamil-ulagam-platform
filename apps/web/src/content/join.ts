@@ -27,36 +27,33 @@ export const joinJourneys: readonly JoinJourney[] = [
   {
     id: "organisation",
     eyebrow: "ORGANISATIONS",
-    title: "Register an Organisation",
-    description:
-      "For businesses, education, healthcare, NGOs, cultural institutions, professional bodies and other organisations.",
+    title: "Organisation",
+    description: "Register your Organisation with Tamil Ulagam.",
     cta: "Start registration",
     href: "/join/organisation",
   },
   {
     id: "sangam",
     eyebrow: "TAMIL SANGAMS",
-    title: "Register a Tamil Sangam",
-    description:
-      "Join the wider Tamil Sangam network and establish your Sangam's presence within Tamil Ulagam.",
+    title: "Tamil Sangam",
+    description: "Register your Tamil Sangam with Tamil Ulagam.",
     cta: "Begin your Sangam's presence",
     href: "/join/sangam",
   },
   {
     id: "member",
     eyebrow: "MEMBERSHIP",
-    title: "Join as a Member",
+    title: "Member",
     description:
-      "Become part of Tamil Ulagam through a registered organisation or Tamil Sangam.",
-    cta: "Find your organisation",
+      "Connect your Tamil Ulagam account to a registered Tamil Sangam or Organisation you already belong to.",
+    cta: "Connect your membership",
     href: "/join/member",
   },
   {
     id: "partner",
     eyebrow: "PARTNERSHIP",
-    title: "Partner With Us",
-    description:
-      "Explore strategic, community, business, education, healthcare, technology and cultural collaborations.",
+    title: "Partner",
+    description: "Explore institutional and programme partnerships.",
     cta: "Explore partnership",
     href: "/partners",
   },

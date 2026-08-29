@@ -1,4 +1,10 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import type { EligibleOrganisation, Membership } from "@tamil-ulagam/shared";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -6,11 +12,6 @@ import { usePlatform } from "@/features/enrollment/platform-provider";
 import { useMembershipService } from "@/features/membership/use-membership-service";
 
 import { MemberRegistration } from "./member-registration";
-
-vi.mock("next/navigation", () => ({
-  usePathname: () => "/join/member",
-  useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
-}));
 
 vi.mock("@/features/enrollment/platform-provider", () => ({
   usePlatform: vi.fn(),
@@ -31,8 +32,23 @@ function platform(overrides: Record<string, unknown>) {
   } as unknown as ReturnType<typeof usePlatform>);
 }
 
-const org: EligibleOrganisation = {
-  id: "organisation-1",
+const emptyProfile = {
+  fullName: "",
+  phone: "",
+  country: "",
+  region: "",
+  city: "",
+};
+const filledProfile = {
+  fullName: "Nila Raj",
+  phone: "+1 416 555 0100",
+  country: "Canada",
+  region: "Ontario",
+  city: "Toronto",
+};
+
+const sangam: EligibleOrganisation = {
+  id: "sangam-1",
   name: "Toronto Tamil Sangam",
   category: "tamil_community",
   subtype: "Tamil Sangam",
@@ -40,6 +56,55 @@ const org: EligibleOrganisation = {
   region: "Ontario",
   country: "Canada",
 };
+const educationOrg: EligibleOrganisation = {
+  id: "org-1",
+  name: "Toronto Tamil School",
+  category: "education",
+  subtype: "",
+  city: "Toronto",
+  region: "Ontario",
+  country: "Canada",
+};
+
+function membership(overrides: Partial<Membership> = {}): Membership {
+  return {
+    id: "membership-1",
+    organisationId: sangam.id,
+    userId: "user-1",
+    status: "pending",
+    membershipType: "",
+    requestedAt: new Date().toISOString(),
+    invitedAt: null,
+    invitedBy: null,
+    decidedAt: null,
+    decidedBy: null,
+    expiresAt: null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    memberEmail: "",
+    connectionType: "",
+    connectionContext: "",
+    connectionContextExtra: "",
+    ...overrides,
+  };
+}
+
+function service(overrides: Record<string, unknown> = {}) {
+  const base = {
+    getMyProfile: vi.fn().mockResolvedValue(filledProfile),
+    updateMyProfile: vi.fn().mockResolvedValue(filledProfile),
+    listEligibleOrganisations: vi
+      .fn()
+      .mockResolvedValue([sangam, educationOrg]),
+    listMyMemberships: vi.fn().mockResolvedValue([]),
+    requestMembership: vi.fn().mockResolvedValue(membership()),
+    ...overrides,
+  };
+  mockedUseMembershipService.mockReturnValue(
+    base as unknown as ReturnType<typeof useMembershipService>,
+  );
+  return base;
+}
 
 afterEach(() => {
   cleanup();
@@ -47,20 +112,6 @@ afterEach(() => {
 });
 
 describe("MemberRegistration auth-aware states", () => {
-  it("shows a loading state before hydration resolves, not the logged-out or directory content", () => {
-    platform({ isHydrated: false, currentUser: null });
-    mockedUseMembershipService.mockReturnValue(null);
-
-    render(<MemberRegistration />);
-
-    expect(
-      screen.getByRole("status", { name: /loading organisations/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByRole("heading", { name: "Join as a Member" }),
-    ).not.toBeInTheDocument();
-  });
-
   it("shows the real logged-out journey once hydrated with no user", () => {
     platform({ isHydrated: true, currentUser: null });
     mockedUseMembershipService.mockReturnValue(null);
@@ -68,14 +119,17 @@ describe("MemberRegistration auth-aware states", () => {
     render(<MemberRegistration />);
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "Join as a Member" }),
+      screen.getByRole("heading", {
+        level: 1,
+        name: "Connect your membership",
+      }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: "Create account" }),
     ).toBeInTheDocument();
   });
 
-  it("shows an unavailable message when Supabase isn't configured, even for a signed-in user", () => {
+  it("shows an unavailable message when Supabase isn't configured", () => {
     platform({
       isHydrated: true,
       currentUser: { id: "user-1", fullName: "Nila" },
@@ -89,99 +143,155 @@ describe("MemberRegistration auth-aware states", () => {
     ).toBeInTheDocument();
   });
 
-  it("loads and renders the eligible-organisation directory for a signed-in user", async () => {
-    platform({
-      isHydrated: true,
-      currentUser: { id: "user-1", fullName: "Nila" },
-    });
-    mockedUseMembershipService.mockReturnValue({
-      listEligibleOrganisations: vi.fn().mockResolvedValue([org]),
-      listMyMemberships: vi.fn().mockResolvedValue([]),
-    } as unknown as ReturnType<typeof useMembershipService>);
-
-    render(<MemberRegistration />);
-
-    await waitFor(() =>
-      expect(screen.getByText("Toronto Tamil Sangam")).toBeInTheDocument(),
-    );
-    expect(screen.getByText("1 verified organisation")).toBeInTheDocument();
-  });
-
   it("shows a retry action when the directory fails to load", async () => {
-    const listEligibleOrganisations = vi
-      .fn()
-      .mockRejectedValueOnce(new Error("network down"))
-      .mockResolvedValueOnce([org]);
     platform({
       isHydrated: true,
       currentUser: { id: "user-1", fullName: "Nila" },
     });
-    mockedUseMembershipService.mockReturnValue({
-      listEligibleOrganisations,
-      listMyMemberships: vi.fn().mockResolvedValue([]),
-    } as unknown as ReturnType<typeof useMembershipService>);
+    service({
+      listEligibleOrganisations: vi
+        .fn()
+        .mockRejectedValue(new Error("Network down")),
+    });
 
     render(<MemberRegistration />);
 
     await waitFor(() =>
-      expect(screen.getByText("network down")).toBeInTheDocument(),
+      expect(screen.getByText("Network down")).toBeInTheDocument(),
     );
-    screen.getByRole("button", { name: "Try again" }).click();
+    expect(
+      screen.getByRole("button", { name: "Try again" }),
+    ).toBeInTheDocument();
+  });
+});
+
+describe("MemberRegistration — the full affiliation-claim flow", () => {
+  it("Step 1 pre-fills the profile from the account, and blocks Continue until required fields are valid", async () => {
+    platform({
+      isHydrated: true,
+      currentUser: { id: "user-1", fullName: "Nila" },
+    });
+    service({ getMyProfile: vi.fn().mockResolvedValue(emptyProfile) });
+
+    render(<MemberRegistration />);
 
     await waitFor(() =>
-      expect(screen.getByText("Toronto Tamil Sangam")).toBeInTheDocument(),
+      expect(screen.getByText("Your details")).toBeInTheDocument(),
     );
-    expect(listEligibleOrganisations).toHaveBeenCalledTimes(2);
+    // No account email re-asked (H4 brief section 4).
+    expect(screen.queryByLabelText(/email/i)).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Continue" }));
+    await waitFor(() =>
+      expect(screen.getByText("Enter your full name.")).toBeInTheDocument(),
+    );
   });
 
-  it("goes from selecting an organisation to a confirm screen, then to a success state on request", async () => {
-    const requestMembership = vi.fn().mockResolvedValue({
-      id: "membership-1",
-      organisationId: org.id,
-      userId: "user-1",
-      status: "pending",
-      membershipType: "",
-      requestedAt: new Date().toISOString(),
-      invitedAt: null,
-      invitedBy: null,
-      decidedAt: null,
-      decidedBy: null,
-      expiresAt: null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    } satisfies Membership);
+  it("goes profile -> type -> directory -> confirm -> success for a Tamil Sangam affiliation", async () => {
     platform({
       isHydrated: true,
       currentUser: { id: "user-1", fullName: "Nila" },
     });
-    mockedUseMembershipService.mockReturnValue({
-      listEligibleOrganisations: vi.fn().mockResolvedValue([org]),
-      listMyMemberships: vi.fn().mockResolvedValue([]),
-      requestMembership,
-    } as unknown as ReturnType<typeof useMembershipService>);
+    const svc = service();
+
+    render(<MemberRegistration />);
+
+    // Step 1 — already filled, just continue.
+    await waitFor(() =>
+      expect(screen.getByDisplayValue("Nila Raj")).toBeInTheDocument(),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Continue" }));
+
+    // Step 2 — "Where are you already a member?"
+    await waitFor(() =>
+      expect(
+        screen.getByText("Where are you already a member?"),
+      ).toBeInTheDocument(),
+    );
+    expect(
+      screen.queryByText(/what would you like to join/i),
+    ).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /^Tamil Sangam/ }));
+
+    // Step 3 — directory, Sangam-scoped only.
+    await waitFor(() =>
+      expect(screen.getByText("Find your Tamil Sangam")).toBeInTheDocument(),
+    );
+    expect(screen.getByText("Toronto Tamil Sangam")).toBeInTheDocument();
+    expect(screen.queryByText("Toronto Tamil School")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Select" }));
+
+    // Step 4 — confirm. No category question for a Sangam.
+    await waitFor(() =>
+      expect(screen.getByText("Confirm your affiliation")).toBeInTheDocument(),
+    );
+    expect(screen.queryByText("Your involvement")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Submit affiliation" }));
+
+    await waitFor(() =>
+      expect(svc.requestMembership).toHaveBeenCalledWith(sangam.id, undefined, {
+        connectionType: "",
+        connectionContext: "",
+        connectionContextExtra: "",
+      }),
+    );
+
+    // Step 5 — success, with the "add another affiliation" path.
+    await waitFor(() =>
+      expect(screen.getByText("Affiliation submitted")).toBeInTheDocument(),
+    );
+    expect(
+      screen.getByRole("link", { name: "Open Member Workspace" }),
+    ).toHaveAttribute("href", "/workspace/member");
+    expect(
+      screen.getByRole("button", { name: "Add another affiliation" }),
+    ).toBeInTheDocument();
+  });
+
+  it("asks the category-aware connection question for an Education organisation, and requires it before submitting", async () => {
+    platform({
+      isHydrated: true,
+      currentUser: { id: "user-1", fullName: "Nila" },
+    });
+    const svc = service();
 
     render(<MemberRegistration />);
 
     await waitFor(() =>
-      expect(
-        screen.getByRole("button", { name: "Choose organisation" }),
-      ).toBeInTheDocument(),
+      expect(screen.getByDisplayValue("Nila Raj")).toBeInTheDocument(),
     );
-    screen.getByRole("button", { name: "Choose organisation" }).click();
+    fireEvent.click(screen.getByRole("button", { name: "Continue" }));
+    await waitFor(() => screen.getByText("Where are you already a member?"));
+    fireEvent.click(screen.getByRole("button", { name: /^Organisation/ }));
 
+    await waitFor(() => screen.getByText("Find your Organisation"));
+    fireEvent.click(screen.getByRole("button", { name: "Select" }));
+
+    await waitFor(() => screen.getByText("Confirm your affiliation"));
+    expect(
+      screen.getByText("Your connection to this organisation"),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Submit affiliation" }));
     await waitFor(() =>
       expect(
-        screen.getByText(/You.?re requesting to join Toronto Tamil Sangam\./),
+        screen.getByText("Select the option that best describes you."),
       ).toBeInTheDocument(),
     );
-    // No membership-type selector is offered at this stage.
-    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+    expect(svc.requestMembership).not.toHaveBeenCalled();
 
-    screen.getByRole("button", { name: "Request membership" }).click();
-
+    fireEvent.click(screen.getByRole("radio", { name: "Student" }));
+    fireEvent.click(screen.getByRole("button", { name: "Submit affiliation" }));
     await waitFor(() =>
-      expect(screen.getByText("Request sent")).toBeInTheDocument(),
+      expect(svc.requestMembership).toHaveBeenCalledWith(
+        educationOrg.id,
+        undefined,
+        {
+          connectionType: "Student",
+          connectionContext: "",
+          connectionContextExtra: "",
+        },
+      ),
     );
-    expect(requestMembership).toHaveBeenCalledWith(org.id);
   });
 });

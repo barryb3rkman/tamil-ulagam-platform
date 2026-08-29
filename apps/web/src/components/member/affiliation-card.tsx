@@ -24,9 +24,9 @@ const statusPresentation: Record<
     readonly tone: "neutral" | "success" | "warning" | "maroon";
   }
 > = {
-  pending: { label: "Pending review", tone: "warning" },
-  approved: { label: "Approved", tone: "success" },
-  rejected: { label: "Not approved", tone: "neutral" },
+  pending: { label: "Pending confirmation", tone: "warning" },
+  approved: { label: "Active", tone: "success" },
+  rejected: { label: "Not confirmed", tone: "neutral" },
   revoked: { label: "Ended", tone: "neutral" },
 };
 
@@ -136,7 +136,8 @@ export function AffiliationCard({
           </p>
         ) : membership.status === "rejected" ? (
           <div>
-            <p>Reviewed {formatDate(membership.decidedAt)}</p>
+            <p>This organisation could not confirm your membership.</p>
+            <p className="mt-0.5">{formatDate(membership.decidedAt)}</p>
             {reason === null ? (
               <button
                 type="button"
@@ -169,7 +170,7 @@ export function AffiliationCard({
             href="/join/member"
             className="text-global-navy focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
           >
-            Request again
+            Submit again
           </Link>
         ) : null}
       </div>
@@ -181,8 +182,8 @@ export function AffiliationCard({
       >
         <p className="text-slate text-sm leading-6">
           Your affiliation will end. Any organisation-management permissions you
-          separately hold are not affected. You may request membership again
-          later if the organisation allows it.
+          separately hold are not affected. You may submit an affiliation claim
+          again later if the organisation allows it.
         </p>
         {error ? (
           <p role="alert" className="text-error mt-3 text-sm font-semibold">

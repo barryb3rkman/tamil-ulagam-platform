@@ -124,7 +124,20 @@ export function buildWorkspaceOptions(
       label: sangam.name || "Untitled Tamil Sangam",
       subtitle: organisationLocationLabel(sangam),
       href: `/workspace/sangam?sangam=${sangam.id}`,
-      current: active.type === "sangam" && active.id === sangam.id,
+      // People has no dedicated /workspace/sangam/people route — a
+      // Sangam manager reaches it via the shared
+      // /workspace/organisation/people?organization=<id> path (see
+      // sangam-registration-lifecycle.spec.ts), so resolveActiveWorkspace
+      // reports active.type as "organisation" there even for a Sangam.
+      // Matching by id alone whenever active.type is "organisation" is
+      // safe — organisation and Sangam ids are both real, unique
+      // `organizations.id` values, so no id can collide across kinds.
+      // Without this, a Sangam manager's own People page showed
+      // "Unavailable workspace" in the header despite full, correct
+      // access (found during H4 visual QA).
+      current:
+        (active.type === "sangam" || active.type === "organisation") &&
+        active.id === sangam.id,
     });
   }
 

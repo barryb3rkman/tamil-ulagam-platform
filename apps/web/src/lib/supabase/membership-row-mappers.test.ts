@@ -47,6 +47,10 @@ describe("Supabase membership/management row mappers", () => {
       expires_at: null,
       created_at: "2026-08-25T01:00:00.000Z",
       updated_at: "2026-08-25T01:00:00.000Z",
+      member_email: "",
+      connection_type: "",
+      connection_context: "",
+      connection_context_extra: "",
     };
 
     expect(mapMembershipRow(row)).toMatchObject({
@@ -72,6 +76,10 @@ describe("Supabase membership/management row mappers", () => {
       expires_at: null,
       created_at: "2026-08-25T02:00:00.000Z",
       updated_at: "2026-08-25T03:00:00.000Z",
+      member_email: "student@example.com",
+      connection_type: "Student",
+      connection_context: "Computer Science",
+      connection_context_extra: "",
     };
 
     expect(mapMembershipRow(row)).toEqual({
@@ -88,6 +96,10 @@ describe("Supabase membership/management row mappers", () => {
       expiresAt: null,
       createdAt: "2026-08-25T02:00:00.000Z",
       updatedAt: "2026-08-25T03:00:00.000Z",
+      memberEmail: "student@example.com",
+      connectionType: "Student",
+      connectionContext: "Computer Science",
+      connectionContextExtra: "",
     });
   });
 

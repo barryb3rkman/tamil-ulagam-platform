@@ -31,7 +31,9 @@ test.describe("public /join entry hub", () => {
     ).toBeVisible();
 
     for (const journey of joinJourneys) {
-      const link = page.getByRole("link", { name: new RegExp(journey.title) });
+      const link = page.getByRole("link").filter({
+        has: page.getByRole("heading", { name: journey.title, exact: true }),
+      });
       await expect(link).toBeVisible();
       await expect(link).toHaveAttribute(
         "href",
@@ -46,7 +48,7 @@ test.describe("public /join entry hub", () => {
     await page.goto("/join", { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
     await expect(
-      page.getByRole("heading", { level: 2, name: "Choose your path" }),
+      page.getByRole("heading", { level: 2, name: "Join Tamil Ulagam" }),
     ).toBeVisible();
   });
 
@@ -142,7 +144,7 @@ test.describe("public /join entry hub", () => {
     await expect(
       page.getByRole("heading", { name: "How Sangam registration works" }),
     ).toBeVisible();
-    await expect(page.getByText("Tell us about your Sangam")).toBeVisible();
+    await expect(page.getByText("About your Sangam")).toBeVisible();
 
     const createAccount = page.getByRole("link", {
       name: "Create account & begin",
@@ -167,14 +169,12 @@ test.describe("public /join entry hub", () => {
   }) => {
     await page.goto("/join/member", { waitUntil: "domcontentloaded" });
     await expect(
-      page.getByRole("heading", { level: 1, name: "Join as a Member" }),
+      page.getByRole("heading", { level: 1, name: "Connect your membership" }),
     ).toBeVisible();
     await expect(
-      page.getByText("Find a registered Organisation or Tamil Sangam"),
+      page.getByText("Find your Tamil Sangam or Organisation"),
     ).toBeVisible();
-    await expect(
-      page.getByText("The Organisation confirms affiliation"),
-    ).toBeVisible();
+    await expect(page.getByText("They confirm your affiliation")).toBeVisible();
 
     const createAccount = page.getByRole("link", { name: "Create account" });
     await expect(createAccount).toHaveAttribute(

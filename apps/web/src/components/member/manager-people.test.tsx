@@ -81,7 +81,15 @@ function makeRequest(
     expiresAt: null,
     createdAt: "2026-08-25T00:00:00.000Z",
     updatedAt: "2026-08-25T00:00:00.000Z",
+    memberEmail: "nila@example.com",
+    connectionType: "",
+    connectionContext: "",
+    connectionContextExtra: "",
     memberFullName: "Nila Raj",
+    memberPhone: "",
+    memberCity: "",
+    memberRegion: "",
+    memberCountry: "",
     ...overrides,
   };
 }
@@ -164,11 +172,53 @@ describe("ManagerPeople", () => {
       screen.getByRole("heading", { name: "Organisation A" }),
     ).toBeInTheDocument();
 
-    screen.getByRole("button", { name: "Approve" }).click();
+    screen.getByRole("button", { name: "Confirm member" }).click();
 
     await waitFor(() =>
       expect(approveMembership).toHaveBeenCalledWith("membership-1"),
     );
+  });
+
+  it("H4 visual QA fix: a decided affiliation never appears under the 'Pending affiliation confirmations' heading", async () => {
+    searchParams = new URLSearchParams({ organization: orgA.id });
+    platform({});
+    mockedUseMembershipService.mockReturnValue({
+      listMyManagedOrganisations: vi.fn().mockResolvedValue([orgA]),
+      listOrganisationMembershipRequests: vi.fn().mockResolvedValue([
+        makeRequest({ id: "membership-pending", memberFullName: "Nila Raj" }),
+        makeRequest({
+          id: "membership-active",
+          status: "approved",
+          memberFullName: "Kavi Selvam",
+        }),
+      ]),
+      listOrganisationManagers: vi.fn().mockResolvedValue([]),
+    } as unknown as ReturnType<typeof useMembershipService>);
+
+    render(<ManagerPeople />);
+
+    await waitFor(() =>
+      expect(screen.getByText("Nila Raj")).toBeInTheDocument(),
+    );
+    expect(screen.getByText("Kavi Selvam")).toBeInTheDocument();
+
+    const pendingHeading = screen.getByRole("heading", {
+      name: "Pending affiliation confirmations",
+    });
+    const otherHeading = screen.getByRole("heading", {
+      name: "Other affiliations",
+    });
+    // The pending row sits after its own heading and before the
+    // "Other affiliations" heading; the already-decided row sits after
+    // that second heading — proving the decided row is never presented
+    // as something still awaiting confirmation.
+    const position = (a: Node, b: Node) =>
+      a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
+    expect(position(pendingHeading, screen.getByText("Nila Raj"))).toBeTruthy();
+    expect(
+      position(otherHeading, screen.getByText("Kavi Selvam")),
+    ).toBeTruthy();
+    expect(position(screen.getByText("Nila Raj"), otherHeading)).toBeTruthy();
   });
 
   it("separates Members and Managers into distinct tabs, not a mixed table", async () => {
