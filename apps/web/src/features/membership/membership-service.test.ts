@@ -129,8 +129,17 @@ function makeClient(options: {
     }),
   };
 
-  const client = { rpc, from, auth } as unknown as SupabaseClient<Database>;
-  return { client, rpc, from, queryBuilder, profilesBuilder, auth };
+  const functions = {
+    invoke: vi.fn().mockResolvedValue({ data: { ok: true }, error: null }),
+  };
+
+  const client = {
+    rpc,
+    from,
+    auth,
+    functions,
+  } as unknown as SupabaseClient<Database>;
+  return { client, rpc, from, queryBuilder, profilesBuilder, auth, functions };
 }
 
 describe("createMembershipService", () => {
@@ -157,6 +166,32 @@ describe("createMembershipService", () => {
       target_organization_id: "organization-1",
       requested_membership_type: "student",
     });
+  });
+
+  it("approveMembership and rejectMembership notify send-affiliation-outcome (fire-and-forget) with the decided membership's id and organisation", async () => {
+    const { client, functions } = makeClient({});
+    const service = createMembershipService(client);
+
+    await service.approveMembership("membership-1", "note");
+    expect(functions.invoke).toHaveBeenCalledWith("send-affiliation-outcome", {
+      body: { membershipId: "membership-1", organizationId: "organization-1" },
+    });
+
+    functions.invoke.mockClear();
+    await service.rejectMembership("membership-1");
+    expect(functions.invoke).toHaveBeenCalledWith("send-affiliation-outcome", {
+      body: { membershipId: "membership-1", organizationId: "organization-1" },
+    });
+  });
+
+  it("approveMembership never rejects when the notification Edge Function call fails — the decision itself already succeeded", async () => {
+    const { client, functions } = makeClient({});
+    functions.invoke.mockRejectedValueOnce(new Error("network down"));
+    const service = createMembershipService(client);
+
+    await expect(
+      service.approveMembership("membership-1", "note"),
+    ).resolves.toMatchObject({ id: "membership-1" });
   });
 
   it("approveMembership and rejectMembership send the correct target_status", async () => {

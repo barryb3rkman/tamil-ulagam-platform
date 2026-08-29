@@ -32,7 +32,8 @@
     "cache:check": "node scripts/maintenance/prune-dev-cache.mjs --check",
     "cache:prune": "node scripts/maintenance/prune-dev-cache.mjs --force",
     "cache:test": "node --test scripts/maintenance/prune-dev-cache.test.mjs",
-    "clean:test-artifacts": "node scripts/maintenance/clean-test-artifacts.mjs"
+    "clean:test-artifacts": "node scripts/maintenance/clean-test-artifacts.mjs",
+    "test:functions": "node --test supabase/functions/_shared/email-template.test.ts"
   },
   "devDependencies": {
     "prettier": "3.9.6",

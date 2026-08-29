@@ -187,7 +187,18 @@ export function createManagementService(
       });
       if (error)
         throw mapSupabaseError(error, "The invitation could not be sent.");
-      return mapInvitationRow(data);
+      const invitation = mapInvitationRow(data);
+      // Fire-and-forget notification — the invitation itself already
+      // exists in the database above; a delivery failure here must never
+      // undo it (H5 brief section 26). Errors are deliberately swallowed:
+      // this is a best-effort side effect, not part of the invitation's
+      // own success/failure contract.
+      void client.functions
+        .invoke("send-management-invitation", {
+          body: { invitationId: invitation.id, organizationId: organisationId },
+        })
+        .catch(() => {});
+      return invitation;
     },
 
     async revokeInvitation(invitationId) {

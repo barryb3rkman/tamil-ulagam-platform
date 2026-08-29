@@ -873,6 +873,13 @@ export function createSupabasePlatformServices(
         reviewArgs,
       );
       assertNoError(error, "The review decision could not be saved.");
+      // Fire-and-forget notification (needs_changes/verified/rejected
+      // only — the Edge Function itself no-ops for any other status).
+      // The review decision above already succeeded; a delivery failure
+      // must never undo it (H5 brief section 26).
+      void client.functions
+        .invoke("send-registration-status", { body: { applicationId: id } })
+        .catch(() => {});
       const application = await getAdminApplication(id);
       if (!application) {
         throw new PlatformServiceError(

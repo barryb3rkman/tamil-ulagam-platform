@@ -233,20 +233,36 @@ otp_length = 6
 # Number of seconds before the email OTP expires (defaults to 1 hour).
 otp_expiry = 3600
 
-# Use a production-ready SMTP server
+# Resend SMTP relay (Phase H5). Commented out until real credentials
+# exist — see docs/operations/resend-email.md for exactly what a human
+# needs to create in Resend first, and why this section must be applied
+# via the hosted project's own Dashboard (Auth > Providers > SMTP), NOT
+# `supabase config push`: that command pushes this entire config.toml,
+# including `auth.site_url`/`auth.additional_redirect_urls` above, which
+# are deliberately set to local-dev values here — pushing this file as-is
+# to staging would silently break its Auth redirect configuration. Resend's
+# published SMTP relay (stable, documented product behaviour, not a
+# fabricated value): host smtp.resend.com, port 587, username "resend",
+# password = the Resend API key itself.
 # [auth.email.smtp]
 # enabled = true
-# host = "smtp.sendgrid.net"
+# host = "smtp.resend.com"
 # port = 587
-# user = "apikey"
-# pass = "env(SENDGRID_API_KEY)"
-# admin_email = "admin@email.com"
-# sender_name = "Admin"
+# user = "resend"
+# pass = "env(RESEND_API_KEY)"
+# admin_email = "no-reply@notifications.tamilulagam.org"
+# sender_name = "Tamil Ulagam"
 
-# Uncomment to customize email template
-# [auth.email.template.invite]
-# subject = "You have been invited"
-# content_path = "./supabase/templates/invite.html"
+# Tamil Ulagam-branded templates (Phase H5) — content only, independent
+# of which SMTP relay actually delivers the message. Safe to activate
+# locally regardless of the commented SMTP block above.
+[auth.email.template.confirmation]
+subject = "Confirm your Tamil Ulagam account"
+content_path = "./supabase/templates/confirm-signup.html"
+
+[auth.email.template.recovery]
+subject = "Reset your Tamil Ulagam password"
+content_path = "./supabase/templates/reset-password.html"
 
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]

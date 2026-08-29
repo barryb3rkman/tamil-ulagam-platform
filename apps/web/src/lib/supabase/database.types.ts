@@ -50,6 +50,45 @@ export type Database = {
           },
         ];
       };
+      email_deliveries: {
+        Row: {
+          created_at: string;
+          event_type: string;
+          failure_category: string | null;
+          id: string;
+          idempotency_key: string;
+          provider_message_id: string | null;
+          recipient_email: string;
+          related_id: string | null;
+          related_table: string | null;
+          status: string;
+        };
+        Insert: {
+          created_at?: string;
+          event_type: string;
+          failure_category?: string | null;
+          id?: string;
+          idempotency_key: string;
+          provider_message_id?: string | null;
+          recipient_email: string;
+          related_id?: string | null;
+          related_table?: string | null;
+          status?: string;
+        };
+        Update: {
+          created_at?: string;
+          event_type?: string;
+          failure_category?: string | null;
+          id?: string;
+          idempotency_key?: string;
+          provider_message_id?: string | null;
+          recipient_email?: string;
+          related_id?: string | null;
+          related_table?: string | null;
+          status?: string;
+        };
+        Relationships: [];
+      };
       organization_applications: {
         Row: {
           accuracy_declaration: boolean;

@@ -37,6 +37,28 @@ function toDatabaseMembershipType(
   return membershipType ? membershipType : undefined;
 }
 
+/**
+ * Fire-and-forget "Affiliation confirmed" / "Affiliation could not be
+ * confirmed" notification (H5 brief sections 18-19). The membership
+ * decision itself already succeeded before this is called — a delivery
+ * failure must never undo it (brief section 26), so errors are
+ * deliberately swallowed rather than surfaced to the manager who just
+ * confirmed or declined the member.
+ */
+function notifyAffiliationOutcome(
+  client: SupabaseClient<Database>,
+  membership: Membership,
+): void {
+  void client.functions
+    .invoke("send-affiliation-outcome", {
+      body: {
+        membershipId: membership.id,
+        organizationId: membership.organisationId,
+      },
+    })
+    .catch(() => {});
+}
+
 export interface AffiliationConnectionInput {
   readonly connectionType?: string;
   readonly connectionContext?: string;
@@ -369,7 +391,9 @@ export function createMembershipService(
           "unknown",
         );
       }
-      return mapMembershipRow(data);
+      const membership = mapMembershipRow(data);
+      notifyAffiliationOutcome(client, membership);
+      return membership;
     },
 
     async rejectMembership(membershipId, note) {
@@ -389,7 +413,9 @@ export function createMembershipService(
           "unknown",
         );
       }
-      return mapMembershipRow(data);
+      const membership = mapMembershipRow(data);
+      notifyAffiliationOutcome(client, membership);
+      return membership;
     },
 
     async revokeMembership(membershipId, note) {
