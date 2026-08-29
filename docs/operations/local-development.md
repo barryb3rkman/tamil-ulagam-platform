@@ -66,6 +66,14 @@ pnpm exec playwright install chromium
 
 CI installs with a frozen lockfile and runs formatting, linting, type-checking, unit tests, and the production build. Browser smoke tests are available for local or dedicated browser-enabled CI execution.
 
+## Development cache maintenance
+
+Turbo's local cache (`.turbo/cache`) has no built-in size limit and grows with every `build`/`lint`/`typecheck`/`test` run; left unattended over enough sessions it can reach tens of gigabytes. `build`, `lint`, `typecheck`, and `test` each run a small guard (`scripts/maintenance/prune-dev-cache.mjs`) first: silent under 3 GB, a one-line warning between 3–5 GB, and automatic pruning of the oldest cache entries back to ~2 GB at 5 GB — never a blanket delete of the whole cache. Check the current size any time with `pnpm cache:check`, or prune on demand with `pnpm cache:prune`. Deleting `.turbo` entirely is always safe — it is a pure build/task-output cache, nothing is lost, and it will regenerate on the next run.
+
+`pnpm clean:test-artifacts` empties `apps/web/playwright-report`, `apps/web/test-results`, `apps/web/coverage`, and `artifacts/` — run it by hand when you want to clear out old QA output; nothing calls it automatically.
+
+Neither command ever touches Docker or Supabase volumes, `node_modules`, or any tracked source file.
+
 ## Images
 
 Place approved PNG files only in the documented directories under `apps/web/public/images/tamil-ulagam`. Then review the corresponding alt text and set `available: true` for that registry entry. Until then, `ImageWithFallback` maintains layout without requesting a missing file.
