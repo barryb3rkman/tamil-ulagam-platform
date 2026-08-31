@@ -16,6 +16,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { escapeHtml, renderEmail } from "../_shared/email-template.ts";
 import { sendTransactionalEmail } from "../_shared/resend-client.ts";
+import { createServiceRoleClient } from "../_shared/service-client.ts";
 
 const SITE_URL =
   Deno.env.get("PUBLIC_SITE_URL") ?? "https://tamil-ulagam-staging.pages.dev";
@@ -61,8 +62,12 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ ok: false, reason: "error" }, 403);
   }
 
-  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-  const serviceClient = createClient(supabaseUrl, serviceRoleKey);
+  let serviceClient: ReturnType<typeof createClient>;
+  try {
+    serviceClient = createServiceRoleClient(supabaseUrl);
+  } catch {
+    return jsonResponse({ ok: false, reason: "error" }, 500);
+  }
 
   const { data: invitation, error: invitationError } = await serviceClient
     .from("organization_manager_invitations")

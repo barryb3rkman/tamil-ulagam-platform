@@ -27,6 +27,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { escapeHtml, renderEmail } from "../_shared/email-template.ts";
 import { sendTransactionalEmail } from "../_shared/resend-client.ts";
+import { createServiceRoleClient } from "../_shared/service-client.ts";
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
@@ -80,8 +81,12 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ ok: false, reason: "error" }, 404);
   }
 
-  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-  const serviceClient = createClient(supabaseUrl, serviceRoleKey);
+  let serviceClient: ReturnType<typeof createClient>;
+  try {
+    serviceClient = createServiceRoleClient(supabaseUrl);
+  } catch {
+    return jsonResponse({ ok: false, reason: "error" }, 500);
+  }
 
   const { data: rawToken, error: issueError } = await serviceClient.rpc(
     "issue_organization_email_verification_token",
