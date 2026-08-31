@@ -95,31 +95,57 @@ migration.
 
 ## Domain and sender
 
-**Not formally documented or DNS-verified anywhere before this phase.**
-The one existing signal is the pre-existing Edge Function's hardcoded
-sender: `Tamil Ulagam <no-reply@notifications.tamilulagam.org>`. H5
-preserves and centralizes that exact address (`RESEND_FROM_EMAIL`/
-`RESEND_FROM_NAME`, defaulted in `resend-client.ts`, overridable by
-secret) rather than inventing a different one — but this is an
-**inferred working assumption, not a confirmed decision**. A single
-sender is used everywhere; no `membership@`/`registrations@`/`admin@`
-addresses were created.
+**Confirmed.** The real Tamil Ulagam domain is `tamilulagam.in`; the
+Resend sending subdomain is `notifications.tamilulagam.in`. The earlier
+`notifications.tamilulagam.org` was an inferred, unconfirmed guess (the
+only signal available at the time was a pre-existing Edge Function's
+hardcoded sender) and has been corrected everywhere it appeared in H5's
+own code and docs — never touched two genuinely unrelated pre-existing
+`.org` strings elsewhere in the codebase (a Tamil ID concept page's
+illustrative example URL, and a mock-backend demo fixture email), since
+neither is part of email-sending infrastructure and the correction here
+is scoped to that. Confirmed sender:
+`Tamil Ulagam <no-reply@notifications.tamilulagam.in>`
+(`RESEND_FROM_EMAIL`/`RESEND_FROM_NAME`, defaulted in
+`resend-client.ts`, overridable by secret). A single sender is used
+everywhere; no `membership@`/`registrations@`/`admin@` addresses exist.
 
 ## What a human needs to do (nothing here was fabricated)
 
-1. **Create a Resend account** (if one doesn't already exist) and add
-   the sending domain — `notifications.tamilulagam.org`, or whichever
-   domain is actually confirmed as correct; this phase could not confirm
-   it against any other documentation.
+1. **Resend account and domain** — done. `notifications.tamilulagam.in`
+   is added in Resend and its DNS verification records are generated.
 2. **Add the DNS records Resend's own dashboard displays** for that
    domain (SPF/DKIM, and DMARC if desired) — copy them verbatim from
-   Resend once the domain is added there. This document does not state
-   record values because none exist yet; Resend generates them
-   per-domain at creation time, and inventing plausible-looking ones
-   would be actively unsafe.
+   Resend. This document does not state record values here because doing
+   so from outside an authenticated Resend session would mean guessing
+   them, which is actively unsafe.
+
+   **DNS status, checked this session (read-only, nothing written):**
+   this environment has one authenticated Cloudflare account
+   (`hellonarpavi@gmail.com`, via the same `wrangler` login the H2-H4
+   staging deploys already used). Querying that account's zones for
+   `tamilulagam.in` returned none — the domain is not managed under this
+   Cloudflare account. Separately, this account's own OAuth token scope
+   has `zone (read)` but not `zone (write)`/DNS-record-edit, so even a
+   matching zone could not have been written to with the tooling
+   available here. No Resend session, API key, or browser access of any
+   kind exists in this environment either — nothing about the actual
+   generated DKIM/SPF/DMARC records could be retrieved. **Two separate
+   human actions are needed:** (a) identify where `tamilulagam.in`'s DNS
+   is actually managed (a different Cloudflare account, the registrar
+   directly, or another DNS host) and add the three records Resend's
+   dashboard displays for `notifications.tamilulagam.in`, or (b) grant
+   this environment write access to the correct place (e.g. a
+   `zone:edit`-scoped Cloudflare API token for the right account) so a
+   future session can add them directly. For CNAME records: DNS-only,
+   never proxied. Check for an existing DMARC TXT record on the domain
+   before adding one — don't create a duplicate policy.
+
 3. **Wait for Resend to show the domain as Verified.** Nothing here
    should be treated as working before that.
-4. **Create an API key** in Resend (sending-only scope is sufficient).
+4. **Create an API key** in Resend (sending-only scope is sufficient) —
+   also blocked here; no Resend account/session access exists in this
+   environment at all.
 5. **Set it as an Edge Function secret on the staging project only:**
    ```
    supabase secrets set RESEND_API_KEY=<the key> --project-ref ybqpdatqcuuvotjkdlcc
@@ -129,8 +155,10 @@ addresses were created.
    already), and `EMAIL_RECIPIENT_OVERRIDE` — see below. Never put any of
    these in `.env.local`/`.env.example`/`NEXT_PUBLIC_*`; they are
    Edge-Function-only secrets, not Next.js app configuration.
-6. **Deploy the Edge Functions** (safe to do _before_ step 5 — every
-   function degrades to `not_configured` without the secret):
+6. **Deploy the Edge Functions** — done in H5 (safe to do before step 5:
+   every function degrades to `not_configured` without the secret). All
+   four are live on staging already; re-deploy only if their code
+   changes again:
    ```
    supabase functions deploy organization-email-verification --project-ref ybqpdatqcuuvotjkdlcc
    supabase functions deploy send-management-invitation --project-ref ybqpdatqcuuvotjkdlcc

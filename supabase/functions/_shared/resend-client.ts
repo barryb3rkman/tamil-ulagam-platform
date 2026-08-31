@@ -29,7 +29,7 @@
 // caller degrades the same, well-understood way.
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
 
-const DEFAULT_FROM_EMAIL = "no-reply@notifications.tamilulagam.org";
+const DEFAULT_FROM_EMAIL = "no-reply@notifications.tamilulagam.in";
 const DEFAULT_FROM_NAME = "Tamil Ulagam";
 
 export interface SendEmailInput {
