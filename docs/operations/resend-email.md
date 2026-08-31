@@ -110,98 +110,143 @@ is scoped to that. Confirmed sender:
 `resend-client.ts`, overridable by secret). A single sender is used
 everywhere; no `membership@`/`registrations@`/`admin@` addresses exist.
 
-## What a human needs to do (nothing here was fabricated)
+## Current status (as of Phase H5.1)
 
-1. **Resend account and domain** — done. `notifications.tamilulagam.in`
-   is added in Resend and its DNS verification records are generated.
-2. **Add the DNS records Resend's own dashboard displays** for that
-   domain (SPF/DKIM, and DMARC if desired) — copy them verbatim from
-   Resend. This document does not state record values here because doing
-   so from outside an authenticated Resend session would mean guessing
-   them, which is actively unsafe.
+- Resend account and domain: **done** — `notifications.tamilulagam.in`
+  exists in Resend, generating DNS records.
+- DNS for `tamilulagam.in`: **blocked** — controlled by the user's
+  manager, who was unavailable as of this phase. Nothing was invented or
+  guessed; see the runbook below for the exact steps once they return.
+- Resend API key: **not yet created** (see step 2 of "human actions
+  needed," below).
+- Staging Edge Function secrets: **none set** — every function still
+  returns `{ ok: false, reason: "not_configured" }`.
+- `EMAIL_RECIPIENT_OVERRIDE` test inbox: **not yet known.**
+- Auth SMTP / Auth email templates: **prepared, not activated** — the
+  commented `[auth.email.smtp]` block and the two template files are
+  ready; nothing has been applied to the staging Dashboard.
+- All four Edge Functions: **deployed and ACTIVE** on staging with the
+  corrected `.in` sender baked in, confirmed via `supabase functions
+list`.
+- Staging migration history: **in sync** — `supabase migration list
+--linked` shows every local migration through
+  `20260901000000_resend_email_infrastructure.sql` already applied
+  remotely.
 
-   **DNS status, checked this session (read-only, nothing written):**
-   this environment has one authenticated Cloudflare account
-   (`hellonarpavi@gmail.com`, via the same `wrangler` login the H2-H4
-   staging deploys already used). Querying that account's zones for
-   `tamilulagam.in` returned none — the domain is not managed under this
-   Cloudflare account. Separately, this account's own OAuth token scope
-   has `zone (read)` but not `zone (write)`/DNS-record-edit, so even a
-   matching zone could not have been written to with the tooling
-   available here. No Resend session, API key, or browser access of any
-   kind exists in this environment either — nothing about the actual
-   generated DKIM/SPF/DMARC records could be retrieved. **Two separate
-   human actions are needed:** (a) identify where `tamilulagam.in`'s DNS
-   is actually managed (a different Cloudflare account, the registrar
-   directly, or another DNS host) and add the three records Resend's
-   dashboard displays for `notifications.tamilulagam.in`, or (b) grant
-   this environment write access to the correct place (e.g. a
-   `zone:edit`-scoped Cloudflare API token for the right account) so a
-   future session can add them directly. For CNAME records: DNS-only,
-   never proxied. Check for an existing DMARC TXT record on the domain
-   before adding one — don't create a duplicate policy.
+## Human actions needed (in order)
 
-3. **Wait for Resend to show the domain as Verified.** Nothing here
-   should be treated as working before that.
-4. **Create an API key** in Resend (sending-only scope is sufficient) —
-   also blocked here; no Resend account/session access exists in this
-   environment at all.
-5. **Set it as an Edge Function secret on the staging project only:**
-   ```
-   supabase secrets set RESEND_API_KEY=<the key> --project-ref ybqpdatqcuuvotjkdlcc
-   ```
-   Optionally also `RESEND_FROM_EMAIL`, `RESEND_FROM_NAME`,
-   `PUBLIC_SITE_URL` (defaults to `https://tamil-ulagam-staging.pages.dev`
-   already), and `EMAIL_RECIPIENT_OVERRIDE` — see below. Never put any of
-   these in `.env.local`/`.env.example`/`NEXT_PUBLIC_*`; they are
-   Edge-Function-only secrets, not Next.js app configuration.
-6. **Deploy the Edge Functions** — done in H5 (safe to do before step 5:
-   every function degrades to `not_configured` without the secret). All
-   four are live on staging already; re-deploy only if their code
-   changes again:
-   ```
-   supabase functions deploy organization-email-verification --project-ref ybqpdatqcuuvotjkdlcc
-   supabase functions deploy send-management-invitation --project-ref ybqpdatqcuuvotjkdlcc
-   supabase functions deploy send-affiliation-outcome --project-ref ybqpdatqcuuvotjkdlcc
-   supabase functions deploy send-registration-status --project-ref ybqpdatqcuuvotjkdlcc
-   ```
-7. **Auth SMTP — via the Dashboard, not `supabase config push`.** This
-   project's `supabase/config.toml` already has a ready, commented
-   `[auth.email.smtp]` block using Resend's own published SMTP relay
-   (host `smtp.resend.com`, port `587`, username literally `resend`,
-   password = the API key — stable Resend product documentation, not
-   fabricated). **Do not run `supabase config push`** to apply it: that
-   command pushes this _entire_ file, including `auth.site_url` and
-   `auth.additional_redirect_urls`, which are deliberately set to local
-   values (`http://127.0.0.1:3000`) here — pushing as-is would silently
-   break staging's real Auth redirect configuration. Configure SMTP
-   directly in the staging project's Dashboard instead: **Authentication
-   → Providers → SMTP**, using the same four values.
-8. **Auth email templates** — same reasoning: apply via **Authentication
-   → Email Templates** in the Dashboard, pasting the contents of
-   `supabase/templates/confirm-signup.html` (subject: "Confirm your
-   Tamil Ulagam account") and `supabase/templates/reset-password.html`
-   (subject: "Reset your Tamil Ulagam password") into the "Confirm
-   signup" and "Reset password" templates respectively. Both were
-   verified locally in this phase — real signup/recovery flow, real
-   rendered HTML captured from the local mail catcher, correct
-   `{{ .ConfirmationURL }}` substitution producing a working
-   `redirect_to=…/auth/callback?flow=confirmation|recovery` link — so
-   only the delivery layer (steps 5-7) remains to prove end-to-end on
-   staging.
-9. **Staging recipient safety.** Before sending anything real, set
-   `EMAIL_RECIPIENT_OVERRIDE` (as an Edge Function secret, same command
-   as step 5) to a real test inbox you control. While set, every
-   transactional email's _actual_ delivery goes to that address
-   regardless of the real recipient — the intended recipient is still
-   what gets recorded in `email_deliveries`. Never set this in
-   production. Provide the test inbox address; do not let anyone guess
-   or hard-code a personal address.
+1. **Create a Resend API key** — Resend → API Keys → Create API Key.
+   Name: `Tamil Ulagam Staging`. Permission: sending access only, if
+   Resend's key-creation screen offers that scope (a full-access key
+   works too if a narrower one isn't offered — just don't grant more
+   than sending). Do not paste the key into chat. Once created, either:
+   - run this yourself, exactly as written, in a terminal with the
+     Supabase CLI logged in and this repo checked out (nothing here ever
+     sees or logs the value):
+     ```
+     supabase secrets set RESEND_API_KEY=<paste-key-here> --project-ref ybqpdatqcuuvotjkdlcc
+     ```
+   - or tell this session "the key is set" once you've run it, and a
+     future session can verify (name-only, never value) via
+     `supabase secrets list --project-ref ybqpdatqcuuvotjkdlcc`.
+2. **Provide a test inbox** you control, for `EMAIL_RECIPIENT_OVERRIDE`.
+   No staging email should ever go to a real member while this project
+   is in this state — every send must land in that inbox regardless of
+   the real recipient. Once both this and step 1 exist, the remaining
+   secrets (`RESEND_FROM_EMAIL`, `RESEND_FROM_NAME`, `PUBLIC_SITE_URL`,
+   `EMAIL_RECIPIENT_OVERRIDE`) can be set the same way — see the DNS
+   runbook's step 11 for why SMTP/template activation still waits for
+   domain verification even after this.
 
-Once steps 1-9 are done, the live tests in H5's own brief (signup
-confirmation, password recovery, and the seven custom transactional
-scenarios) can run for real, using disposable staging fixtures cleaned
-up exactly afterward, matching every prior phase's own precedent.
+### DNS runbook (for when the manager returns)
+
+Nothing below is a value this repository invented — every DNS value
+comes from Resend's own dashboard at the time these steps are actually
+run.
+
+1. Open Resend → Domains → `notifications.tamilulagam.in`.
+2. Copy the exact DNS records Resend displays there (typically one DKIM
+   TXT/CNAME and one SPF-related record; Resend may also show an
+   optional DMARC recommendation).
+3. Open the real DNS provider for `tamilulagam.in` (not the Cloudflare
+   account already authenticated for this repo's own Pages/Workers
+   deploys — confirmed in Phase H5 that `tamilulagam.in` is not a zone
+   under that account).
+4. Check for existing SPF/DKIM/DMARC records on the domain before adding
+   anything, so the new records extend rather than conflict with
+   whatever's already there.
+5. Add the Resend records exactly as shown — don't retype or "clean up"
+   the values.
+6. If the provider is Cloudflare, keep any mail-auth CNAME DNS-only
+   (grey-clouded), never proxied.
+7. If a DMARC TXT record already exists, do not add a second one —
+   merge Resend's recommendation into the existing policy instead, or
+   leave it and report the conflict.
+8. Return to Resend.
+9. Trigger/check domain verification.
+10. Wait until Resend shows `notifications.tamilulagam.in` as
+    **Verified** — DNS propagation can take anywhere from minutes to
+    (rarely) a day; don't treat anything as working before this.
+11. Only then activate staging Supabase Auth SMTP (values below) and
+    paste the two Auth email templates into the Dashboard.
+12. Run the live staging test matrix below.
+
+### Prepared staging Dashboard values (Auth → Providers → SMTP)
+
+Ready to paste once domain verification (runbook step 10) is complete —
+do not activate before then, and never via `supabase config push` (see
+"Never do this," below, for why).
+
+```
+Host: smtp.resend.com
+Port: 587
+Username: resend
+Password: <the Resend API key from step 1 above>
+Sender name: Tamil Ulagam
+Sender email: no-reply@notifications.tamilulagam.in
+```
+
+### Auth email templates — reviewed this phase, no changes needed
+
+Both `supabase/templates/confirm-signup.html` and
+`supabase/templates/reset-password.html` were re-checked against every
+H5.1 requirement: `{{ .ConfirmationURL }}` present exactly once each,
+Tamil Ulagam branding present, zero `localhost`/`127.0.0.1` references,
+zero `.org` references, and (already proven in H5 via a real local
+signup/recovery round trip) the confirmation/recovery callback behaviour
+is unchanged — the rendered link correctly carries
+`redirect_to=…/auth/callback?flow=confirmation|recovery` through to
+`AuthCallbackPanel`. Ready to paste into the Dashboard's Auth → Email
+Templates screen once activation is appropriate (runbook step 11) —
+subjects: "Confirm your Tamil Ulagam account" and "Reset your Tamil
+Ulagam password".
+
+### Post-DNS-verification live test matrix
+
+Run once domain verification, the API key secret, and
+`EMAIL_RECIPIENT_OVERRIDE` are all in place. Every row uses disposable,
+exact-ID staging fixtures cleaned up immediately after, matching every
+prior phase's precedent — no real member is ever contacted.
+
+| #   | Scenario                                 | Trigger                                                                 | Verify                                                                                                                                                                                                                                      |
+| --- | ---------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A   | Signup confirmation                      | Sign up a disposable staging user                                       | Delivered via Resend SMTP; sender `Tamil Ulagam <no-reply@notifications.tamilulagam.in>`; override inbox receives it, not the fake address; subject "Confirm your Tamil Ulagam account"; link confirms the account; plain-text part present |
+| B   | Password recovery                        | `resetPasswordForEmail` on that user                                    | Same delivery/sender/override checks; subject "Reset your Tamil Ulagam password"; link reaches the real recovery form; login works with the new password                                                                                    |
+| C   | Organisation official-email verification | Manager clicks "Send verification" for a disposable org                 | Sender/override/subject "Confirm your organisation's official email"; CTA link verifies the org; `email_deliveries` row with `status=sent` and a `provider_message_id`; no duplicate on a second click within the idempotency window        |
+| D   | Management invitation                    | Owner invites a disposable email to manage a disposable org             | Subject mentions the org name; CTA → `/workspace/invitations`; correct role in the body; delivery-log row recorded                                                                                                                          |
+| E   | Affiliation confirmed                    | Manager clicks "Confirm member" on a disposable pending affiliation     | Subject/heading "Affiliation confirmed"; CTA "Open Member Workspace" → staging URL only; membership stays `approved` even if this send were to fail                                                                                         |
+| F   | Affiliation not confirmed                | Manager clicks "Not a member"                                           | Restrained subject/copy, no accusatory language; CTA "Review affiliations"; membership stays `rejected` regardless of delivery outcome                                                                                                      |
+| G   | Registration needs changes               | Reviewer sets a disposable application to `needs_changes` with feedback | Feedback text appears verbatim (escaped) in the email; CTA back to the correct `/join/organisation` or `/join/sangam` route; no internal-only reviewer notes leak                                                                           |
+| H   | Registration verified                    | Reviewer verifies a disposable application                              | CTA "Open workspace" → the correct `/workspace/organisation` or `/workspace/sangam` URL; no Sangam official-email-verification language for Sangam entities                                                                                 |
+| I   | Registration rejected                    | Reviewer rejects a disposable application with feedback                 | Restrained copy; feedback included when present; no internal-only notes                                                                                                                                                                     |
+
+For every row, also confirm: the actual Resend "to" is always the
+override inbox regardless of the row's real intended recipient; the
+intended recipient is still what's recorded in `email_deliveries`;
+`RESEND_API_KEY` never appears in any response body, log, or the static
+build; a second identical trigger (double-click / retry) produces no
+second email, only a `status=sent` row already present or a
+`skipped_duplicate` outcome.
 
 ## Decisions made, not built
 
