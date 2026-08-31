@@ -1,0 +1,47 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { Suspense } from "react";
+
+import { ModuleRouteContent } from "@/components/workspace/module-route-content";
+import { createApplicationMetadata } from "@/config/metadata";
+import {
+  findWorkspaceModule,
+  workspaceModules,
+} from "@/content/workspace-modules";
+
+export interface ModulePageProps {
+  readonly params: Promise<{ module: string }>;
+}
+
+export function generateStaticParams() {
+  return workspaceModules.map(({ id }) => ({ module: id }));
+}
+
+export async function generateMetadata({
+  params,
+}: ModulePageProps): Promise<Metadata> {
+  const { module: moduleId } = await params;
+  const workspaceModule = findWorkspaceModule(moduleId);
+  return createApplicationMetadata(
+    workspaceModule?.label ?? "Programme",
+    workspaceModule?.description ?? "A Tamil Ulagam programme area.",
+    `/workspace/organisation/modules/${moduleId}`,
+  );
+}
+
+export default async function WorkspaceOrganisationModulePage({
+  params,
+}: ModulePageProps) {
+  const { module: moduleId } = await params;
+  const workspaceModule = findWorkspaceModule(moduleId);
+  if (!workspaceModule) notFound();
+
+  return (
+    <Suspense fallback={<p role="status">Loading…</p>}>
+      <ModuleRouteContent
+        workspaceModule={workspaceModule}
+        workspaceType="organisation"
+      />
+    </Suspense>
+  );
+}

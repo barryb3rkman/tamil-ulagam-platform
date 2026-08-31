@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { MemberDirectorySkeleton } from "@/components/member/member-directory";
+import { ModuleAccessStrip } from "@/components/workspace/module-access-strip";
 import { usePlatform } from "@/features/enrollment/platform-provider";
 import { useMembershipService } from "@/features/membership/use-membership-service";
 import { withReturnTarget } from "@/lib/return-target";
@@ -219,6 +220,8 @@ export function MemberWorkspace() {
           </ul>
         )}
       </div>
+
+      <ModuleAccessStrip type="member" entityId={null} />
     </Container>
   );
 }

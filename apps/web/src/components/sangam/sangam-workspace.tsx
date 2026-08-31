@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from "react";
 import { OrganisationEmailVerificationCard } from "@/components/application/organisation-email-verification";
 import { RegistrationStatusBadge } from "@/components/application/registration-status-badge";
 import { organisationLocationLabel } from "@/components/member/organisation-presentation";
+import { ModuleAccessStrip } from "@/components/workspace/module-access-strip";
 import { registrationStatusPresentation } from "@/content/enrollment";
 import { usePlatform } from "@/features/enrollment/platform-provider";
 import { useMembershipService } from "@/features/membership/use-membership-service";
@@ -335,6 +336,8 @@ export function SangamWorkspace() {
           , the same place an organisation manager approves them.
         </p>
       ) : null}
+
+      <ModuleAccessStrip type="sangam" entityId={organisation.id} />
     </Container>
   );
 }

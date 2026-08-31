@@ -146,6 +146,11 @@ describe("WorkspaceShell", () => {
     });
     expect(nav).toHaveTextContent("Overview");
     expect(nav).toHaveTextContent("People");
+    // The Programmes entry point (H6) sits alongside operational
+    // navigation, never mixed into the same tab list.
+    expect(
+      screen.getByRole("button", { name: /Programmes/ }),
+    ).toBeInTheDocument();
   });
 
   it("never fabricates an Administration link for a manager without review capability", async () => {

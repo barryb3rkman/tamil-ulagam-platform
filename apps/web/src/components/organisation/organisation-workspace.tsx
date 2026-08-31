@@ -11,6 +11,7 @@ import { useEffect, useMemo } from "react";
 
 import { OrganisationEmailVerificationCard } from "@/components/application/organisation-email-verification";
 import { RegistrationStatusBadge } from "@/components/application/registration-status-badge";
+import { ModuleAccessStrip } from "@/components/workspace/module-access-strip";
 import { registrationStatusPresentation } from "@/content/enrollment";
 import { usePlatform } from "@/features/enrollment/platform-provider";
 import { withReturnTarget } from "@/lib/return-target";
@@ -263,6 +264,8 @@ export function OrganisationWorkspace() {
           .
         </p>
       ) : null}
+
+      <ModuleAccessStrip type="organisation" entityId={organisation.id} />
     </Container>
   );
 }

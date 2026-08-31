@@ -12,6 +12,7 @@ import {
   resolveActiveWorkspace,
 } from "@/features/workspace/workspace-options";
 
+import { ProgrammeNavigation } from "./programme-navigation";
 import { WorkspaceIdentity } from "./workspace-identity";
 import { WorkspaceNavigation } from "./workspace-navigation";
 import { WorkspaceSwitcher } from "./workspace-switcher";
@@ -141,8 +142,9 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
 
       {isHydrated && currentUser && !chromeLoading ? (
         <div className="border-global-navy/10 bg-white/65 px-5 py-2.5 sm:px-7 lg:px-10">
-          <div className="mx-auto w-full max-w-[106rem]">
+          <div className="mx-auto flex w-full max-w-[106rem] flex-wrap items-center justify-between gap-2">
             <WorkspaceNavigation type={active.type} entityId={active.id} />
+            <ProgrammeNavigation type={active.type} entityId={active.id} />
           </div>
         </div>
       ) : null}
