@@ -8,7 +8,6 @@ import {
   CulturalStatementSection,
   EcosystemSection,
   GlobalChallengeSection,
-  RoadmapSection,
   VisionMissionSection,
 } from "@/components/about";
 import { images } from "@/config/images";
@@ -30,7 +29,6 @@ export default function AboutPage() {
       <GlobalChallengeSection />
       <CoreObjectivesSection />
       <EcosystemSection />
-      <RoadmapSection />
       <CulturalStatementSection />
       <AboutFinalCta />
     </>

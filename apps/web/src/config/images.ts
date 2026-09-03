@@ -285,49 +285,33 @@ export const images = {
 
 export type ImageKey = keyof typeof images;
 
-/**
- * Editorial media that must remain visible and decoded after a complete
- * homepage scroll. This keeps browser verification aligned with the registry.
- */
 export const homepageEditorialImageKeys = [
-  "whyTamilUlagam",
-  "tamilIdShowcase",
-  "globalChapters",
-  "roadmapFuture",
-  "mobileAppPreview",
-  "partnerships",
-  "communityStories",
   "finalCallToAction",
-] as const satisfies readonly ImageKey[];
-
-export const aboutEditorialImageKeys = [
-  "aboutHero",
-  "roadmapFuture",
-] as const satisfies readonly ImageKey[];
-
-export const tamilIdEditorialImageKeys = [
-  "tamilIdShowcase",
-] as const satisfies readonly ImageKey[];
-
-export const chaptersEditorialImageKeys = [
+  "pillarConnect",
+  "pillarEmpower",
+  "pillarPreserve",
+  "initiativeHealthcare",
+  "initiativeEducation",
+  "initiativeBusiness",
+  "initiativeJobs",
   "globalChapters",
 ] as const satisfies readonly ImageKey[];
+
+export const aboutEditorialImageKeys: readonly ImageKey[] = [];
+
+export const tamilIdEditorialImageKeys: readonly ImageKey[] = [];
+
+export const chaptersEditorialImageKeys: readonly ImageKey[] = [];
 
 export const roadmapEditorialImageKeys = [
   "roadmapFuture",
 ] as const satisfies readonly ImageKey[];
 
-export const partnersEditorialImageKeys = [
-  "partnerships",
-] as const satisfies readonly ImageKey[];
+export const partnersEditorialImageKeys: readonly ImageKey[] = [];
 
-export const eventsEditorialImageKeys = [
-  "initiativeGlobalEvents",
-] as const satisfies readonly ImageKey[];
+export const eventsEditorialImageKeys: readonly ImageKey[] = [];
 
-export const newsEditorialImageKeys = [
-  "communityStories",
-] as const satisfies readonly ImageKey[];
+export const newsEditorialImageKeys: readonly ImageKey[] = [];
 
 export const initiativesEditorialImageKeys = [
   "initiativeHealthcare",

@@ -1,17 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Noto_Sans_Tamil } from "next/font/google";
+import { Fraunces, Noto_Sans_Tamil, Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { RouteFrame } from "@/components/application/route-frame";
 import { MotionRuntime } from "@/components/motion/motion-runtime";
+import { ScrollProgress } from "@/components/motion/scroll-progress";
 import { defaultMetadata } from "@/config/metadata";
 import { PlatformProvider } from "@/features/enrollment/platform-provider";
 
 import "./globals.css";
 
-const englishFont = Inter({
+const displayFont = Fraunces({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-fraunces",
+  display: "swap",
+  axes: ["SOFT", "WONK", "opsz"],
+});
+
+const englishFont = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-jakarta",
   display: "swap",
 });
 
@@ -39,11 +47,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${englishFont.variable} ${tamilFont.variable}`}
+      className={`${displayFont.variable} ${englishFont.variable} ${tamilFont.variable}`}
     >
       <body>
         <PlatformProvider>
           <MotionRuntime />
+          <ScrollProgress />
           <a
             href="#main-content"
             className="rounded-button bg-deep-navy focus:ring-focus fixed top-3 left-3 z-[100] -translate-y-24 px-4 py-3 font-semibold text-white transition-transform focus:translate-y-0 focus:outline-none"

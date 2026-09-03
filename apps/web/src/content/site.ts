@@ -10,8 +10,8 @@ export const siteContent = {
 } as const;
 
 export const primaryCallToAction: CallToAction = {
-  label: "Explore the roadmap",
-  href: "/roadmap",
+  label: "Join Tamil Ulagam",
+  href: "/join",
   variant: "primary",
 };
 

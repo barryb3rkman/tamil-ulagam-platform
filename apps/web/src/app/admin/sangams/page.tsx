@@ -3,6 +3,7 @@ import { Suspense } from "react";
 
 import { AdminDirectory } from "@/components/admin/admin-directory";
 import { createApplicationMetadata } from "@/config/metadata";
+import { RouteLoading } from "@/components/application/route-loading";
 
 export const metadata: Metadata = createApplicationMetadata(
   "Federation Tamil Sangams",
@@ -12,7 +13,7 @@ export const metadata: Metadata = createApplicationMetadata(
 
 export default function AdminSangamsPage() {
   return (
-    <Suspense fallback={<p role="status">Loading Tamil Sangams…</p>}>
+    <Suspense fallback={<RouteLoading label="Loading Tamil Sangams…" />}>
       <AdminDirectory kind="sangam" />
     </Suspense>
   );

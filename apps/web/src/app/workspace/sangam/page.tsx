@@ -3,6 +3,7 @@ import { Suspense } from "react";
 
 import { SangamWorkspace } from "@/components/sangam/sangam-workspace";
 import { createApplicationMetadata } from "@/config/metadata";
+import { RouteLoading } from "@/components/application/route-loading";
 
 export const metadata: Metadata = createApplicationMetadata(
   "Sangam Workspace",
@@ -12,7 +13,7 @@ export const metadata: Metadata = createApplicationMetadata(
 
 export default function WorkspaceSangamPage() {
   return (
-    <Suspense fallback={<p role="status">Loading…</p>}>
+    <Suspense fallback={<RouteLoading label="Loading…" />}>
       <SangamWorkspace />
     </Suspense>
   );

@@ -3,6 +3,7 @@ import { Suspense } from "react";
 
 import { AdminRegistrationReview } from "@/components/application/admin-registration-review";
 import { createApplicationMetadata } from "@/config/metadata";
+import { RouteLoading } from "@/components/application/route-loading";
 
 const registrationIds = [
   "registration-toronto",
@@ -31,7 +32,7 @@ export default async function AdminRegistrationReviewPage({
 }) {
   const { id } = await params;
   return (
-    <Suspense fallback={<p role="status">Loading application…</p>}>
+    <Suspense fallback={<RouteLoading label="Loading application…" />}>
       <AdminRegistrationReview id={id} />
     </Suspense>
   );

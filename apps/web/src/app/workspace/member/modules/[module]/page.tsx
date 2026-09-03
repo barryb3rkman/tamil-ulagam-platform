@@ -8,6 +8,7 @@ import {
   findWorkspaceModule,
   workspaceModules,
 } from "@/content/workspace-modules";
+import { RouteLoading } from "@/components/application/route-loading";
 
 export interface ModulePageProps {
   readonly params: Promise<{ module: string }>;
@@ -37,7 +38,7 @@ export default async function WorkspaceMemberModulePage({
   if (!workspaceModule) notFound();
 
   return (
-    <Suspense fallback={<p role="status">Loading…</p>}>
+    <Suspense fallback={<RouteLoading label="Loading…" />}>
       <ModuleRouteContent
         workspaceModule={workspaceModule}
         workspaceType="member"

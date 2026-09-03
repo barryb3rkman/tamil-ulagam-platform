@@ -3,6 +3,7 @@ import { Suspense } from "react";
 
 import { AdminMembershipOperations } from "@/components/admin/admin-membership-operations";
 import { createApplicationMetadata } from "@/config/metadata";
+import { RouteLoading } from "@/components/application/route-loading";
 
 export const metadata: Metadata = createApplicationMetadata(
   "Federation Memberships",
@@ -12,7 +13,7 @@ export const metadata: Metadata = createApplicationMetadata(
 
 export default function AdminMembershipsPage() {
   return (
-    <Suspense fallback={<p role="status">Loading memberships…</p>}>
+    <Suspense fallback={<RouteLoading label="Loading memberships…" />}>
       <AdminMembershipOperations />
     </Suspense>
   );

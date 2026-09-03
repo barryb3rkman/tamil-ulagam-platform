@@ -525,8 +525,8 @@ export const eventsContent = {
       "Review and expansion criteria",
     ],
     callToAction: {
-      label: "View the Roadmap",
-      href: "/roadmap",
+      label: "Join Tamil Ulagam",
+      href: "/join",
       variant: "text",
     },
   },
@@ -599,8 +599,8 @@ export const eventsContent = {
       "Tamil Ulagam welcomes thoughtful conversations with organisations, chapters, institutions and professionals interested in credible global events.",
     primaryCallToAction: { label: "Contact Tamil Ulagam", href: "/contact" },
     secondaryCallToAction: {
-      label: "Explore the Roadmap",
-      href: "/roadmap",
+      label: "Join Tamil Ulagam",
+      href: "/join",
       variant: "text",
     },
     textCallToAction: {

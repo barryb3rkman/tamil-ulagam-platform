@@ -2,25 +2,24 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { LoginForm } from "@/components/application/auth-forms";
-import { AuthShell } from "@/components/application/auth-shell";
+import { AuthJourneyShell } from "@/components/application/auth-journey-shell";
 import { createApplicationMetadata } from "@/config/metadata";
+import { RouteLoading } from "@/components/application/route-loading";
 
 export const metadata: Metadata = createApplicationMetadata(
   "Sign in",
-  "Sign in to continue a Tamil Ulagam organisation enrollment.",
+  "Sign in to access your Tamil Ulagam membership, Sangam or organisation workspace.",
   "/login",
 );
 
 export default function LoginPage() {
   return (
-    <AuthShell
-      eyebrow="Member access"
-      title="Welcome back"
-      description="Sign in to your Tamil Ulagam account to continue your organisation enrollment."
+    <Suspense
+      fallback={<RouteLoading label="Loading secure account access…" />}
     >
-      <Suspense fallback={<p role="status">Loading…</p>}>
+      <AuthJourneyShell mode="login">
         <LoginForm />
-      </Suspense>
-    </AuthShell>
+      </AuthJourneyShell>
+    </Suspense>
   );
 }

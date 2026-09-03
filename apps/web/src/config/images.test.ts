@@ -70,14 +70,15 @@ describe("image registry", () => {
 
   it("keeps every major homepage editorial asset available", () => {
     expect(homepageEditorialImageKeys).toEqual([
-      "whyTamilUlagam",
-      "tamilIdShowcase",
-      "globalChapters",
-      "roadmapFuture",
-      "mobileAppPreview",
-      "partnerships",
-      "communityStories",
       "finalCallToAction",
+      "pillarConnect",
+      "pillarEmpower",
+      "pillarPreserve",
+      "initiativeHealthcare",
+      "initiativeEducation",
+      "initiativeBusiness",
+      "initiativeJobs",
+      "globalChapters",
     ]);
 
     for (const key of homepageEditorialImageKeys) {

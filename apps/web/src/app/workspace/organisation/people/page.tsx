@@ -3,6 +3,7 @@ import { Suspense } from "react";
 
 import { ManagerPeople } from "@/components/member/manager-people";
 import { createApplicationMetadata } from "@/config/metadata";
+import { RouteLoading } from "@/components/application/route-loading";
 
 export const metadata: Metadata = createApplicationMetadata(
   "People",
@@ -12,7 +13,7 @@ export const metadata: Metadata = createApplicationMetadata(
 
 export default function WorkspaceOrganisationPeoplePage() {
   return (
-    <Suspense fallback={<p role="status">Loading…</p>}>
+    <Suspense fallback={<RouteLoading label="Loading…" />}>
       <ManagerPeople />
     </Suspense>
   );

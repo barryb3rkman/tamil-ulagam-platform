@@ -39,8 +39,8 @@ export const chaptersContent = {
       variant: "secondary",
     },
     secondaryCallToAction: {
-      label: "View the Roadmap",
-      href: "/roadmap",
+      label: "Join Tamil Ulagam",
+      href: "/join",
       variant: "text",
     },
   } satisfies ChaptersHeroContent,
@@ -368,8 +368,8 @@ export const chaptersContent = {
     statement:
       "Tamil Ulagam should not announce chapters simply to fill a world map.",
     callToAction: {
-      label: "View the Roadmap",
-      href: "/roadmap",
+      label: "Join Tamil Ulagam",
+      href: "/join",
       variant: "text",
     },
   },
@@ -446,8 +446,8 @@ export const chaptersContent = {
       variant: "text",
     },
     textCallToAction: {
-      label: "Explore the Roadmap",
-      href: "/roadmap",
+      label: "Join Tamil Ulagam",
+      href: "/join",
       variant: "text",
     },
   },

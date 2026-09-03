@@ -3,6 +3,7 @@ import { Suspense } from "react";
 
 import { DashboardRegistration } from "@/components/application/dashboard-registration";
 import { createApplicationMetadata } from "@/config/metadata";
+import { RouteLoading } from "@/components/application/route-loading";
 
 export const metadata: Metadata = createApplicationMetadata(
   "Registration details",
@@ -11,7 +12,7 @@ export const metadata: Metadata = createApplicationMetadata(
 );
 export default function DashboardRegistrationPage() {
   return (
-    <Suspense fallback={<p role="status">Loading registration…</p>}>
+    <Suspense fallback={<RouteLoading label="Loading registration…" />}>
       <DashboardRegistration />
     </Suspense>
   );

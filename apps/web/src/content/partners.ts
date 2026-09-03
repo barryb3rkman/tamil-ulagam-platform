@@ -43,8 +43,8 @@ export const partnersContent = {
       variant: "secondary",
     },
     secondaryCallToAction: {
-      label: "View the Roadmap",
-      href: "/roadmap",
+      label: "Join Tamil Ulagam",
+      href: "/join",
       variant: "text",
     },
   } satisfies PartnersHeroContent,
@@ -390,7 +390,7 @@ export const partnersContent = {
         ],
         callToAction: {
           label: "Explore the Roadmap",
-          href: "/roadmap",
+          href: "/join",
           variant: "text",
         },
       },
@@ -418,8 +418,8 @@ export const partnersContent = {
     statement:
       "Tamil Ulagam should not announce partnerships simply to create the appearance of institutional support.",
     callToAction: {
-      label: "View the Roadmap",
-      href: "/roadmap",
+      label: "Join Tamil Ulagam",
+      href: "/join",
       variant: "text",
     },
   },
@@ -497,8 +497,8 @@ export const partnersContent = {
       variant: "secondary",
     },
     secondaryCallToAction: {
-      label: "Explore the Roadmap",
-      href: "/roadmap",
+      label: "Join Tamil Ulagam",
+      href: "/join",
       variant: "text",
     },
     textCallToAction: {

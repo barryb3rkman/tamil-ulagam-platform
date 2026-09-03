@@ -55,8 +55,8 @@ export const tamilIdContent = {
       variant: "secondary",
     },
     secondaryCallToAction: {
-      label: "View the Roadmap",
-      href: "/roadmap",
+      label: "Join Tamil Ulagam",
+      href: "/join",
       variant: "text",
     },
   } satisfies TamilIdHeroContent,
@@ -349,8 +349,8 @@ export const tamilIdContent = {
       },
     ] as const satisfies readonly JourneyStep[],
     callToAction: {
-      label: "View the Full Roadmap",
-      href: "/roadmap",
+      label: "Join Tamil Ulagam",
+      href: "/join",
       variant: "text",
     },
   },
@@ -397,8 +397,8 @@ export const tamilIdContent = {
     description:
       "Tamil Ulagam welcomes thoughtful discussion with Tamil organisations, chapter leaders, privacy specialists, identity professionals and responsible institutional partners.",
     primaryCallToAction: {
-      label: "Explore the Roadmap",
-      href: "/roadmap",
+      label: "Join Tamil Ulagam",
+      href: "/join",
       variant: "secondary",
     },
     secondaryCallToAction: {

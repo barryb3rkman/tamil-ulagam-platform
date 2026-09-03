@@ -1,4 +1,4 @@
-# Tamil Ulagam Repository Engineering Rules
+# Tamil Ulagam Engineering Rules
 
 These rules apply to every task and every file in this repository.
 

@@ -98,7 +98,7 @@ export const initiativeOverviewContent = {
     },
     secondaryCallToAction: {
       label: "View our roadmap",
-      href: "/roadmap",
+      href: "/join",
     },
   },
   introduction: {
@@ -215,7 +215,7 @@ export const initiativeOverviewContent = {
     ],
     callToAction: {
       label: "View the roadmap",
-      href: "/roadmap",
+      href: "/join",
     },
   },
   directory: {

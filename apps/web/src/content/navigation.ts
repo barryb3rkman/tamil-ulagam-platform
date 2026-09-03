@@ -30,7 +30,6 @@ export const footerNavigation = [
     children: [
       { label: "About", href: "/about" },
       { label: "Partners", href: "/partners" },
-      { label: "Roadmap", href: "/roadmap" },
       { label: "Contact", href: "/contact" },
     ],
   },

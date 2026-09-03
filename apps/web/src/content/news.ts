@@ -543,8 +543,8 @@ export const newsContent = {
       "Review and expansion criteria",
     ],
     callToAction: {
-      label: "View the Roadmap",
-      href: "/roadmap",
+      label: "Join Tamil Ulagam",
+      href: "/join",
       variant: "text",
     },
   },
@@ -627,8 +627,8 @@ export const newsContent = {
       variant: "secondary",
     },
     secondaryCallToAction: {
-      label: "Explore the Roadmap",
-      href: "/roadmap",
+      label: "Join Tamil Ulagam",
+      href: "/join",
       variant: "text",
     },
     textCallToAction: {

@@ -3,6 +3,7 @@ import { Suspense } from "react";
 
 import { AdminPartnershipOperations } from "@/components/admin/admin-partnership-operations";
 import { createApplicationMetadata } from "@/config/metadata";
+import { RouteLoading } from "@/components/application/route-loading";
 
 export const metadata: Metadata = createApplicationMetadata(
   "Federation Partnerships",
@@ -12,7 +13,9 @@ export const metadata: Metadata = createApplicationMetadata(
 
 export default function AdminPartnershipsPage() {
   return (
-    <Suspense fallback={<p role="status">Loading partnership enquiries…</p>}>
+    <Suspense
+      fallback={<RouteLoading label="Loading partnership enquiries…" />}
+    >
       <AdminPartnershipOperations />
     </Suspense>
   );

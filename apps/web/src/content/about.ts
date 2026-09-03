@@ -49,8 +49,8 @@ export const aboutContent = {
       variant: "secondary",
     },
     secondaryCallToAction: {
-      label: "View the Roadmap",
-      href: "/roadmap",
+      label: "Join Tamil Ulagam",
+      href: "/join",
       variant: "text",
     },
   } satisfies AboutHeroContent,
@@ -224,8 +224,8 @@ export const aboutContent = {
       "Each phase extends the foundation with the governance, product and operational care appropriate to that stage.",
     imageKey: "roadmapFuture",
     callToAction: {
-      label: "View Full Roadmap",
-      href: "/roadmap",
+      label: "Join Tamil Ulagam",
+      href: "/join",
       variant: "text",
     },
   } satisfies {
