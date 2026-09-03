@@ -1,5 +1,3 @@
-import type { ReactNode } from "react";
-
 export function NumberedGrid({
   columns = 2,
   gridAttribute,
@@ -156,14 +154,4 @@ export function CheckGrid({
       ))}
     </ul>
   );
-}
-
-export function ContentBand({
-  children,
-  className = "",
-}: {
-  readonly children: ReactNode;
-  readonly className?: string;
-}) {
-  return <div className={`relative isolate ${className}`}>{children}</div>;
 }

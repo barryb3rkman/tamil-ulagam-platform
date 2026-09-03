@@ -15,13 +15,3 @@ export function validateMemberProfile(
   if (!profile.city.trim()) errors.city = "Enter your city.";
   return errors;
 }
-
-export function validateConnectionAnswer(
-  required: boolean,
-  connectionType: string,
-): ValidationErrors {
-  if (required && !connectionType.trim()) {
-    return { connectionType: "Select the option that best describes you." };
-  }
-  return {};
-}

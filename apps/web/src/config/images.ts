@@ -303,10 +303,6 @@ export const tamilIdEditorialImageKeys: readonly ImageKey[] = [];
 
 export const chaptersEditorialImageKeys: readonly ImageKey[] = [];
 
-export const roadmapEditorialImageKeys = [
-  "roadmapFuture",
-] as const satisfies readonly ImageKey[];
-
 export const partnersEditorialImageKeys: readonly ImageKey[] = [];
 
 export const eventsEditorialImageKeys: readonly ImageKey[] = [];
@@ -323,7 +319,3 @@ export const initiativesEditorialImageKeys = [
   "initiativeArtsCulture",
   "initiativeGlobalEvents",
 ] as const satisfies readonly ImageKey[];
-
-export function getImage(key: ImageKey): ImageMetadata {
-  return images[key];
-}

@@ -34,11 +34,13 @@
     "cache:test": "node --test scripts/maintenance/prune-dev-cache.test.mjs",
     "clean:test-artifacts": "node scripts/maintenance/clean-test-artifacts.mjs",
     "test:functions": "node --test supabase/functions/_shared/email-template.test.ts supabase/functions/_shared/secret-keys.test.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "knip": "knip"
   },
   "devDependencies": {
     "eslint": "9.39.5",
     "husky": "^9.1.7",
+    "knip": "^6.34.0",
     "lint-staged": "^17.4.1",
     "prettier": "3.9.6",
     "prettier-plugin-tailwindcss": "0.8.1",

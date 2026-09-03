@@ -1,4 +1,3 @@
-import { StatusBadge } from "@tamil-ulagam/ui";
 import type { ReactNode } from "react";
 
 export function AdminPageHeader({
@@ -62,14 +61,4 @@ export function AdminErrorState({ message }: { readonly message: string }) {
       {message}
     </div>
   );
-}
-
-export function OperationalStatusBadge({
-  label,
-  tone,
-}: {
-  readonly label: string;
-  readonly tone: Parameters<typeof StatusBadge>[0]["tone"];
-}) {
-  return <StatusBadge label={label} tone={tone} />;
 }

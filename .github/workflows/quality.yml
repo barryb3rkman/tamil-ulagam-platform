@@ -50,6 +50,9 @@ jobs:
       - name: Run unit tests
         run: pnpm test
 
+      - name: Check for dead code
+        run: pnpm knip
+
       - name: Build production application
         run: pnpm build
 

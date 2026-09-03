@@ -40,5 +40,3 @@ export const joinImages = {
     available: true,
   },
 } as const satisfies Record<string, ImageMetadata>;
-
-export type JoinImageKey = keyof typeof joinImages;

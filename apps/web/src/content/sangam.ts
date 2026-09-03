@@ -108,7 +108,3 @@ export const sangamSuccessContent = {
   workspaceCta: "Go to Sangam workspace",
   browseCta: "Back to Join Tamil Ulagam",
 } as const;
-
-export const sangamWorkspaceContent = {
-  eyebrow: "TAMIL SANGAM",
-} as const;

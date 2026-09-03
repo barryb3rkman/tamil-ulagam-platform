@@ -148,5 +148,3 @@ export const categoryConnectionQuestions: Readonly<
   },
   other: null,
 } as const;
-
-export const sangamConnectionQuestion: CategoryConnectionQuestion | null = null;

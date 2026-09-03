@@ -259,16 +259,6 @@ function writeState(state: MockOperationsState): void {
   window.localStorage.setItem(storageKey, JSON.stringify(state));
 }
 
-export function isPartnershipTransitionAllowed(
-  current: PartnershipStatus,
-  next: PartnershipStatus,
-): boolean {
-  return (
-    (current === "new" && next === "in_discussion") ||
-    (current === "in_discussion" && (next === "active" || next === "declined"))
-  );
-}
-
 function emptyState(): MockOperationsState {
   return { partnerships: [], partnershipHistory: [] };
 }

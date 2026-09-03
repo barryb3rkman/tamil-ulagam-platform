@@ -92,7 +92,3 @@ export const initiatives = [
 ] as const satisfies readonly InitiativeEntry[];
 
 export type InitiativeSlug = (typeof initiatives)[number]["slug"];
-
-export function getInitiative(slug: string): InitiativeEntry | undefined {
-  return initiatives.find((initiative) => initiative.slug === slug);
-}

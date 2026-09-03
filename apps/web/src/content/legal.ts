@@ -819,8 +819,3 @@ export const termsOfUse = {
     ],
   },
 } as const satisfies LegalPolicyDocument<TermsSectionId>;
-
-export const legalDocuments = {
-  privacy: privacyPolicy,
-  terms: termsOfUse,
-} as const satisfies Record<LegalDocumentKey, LegalPolicyDocument<string>>;

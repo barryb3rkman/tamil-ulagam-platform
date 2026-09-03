@@ -105,13 +105,6 @@ export const registrationStatusPresentation: Record<
   },
 };
 
-export const registrationSteps = [
-  "Organisation",
-  "Contact & representative",
-  "Registration & trust",
-  "Review & submit",
-] as const;
-
 export const registrationStatusOptions = [
   { value: "registered", label: "Registered organisation" },
   { value: "informal", label: "Unregistered / informal organisation" },

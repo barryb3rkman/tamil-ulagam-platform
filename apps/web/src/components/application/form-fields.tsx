@@ -339,73 +339,6 @@ export function RadioGroup({
   );
 }
 
-interface MultiSelectProps {
-  readonly label: string;
-  readonly options: readonly string[];
-  readonly value: readonly string[];
-  readonly onChange: (value: string[]) => void;
-  readonly required?: boolean;
-  readonly error?: string;
-}
-
-export function MultiSelect({
-  error,
-  label,
-  onChange,
-  options,
-  required,
-  value,
-}: MultiSelectProps) {
-  return (
-    <fieldset className="grid gap-3">
-      <legend className="text-global-navy text-sm font-semibold">
-        {label}
-        {required ? (
-          <>
-            <span className="text-heritage-maroon ml-1" aria-hidden="true">
-              *
-            </span>
-            <span className="sr-only"> (required)</span>
-          </>
-        ) : null}
-      </legend>
-      <div className="flex flex-wrap gap-2.5">
-        {options.map((option) => (
-          <label
-            key={option}
-            className={`motion-control focus-within:ring-focus relative inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium ${value.includes(option) ? "border-global-navy bg-global-navy text-white shadow-sm" : "border-global-navy/15 text-charcoal hover:border-global-navy/35 bg-white"}`}
-          >
-            <input
-              type="checkbox"
-              value={option}
-              checked={value.includes(option)}
-              onChange={(event) =>
-                onChange(
-                  event.target.checked
-                    ? [...value, option]
-                    : value.filter((item) => item !== option),
-                )
-              }
-              className="absolute inset-0 z-10 cursor-pointer opacity-0"
-            />
-            {value.includes(option) ? (
-              <span aria-hidden="true" className="text-heritage-gold font-bold">
-                ✓
-              </span>
-            ) : null}
-            <span>{option}</span>
-          </label>
-        ))}
-      </div>
-      {error ? (
-        <p role="alert" className="text-error text-sm">
-          {error}
-        </p>
-      ) : null}
-    </fieldset>
-  );
-}
-
 export function FormSection({
   children,
   description,
@@ -425,28 +358,6 @@ export function FormSection({
       </div>
       <div className="grid gap-5">{children}</div>
     </section>
-  );
-}
-
-export function FormSubsection({
-  children,
-  description,
-  title,
-}: {
-  readonly children: ReactNode;
-  readonly description?: string;
-  readonly title: string;
-}) {
-  return (
-    <fieldset className="border-global-navy/10 bg-warm-ivory/35 rounded-card border p-5 sm:p-6">
-      <legend className="text-global-navy px-2 text-base font-bold">
-        {title}
-      </legend>
-      {description ? (
-        <p className="text-slate mb-5 text-sm leading-6">{description}</p>
-      ) : null}
-      <div className="grid gap-5">{children}</div>
-    </fieldset>
   );
 }
 
