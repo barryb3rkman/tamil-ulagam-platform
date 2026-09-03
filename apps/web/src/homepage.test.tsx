@@ -5,7 +5,6 @@ import HomePage from "@/app/page";
 import { homepageEditorialImageKeys, images } from "@/config/images";
 import { homepageContent } from "@/content/homepage";
 import { initiatives } from "@/content/initiatives";
-import { roadmapPhases } from "@/content/roadmap";
 
 afterEach(() => cleanup());
 
@@ -18,11 +17,11 @@ describe("public homepage composition", () => {
       "Connecting the Global Tamil Community",
     );
     expect(
-      screen.getByRole("link", { name: "Explore Our Vision" }),
-    ).toHaveAttribute("href", "/about");
+      screen.getAllByRole("link", { name: "Join Tamil Ulagam" })[0],
+    ).toHaveAttribute("href", "/join");
     expect(
-      screen.getByRole("link", { name: "Discover Initiatives" }),
-    ).toHaveAttribute("href", "/initiatives");
+      screen.getByRole("link", { name: "Explore our vision" }),
+    ).toHaveAttribute("href", "/about");
   });
 
   it("renders all pillars and initiatives from typed content", () => {
@@ -36,20 +35,22 @@ describe("public homepage composition", () => {
     for (const objective of homepageContent.visionSignals) {
       expect(screen.getByText(objective, { selector: "span" })).toBeVisible();
     }
+    const { presentation } = homepageContent.initiatives;
+    const desktopSlugs = [...presentation.featured, ...presentation.medium];
     for (const initiative of initiatives) {
-      const isMobileFeatured =
-        homepageContent.initiatives.presentation.mobileFeatured.some(
-          (slug) => slug === initiative.slug,
-        );
+      const onDesktop = desktopSlugs.some((slug) => slug === initiative.slug);
+      const onMobile = presentation.mobileFeatured.some(
+        (slug) => slug === initiative.slug,
+      );
       expect(
-        screen.getAllByRole("heading", { name: initiative.title, level: 3 }),
-      ).toHaveLength(isMobileFeatured ? 2 : 1);
+        screen.queryAllByRole("heading", { name: initiative.title, level: 3 }),
+      ).toHaveLength(Number(onDesktop) + Number(onMobile));
     }
     expect(
       screen
         .getByTestId("initiative-desktop-grid")
         .querySelectorAll('[data-testid="initiative-card"]'),
-    ).toHaveLength(8);
+    ).toHaveLength(desktopSlugs.length);
     expect(
       screen
         .getByTestId("initiative-mobile-grid")
@@ -58,15 +59,10 @@ describe("public homepage composition", () => {
     expect(
       screen.getByRole("link", { name: /Explore All Initiatives/ }),
     ).toHaveAttribute("href", "/initiatives");
-    for (const phase of roadmapPhases) {
-      expect(
-        screen.getAllByRole("heading", { name: phase.title, level: 3 }),
-      ).toHaveLength(1);
-    }
+    expect(screen.queryByText(/roadmap/i)).not.toBeInTheDocument();
     expect(
       homepageContent.initiatives.presentation.mobileFeatured,
     ).toHaveLength(4);
-    expect(screen.getByText("DIGITAL MEMBERSHIP")).toBeVisible();
     expect(
       screen.queryByText(/planned|in development|concept preview/i),
     ).not.toBeInTheDocument();
@@ -82,7 +78,9 @@ describe("public homepage composition", () => {
     render(<HomePage />);
 
     for (const key of homepageEditorialImageKeys) {
-      expect(screen.getByRole("img", { name: images[key].alt })).toBeVisible();
+      const matches = screen.getAllByRole("img", { name: images[key].alt });
+      expect(matches.length).toBeGreaterThan(0);
+      expect(matches[0]).toBeVisible();
     }
   });
 });

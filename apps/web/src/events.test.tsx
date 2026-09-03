@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, fireEvent } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import EventsPage from "@/app/events/page";
@@ -56,6 +56,7 @@ describe("public Events page", () => {
     ).toHaveAttribute("href", "/contact");
     for (const faq of eventsContent.faqs) {
       expect(screen.getAllByText(faq.title)[0]).toBeVisible();
+      fireEvent.click(screen.getByRole("button", { name: faq.title }));
       expect(screen.getAllByText(faq.description)[0]).toBeVisible();
     }
   });

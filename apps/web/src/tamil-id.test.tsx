@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, fireEvent } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import TamilIdPage from "@/app/tamil-id/page";
@@ -17,10 +17,10 @@ describe("public Tamil ID page", () => {
     );
     expect(screen.getByText(tamilIdContent.hero.caption)).toBeVisible();
     expect(
-      screen.getByRole("img", {
+      screen.queryByRole("img", {
         name: images[tamilIdContent.hero.imageKey].alt,
       }),
-    ).toBeVisible();
+    ).not.toBeInTheDocument();
   });
 
   it("keeps digital membership distinct from official identification", () => {
@@ -31,6 +31,14 @@ describe("public Tamil ID page", () => {
         name: tamilIdContent.notGovernmentId.title,
       }),
     ).toBeVisible();
+    expect(
+      screen.getByText(tamilIdContent.notGovernmentId.description),
+    ).toBeVisible();
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: tamilIdContent.notGovernmentId.title,
+      }),
+    );
     expect(screen.getByText("A government-issued identity card")).toBeVisible();
     expect(
       screen.queryByRole("link", { name: /apply now/i }),
@@ -55,6 +63,7 @@ describe("public Tamil ID page", () => {
     ).not.toBeInTheDocument();
     for (const faq of tamilIdContent.faqs) {
       expect(screen.getByText(faq.title)).toBeVisible();
+      fireEvent.click(screen.getByRole("button", { name: faq.title }));
       expect(screen.getByText(faq.description)).toBeVisible();
     }
     expect(
@@ -66,8 +75,8 @@ describe("public Tamil ID page", () => {
     render(<TamilIdPage />);
 
     expect(
-      screen.getByRole("link", { name: "View the Roadmap" }),
-    ).toHaveAttribute("href", "/roadmap");
+      screen.getAllByRole("link", { name: "Join Tamil Ulagam" })[0],
+    ).toHaveAttribute("href", "/join");
     expect(
       screen.getByRole("link", { name: "Partner With Tamil Ulagam" }),
     ).toHaveAttribute("href", "/partners");

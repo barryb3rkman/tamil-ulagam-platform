@@ -1,4 +1,10 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import NewsPage from "@/app/news/page";
@@ -44,6 +50,13 @@ describe("public News page", () => {
     for (const item of newsContent.communityStories.items) {
       expect(screen.getByText(item)).toBeVisible();
     }
+    expect(screen.getByText(newsContent.corrections.statement)).toBeVisible();
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: (accessibleName) =>
+          accessibleName.includes(newsContent.corrections.title),
+      }),
+    );
     for (const category of newsContent.corrections.categories) {
       expect(screen.getByText(category.title)).toBeVisible();
     }
@@ -74,10 +87,10 @@ describe("public News page", () => {
     }).parentElement?.parentElement;
     expect(faq).not.toBeNull();
     for (const item of newsContent.faqs) {
-      expect(within(faq as HTMLElement).getByText(item.title)).toBeVisible();
-      expect(
-        within(faq as HTMLElement).getByText(item.description),
-      ).toBeVisible();
+      const scope = within(faq as HTMLElement);
+      expect(scope.getByText(item.title)).toBeVisible();
+      fireEvent.click(scope.getByRole("button", { name: item.title }));
+      expect(scope.getByText(item.description)).toBeVisible();
     }
   });
 });

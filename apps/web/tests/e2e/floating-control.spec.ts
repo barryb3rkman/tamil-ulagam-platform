@@ -14,7 +14,6 @@ const publicRoutes = [
   "/initiatives",
   "/tamil-id",
   "/chapters",
-  "/roadmap",
   "/partners",
   "/news",
   "/contact",

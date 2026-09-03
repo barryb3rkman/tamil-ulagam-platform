@@ -16,9 +16,6 @@ describe("public About page", () => {
       aboutContent.hero.title,
     );
     expect(
-      screen.getByRole("img", { name: images.aboutHero.alt }),
-    ).toBeVisible();
-    expect(
       screen.getByRole("link", { name: "Explore Our Vision" }),
     ).toHaveAttribute("href", "/about#vision-mission");
   });
@@ -67,8 +64,8 @@ describe("public About page", () => {
       screen.getByRole("link", { name: "Explore Initiatives" }),
     ).toHaveAttribute("href", "/initiatives");
     expect(
-      screen.getAllByRole("link", { name: "View Full Roadmap" })[0],
-    ).toHaveAttribute("href", "/roadmap");
+      document.querySelector('a[href="/roadmap"]'),
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByText(/members worldwide|active chapters|partner logo/i),
     ).not.toBeInTheDocument();

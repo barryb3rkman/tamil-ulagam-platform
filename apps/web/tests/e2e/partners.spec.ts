@@ -66,7 +66,7 @@ test.describe("public Partners page", () => {
     await expect(page.getByText(partnersContent.hero.caption)).toBeVisible();
     await expect(
       page.getByRole("img", { name: images.partnerships.alt }),
-    ).toBeVisible();
+    ).toHaveCount(0);
     await expect(
       page.getByText(partnersContent.boundaries.statement),
     ).toBeVisible();
@@ -98,8 +98,8 @@ test.describe("public Partners page", () => {
       .click();
     await expect(page).toHaveURL(/#partnership-model$/);
     await expect(
-      page.getByRole("link", { name: "View the Roadmap" }).first(),
-    ).toHaveAttribute("href", getCanonicalRouteHref("/roadmap"));
+      page.getByRole("link", { name: "Join Tamil Ulagam" }).first(),
+    ).toHaveAttribute("href", getCanonicalRouteHref("/join"));
     await expect(
       page.getByRole("link", { name: "Explore Initiatives" }).first(),
     ).toHaveAttribute("href", getCanonicalRouteHref("/initiatives"));

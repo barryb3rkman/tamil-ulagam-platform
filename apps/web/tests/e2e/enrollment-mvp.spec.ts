@@ -9,14 +9,9 @@ const demo = {
 
 async function loginDemo(page: Page) {
   await page.goto("/login");
-  await page.getByLabel("Email").fill(demo.email);
-  await page.getByLabel("Password").fill(demo.password);
+  await page.getByLabel("Email").first().fill(demo.email);
+  await page.getByLabel("Password").first().fill(demo.password);
   await page.getByRole("button", { name: "Sign In" }).click();
-  // E1: /dashboard is now a router into the relevant V3 workspace rather
-  // than a fixed destination — the demo user has exactly one managed
-  // organisation, so it lands on /workspace/organisation. Wait for
-  // navigation away from /login rather than a specific final URL, the
-  // same convention the real-Supabase specs already use.
   await page.waitForURL((url) => !url.pathname.startsWith("/login"));
 }
 
@@ -54,13 +49,6 @@ test.describe("organisation enrollment MVP", () => {
       .fill(
         "A professional services company supporting international community organisations.",
       );
-    // Registration autosaves — no manual "Save progress" button. The
-    // debounce (1s) can fire once after the radio click alone before the
-    // later fields are even filled, briefly showing "Saved" for that
-    // earlier, incomplete snapshot — waiting past the debounce interval
-    // here (rather than only asserting the text appears at some point)
-    // ensures the LAST edit's own save has actually settled before
-    // reloading to prove persistence.
     await page.waitForTimeout(1300);
     await expect(page.getByText("Saved")).toBeVisible();
     await page.reload();
@@ -98,9 +86,6 @@ test.describe("organisation enrollment MVP", () => {
     await page.getByRole("button", { name: "Submit registration" }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
     await page.getByRole("button", { name: "Confirm submission" }).click();
-    // V3: submitting transitions in place into a real status screen
-    // rather than bouncing to /dashboard (D2 brief section 19/20 — no
-    // "registration complete, goodbye" dead end).
     await expect(
       page.getByRole("heading", { name: "Registration submitted" }),
     ).toBeVisible();
@@ -113,10 +98,6 @@ test.describe("organisation enrollment MVP", () => {
     page,
   }) => {
     await loginDemo(page);
-    // E1: /dashboard guides an authenticated visitor into their V3
-    // workspace rather than showing status content itself — the demo
-    // user manages exactly one organisation, so this lands unambiguously
-    // on its Organisation Workspace.
     await expect(page).toHaveURL(
       /\/workspace\/organisation\/?\?organization=organisation-toronto/,
     );
@@ -142,23 +123,17 @@ test.describe("organisation enrollment MVP", () => {
       page.getByRole("navigation", { name: "Portal legal navigation" }),
     ).toBeVisible();
     await expect(
-      page.getByRole("img", {
-        name: images.portalAuthHero.alt,
-      }),
-    ).toBeVisible();
+      page.getByRole("img", { name: images.portalAuthHero.alt }),
+    ).toHaveCount(0);
 
     await page.goto("/register");
     await expect(
       page.getByRole("img", {
         name: /carved stone architectural detail/i,
       }),
-    ).toBeVisible();
+    ).toHaveCount(0);
 
     await loginDemo(page);
-    // E1: the demo user lands on the Organisation Workspace, which uses
-    // the new WorkspaceShell chrome (its own "Workspace navigation"),
-    // not the legacy ApplicationShell "Account navigation" — that shell
-    // still exists, just at /dashboard/account, checked separately below.
     await expect(
       page.getByRole("navigation", { name: "Workspace navigation" }),
     ).toBeVisible();
@@ -171,8 +146,14 @@ test.describe("organisation enrollment MVP", () => {
 
     await page.goto("/dashboard/account");
     await expect(
-      page.getByRole("navigation", { name: "Account navigation" }),
+      page.getByRole("navigation", { name: "Workspace navigation" }),
     ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Account settings" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("navigation", { name: "Account navigation" }),
+    ).toHaveCount(0);
 
     await page.goto("/admin");
     await expect(
@@ -246,6 +227,13 @@ test.describe("organisation enrollment MVP", () => {
     await expect(
       page.getByRole("link", { name: "Continue registration" }),
     ).toHaveAttribute("href", /\/register\/?$/);
+
+    await page.goto(
+      "/auth/callback?flow=confirmation&mock=confirmation&next=%2Fjoin%2Fsangam",
+    );
+    await expect(
+      page.getByRole("link", { name: "Continue your journey" }),
+    ).toHaveAttribute("href", /\/join\/sangam\/?$/);
 
     await page.goto("/auth/callback?flow=recovery");
     await expect(

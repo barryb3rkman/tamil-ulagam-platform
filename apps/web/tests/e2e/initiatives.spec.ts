@@ -186,8 +186,7 @@ test.describe("public Initiatives overview page", () => {
               image.display !== "none" && image.width > 0 && image.height > 0,
           ),
       );
-    expect(mobileHeroImages).toHaveLength(1);
-    expect(mobileHeroImages[0]?.width).toBeGreaterThan(300);
+    expect(mobileHeroImages).toHaveLength(0);
 
     const ecosystemSection = page.getByRole("region", {
       name: "Three connected pathways.",
@@ -211,20 +210,6 @@ test.describe("public Initiatives overview page", () => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto("/initiatives");
     await page.locator("#initiatives-title").waitFor({ state: "visible" });
-    const desktopHeroImages = await page
-      .getByTestId("initiatives-hero-media")
-      .locator("img")
-      .evaluateAll(
-        (images) =>
-          images.filter((image) => {
-            const rect = image.getBoundingClientRect();
-            const styles = window.getComputedStyle(image);
-
-            return (
-              styles.display !== "none" && rect.width > 0 && rect.height > 0
-            );
-          }).length,
-      );
-    expect(desktopHeroImages).toBe(2);
+    await expect(page.getByTestId("initiatives-hero-media")).toHaveCount(0);
   });
 });

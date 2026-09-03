@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, fireEvent } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import ChaptersPage from "@/app/chapters/page";
@@ -55,9 +55,9 @@ describe("public Chapters page", () => {
   it("keeps Tamil ID, roadmap, partner, and contact routes available", () => {
     render(<ChaptersPage />);
 
-    for (const label of ["View the Roadmap", "Explore the Roadmap"]) {
+    for (const label of ["Join Tamil Ulagam"]) {
       for (const link of screen.getAllByRole("link", { name: label })) {
-        expect(link).toHaveAttribute("href", "/roadmap");
+        expect(link).toHaveAttribute("href", "/join");
       }
     }
     expect(
@@ -68,6 +68,7 @@ describe("public Chapters page", () => {
     ).toHaveAttribute("href", "/partners");
     for (const faq of chaptersContent.faqs) {
       expect(screen.getByText(faq.title)).toBeVisible();
+      fireEvent.click(screen.getByRole("button", { name: faq.title }));
       expect(screen.getByText(faq.description)).toBeVisible();
     }
   });

@@ -81,7 +81,7 @@ test.describe("public Tamil ID concept page", () => {
       page.getByRole("img", {
         name: images[tamilIdContent.hero.imageKey].alt,
       }),
-    ).toBeVisible();
+    ).toHaveCount(0);
 
     const navigation = page.getByRole("navigation", {
       name: "Primary navigation",
@@ -94,8 +94,8 @@ test.describe("public Tamil ID concept page", () => {
     await page.getByRole("link", { name: "Understand the Tamil ID" }).focus();
     await expect(page.locator(":focus")).toHaveText("Understand the Tamil ID");
     await expect(
-      page.getByRole("link", { name: "View the Roadmap" }),
-    ).toHaveAttribute("href", getCanonicalRouteHref("/roadmap"));
+      page.getByRole("link", { name: "Join Tamil Ulagam" }).first(),
+    ).toHaveAttribute("href", getCanonicalRouteHref("/join"));
     await expect(
       page.getByRole("link", { name: "Partner With Tamil Ulagam" }),
     ).toHaveAttribute("href", getCanonicalRouteHref("/partners"));

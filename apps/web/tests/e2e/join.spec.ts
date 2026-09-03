@@ -81,11 +81,11 @@ test.describe("public /join entry hub", () => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/join", { waitUntil: "domcontentloaded" });
 
-    const mask = page.locator("[data-motion-mask]");
-    await expect(mask).toHaveCSS("opacity", "1");
-    await expect(mask).toHaveCSS("clip-path", "none");
+    const reveal = page.locator("[data-motion-reveal]").first();
+    await expect(reveal).toHaveCSS("opacity", "1");
+    await expect(reveal).toHaveCSS("clip-path", "none");
 
-    const ambient = page.locator("[data-motion-ambient]");
+    const ambient = page.locator("[data-motion-ambient]").first();
     const animationName = await ambient.evaluate(
       (element) => getComputedStyle(element).animationName,
     );
@@ -118,21 +118,8 @@ test.describe("public /join entry hub", () => {
       "/login/?next=%2Fjoin%2Forganisation",
     );
 
-    // No fake submission form on the logged-out journey — the real V3
-    // wizard only appears once authenticated. /join/organisation is now
-    // the real experience itself, not a client-side handoff to /register.
     expect(await page.locator("input, textarea, select").count()).toBe(0);
   });
-
-  // D2: /join/organisation now mounts the same client-rendered,
-  // auth-aware OrganisationRegistration every other /join/* journey uses
-  // (identical to /join/sangam and /join/member, neither of which carries
-  // a no-JS test either) — it is gated behind PlatformProvider's
-  // isHydrated flag like the rest of the app, so it no longer has an
-  // independent no-JS-safe fallback the way the old static handoff page
-  // did. That old page predated the isHydrated pattern entirely; this is
-  // a deliberate parity change (Organisation's no-JS behaviour now
-  // matches its sibling journeys), not a regression relative to them.
 
   test("Tamil Sangam journey shows the real logged-out journey explanation, with safe return-target auth links", async ({
     page,
@@ -159,8 +146,6 @@ test.describe("public /join entry hub", () => {
       "/login/?next=%2Fjoin%2Fsangam",
     );
 
-    // No fake submission form on the logged-out journey — the real
-    // wizard only appears once authenticated.
     expect(await page.locator("input, textarea, select").count()).toBe(0);
   });
 

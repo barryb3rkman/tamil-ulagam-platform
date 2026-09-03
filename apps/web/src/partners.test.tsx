@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, fireEvent } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import PartnersPage from "@/app/partners/page";
@@ -47,6 +47,12 @@ describe("public Partners page", () => {
     for (const model of partnersContent.collaborationModels.models) {
       expect(screen.getByRole("heading", { name: model.title })).toBeVisible();
     }
+    expect(
+      screen.getByText(partnersContent.boundaries.statement),
+    ).toBeVisible();
+    fireEvent.click(
+      screen.getByRole("button", { name: partnersContent.boundaries.title }),
+    );
     for (const item of partnersContent.boundaries.items) {
       expect(screen.getByText(item)).toBeVisible();
     }
@@ -59,15 +65,16 @@ describe("public Partners page", () => {
     render(<PartnersPage />);
 
     for (const link of screen.getAllByRole("link", {
-      name: "View the Roadmap",
+      name: "Join Tamil Ulagam",
     })) {
-      expect(link).toHaveAttribute("href", "/roadmap");
+      expect(link).toHaveAttribute("href", "/join");
     }
     expect(
       screen.getAllByRole("link", { name: "Contact Tamil Ulagam" })[0],
     ).toHaveAttribute("href", "/contact");
     for (const faq of partnersContent.faqs) {
       expect(screen.getByText(faq.title)).toBeVisible();
+      fireEvent.click(screen.getByRole("button", { name: faq.title }));
       expect(screen.getByText(faq.description)).toBeVisible();
     }
   });

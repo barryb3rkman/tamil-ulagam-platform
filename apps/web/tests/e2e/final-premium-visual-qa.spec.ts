@@ -17,7 +17,6 @@ const publicRoutes = [
   { path: "/initiatives/global-events", name: "initiative-global-events" },
   { path: "/tamil-id", name: "tamil-id" },
   { path: "/chapters", name: "chapters" },
-  { path: "/roadmap", name: "roadmap" },
   { path: "/partners", name: "partners" },
   { path: "/events", name: "events" },
   { path: "/news", name: "news" },

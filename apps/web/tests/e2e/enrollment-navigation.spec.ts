@@ -65,20 +65,18 @@ test.describe("public enrollment navigation", () => {
       const primaryNavigation = header.getByRole("navigation", {
         name: "Primary navigation",
       });
-      const login = header.getByRole("link", { name: "Login", exact: true });
+      const login = header.getByRole("link", { name: "Log in", exact: true });
       const register = header.getByRole("link", {
         name: "Join Tamil Ulagam",
-        exact: true,
-      });
-      const partner = header.getByRole("link", {
-        name: "Partner With Us",
         exact: true,
       });
 
       await expect(primaryNavigation).toBeVisible();
       await expect(login).toBeVisible();
       await expect(register).toBeVisible();
-      await expect(partner).toBeVisible();
+      await expect(
+        header.getByRole("link", { name: "Partner With Us" }),
+      ).toHaveCount(0);
       await expect(login).toHaveAttribute(
         "href",
         getCanonicalRouteHref("/login"),
@@ -107,13 +105,24 @@ test.describe("public enrollment navigation", () => {
     for (const viewport of mobileViewports) {
       await page.setViewportSize(viewport);
       await page.goto("/", { waitUntil: "domcontentloaded" });
-      await page.getByRole("button", { name: "Open menu" }).click();
+      const openMenu = page.getByRole("button", { name: "Open menu" });
+      await expect(openMenu).toHaveAttribute("aria-expanded", "false");
 
       const mobileNavigation = page.getByRole("navigation", {
         name: "Mobile primary navigation",
       });
+
+      // aria-expanded is server-rendered, so waiting on it only proves
+      // the markup arrived — not that React has hydrated and attached
+      // the handler. A click landing before hydration is swallowed and
+      // no amount of further waiting recovers it, so retry the click
+      // itself rather than the assertion after it.
+      await expect(async () => {
+        await openMenu.click();
+        await expect(mobileNavigation).toBeVisible({ timeout: 2000 });
+      }).toPass({ timeout: 20000 });
       const login = mobileNavigation.getByRole("link", {
-        name: "Login",
+        name: "Log in",
         exact: true,
       });
       const register = mobileNavigation.getByRole("link", {
@@ -121,7 +130,6 @@ test.describe("public enrollment navigation", () => {
         exact: true,
       });
 
-      await expect(mobileNavigation).toBeVisible();
       await expect(
         page.getByRole("navigation", {
           name: "Primary navigation",

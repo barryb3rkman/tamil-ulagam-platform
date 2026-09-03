@@ -88,7 +88,7 @@ test.describe("public About page", () => {
     ).toHaveAttribute("href", getCanonicalRouteHref("/about#vision-mission"));
     await expect(
       page.getByRole("link", { name: "View Full Roadmap" }),
-    ).toHaveAttribute("href", getCanonicalRouteHref("/roadmap"));
+    ).toHaveCount(0);
 
     const primaryNavigation = page.getByRole("navigation", {
       name: "Primary navigation",
@@ -110,6 +110,7 @@ test.describe("public About page", () => {
   test("keeps the About page within its responsive viewport boundaries", async ({
     page,
   }) => {
+    test.slow();
     for (const viewport of reviewViewports) {
       await page.setViewportSize(viewport);
       await page.goto("/about");

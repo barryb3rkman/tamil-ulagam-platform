@@ -1,7 +1,7 @@
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator } from "@playwright/test";
 
 import { images, newsEditorialImageKeys } from "@/config/images";
 import { newsContent } from "@/content/news";
@@ -18,6 +18,19 @@ const reviewViewports = [
   { width: 390, height: 844 },
   { width: 375, height: 812 },
 ] as const;
+
+async function settleEntranceAnimations(locator: Locator) {
+  for (let pass = 0; pass < 2; pass += 1) {
+    await locator.page().waitForTimeout(200);
+    await locator.evaluate(async (element) => {
+      await Promise.all(
+        element
+          .getAnimations({ subtree: true })
+          .map((animation) => animation.finished.catch(() => undefined)),
+      );
+    });
+  }
+}
 
 test.describe("public News page", () => {
   test("captures the requested visual review viewports", async ({ page }) => {
@@ -67,7 +80,7 @@ test.describe("public News page", () => {
     await expect(page.getByText(newsContent.hero.caption)).toBeVisible();
     await expect(
       page.getByRole("img", { name: images.communityStories.alt }),
-    ).toBeVisible();
+    ).toHaveCount(0);
     await expect(
       page.getByText(newsContent.definition.statement),
     ).toBeVisible();
@@ -155,6 +168,7 @@ test.describe("public News page", () => {
     await page.goto("/news", { waitUntil: "domcontentloaded" });
     await grid.scrollIntoViewIfNeeded();
     await expect(grid).toBeVisible();
+    await settleEntranceAnimations(grid);
     const desktopGrid = await grid.boundingBox();
     const desktopCards = await cards.evaluateAll((elements) =>
       elements.map((element) => {
@@ -186,6 +200,7 @@ test.describe("public News page", () => {
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto("/news", { waitUntil: "domcontentloaded" });
     await grid.scrollIntoViewIfNeeded();
+    await settleEntranceAnimations(grid);
     const tabletGrid = await grid.boundingBox();
     const finalTabletCard = await cards.last().boundingBox();
     expect(finalTabletCard?.width).toBeCloseTo(tabletGrid?.width ?? 0, 0);

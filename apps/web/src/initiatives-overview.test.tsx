@@ -92,7 +92,7 @@ describe("public Initiatives overview page", () => {
     ).toHaveAttribute("href", "#ecosystem");
     expect(
       screen.getAllByRole("link", { name: "View our roadmap" })[0],
-    ).toHaveAttribute("href", "/roadmap");
+    ).toHaveAttribute("href", "/join");
     expect(
       screen.getByRole("link", { name: "Partner with Tamil Ulagam" }),
     ).toHaveAttribute("href", "/partners");
@@ -102,17 +102,9 @@ describe("public Initiatives overview page", () => {
   it("retains hero media while omitting internal platform and readiness detail", () => {
     render(<InitiativesPage />);
 
-    const heroMedia = screen.getByTestId("initiatives-hero-media");
     expect(
-      within(heroMedia).getByRole("img", {
-        name: images.initiativeHealthcare.alt,
-      }),
-    ).toHaveAttribute("loading", "eager");
-    expect(
-      within(heroMedia).getByRole("img", {
-        name: images.initiativeResearch.alt,
-      }),
-    ).toHaveAttribute("loading", "lazy");
+      screen.queryByTestId("initiatives-hero-media"),
+    ).not.toBeInTheDocument();
 
     expect(
       screen.queryByRole("heading", {

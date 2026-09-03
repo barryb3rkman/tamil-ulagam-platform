@@ -72,7 +72,7 @@ test.describe("public Chapters page", () => {
     );
     await expect(
       page.getByRole("img", { name: images.globalChapters.alt }),
-    ).toBeVisible();
+    ).toHaveCount(0);
 
     await page.keyboard.press("Tab");
     await expect(page.locator(":focus")).toHaveText("Skip to main content");

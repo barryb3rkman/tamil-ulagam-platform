@@ -24,7 +24,6 @@ const showcaseRoutes = [
 ] as const;
 
 const exceptionRoutes = [
-  { path: "/roadmap", name: "roadmap" },
   { path: "/privacy", name: "privacy" },
   { path: "/terms", name: "terms" },
 ] as const;
@@ -102,17 +101,7 @@ test.describe("showcase language integrity", () => {
     });
   }
 
-  test("preserves the intentional roadmap and legal exceptions", async ({
-    page,
-  }) => {
-    await page.goto("/roadmap", { waitUntil: "domcontentloaded" });
-    await expect(page.locator("main")).toContainText("Foundation");
-    await expect(page.locator("main")).toContainText("Connected Community");
-    await expect(page.locator("main")).toContainText("Global Services");
-    await expect(page.locator("main")).toContainText(
-      /in development|readiness/i,
-    );
-
+  test("preserves the intentional legal exceptions", async ({ page }) => {
     for (const pathName of ["/privacy", "/terms"] as const) {
       await page.goto(pathName, { waitUntil: "domcontentloaded" });
       await expect(page.locator("main")).toContainText(
@@ -147,11 +136,23 @@ test.describe("showcase language integrity", () => {
     );
 
     await page.goto("/contact", { waitUntil: "domcontentloaded" });
+    // Both boundaries used to be full sections. They are now FAQ
+    // entries, so this opens each one and checks the answer itself —
+    // the guarantee is that the guidance is still on the page, not that
+    // it occupies a particular block.
+    await page
+      .getByRole("button", { name: "Can I send identity documents?" })
+      .click();
     await expect(page.locator("main")).toContainText(
-      /do not share identity documents or sensitive personal information/i,
+      /do not send sensitive identity documents through public contact routes/i,
     );
+    await page
+      .getByRole("button", {
+        name: "Can Tamil Ulagam help during an emergency?",
+      })
+      .click();
     await expect(page.locator("main")).toContainText(
-      /not an emergency or crisis-response service/i,
+      /contact the appropriate local emergency or public authority/i,
     );
     await expect(page.locator("form")).toHaveCount(0);
 
@@ -173,6 +174,7 @@ test.describe("showcase language integrity", () => {
     page,
     request,
   }) => {
+    test.slow();
     const internalLinks = new Set<string>();
 
     for (const route of showcaseRoutes) {

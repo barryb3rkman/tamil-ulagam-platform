@@ -66,7 +66,7 @@ test.describe("public Events page", () => {
     await expect(page.getByText(eventsContent.hero.caption)).toBeVisible();
     await expect(
       page.getByRole("img", { name: images.initiativeGlobalEvents.alt }),
-    ).toBeVisible();
+    ).toHaveCount(0);
     await expect(
       page.getByText(eventsContent.definition.statement),
     ).toBeVisible();

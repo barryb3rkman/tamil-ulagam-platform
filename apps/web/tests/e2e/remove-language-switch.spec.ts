@@ -17,7 +17,6 @@ const publicRoutes = [
   "/initiatives/global-events",
   "/tamil-id",
   "/chapters",
-  "/roadmap",
   "/partners",
   "/events",
   "/news",
@@ -53,7 +52,9 @@ async function expectLanguageControlAbsent(page: Page) {
   );
   await expect(header.getByText("EN", { exact: true })).toHaveCount(0);
   await expect(header.getByText("தமிழ்", { exact: true })).toHaveCount(0);
-  await expect(header.locator('[lang="ta"]')).toHaveCount(0);
+  await expect(
+    header.locator('button[lang="ta"], a[lang="ta"], select'),
+  ).toHaveCount(0);
 }
 
 async function expectReviewStateReady(page: Page) {
@@ -100,15 +101,12 @@ test.describe("language-switch removal", () => {
 
         await expectLanguageControlAbsent(page);
         const header = page.getByRole("banner");
-        const partnerLink = header.getByRole("link", {
-          name: "Partner With Us",
-          includeHidden: true,
-        });
-        await expect(partnerLink).toBeAttached();
-
-        if (viewport.width >= 1360) {
-          await expect(partnerLink).toBeVisible();
-        }
+        await expect(
+          header.getByRole("link", {
+            name: "Partner With Us",
+            includeHidden: true,
+          }),
+        ).toHaveCount(0);
 
         expect(
           await page.evaluate(
@@ -127,8 +125,13 @@ test.describe("language-switch removal", () => {
     page,
   }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("banner").getByText("த")).toBeVisible();
-    await expect(page.getByText("தமிழ் உலகம்", { exact: true })).toBeVisible();
+    await expect(
+      page.getByRole("banner").getByText("தமிழ் உலகம்"),
+    ).toBeVisible();
+    // Now present in both the header wordmark and the hero eyebrow.
+    await expect(
+      page.getByText("தமிழ் உலகம்", { exact: true }).first(),
+    ).toBeVisible();
 
     await page.goto("/about", { waitUntil: "domcontentloaded" });
     await expect(
@@ -153,9 +156,6 @@ test.describe("language-switch removal", () => {
       const navigation = page.getByRole("navigation", {
         name: "Primary navigation",
       });
-      const partnerLink = header.getByRole("link", {
-        name: "Partner With Us",
-      });
       const initialBounds = await header.boundingBox();
       const logoBounds = await logo.boundingBox();
       const navigationBounds = await navigation.boundingBox();
@@ -165,13 +165,6 @@ test.describe("language-switch removal", () => {
       expect(
         (navigationBounds?.x ?? 0) -
           ((logoBounds?.x ?? 0) + (logoBounds?.width ?? 0)),
-      ).toBeGreaterThanOrEqual(24);
-
-      const partnerBounds = await partnerLink.boundingBox();
-      expect(partnerBounds).not.toBeNull();
-      expect(
-        (partnerBounds?.x ?? 0) -
-          ((navigationBounds?.x ?? 0) + (navigationBounds?.width ?? 0)),
       ).toBeGreaterThanOrEqual(24);
 
       await page.evaluate(() =>
@@ -190,13 +183,15 @@ test.describe("language-switch removal", () => {
       await page.goto("/", { waitUntil: "domcontentloaded" });
 
       const menuButton = page.getByRole("button", { name: "Open menu" });
-      await menuButton.focus();
-      await page.keyboard.press("Enter");
-
       const navigation = page.getByRole("navigation", {
         name: "Mobile primary navigation",
       });
-      await expect(navigation).toBeVisible();
+
+      await expect(async () => {
+        await menuButton.focus();
+        await page.keyboard.press("Enter");
+        await expect(navigation).toBeVisible({ timeout: 2000 });
+      }).toPass({ timeout: 20000 });
       await expectLanguageControlAbsent(page);
       await expect(navigation.locator(":scope > div")).toHaveCount(0);
       await expect(page.locator(":focus")).toHaveRole("link");
@@ -256,7 +251,9 @@ test.describe("language-switch removal", () => {
       await page.setViewportSize(viewport);
       await page.goto("/", { waitUntil: "domcontentloaded" });
       await expectReviewStateReady(page);
-      await page.getByRole("button", { name: "Open menu" }).click();
+      const openMenu = page.getByRole("button", { name: "Open menu" });
+      await expect(openMenu).toHaveAttribute("aria-expanded", "false");
+      await openMenu.click();
       const navigation = page.getByRole("navigation", {
         name: "Mobile primary navigation",
       });

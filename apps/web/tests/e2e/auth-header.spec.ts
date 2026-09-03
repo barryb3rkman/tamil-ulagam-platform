@@ -3,15 +3,6 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
 
-/**
- * H2 brief section 21/41 — the public SiteHeader/MobileNavigation must
- * be auth-aware: a signed-in visitor on a public page never sees
- * "Login"/"Join Tamil Ulagam" (the pre-H2 bug), sees "Open workspace" +
- * an account affordance instead, and Federation Admin access stays
- * inside the authenticated workspace switcher rather than appearing as
- * a direct public-header link even for a reviewer/admin persona.
- */
-
 const password = "LocalAuthHeader!2048Aa";
 
 const users = {
@@ -25,11 +16,6 @@ const users = {
   },
 } as const;
 
-// The desktop nav (Login/Join/Open workspace/Account) only renders above
-// this project's 85rem (1360px) breakpoint — Playwright's default 1280px
-// viewport falls just under it, showing only the mobile menu button. Every
-// test here sets an explicit desktop viewport first, matching the
-// convention enrollment-navigation.spec.ts already established.
 const desktopViewport = { width: 1440, height: 1000 };
 
 async function signIn(page: Page, email: string) {
@@ -93,7 +79,7 @@ test.describe("public SiteHeader auth-awareness", () => {
     await page.setViewportSize(desktopViewport);
     await page.goto("/");
     const header = page.getByRole("banner");
-    await expect(header.getByRole("link", { name: "Login" })).toBeVisible();
+    await expect(header.getByRole("link", { name: "Log in" })).toBeVisible();
     await expect(
       header.getByRole("link", { name: "Join Tamil Ulagam" }),
     ).toBeVisible();
@@ -108,26 +94,19 @@ test.describe("public SiteHeader auth-awareness", () => {
     await page.setViewportSize(desktopViewport);
     await signIn(page, users.orgManager.email);
 
-    // Navigate to a genuinely public page (not /workspace/*), the exact
-    // surface the pre-H2 bug affected.
     await page.goto("/partners");
     const header = page.getByRole("banner");
     await expect(
       header.getByRole("link", { name: "Open workspace" }),
     ).toBeVisible();
-    await expect(header.getByRole("link", { name: "Login" })).toHaveCount(0);
+    await expect(header.getByRole("link", { name: "Log in" })).toHaveCount(0);
     await expect(header.getByText(users.orgManager.fullName)).toBeVisible();
 
-    // No Login flash after settle: reload and immediately assert:
-    // Playwright's auto-waiting getByRole already retries until settled,
-    // so an assertion that a stale "Login" state never becomes visible
-    // (not just "isn't visible right now") requires it to stay absent
-    // across a real navigation, not only at first paint.
     await page.reload();
     await expect(
       header.getByRole("link", { name: "Open workspace" }),
     ).toBeVisible();
-    await expect(header.getByRole("link", { name: "Login" })).toHaveCount(0);
+    await expect(header.getByRole("link", { name: "Log in" })).toHaveCount(0);
   });
 
   test("Open workspace and Account both lead somewhere real, and sign out returns to the logged-out header", async ({
@@ -145,14 +124,11 @@ test.describe("public SiteHeader auth-awareness", () => {
     await header.getByRole("link", { name: "Open workspace" }).click();
     await expect(page).toHaveURL(/\/workspace\/member\/?$/);
 
-    // Sign out lives inside the authenticated workspace shell, not the
-    // public header — confirm it correctly returns the public header to
-    // its logged-out state.
     await page.getByRole("button", { name: "Sign out" }).click();
     await page.waitForURL(/\/login\/?$/);
     await page.goto("/");
     await expect(
-      page.getByRole("banner").getByRole("link", { name: "Login" }),
+      page.getByRole("banner").getByRole("link", { name: "Log in" }),
     ).toBeVisible();
   });
 

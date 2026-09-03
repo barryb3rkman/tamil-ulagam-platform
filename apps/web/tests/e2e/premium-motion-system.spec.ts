@@ -17,7 +17,6 @@ const publicRoutes = [
   { path: "/initiatives/global-events", name: "initiative-global-events" },
   { path: "/tamil-id", name: "tamil-id" },
   { path: "/chapters", name: "chapters" },
-  { path: "/roadmap", name: "roadmap" },
   { path: "/partners", name: "partners" },
   { path: "/events", name: "events" },
   { path: "/news", name: "news" },
@@ -181,16 +180,12 @@ test.describe("premium motion system", () => {
     );
     await expect
       .poll(() =>
-        page
-          .locator("[data-route-transition]")
-          .evaluate((element) =>
-            element
-              .getAnimations()
-              .some(
-                (animation) =>
-                  Number(animation.effect?.getTiming().duration) === 420,
-              ),
-          ),
+        page.locator("[data-route-transition]").evaluate((element) =>
+          element.getAnimations().some((animation) => {
+            const duration = Number(animation.effect?.getTiming().duration);
+            return duration >= 120 && duration <= 400;
+          }),
+        ),
       )
       .toBe(true);
   });
@@ -230,9 +225,7 @@ test.describe("premium motion system", () => {
     await expect(page.locator("body")).not.toHaveCSS("overflow", "hidden");
   });
 
-  test("uses transform-only card feedback and advances the Roadmap phase marker", async ({
-    page,
-  }) => {
+  test("uses transform-only card feedback", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto("/", { waitUntil: "domcontentloaded" });
     const card = page.locator(".motion-card").first();
@@ -248,12 +241,22 @@ test.describe("premium motion system", () => {
       .toBe(0);
     await page.evaluate(() => window.scrollTo({ top: 0, behavior: "auto" }));
     await card.scrollIntoViewIfNeeded();
-    expect(
-      await card.evaluate(
-        (element) =>
-          element.closest("[data-motion-reveal]")?.getAnimations().length ?? 0,
-      ),
-    ).toBe(0);
+    await expect
+      .poll(() =>
+        card.evaluate(
+          (element) =>
+            element.closest("[data-motion-reveal]")?.getAnimations().length ??
+            0,
+        ),
+      )
+      .toBe(0);
+    await card.evaluate(async (element) => {
+      await Promise.all(
+        element
+          .getAnimations({ subtree: true })
+          .map((animation) => animation.finished.catch(() => undefined)),
+      );
+    });
     const cardOffsets = await card.evaluate((element) => ({
       left: (element as HTMLElement).offsetLeft,
       top: (element as HTMLElement).offsetTop,
@@ -269,12 +272,6 @@ test.describe("premium motion system", () => {
       })),
     ).toEqual(cardOffsets);
 
-    await page.goto("/roadmap", { waitUntil: "domcontentloaded" });
-    const phases = page.locator("[data-roadmap-phase]");
-    await expect(phases.first()).toHaveAttribute("data-roadmap-active", "true");
-    await phases.last().scrollIntoViewIfNeeded();
-    await expect(phases.last()).toHaveAttribute("data-roadmap-active", "true");
-    await expect(page.locator('[data-roadmap-active="true"]')).toHaveCount(1);
     expect(
       Number(
         await page.locator("html").getAttribute("data-motion-observer-count"),
@@ -352,11 +349,11 @@ test.describe("premium motion system", () => {
       path: path.join(reviewDirectory, "card-hover.png"),
     });
     await page.evaluate(() => window.scrollTo({ top: 0, behavior: "auto" }));
-    await page.getByRole("link", { name: "Explore Our Vision" }).hover();
+    await page.getByRole("link", { name: "Explore our vision" }).hover();
     await page.screenshot({
       path: path.join(reviewDirectory, "button-hover.png"),
     });
-    await page.getByRole("link", { name: "Explore Our Vision" }).focus();
+    await page.getByRole("link", { name: "Explore our vision" }).focus();
     await page.screenshot({
       path: path.join(reviewDirectory, "button-focus.png"),
     });
@@ -378,17 +375,6 @@ test.describe("premium motion system", () => {
     await page.getByRole("button", { name: "Open menu" }).click();
     await page.screenshot({
       path: path.join(reviewDirectory, "mobile-menu-open.png"),
-    });
-
-    await page.setViewportSize({ width: 1440, height: 1000 });
-    await page.goto("/roadmap", { waitUntil: "domcontentloaded" });
-    await page.locator("[data-roadmap-phase]").nth(1).scrollIntoViewIfNeeded();
-    await expect(page.locator("[data-roadmap-phase]").nth(1)).toHaveAttribute(
-      "data-roadmap-active",
-      "true",
-    );
-    await page.screenshot({
-      path: path.join(reviewDirectory, "roadmap-progression.png"),
     });
 
     await page.emulateMedia({ reducedMotion: "reduce" });

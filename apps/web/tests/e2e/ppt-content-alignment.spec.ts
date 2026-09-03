@@ -17,7 +17,6 @@ const publicRoutes = [
   "/initiatives/global-events",
   "/tamil-id",
   "/chapters",
-  "/roadmap",
   "/partners",
   "/events",
   "/news",
@@ -32,7 +31,6 @@ const reviewRoutes = [
   { path: "/initiatives", name: "initiatives" },
   { path: "/tamil-id", name: "tamil-id" },
   { path: "/chapters", name: "chapters" },
-  { path: "/roadmap", name: "roadmap" },
   { path: "/partners", name: "partners" },
   { path: "/events", name: "events" },
   { path: "/news", name: "news" },
@@ -115,11 +113,7 @@ test.describe("PPT-aligned public content", () => {
     await page.goto("/news", { waitUntil: "domcontentloaded" });
     await expect(page.locator("main article")).toHaveCount(0);
 
-    await page.goto("/roadmap", { waitUntil: "domcontentloaded" });
-    await expect(page.locator("main")).not.toContainText(
-      /one crore.*20(27|29)/i,
-    );
-
+    // /roadmap has been removed from the product.
     await page.goto("/contact", { waitUntil: "domcontentloaded" });
     await expect(page.locator("form")).toHaveCount(0);
     await expect(

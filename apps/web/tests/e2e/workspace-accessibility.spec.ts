@@ -4,38 +4,6 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
 
-/**
- * Phase E1.5 brief sections 13-16 (workspace shell coverage) + Phase E1.6
- * brief sections 7-8 (removing the color-contrast exclusion once the
- * underlying tokens were fixed, and expanding route coverage to the
- * public /join surfaces, /register, and a validation-error registration
- * stage) — automated accessibility coverage using @axe-core/playwright
- * (added as a dev-only dependency in E1.5; not previously present —
- * axe-core itself only existed transitively via eslint-plugin-jsx-a11y,
- * a lint-time-only dependency unusable here).
- *
- * One authenticated persona (Organisation + Tamil Sangam manager, also a
- * reviewer) reaches every representative authenticated state — Member,
- * Organisation, Sangam, People, Account, Admin, the switcher's open
- * state — without needing five separate fixture sets. A second, fresh
- * persona (no application of their own) covers /register, including its
- * empty-form and validation-error-visible states. The public /join
- * surfaces are scanned unauthenticated, as any visitor would see them.
- *
- * Policy (brief section 14): serious/critical violations fail the test;
- * moderate violations are logged for review, not auto-failed; minor
- * violations are logged only. No rule is disabled globally.
- *
- * E1.6 update: this spec previously excluded serious color-contrast
- * violations that matched two exact, known pre-existing foreground
- * colours (#657381/#247a59 — the old --tu-color-slate/--tu-color-success
- * values). Phase E1.6 darkened both tokens specifically to clear AA
- * against every real background they're used on (see globals.css for
- * the exact values and contrast ratios). That exclusion has been removed
- * entirely, per brief section 7 — this suite now runs with no
- * color-based filtering of any kind.
- */
-
 const password = "LocalBrowserA11y!2048Aa";
 const user = {
   email: "local-browser-a11y-manager@tamil-ulagam.test",
@@ -44,38 +12,22 @@ const user = {
 const orgName = "Local Browser A11y Org";
 const sangamName = "Local Browser A11y Sangam";
 
-// A second, deliberately clean persona — no application, no manager
-// grant, no review role — so /register's own bootstrap draft (and its
-// stage-1 validation-error state) can be scanned without the first
-// persona's already-verified organisation getting in the way.
 const freshRegistrant = {
   email: "local-browser-a11y-registrant@tamil-ulagam.test",
   fullName: "Local A11y Registrant",
 };
 
-// H4: a third, deliberately clean persona — no profile, no affiliation
-// — so the new five-stage Member Registration flow's authenticated
-// in-flow states (profile, affiliation type, directory, category
-// question, success) can be scanned end to end without colliding with
-// the other personas' own fixtures.
 const memberFlowPersona = {
   email: "local-browser-a11y-member@tamil-ulagam.test",
   fullName: "Local A11y Member",
 };
 
-// H4: a fourth persona whose only role is to hold a real *pending*
-// affiliation against `orgName`, so "Pending affiliation confirmations"
-// on Organisation People can be scanned in its populated state, not
-// just its empty one.
 const pendingAffiliationMember = {
   email: "local-browser-a11y-pending-member@tamil-ulagam.test",
   fullName: "Local A11y Pending Member",
 };
 
 async function signInAs(page: Page, credentials: { readonly email: string }) {
-  // Without this, axe can scan mid-reveal-transition (content still at
-  // its data-motion-reveal starting opacity) and flag a false
-  // "insufficient contrast" — the animation itself, not the settled UI.
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/login");
   await page.getByLabel("Email").fill(credentials.email);
@@ -88,10 +40,6 @@ async function signIn(page: Page) {
   await signInAs(page, user);
 }
 
-/** H4: fills and submits the Member Registration profile stage (Step 1
- * always renders first, even once a profile is already saved), landing
- * on "Where are you already a member?" — shared by every axe scan of a
- * later stage in the flow. */
 async function completeMemberProfileStage(
   page: Page,
   persona: { readonly fullName: string },
@@ -119,10 +67,6 @@ interface AxeViolation {
   }[];
 }
 
-/** Runs axe against the current page, fails on any serious/critical
- * violation, and logs moderate/minor ones for review — the tiered
- * policy the brief specifies rather than a blanket zero-violations
- * gate. No violation is filtered by colour, rule, or page. */
 async function checkAccessibility(page: Page, label: string) {
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
@@ -390,9 +334,6 @@ test.describe("workspace shell accessibility (axe)", () => {
     await checkAccessibility(page, "Organisation People");
   });
 
-  // H4: the populated "Pending affiliation confirmations" state — the
-  // Confirm member / Not a member row actions — not just the empty
-  // queue the test above scans.
   test("Organisation People — pending affiliation confirmation", async ({
     page,
   }) => {
@@ -412,9 +353,6 @@ test.describe("workspace shell accessibility (axe)", () => {
     );
   });
 
-  // H4: the new five-stage Member Registration flow's authenticated
-  // in-flow states, driven by a persona with no existing profile or
-  // affiliation (brief section 40).
   test("Member registration — your details (profile stage)", async ({
     page,
   }) => {
@@ -459,8 +397,6 @@ test.describe("workspace shell accessibility (axe)", () => {
     await expect(page.getByText(orgName)).toBeVisible();
     await page.getByRole("button", { name: "Select" }).click();
     await expect(page.getByText("Confirm your affiliation")).toBeVisible();
-    // orgName is a fixture in the non-Sangam tamil_community category —
-    // its own connection question (community involvement) renders here.
     await checkAccessibility(
       page,
       "Member registration (confirm affiliation, category question)",
@@ -478,7 +414,7 @@ test.describe("workspace shell accessibility (axe)", () => {
     await signIn(page);
     await page.goto("/dashboard/account");
     await expect(
-      page.getByRole("heading", { name: "Account details" }),
+      page.getByRole("heading", { name: "Account settings" }),
     ).toBeVisible();
     await checkAccessibility(page, "Account");
   });
@@ -521,10 +457,6 @@ test.describe("workspace shell accessibility (axe)", () => {
     await expect(
       page.getByRole("heading", { name: "Your Organisation" }),
     ).toBeVisible();
-    // Stage 1 has no category selected and every text field empty —
-    // submitting surfaces the app's own role="alert" validation copy
-    // (the <form noValidate> disables the browser's native validation
-    // bubbles specifically so this state is reachable and scannable).
     await page.getByRole("button", { name: "Continue" }).click();
     await expect(page.getByRole("alert").first()).toBeVisible();
     await checkAccessibility(
@@ -552,9 +484,6 @@ test.describe("public join surfaces accessibility (axe)", () => {
     process.env.RUN_SUPABASE_E2E !== "true",
     "Runs only against the explicit local Supabase environment.",
   );
-
-  // Unauthenticated — these are the pages any first-time visitor sees,
-  // no fixture setup needed.
 
   test("/join", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -726,12 +655,6 @@ test.describe("management administration accessibility (axe)", () => {
       invitationId = invitation.data.id;
     }
 
-    // A second, already-active co-manager (fixture-inserted directly,
-    // not through accept_organization_manager_invitation — this describe
-    // block is scanning UI accessibility, not re-proving the RPC
-    // security matrix local-integration-management.test.ts already
-    // covers) so the role-change/remove/transfer dialogs have a real
-    // target to open against.
     coManagerId = await ensureUser(coManager);
     const existingGrant = await admin
       .from("organization_managers")

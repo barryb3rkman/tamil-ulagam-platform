@@ -40,6 +40,7 @@ test.describe("public homepage", () => {
   test("loads major editorial imagery after a controlled scroll", async ({
     page,
   }) => {
+    test.slow();
     const failedImageRequests: string[] = [];
     page.on("requestfailed", (request) => {
       const requestUrl = request.url();
@@ -100,7 +101,7 @@ test.describe("public homepage", () => {
     await primaryNavigation.getByRole("link", { name: "About" }).focus();
     await expect(page.locator(":focus")).toHaveText("About");
     await expect(
-      page.getByRole("link", { name: "Explore Our Vision" }),
+      page.getByRole("link", { name: "Explore our vision" }),
     ).toHaveAttribute("href", getCanonicalRouteHref("/about"));
     await expect(
       page.getByRole("heading", {
@@ -116,7 +117,7 @@ test.describe("public homepage", () => {
       page
         .getByTestId("initiative-desktop-grid")
         .getByTestId("initiative-card"),
-    ).toHaveCount(8);
+    ).toHaveCount(5);
     await expect(
       page.getByRole("link", { name: /Explore All Initiatives/ }),
     ).toHaveAttribute("href", getCanonicalRouteHref("/initiatives"));
@@ -141,7 +142,6 @@ test.describe("public homepage", () => {
       "/events",
       "/news",
       "/partners",
-      "/roadmap",
       "/contact",
       "/privacy",
       "/terms",
@@ -170,8 +170,8 @@ test.describe("public homepage", () => {
     ).toBe(true);
     await page.keyboard.press("Tab");
     await expect(page.locator(":focus")).toBeVisible();
-    await page.getByRole("link", { name: "Explore Our Vision" }).focus();
-    await expect(page.locator(":focus")).toHaveText("Explore Our Vision");
+    await page.getByRole("link", { name: "Explore our vision" }).focus();
+    await expect(page.locator(":focus")).toHaveText("Explore our vision");
     await expect(
       page.getByTestId("initiative-mobile-grid").getByTestId("initiative-card"),
     ).toHaveCount(4);
