@@ -1,5 +1,6 @@
 "use client";
 
+import { BrandMark } from "@/components/brand/brand-mark";
 import { Container } from "@tamil-ulagam/ui";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -55,32 +56,42 @@ export function SiteHeader() {
       />
       <header
         data-scrolled={isScrolled}
-        className="motion-site-header border-global-navy/10 bg-warm-ivory sticky top-0 z-40 border-b"
+        className="motion-site-header border-global-navy/8 sticky top-0 z-40 border-b"
       >
         <Container
           size="wide"
           className="min-h-navigation flex items-center justify-between gap-4 min-[85rem]:grid min-[85rem]:grid-cols-[auto_minmax(0,1fr)_auto] min-[85rem]:gap-2"
         >
-          <Link
-            className="group focus-visible:ring-focus inline-flex items-center gap-3 rounded-sm focus-visible:outline-none"
-            href="/"
-            aria-label={`${siteContent.shortName} home`}
-          >
+          <div className="flex items-center gap-5">
+            <Link
+              className="group focus-visible:ring-focus inline-flex items-center gap-3 rounded-sm focus-visible:outline-none"
+              href="/"
+              aria-label={`${siteContent.shortName} home`}
+            >
+              <span className="relative grid place-items-center">
+                <span
+                  aria-hidden="true"
+                  className="bg-heritage-gold/0 group-hover:bg-heritage-gold/18 absolute size-12 rounded-full blur-lg transition-colors duration-500"
+                />
+                <BrandMark className="relative size-12 shrink-0 transition-transform duration-500 group-hover:rotate-[8deg]" />
+              </span>
+              <span className="leading-tight">
+                <span className="text-global-navy block text-base font-bold tracking-[-0.01em]">
+                  {siteContent.shortName}
+                </span>
+                <span
+                  lang="ta"
+                  className="font-tamil text-heritage-maroon hidden text-[0.78rem] sm:block"
+                >
+                  தமிழ் உலகம்
+                </span>
+              </span>
+            </Link>
             <span
               aria-hidden="true"
-              className="bg-global-navy font-tamil ring-heritage-gold/60 ring-offset-warm-ivory grid size-12 place-items-center rounded-full text-xl font-bold text-white ring-2 ring-offset-2"
-            >
-              த
-            </span>
-            <span className="leading-tight">
-              <span className="text-global-navy block text-base font-bold tracking-[-0.01em]">
-                {siteContent.shortName}
-              </span>
-              <span className="text-slate hidden text-[0.68rem] tracking-[0.12em] uppercase sm:block">
-                Global Federation
-              </span>
-            </span>
-          </Link>
+              className="via-global-navy/12 hidden h-8 w-px bg-gradient-to-b from-transparent to-transparent min-[85rem]:block"
+            />
+          </div>
 
           <PrimaryNavigation entries={primaryNavigation} />
 
@@ -89,7 +100,7 @@ export function SiteHeader() {
               <>
                 <Link
                   href="/workspace/member"
-                  className="motion-control bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button inline-flex min-h-10 items-center px-3.5 py-2 text-sm font-semibold whitespace-nowrap text-white focus-visible:outline-none"
+                  className="motion-control bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button inline-flex min-h-10 items-center px-3.5 py-2 text-sm font-semibold whitespace-nowrap text-white shadow-[0_0.4rem_1.2rem_rgba(6,29,50,0.18)] transition-all hover:-translate-y-0.5 focus-visible:outline-none"
                 >
                   Open workspace
                 </Link>
@@ -99,7 +110,7 @@ export function SiteHeader() {
                 >
                   <span
                     aria-hidden="true"
-                    className="bg-global-navy text-warm-ivory grid size-8 place-items-center rounded-full text-xs font-bold"
+                    className="gradient-gold-leaf text-ink ring-heritage-gold/30 grid size-8 place-items-center rounded-full text-xs font-bold ring-2"
                   >
                     {initials(currentUser.fullName)}
                   </span>
@@ -112,24 +123,18 @@ export function SiteHeader() {
               <>
                 <Link
                   href="/login"
-                  className="motion-control text-global-navy hover:bg-global-navy/5 hover:text-heritage-maroon focus-visible:ring-focus rounded-button inline-flex min-h-10 items-center px-2.5 py-2 text-sm font-semibold focus-visible:outline-none"
+                  className="motion-control border-global-navy/12 text-global-navy hover:border-heritage-gold/60 hover:text-heritage-maroon focus-visible:ring-focus rounded-button inline-flex min-h-10 items-center border bg-white/70 px-4 py-2 text-sm font-bold backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_0.4rem_1rem_rgba(6,29,50,0.08)] focus-visible:outline-none"
                 >
-                  Login
+                  Log in
                 </Link>
                 <Link
                   href="/join"
-                  className="motion-control bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button inline-flex min-h-10 items-center px-3.5 py-2 text-sm font-semibold whitespace-nowrap text-white focus-visible:outline-none"
+                  className="motion-control gradient-gold-leaf text-ink focus-visible:ring-focus rounded-button relative inline-flex min-h-10 items-center px-4 py-2 text-sm font-bold whitespace-nowrap shadow-[0_0.5rem_1.5rem_rgba(214,168,75,0.32)] ring-1 ring-white/40 transition-all hover:-translate-y-0.5 hover:shadow-[0_0.7rem_2rem_rgba(214,168,75,0.45)] focus-visible:outline-none"
                 >
                   Join Tamil Ulagam
                 </Link>
               </>
             )}
-            <Link
-              href="/partners"
-              className="motion-control bg-heritage-maroon hover:bg-deep-navy focus-visible:ring-focus rounded-button inline-flex min-h-10 items-center px-4 py-2 text-sm font-semibold whitespace-nowrap text-white focus-visible:outline-none"
-            >
-              Partner With Us
-            </Link>
           </div>
           <MobileNavigation
             entries={primaryNavigation}

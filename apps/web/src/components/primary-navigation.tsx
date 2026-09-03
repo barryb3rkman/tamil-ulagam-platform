@@ -26,11 +26,7 @@ export function PrimaryNavigation({ entries }: PrimaryNavigationProps) {
           <Link
             key={entry.href}
             aria-current={isCurrent ? "page" : undefined}
-            className={`rounded-button focus-visible:ring-focus px-3 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none min-[100rem]:px-3.5 ${
-              isCurrent
-                ? "bg-global-navy text-white"
-                : "text-global-navy hover:bg-global-navy/5 hover:text-heritage-maroon"
-            }`}
+            className="nav-link focus-visible:ring-focus focus-visible:outline-none"
             href={entry.href}
           >
             {entry.label}

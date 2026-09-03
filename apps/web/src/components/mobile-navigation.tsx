@@ -177,7 +177,7 @@ export function MobileNavigation({
                       href="/login"
                       onClick={closeMenu}
                     >
-                      Login
+                      Log in
                     </Link>
                   </li>
                   <li>
