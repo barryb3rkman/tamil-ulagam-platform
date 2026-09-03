@@ -67,15 +67,6 @@ test.describe("public Contact page", () => {
       ).toBeVisible();
     }
     await expect(
-      page.getByText(contactContent.informationNotToSend.statement),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: contactContent.urgentMatters.title }),
-    ).toBeVisible();
-    await expect(
-      page.getByText(contactContent.urgentMatters.statement),
-    ).toBeVisible();
-    await expect(
       page.getByRole("heading", {
         name: "Clear answers about beginning a conversation.",
       }),
@@ -102,7 +93,7 @@ test.describe("public Contact page", () => {
     await page.getByRole("link", { name: "Choose an Enquiry Path" }).click();
     await expect(page).toHaveURL(/#contact-paths$/);
 
-    const routes = ["/about", "/partners", "/roadmap", "/initiatives"] as const;
+    const routes = ["/about", "/partners", "/initiatives"] as const;
     for (const route of routes) {
       const response = await page.request.get(route);
       expect(response.status(), `${route} should resolve`).toBeLessThan(400);

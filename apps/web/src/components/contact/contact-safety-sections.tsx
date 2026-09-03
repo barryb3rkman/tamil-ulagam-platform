@@ -6,42 +6,8 @@ import {
 } from "@tamil-ulagam/ui";
 
 import { contactContent } from "@/content/contact";
-
-export function UrgentMattersSection() {
-  const { urgentMatters } = contactContent;
-
-  return (
-    <Section tone="navy" aria-labelledby="urgent-matters-title">
-      <Container
-        size="wide"
-        className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20"
-      >
-        <SectionHeading
-          id="urgent-matters-title"
-          eyebrow={urgentMatters.eyebrow}
-          title={urgentMatters.title}
-          description={urgentMatters.description}
-          className="[&>h2]:text-white [&>p:last-child]:text-white/78"
-        />
-        <div>
-          <ul className="grid border-t border-white/16 sm:grid-cols-2">
-            {urgentMatters.items.map((item) => (
-              <li
-                key={item}
-                className="border-b border-white/16 py-4 leading-7 text-white/86 sm:px-5 sm:odd:pl-0 sm:even:border-l"
-              >
-                {item}
-              </li>
-            ))}
-          </ul>
-          <p className="border-heritage-gold/55 mt-8 border-l-2 pl-5 text-lg leading-8 text-white/86">
-            {urgentMatters.statement}
-          </p>
-        </div>
-      </Container>
-    </Section>
-  );
-}
+import { CheckGrid } from "@/components/numbered-grid";
+import { NumeralFeature } from "@/components/numeral-feature";
 
 export function InstitutionalEnquiriesSection() {
   const { institutionalEnquiries } = contactContent;
@@ -62,16 +28,7 @@ export function InstitutionalEnquiriesSection() {
             >
               Useful institutional context
             </h3>
-            <ul className="border-global-navy/12 mt-5 grid border-t sm:grid-cols-2">
-              {institutionalEnquiries.details.map((detail) => (
-                <li
-                  key={detail}
-                  className="border-global-navy/12 border-b py-4 leading-7 sm:px-5 sm:odd:pl-0 sm:even:border-l"
-                >
-                  {detail}
-                </li>
-              ))}
-            </ul>
+            <CheckGrid columns={2} items={institutionalEnquiries.details} />
           </section>
           <section aria-labelledby="institutional-boundaries-title">
             <h3
@@ -119,22 +76,12 @@ export function FutureContactModelSection() {
         <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.14em] uppercase">
           {workflow.label}
         </p>
-        <ol className="border-global-navy/12 mt-5 grid border-t md:grid-cols-2 xl:grid-cols-3">
-          {workflow.steps.map((step) => (
-            <li
-              key={step.number}
-              className="border-global-navy/12 border-b py-6 md:px-6 md:odd:pl-0 xl:border-r xl:[&:nth-child(3n)]:border-r-0 xl:[&:nth-child(3n+1)]:pl-0"
-            >
-              <span className="text-heritage-gold text-sm font-semibold tracking-[0.14em]">
-                {step.number}
-              </span>
-              <h3 className="text-global-navy mt-3 text-xl font-semibold">
-                {step.title}
-              </h3>
-              <p className="text-slate mt-3 leading-7">{step.description}</p>
-            </li>
-          ))}
-        </ol>
+        <NumeralFeature
+          items={workflow.steps.map((step) => ({
+            title: step.title,
+            description: step.description,
+          }))}
+        />
       </Container>
     </Section>
   );

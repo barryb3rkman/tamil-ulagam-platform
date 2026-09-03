@@ -6,8 +6,6 @@ import {
   ContactHero,
   ContactPurposeSection,
   EnquiryCategoriesSection,
-  InformationBoundarySection,
-  UrgentMattersSection,
 } from "@/components/contact";
 import { createPageMetadata } from "@/config/metadata";
 
@@ -23,8 +21,6 @@ export default function ContactPage() {
       <ContactHero />
       <ContactPurposeSection />
       <EnquiryCategoriesSection />
-      <InformationBoundarySection />
-      <UrgentMattersSection />
       <ContactFaq />
       <ContactFinalCta />
     </>

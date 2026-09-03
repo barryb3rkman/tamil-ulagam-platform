@@ -6,6 +6,7 @@ import {
 } from "@tamil-ulagam/ui";
 
 import { contactContent } from "@/content/contact";
+import { FaqAccordion } from "@/components/faq-accordion";
 
 export function ContactFaq() {
   return (
@@ -19,18 +20,7 @@ export function ContactFaq() {
           eyebrow="FREQUENTLY ASKED QUESTIONS"
           title="Clear answers about beginning a conversation."
         />
-        <dl className="border-global-navy/12 divide-global-navy/12 border-y">
-          {contactContent.faqs.map((faq) => (
-            <div key={faq.title} className="py-6">
-              <dt className="text-global-navy text-xl font-semibold">
-                {faq.title}
-              </dt>
-              <dd className="text-slate mt-3 max-w-3xl leading-7">
-                {faq.description}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <FaqAccordion items={contactContent.faqs} />
       </Container>
     </Section>
   );

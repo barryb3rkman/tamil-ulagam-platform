@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, fireEvent } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import ContactPage from "@/app/contact/page";
@@ -27,7 +27,7 @@ describe("public Contact page", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("renders every enquiry path and information boundary", () => {
+  it("renders every enquiry path", () => {
     render(<ContactPage />);
 
     for (const category of contactContent.categories.items) {
@@ -38,23 +38,6 @@ describe("public Contact page", () => {
         screen.getAllByRole("link", { name: category.linkLabel })[0],
       ).toHaveAttribute("href", category.href);
     }
-    for (const item of contactContent.informationNotToSend.items) {
-      expect(screen.getByText(item)).toBeVisible();
-    }
-    expect(
-      screen.getByText(contactContent.informationNotToSend.statement),
-    ).toBeVisible();
-  });
-
-  it("retains concise emergency and sensitive-information guidance", () => {
-    render(<ContactPage />);
-
-    expect(
-      screen.getByRole("heading", { name: contactContent.urgentMatters.title }),
-    ).toBeVisible();
-    expect(
-      screen.getByText(contactContent.urgentMatters.statement),
-    ).toBeVisible();
   });
 
   it("keeps enquiry guidance direct and preserves public routes", () => {
@@ -63,6 +46,22 @@ describe("public Contact page", () => {
     expect(
       screen.queryByText(/not currently open|future enquiry|in development/i),
     ).not.toBeInTheDocument();
+  });
+
+  it("never tells visitors that a registration route which actually works is closed", () => {
+    const closedClaims = contactContent.responseExpectations.items.filter(
+      (item) => /not currently open|not open|closed/i.test(item),
+    );
+    for (const claim of closedClaims) {
+      expect(claim).not.toMatch(/membership/i);
+      expect(claim).not.toMatch(/organisation/i);
+      expect(claim).not.toMatch(/sangam/i);
+    }
+  });
+
+  it("preserves public routes", () => {
+    render(<ContactPage />);
+
     for (const link of screen.getAllByRole("link", {
       name: "Explore Tamil Ulagam",
     })) {
@@ -74,13 +73,14 @@ describe("public Contact page", () => {
       expect(link).toHaveAttribute("href", "/partners");
     }
     expect(
-      screen.getByRole("link", { name: "View the Roadmap" }),
-    ).toHaveAttribute("href", "/roadmap");
+      screen.getByRole("link", { name: "Join Tamil Ulagam" }),
+    ).toHaveAttribute("href", "/join");
     expect(
       screen.getAllByRole("link", { name: "Explore Initiatives" })[0],
     ).toHaveAttribute("href", "/initiatives");
     for (const faq of contactContent.faqs) {
       expect(screen.getByText(faq.title)).toBeVisible();
+      fireEvent.click(screen.getByRole("button", { name: faq.title }));
       expect(screen.getByText(faq.description)).toBeVisible();
     }
   });

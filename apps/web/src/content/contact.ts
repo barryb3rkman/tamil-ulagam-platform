@@ -132,31 +132,6 @@ export const contactContent = {
       "Accessibility or language needs",
     ],
   },
-  informationNotToSend: {
-    eyebrow: "WHAT NOT TO SEND",
-    title:
-      "Do not send sensitive documents or unnecessary personal information.",
-    statement:
-      "Do not share identity documents or sensitive personal information through public contact routes.",
-    items: [
-      "Passports",
-      "Aadhaar cards",
-      "National identity documents",
-      "Driving licences",
-      "Bank details",
-      "Card details",
-      "Passwords",
-      "Medical records",
-      "Confidential employment records",
-      "Children’s personal information",
-      "Private member databases",
-      "Unredacted contracts",
-      "Confidential legal documents",
-      "Biometric information",
-      "Verification codes",
-      "Login credentials",
-    ],
-  },
   routing: {
     eyebrow: "HOW ENQUIRIES MAY BE ROUTED",
     title: "Contact should be routed by purpose, responsibility and access.",
@@ -213,7 +188,8 @@ export const contactContent = {
       "Some enquiries may require clarification",
       "Some requests may be outside scope",
       "Partnership discussions require review",
-      "Membership and chapter applications are not currently open",
+      "Membership, organisation and Tamil Sangam registration is open through Join, not through enquiry",
+      "Chapter applications are not currently open",
       "Event and article submissions are not currently open",
       "Urgent deadlines should not be assumed accepted",
       "Public information may already exist on the website",
@@ -221,22 +197,6 @@ export const contactContent = {
     ],
     statement:
       "Response depends on scope and availability. No service level or guaranteed response time is currently offered.",
-  },
-  urgentMatters: {
-    eyebrow: "URGENT AND EMERGENCY MATTERS",
-    title: "This website is not an emergency or crisis-response service.",
-    description:
-      "Contact the appropriate local emergency, medical, legal or public authority when immediate support or intervention is required.",
-    items: [
-      "Do not use Tamil Ulagam for medical emergencies",
-      "Do not use it for police, fire or immediate safety incidents",
-      "Do not use it for urgent legal representation",
-      "Do not use it for crisis counselling",
-      "Do not use it for immigration emergencies",
-      "Do not use it to report immediate danger",
-    ],
-    statement:
-      "Tamil Ulagam does not monitor public enquiries continuously and cannot provide emergency intervention.",
   },
   institutionalEnquiries: {
     eyebrow: "ORGANISATIONS AND AUTHORISED REPRESENTATIVES",
@@ -380,7 +340,7 @@ export const contactContent = {
       variant: "text",
     },
     textCallToActions: [
-      { label: "View the Roadmap", href: "/roadmap", variant: "text" },
+      { label: "Join Tamil Ulagam", href: "/join", variant: "text" },
       { label: "Explore Initiatives", href: "/initiatives", variant: "text" },
     ] as const satisfies readonly CallToAction[],
   },
@@ -396,20 +356,12 @@ export const contactContent = {
   readonly informationToInclude: TextSection & {
     readonly items: readonly string[];
   };
-  readonly informationNotToSend: TextSection & {
-    readonly statement: string;
-    readonly items: readonly string[];
-  };
   readonly routing: TextSection & {
     readonly areas: readonly string[];
     readonly principles: readonly string[];
   };
   readonly privacy: TextSection & { readonly principles: readonly string[] };
   readonly responseExpectations: TextSection & {
-    readonly items: readonly string[];
-    readonly statement: string;
-  };
-  readonly urgentMatters: TextSection & {
     readonly items: readonly string[];
     readonly statement: string;
   };
