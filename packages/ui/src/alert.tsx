@@ -14,13 +14,6 @@ const toneClassName: Record<NonNullable<AlertProps["tone"]>, string> = {
   info: "border-heritage-gold/40 bg-heritage-gold/10 text-global-navy",
 };
 
-/**
- * Generalizes the inline `role="alert"`/`role="status"` banner pattern
- * already used throughout the app (form errors, the duplicate-signal
- * warning, the platform-error banner) into one primitive with a tone.
- * Callers choose `role` (defaults to "status" — pass `role="alert"` for
- * anything needing immediate attention).
- */
 export function Alert({
   children,
   className,

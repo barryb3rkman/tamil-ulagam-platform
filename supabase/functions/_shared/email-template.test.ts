@@ -1,8 +1,3 @@
-// Pure TS, zero Deno-specific APIs — runs directly under Node's built-in
-// test runner (`node --test supabase/functions/_shared`), unlike the
-// other files in this directory which need `Deno.env` and `npm:`
-// specifiers Node cannot resolve. See docs/operations/resend-email.md
-// for why the Edge Functions themselves are not unit-tested this way.
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
@@ -45,7 +40,7 @@ describe("renderEmail", () => {
       paragraphs: ["Body."],
     });
     assert.doesNotMatch(html, /<script/i);
-    assert.doesNotMatch(html, /\son\w+=/i); // onclick=, onload=, etc.
+    assert.doesNotMatch(html, /\son\w+=/i);
     assert.doesNotMatch(html, /<style/i);
     assert.doesNotMatch(html, /@font-face/i);
   });
@@ -87,16 +82,13 @@ describe("renderEmail", () => {
   });
 
   it("does not double-escape text that a caller already escaped", () => {
-    // escapeHtml("O'Brien & Co.") would produce &#39; and &amp; — renderEmail
-    // must pass that straight through to the HTML unmodified, and the
-    // plain-text fallback must decode it back to the original characters.
     const escaped = escapeHtml("O'Brien & Co.");
     const { html, text } = renderEmail({
       heading: "Test",
       paragraphs: [escaped],
     });
     assert.match(html, /O&#39;Brien &amp; Co\./);
-    assert.doesNotMatch(html, /&amp;#39;/); // would indicate double-escaping
+    assert.doesNotMatch(html, /&amp;#39;/);
     assert.match(text, /O'Brien & Co\./);
   });
 });

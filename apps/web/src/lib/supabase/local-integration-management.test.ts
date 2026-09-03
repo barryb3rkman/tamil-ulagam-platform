@@ -9,11 +9,6 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import type { Database } from "./database.types";
 
-// Same skip/run convention as local-integration-membership.test.ts, run
-// by the same `pnpm test:supabase` script. Every assertion below uses a
-// real, signed-in user's own client — never the service-role client —
-// so RLS/RPC authorization is exercised for real (brief section 46:
-// "Do not shortcut authorization assertions with service-role sessions").
 const localDescribe =
   process.env.RUN_SUPABASE_INTEGRATION === "true"
     ? describe.sequential
@@ -246,8 +241,6 @@ localDescribe(
       expect(accept.error).toBeNull();
       expect(accept.data?.role).toBe("admin");
 
-      // Acceptance must NOT create an ordinary membership row (brief
-      // section 16 — a hard, non-negotiable separation).
       const membershipRows = await admin
         .from("organization_memberships")
         .select("id")
@@ -283,8 +276,6 @@ localDescribe(
       expect(events).toContain("invited");
       expect(events).toContain("invitation_accepted");
 
-      // No update/delete grant exists for organization_manager_history to
-      // any authenticated role — confirmed structurally, not just by RLS.
       const tamperAttempt = await owner.client
         .from("organization_manager_history")
         .delete()
@@ -352,9 +343,6 @@ localDescribe(
         {
           target_organization_id: orgId,
           target_user_id: actor("admin-invitee").user.id,
-          // "owner" is a member of the generated enum type, so this
-          // compiles — the RPC itself rejects it at runtime, which is
-          // exactly what this test verifies.
           new_role: "owner",
         },
       );
@@ -365,8 +353,6 @@ localDescribe(
       const owner = actor("owner");
       const invitee = actor("admin-invitee");
 
-      // Give them an unrelated ordinary membership first, to prove removal
-      // never touches it.
       const now = new Date().toISOString();
       const membership = await admin.from("organization_memberships").insert({
         organization_id: orgBId,
@@ -585,15 +571,6 @@ localDescribe(
       ).toBe(true);
     });
 
-    // -------------------------------------------------------------
-    // Phase H1 — legacy authorization retirement regression coverage
-    // (20260829000000_release_candidate_hardening.sql). A person with
-    // ONLY a legacy organization_members row and no organization_managers
-    // grant is the exact state can_manage_organization()/
-    // is_organization_member() used to authorize via their OR-branch —
-    // this proves that branch is gone, using a real signed-in session,
-    // never a service-role shortcut.
-    // -------------------------------------------------------------
     it("H1: a legacy-only organization_members row no longer grants any management authority", async () => {
       const legacyOnly = await createActor(
         "legacy-only",
@@ -645,9 +622,6 @@ localDescribe(
       expect(realOwnerCanManage.data).toBe(true);
     });
 
-    // -------------------------------------------------------------
-    // Phase H1 — invitation-expiry projection regression coverage.
-    // -------------------------------------------------------------
     it("H1: list RPCs project an obviously expired invitation as expired, not stale Pending", async () => {
       const owner = actor("owner-b");
       const expiredRecipient = await createActor(
@@ -683,9 +657,6 @@ localDescribe(
         false,
       );
 
-      // The row itself was updated in place, not merely projected —
-      // confirmed by re-reading it as the owner (a second call sees the
-      // already-persisted 'expired' value, not a repeated live sweep).
       const persisted = await admin
         .from("organization_manager_invitations")
         .select("status")

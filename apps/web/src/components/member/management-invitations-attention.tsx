@@ -7,12 +7,6 @@ import { useEffect, useState } from "react";
 import { usePlatform } from "@/features/enrollment/platform-provider";
 import { useManagementService } from "@/features/management/use-management-service";
 
-/**
- * The Member Workspace attention item for a pending management
- * invitation (brief section 15). Deliberately silent on load/error/
- * empty — this is a supplementary notice, not the page's primary
- * content, so it never shows a skeleton or error state of its own.
- */
 export function ManagementInvitationsAttention() {
   const { currentUser, isHydrated } = usePlatform();
   const managementService = useManagementService();

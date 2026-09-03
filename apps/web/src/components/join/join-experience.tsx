@@ -37,21 +37,6 @@ function overrideFor(
   return undefined;
 }
 
-/**
- * Top-level /join composition: hero + journey selector, personalized
- * (H2 brief section 23) from state the platform already loads on
- * hydration — no new fetch, no new backend call, and never a redirect
- * ("prefer clarity over clever redirects"): a signed-in visitor with a
- * draft/needs-changes registration sees "Continue your registration";
- * one with a verified organisation or Sangam sees "Open workspace"
- * linking straight there; everyone else still sees the normal "Start
- * registration" entrance — including someone who already has one
- * entity, since registering a second Organisation or Sangam remains a
- * legitimate action. The old admin-console banner is gone entirely
- * (H2 brief section 22): reviewer/admin access belongs in the
- * authenticated header/workspace switcher, not as a second product
- * bolted onto the public entrance.
- */
 export function JoinExperience() {
   const { isHydrated, myOrganisationApplications } = usePlatform();
 

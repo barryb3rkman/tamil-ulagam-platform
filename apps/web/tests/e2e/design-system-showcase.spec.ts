@@ -1,7 +1,5 @@
 import { expect, test } from "@playwright/test";
 
-// Internal QA surface — verifies it renders, is excluded from indexing,
-// and holds up responsively. This is not a public product journey.
 test.describe("design system showcase (internal QA surface)", () => {
   test("is not indexable and is not linked from the homepage", async ({
     page,

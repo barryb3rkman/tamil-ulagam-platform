@@ -1,16 +1,3 @@
-// Sends a notification email for a management invitation that already
-// exists (invite_organization_manager already created it — this function
-// never creates or mutates the invitation itself, only notifies about
-// one that's already in trusted DB state).
-//
-// Same two-layer authorization as organization-email-verification:
-//  1. The caller's own JWT must pass can_manage_organization() for the
-//     organisation the invitation belongs to.
-//  2. Only then does a service-role client re-read the invitation from
-//     the database — recipient email, role, expiration, organisation
-//     name are ALL derived from that trusted row, never from the
-//     request body. A client cannot choose an arbitrary recipient, role,
-//     or organisation name for this email.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
@@ -87,10 +74,6 @@ Deno.serve(async (req: Request) => {
   if (organizationError || !organization) {
     return jsonResponse({ ok: false, reason: "error" }, 404);
   }
-  // Mirrors packages/shared/src/membership.ts's isTamilSangam() exactly
-  // (category === "tamil_community" AND subtype === "Tamil Sangam") — not
-  // reimportable here (Deno, not an npm-published package), so kept in
-  // sync deliberately rather than approximated.
   const details = (
     organization as {
       organization_tamil_community_details?: { subtype?: string }[] | null;

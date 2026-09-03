@@ -5,18 +5,6 @@ import {
   type ValidationErrors,
 } from "@/features/enrollment/validation";
 
-/**
- * Phase H3 (Tamil Sangam registration V2) — dedicated Sangam validators.
- *
- * Deliberately NOT reusing validateOrganisationContact/
- * validateRepresentativeIdentity from features/enrollment/validation.ts:
- * those require officialEmail/officialPhone and a single generic
- * "representative", both of which the Sangam journey no longer collects
- * (H3 brief sections 3/4). A parallel, Sangam-only file keeps every
- * change here from being able to affect the Organisation wizard, which
- * still imports the original functions unchanged.
- */
-
 const SANGAM_MIN_YEAR = 1800;
 const MAX_MEMBER_COUNT = 5_000_000;
 
@@ -115,14 +103,6 @@ export function validatePresident(
   return errors;
 }
 
-/**
- * Sangam's own website/social-link normalizer (H3 brief section 17) — no
- * existing project-wide URL normalizer to reuse (Organisation's website
- * field requires a literal http(s):// prefix and is left exactly as-is).
- * A bare "sangam.example.com" or "www.sangam.example.com" is accepted and
- * silently prefixed with https://; anything else must already parse as a
- * valid absolute http(s) URL.
- */
 export function normalizeUrl(value: string): string {
   const trimmed = value.trim();
   if (!trimmed) return "";

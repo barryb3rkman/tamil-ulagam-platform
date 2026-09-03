@@ -2,8 +2,6 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { Sheet } from "@tamil-ulagam/ui";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
-// See dialog.test.tsx for why this polyfill exists — jsdom does not
-// implement the native <dialog> imperative API.
 beforeAll(() => {
   if (!HTMLDialogElement.prototype.showModal) {
     HTMLDialogElement.prototype.showModal = function showModal(

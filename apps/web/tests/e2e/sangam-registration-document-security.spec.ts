@@ -3,18 +3,6 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
 
-/**
- * Phase H3 (Tamil Sangam registration V2) — the real registration
- * document upload, its "formally registered = Yes" conditional
- * requirement, and the storage RLS security matrix (brief sections
- * 9-15, 34-35, 39, 43): applicant A cannot access applicant B's
- * document, an unrelated authenticated user cannot access it, an
- * anonymous caller cannot access it, and a reviewer can. Storage access
- * is asserted directly against the Supabase Storage API per persona
- * (not just through the UI) — the only way to actually prove the RLS
- * policy, not merely that the UI happens not to offer a button for it.
- */
-
 const BUCKET = "sangam-registration-documents";
 
 const applicantA = {
@@ -150,11 +138,6 @@ test.describe("local Supabase Sangam registration document upload & security", (
         { timeout: 15000 },
       );
 
-      // Reload before continuing — document metadata must survive a hard
-      // reload the same way every other field does (brief section 25).
-      // The registration number itself is autosaved on a debounce, so
-      // wait past that interval before reloading, the same convention
-      // sangam-registration-lifecycle.spec.ts already established.
       await pageA.waitForTimeout(1300);
       await pageA.reload();
       await expect(pageA.getByLabel(/Registration number/)).toHaveValue(
@@ -230,8 +213,6 @@ test.describe("local Supabase Sangam registration document upload & security", (
       if (details.error) throw new Error(details.error.message);
       const documentPath = details.data.registration_document_path;
       expect(documentPath).toBeTruthy();
-      // Deterministic ownership-scoped path (brief section 11): folder is
-      // the application id, never the user-supplied filename.
       expect(documentPath).toMatch(/^[0-9a-f-]{36}\/[0-9a-f-]{36}\.pdf$/);
 
       await pageA.getByRole("button", { name: "Submit registration" }).click();
@@ -240,9 +221,6 @@ test.describe("local Supabase Sangam registration document upload & security", (
         pageA.getByRole("heading", { name: "Registration submitted" }),
       ).toBeVisible();
 
-      // ==================== SECURITY MATRIX ====================
-      // Applicant B (an unrelated Sangam manager) cannot download A's
-      // document.
       const clientB = createClient<Database>(apiUrl, anonKey, {
         auth: { autoRefreshToken: false, persistSession: false },
       });
@@ -256,8 +234,6 @@ test.describe("local Supabase Sangam registration document upload & security", (
         .download(documentPath!);
       expect(downloadB.error).toBeTruthy();
 
-      // An unrelated authenticated user (no Sangam management relationship
-      // at all) cannot download it either.
       const clientUnrelated = createClient<Database>(apiUrl, anonKey, {
         auth: { autoRefreshToken: false, persistSession: false },
       });
@@ -295,9 +271,6 @@ test.describe("local Supabase Sangam registration document upload & security", (
       expect(downloadReviewer.error).toBeFalsy();
       expect(downloadReviewer.data).toBeTruthy();
 
-      // Now that the application is submitted (locked), applicant A can
-      // no longer replace/remove the document — the same lifecycle rule
-      // every other editable field already follows.
       const clientA = createClient<Database>(apiUrl, anonKey, {
         auth: { autoRefreshToken: false, persistSession: false },
       });
@@ -309,9 +282,6 @@ test.describe("local Supabase Sangam registration document upload & security", (
       const blockedRemove = await clientA.storage
         .from(BUCKET)
         .remove([documentPath!]);
-      // RLS denies the delete outright — Supabase Storage's remove()
-      // resolves without an error even when zero rows matched, so the
-      // real assertion is that the object is still there afterward.
       void blockedRemove;
       const stillThere = await clientReviewer.storage
         .from(BUCKET)

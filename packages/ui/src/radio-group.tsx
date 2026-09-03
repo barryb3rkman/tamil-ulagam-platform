@@ -15,8 +15,6 @@ export interface RadioGroupProps {
   readonly required?: boolean;
 }
 
-/** A fieldset of mutually-exclusive options — self-contained, matching
- * `Checkbox`, since a radio option's label is intrinsic to it. */
 export function RadioGroup({
   error,
   label,

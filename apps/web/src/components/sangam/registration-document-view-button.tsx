@@ -8,14 +8,6 @@ import { isSupabasePublicEnvironmentConfigured } from "@/lib/supabase/environmen
 const REGISTRATION_DOCUMENT_BUCKET = "sangam-registration-documents";
 const SIGNED_URL_TTL_SECONDS = 120;
 
-/**
- * Shared by the applicant's own Sangam review screen AND Admin's
- * application-detail rendering (H3 brief sections 13/30) — a short-lived
- * (120s) signed URL fetched on demand, never a permanent public URL,
- * never persisted. RLS (can_read_sangam_document) is what actually
- * decides whether the click succeeds: an organisation manager, a
- * reviewer, or a platform admin — nobody else.
- */
 export function RegistrationDocumentViewButton({
   filename,
   path,

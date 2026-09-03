@@ -19,10 +19,6 @@ const entityParam: Record<Exclude<WorkspaceType, "admin">, string | null> = {
   sangam: "sangam",
 };
 
-/** Thin client boundary a module route's page.tsx renders inside a
- * `<Suspense>` — the only reason this needs to be a client component at
- * all is reading the organisation/Sangam id query param, the same
- * pattern `ManagerPeople` and the workspace landing pages already use. */
 export function ModuleRouteContent({
   workspaceModule,
   workspaceType,

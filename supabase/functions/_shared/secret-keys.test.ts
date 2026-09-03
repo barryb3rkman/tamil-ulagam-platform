@@ -1,8 +1,3 @@
-// Pure TS, zero Deno-specific APIs — runs directly under Node's built-in
-// test runner, exactly like email-template.test.ts. Only
-// `parseSecretKeysDictionary` is covered here; `createServiceRoleClient`
-// itself (the `Deno.env.get` + `createClient` wrapper) is Deno-only and
-// untestable under Node, matching this repo's established pattern.
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 

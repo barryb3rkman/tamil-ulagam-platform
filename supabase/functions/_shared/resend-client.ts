@@ -1,32 +1,3 @@
-// Shared transactional-email sender for every trusted, event-specific
-// Edge Function in this project (send-management-invitation,
-// send-affiliation-outcome, send-registration-status, and the
-// organisation-email-verification function). Never imported by, or
-// reachable from, browser code — this file only runs inside Supabase
-// Edge Functions, which already have RESEND_API_KEY as a server-only
-// secret unavailable to any client bundle.
-//
-// This module owns three responsibilities every caller would otherwise
-// duplicate:
-//   1. Idempotency — claim a unique idempotency_key in email_deliveries
-//      BEFORE calling Resend at all. A double click, an RPC retry, or an
-//      Edge Function retry that reuses the same key hits the table's
-//      unique index and is treated as an already-handled duplicate, not
-//      a second send.
-//   2. Staging recipient safety — when EMAIL_RECIPIENT_OVERRIDE is set,
-//      the INTENDED recipient is still what gets recorded in the
-//      delivery log (so operational history stays meaningful), but the
-//      actual Resend "to" address is always the override. Production
-//      never sets this variable.
-//   3. Delivery logging — one row per attempt, operational metadata
-//      only: event type, recipient, a loose reference to the entity the
-//      email is about, provider message id, status, failure category.
-//      Never a full HTML body, never secret material.
-//
-// A missing RESEND_API_KEY is not an error: it returns
-// { ok: false, reason: "not_configured" } exactly like the pre-existing
-// organization-email-verification function already does, so every
-// caller degrades the same, well-understood way.
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
 
 const DEFAULT_FROM_EMAIL = "no-reply@notifications.tamilulagam.in";
@@ -34,15 +5,10 @@ const DEFAULT_FROM_NAME = "Tamil Ulagam";
 
 export interface SendEmailInput {
   readonly eventType: string;
-  /** The intended recipient — recorded in the delivery log even when
-   * EMAIL_RECIPIENT_OVERRIDE redirects actual delivery elsewhere. */
   readonly to: string;
   readonly subject: string;
   readonly html: string;
   readonly text: string;
-  /** A stable key unique to this exact notification (e.g.
-   * `affiliation-outcome:<membershipId>:<status>`) — the sole mechanism
-   * preventing a duplicate send. */
   readonly idempotencyKey: string;
   readonly relatedTable?: string;
   readonly relatedId?: string;
@@ -75,8 +41,6 @@ export async function sendTransactionalEmail(
       idempotency_key: input.idempotencyKey,
     });
   if (claimError) {
-    // Postgres unique_violation — another attempt already claimed this
-    // exact notification. Safe, expected, not an error.
     if (claimError.code === "23505") {
       return { ok: true, status: "skipped_duplicate" };
     }

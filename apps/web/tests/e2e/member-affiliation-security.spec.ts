@@ -3,24 +3,6 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
 
-/**
- * Phase H4 — the remaining personas from the brief's E2E matrix (section
- * 42) that are genuinely UI-dependent:
- *   B. Organisation member — the category-aware connection question
- *      actually renders and is required.
- *   C. rejection — "Not a member" flips the member's own workspace to a
- *      restrained "not confirmed" state, not an accusatory one.
- *   D. cross-tenant — an unrelated organisation's manager never sees
- *      another organisation's pending affiliation queue at all.
- *
- * Personas E (management separation), F (multiple affiliations) and G
- * (unverified-entity attack) are proven directly against the RPCs in
- * local-integration-membership.test.ts — the correct layer for a
- * database-level security invariant, and already covered there with
- * real JWT personas; re-proving the identical guarantee through a full
- * browser round trip would only add runtime, not confidence.
- */
-
 const password = "LocalBrowserSecurity!2048Aa";
 
 async function signIn(page: Page, email: string) {
@@ -266,13 +248,8 @@ test.describe("local Supabase Member affiliation — security & category-questio
     await expect(
       page.getByRole("heading", { name: unrelatedOrgName, exact: true }),
     ).toBeVisible();
-    // The education org's own applicant/member names never leak into an
-    // unrelated manager's People queue.
     await expect(page.getByText(educationOrgName)).toHaveCount(0);
 
-    // Directly attempting to view the education org's own People page
-    // (a manager grant this account does not hold) is refused, not
-    // silently redirected to someone else's data.
     await page.goto(
       `/workspace/organisation/people?organization=${educationOrgId}`,
     );

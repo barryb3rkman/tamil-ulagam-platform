@@ -7,20 +7,11 @@ export interface CheckboxProps extends Omit<
   "type"
 > {
   readonly id: string;
-  /** Accepts a ReactNode (not just a string) so a caller can embed an
-   * inline link inside the label — a common real need (Terms of Use /
-   * Privacy Policy consent) that a plain-string label can't express. */
   readonly label: ReactNode;
   readonly description?: string;
   readonly error?: string;
 }
 
-/**
- * A single labelled checkbox row — the label is intrinsic to a
- * checkbox (clicking it toggles the control), so unlike Input/Textarea/
- * Select this is a self-contained primitive rather than something you
- * compose with `FormField`.
- */
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   function Checkbox(
     { className, description, error, id, label, ...props },

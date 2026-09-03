@@ -194,8 +194,6 @@ describe("SangamRegistrationWizard auth-aware states", () => {
       expect(screen.getByLabelText(/Sangam name/)).toBeInTheDocument(),
     );
     expect(ensureDraft).toHaveBeenCalledTimes(1);
-    // No membership-type/subtype selector is ever offered to the Sangam
-    // applicant — subtype is fixed server-side.
     expect(screen.queryByText(/subtype/i)).not.toBeInTheDocument();
   });
 

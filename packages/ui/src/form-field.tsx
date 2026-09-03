@@ -9,24 +9,6 @@ export interface FormFieldProps {
   readonly children: ReactNode;
 }
 
-/**
- * Label + description/error wrapper shared by every form primitive
- * below. A generic composition primitive: it renders the label (tied to
- * `id` via `htmlFor`) and, when there's an error or helper text, a
- * description paragraph at `descriptionId(id)`. Deliberately does not
- * reach into `children` to auto-wire `aria-describedby`/`aria-invalid`
- * onto the control — that would mean either cloning children (fragile,
- * type-unsafe) or a context bridge (hidden behaviour this design system
- * explicitly avoids). Wire it explicitly instead:
- *
- *   <FormField id={id} label="Name" error={error}>
- *     <Input
- *       id={id}
- *       aria-invalid={Boolean(error)}
- *       aria-describedby={error ? descriptionId(id) : undefined}
- *     />
- *   </FormField>
- */
 export function FormField({
   children,
   error,
@@ -62,9 +44,6 @@ export function FormField({
   );
 }
 
-/** The description/error paragraph id a given field id resolves to —
- * exported so Input/Textarea/Select/etc. can wire `aria-describedby`
- * without either component needing to know the other's internals. */
 export function descriptionId(fieldId: string): string {
   return `${fieldId}-description`;
 }

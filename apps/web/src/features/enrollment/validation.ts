@@ -81,13 +81,6 @@ export function validateLogin(input: {
   return errors;
 }
 
-// Lean V2 intake spans three wizard steps, each writing to the same
-// Organisation record. Step-scoped validators only check the fields that
-// step actually asks for, so an earlier step's "Continue" is never
-// blocked by a later step's still-empty fields. validateOrganisation
-// combines both — used at final review, where everything must be valid
-// together.
-
 // Step 1 — Organisation: name, country, region, city, description.
 export function validateOrganisationIdentity(
   organisation: Organisation,
@@ -158,10 +151,6 @@ export function validateOrganisation(
   };
 }
 
-// Lean V2 intake: one or two classifying questions per category. Every
-// richer field (activities, membership size, licensing detail, employee
-// size, and so on) remains a valid, optional column for post-verification
-// profile enrichment — it is simply not asked, or required, at intake.
 export function validateCategoryProfile(
   profile: OrganisationCategoryProfile | null,
 ): ValidationErrors {
@@ -197,10 +186,6 @@ export function validateCategoryProfile(
   return errors;
 }
 
-// Lean V2 intake: full name, role, and phone, collected on the Contact &
-// representative step. Email is populated from the authenticated account
-// rather than asked again; designation remains a valid, optional column
-// for later profile enrichment.
 export function validateRepresentativeIdentity(
   representative: OrganisationRepresentative,
 ): ValidationErrors {
@@ -214,10 +199,6 @@ export function validateRepresentativeIdentity(
   return errors;
 }
 
-// The two declarations are affirmed together through a single combined
-// consent checkbox on the Registration & trust step, but both underlying
-// flags are still recorded — see the single "declaration" error key,
-// which the UI maps to one checkbox controlling both.
 export function validateDeclaration(
   representative: OrganisationRepresentative,
 ): ValidationErrors {

@@ -2,9 +2,6 @@ import { isTamilSangam, type EligibleOrganisation } from "@tamil-ulagam/shared";
 
 import { organisationCategories } from "@/content/enrollment";
 
-/** "Tamil Sangam" for a Sangam-subtyped organisation, otherwise the
- * existing organisation-category label (e.g. "Education"). Never derived
- * from the organisation's name — see EligibleOrganisation/isTamilSangam. */
 export function organisationKindLabel(
   organisation: EligibleOrganisation,
 ): string {

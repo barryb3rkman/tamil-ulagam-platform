@@ -1,12 +1,3 @@
-// Sends "Affiliation confirmed" or "Affiliation could not be confirmed"
-// after a manager has already decided a membership (decide_organization_
-// membership already ran — this function only notifies about a decision
-// that already exists in trusted DB state).
-//
-// The outcome (confirmed vs not confirmed) is read from the
-// organization_memberships row itself, never from the request body — a
-// client cannot choose which email gets sent, only which already-decided
-// membership to notify about, and only for an organisation it manages.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
@@ -70,8 +61,6 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ ok: false, reason: "error" }, 404);
   }
   if (membership.status !== "approved" && membership.status !== "rejected") {
-    // Nothing to notify about yet (still pending) or not an outcome this
-    // notification exists for (e.g. revoked) — a safe no-op, not an error.
     return jsonResponse({ ok: true, skipped: true });
   }
   if (!membership.member_email) {

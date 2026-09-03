@@ -128,14 +128,6 @@ export const representativeRelationships = [
   { value: "other", label: "Other" },
 ] as const;
 
-/**
- * Lean V2 intake asks for a simplified role grouping instead of the full
- * eight-value relationship enum. Each option maps onto one existing enum
- * value (see mapRepresentativeRole in the wizard) so no stored data or
- * historical record changes shape. The full `representativeRelationships`
- * list above stays in use for displaying already-submitted applications,
- * whatever value they hold.
- */
 export const representativeRoleOptions = [
   { value: "leadership", label: "Leadership (founder, president, director)" },
   { value: "staff_administrator", label: "Staff / Administrator" },
@@ -324,15 +316,6 @@ export function getCategoryLabel(category: OrganisationCategory | ""): string {
   );
 }
 
-/**
- * "Tamil Sangam" for a Sangam-identified application, otherwise the
- * plain category label (e.g. "Education") — the admin-facing equivalent
- * of organisationKindLabel (components/member/organisation-presentation.ts),
- * which works on the narrower EligibleOrganisation projection instead of
- * an application's own categoryProfile. Reviewers should never see
- * Sangam-specific data under a generic "Tamil / Community Organisation"
- * label (D1 brief section 25).
- */
 export function getOrganisationDisplayLabel(
   category: OrganisationCategory | "",
   profile: OrganisationCategoryProfile | null,
@@ -341,11 +324,6 @@ export function getOrganisationDisplayLabel(
   return getCategoryLabel(category);
 }
 
-/**
- * Displays a stored representative relationship using its full, properly
- * cased label (e.g. "President / Chairperson") rather than the raw enum
- * value, for both the applicant review page and admin review.
- */
 export function getRepresentativeRoleLabel(relationship: string): string {
   return (
     representativeRelationships.find((option) => option.value === relationship)

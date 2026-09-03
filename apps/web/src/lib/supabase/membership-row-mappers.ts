@@ -7,13 +7,6 @@ import type {
 
 import type { Database, Tables } from "@/lib/supabase/database.types";
 
-/**
- * Kept separate from database-row-mappers.ts deliberately, matching the
- * config/join-images.ts precedent: the membership domain (Phase A1) can
- * evolve independently of the existing enrollment row-mapping file
- * without risking it.
- */
-
 export type OrganizationManagerRow = Tables<"organization_managers">;
 export type OrganizationMembershipRow = Tables<"organization_memberships">;
 export type OrganizationMembershipHistoryRow =

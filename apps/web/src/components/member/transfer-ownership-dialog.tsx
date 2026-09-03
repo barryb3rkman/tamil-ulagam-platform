@@ -16,12 +16,6 @@ const outcomeLabel: Record<PreviousOwnerOutcome, string> = {
   leave: "Leave management entirely",
 };
 
-/**
- * The one deliberately heavier confirmation dialog in G1 (brief section
- * 24) — a two-step form (choose the new owner, choose what happens to
- * you) rather than a single dropdown, since transferring ownership is
- * irreversible without the new owner transferring it back.
- */
 export function TransferOwnershipDialog({
   organisationId,
   organisationName,

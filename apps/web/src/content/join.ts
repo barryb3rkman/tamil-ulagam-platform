@@ -1,10 +1,3 @@
-/**
- * Copy and structural data for the /join ecosystem entrance (Product
- * Architecture V3, Phase C1). Kept as data — not hardcoded in JSX — so
- * copy can be revised without touching component logic, matching the
- * convention already used by homepage.ts/partners.ts etc.
- */
-
 export const joinHeroContent = {
   eyebrow: "JOIN TAMIL ULAGAM",
   title: "Your place in the global Tamil community starts here.",

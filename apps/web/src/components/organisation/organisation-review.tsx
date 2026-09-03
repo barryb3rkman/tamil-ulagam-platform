@@ -14,14 +14,6 @@ import {
 } from "@/content/organisation";
 import { usePlatform } from "@/features/enrollment/platform-provider";
 
-/**
- * The Organisation journey's V3 Review & Submit screen — a premium
- * replacement for the old bare ApplicationDetails + button bar, reusing
- * ApplicationDetails as-is (already fully category-agnostic) and the
- * existing check_duplicate_organization_signals RPC. Submission goes
- * through usePlatform().submitRegistration() unmodified — the same
- * submit_organization_application RPC the pre-V3 wizard already used.
- */
 export function OrganisationReview({
   application,
   onEdit,

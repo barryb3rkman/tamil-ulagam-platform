@@ -2,15 +2,6 @@ import { Suspense, type ReactNode } from "react";
 
 import { WorkspaceShell } from "@/components/workspace/workspace-shell";
 
-/**
- * The shared V3 chrome for every `/workspace/*` route (Phase E1). Before
- * this, `RouteFrame` gave these routes no header/navigation at all —
- * each workspace page built its own ad hoc sign-in prompt with no
- * persistent identity or way to move between workspaces. `WorkspaceShell`
- * reads the URL via `useSearchParams`, so it needs its own `<Suspense>`
- * boundary here, independent of the one each page already wraps its own
- * content in.
- */
 export default function WorkspaceLayout({
   children,
 }: {

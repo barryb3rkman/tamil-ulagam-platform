@@ -3,21 +3,6 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
 
-/**
- * Phase E1 brief section 36 — the required real-role browser coverage
- * for the workspace switcher: five named personas, each verified for
- * login -> correct available workspaces -> switch -> URL changes ->
- * correct workspace content -> switch back -> no permission leakage.
- *
- * Fixture organisations/Sangams are seeded directly via the service-role
- * client (organizations/organization_applications/organization_managers/
- * organization_tamil_community_details), mirroring the same setup
- * pattern member-affiliation-lifecycle.spec.ts already uses, rather than
- * driving the full registration wizard five times over — this spec's
- * subject is workspace switching, not registration, which the other
- * lifecycle specs already cover end to end.
- */
-
 const password = "LocalBrowserWorkspace!2048Aa";
 
 const users = {
@@ -80,10 +65,6 @@ test.describe("real V3 workspace switching across the five named personas", () =
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
-    // Idempotent by design: Playwright recycles a failed test's worker
-    // for the rest of the file, which re-runs beforeAll — without this,
-    // a single flaky assertion earlier in the file would otherwise crash
-    // every subsequent test on an "already registered" collision.
     const userIds: Record<string, string> = {};
     for (const [key, fixture] of Object.entries(users)) {
       const created = await admin.auth.admin.createUser({
@@ -319,10 +300,6 @@ test.describe("real V3 workspace switching across the five named personas", () =
       `/workspace/organisation?organization=${organisationIds.orgD}`,
     );
     await expect(page.getByRole("heading", { name: orgDName })).toBeVisible();
-    // Scoped to headings, not getByText: the (closed) switcher sheet
-    // already lists both of this manager's workspaces in the DOM, so a
-    // page-wide text search would false-positive on its own link text —
-    // the real "no leakage" claim is about the *content area* identity.
     await expect(page.getByRole("heading", { name: sangamDName })).toHaveCount(
       0,
     );
@@ -344,8 +321,6 @@ test.describe("real V3 workspace switching across the five named personas", () =
     await expect(
       page.getByRole("heading", { name: sangamDName }),
     ).toBeVisible();
-    // No leakage of the Organisation's own identity into the Sangam view
-    // (scoped to headings — see the equivalent comment above).
     await expect(page.getByRole("heading", { name: orgDName })).toHaveCount(0);
   });
 

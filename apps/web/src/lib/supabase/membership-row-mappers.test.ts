@@ -148,12 +148,6 @@ describe("Supabase membership/management row mappers", () => {
   });
 
   it("treats a null subtype (a non-tamil_community organisation) as an empty string", () => {
-    // The generated Supabase type optimistically declares `subtype` as a
-    // non-nullable string, but a LEFT JOIN against
-    // organization_tamil_community_details genuinely returns SQL NULL
-    // for any non-tamil_community organisation — the cast below reflects
-    // that real runtime shape, which is exactly what the mapper's `?? ""`
-    // is defending against.
     const row = {
       id: "organization-2",
       name: "Example Business",

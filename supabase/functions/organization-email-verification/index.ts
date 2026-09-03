@@ -1,27 +1,3 @@
-// Sends an organisation-email verification link.
-//
-// Two authorization layers, deliberately separate:
-//  1. A user-scoped client (the caller's own JWT) checks
-//     can_manage_organization() exactly as RLS would — this function
-//     never trusts the request body's organizationId on its own.
-//  2. Only after that check passes does a service-role client (available
-//     automatically inside every Edge Function, never shipped to the
-//     browser) generate the token and send the email.
-//
-// The raw verification token is generated here and only ever leaves this
-// function inside the outgoing email — it is never returned to the
-// caller's HTTP response.
-//
-// If no email provider secret is configured, this returns a clear
-// { ok: false, reason: "not_configured" } instead of fabricating a sent
-// state. No token is created in that case.
-//
-// H5: rebuilt on the shared template/delivery-log/idempotency layer used
-// by every other transactional Edge Function in this project (previously
-// this function hand-built its own HTML with no escaping of the
-// organisation name, no plain-text fallback, and no delivery log). The
-// request/response contract to the frontend is unchanged.
-
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
@@ -65,9 +41,6 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ ok: false, reason: "error" }, 403);
   }
 
-  // Checked before issuing a token: a missing provider secret must never
-  // burn a single-use token the email that would have carried it can
-  // never actually be sent.
   if (!Deno.env.get("RESEND_API_KEY")) {
     return jsonResponse({ ok: false, reason: "not_configured" });
   }
@@ -114,11 +87,6 @@ Deno.serve(async (req: Request) => {
       "This link is single-use and expires in 24 hours. If you did not request this, no action is needed.",
   });
 
-  // No stable entity id spans repeated attempts here (each send issues a
-  // fresh single-use token, by design — the "Resend verification"
-  // button is a legitimate, expected repeat action). Minute-granularity
-  // keying absorbs an accidental double-click without blocking a
-  // deliberate resend moments later.
   const idempotencyKey = `org-email-verification:${organizationId}:${Math.floor(Date.now() / 60_000)}`;
 
   const result = await sendTransactionalEmail(serviceClient, {

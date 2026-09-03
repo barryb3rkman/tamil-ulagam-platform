@@ -1,15 +1,3 @@
-// Sends a notification email when an Organisation or Tamil Sangam
-// application's review decision becomes needs_changes, verified, or
-// rejected — review_organization_application already made that decision;
-// this function only notifies about a status that already exists in
-// trusted DB state. No email for submitted/under_review/suspended (see
-// H5 brief section 23 — default toward in-app confirmation only).
-//
-// Authorization here is role-level, not per-organisation: the caller
-// must already be a reviewer (is_application_reviewer(), the exact same
-// check review_organization_application itself makes), matching how
-// only a reviewer could have caused this status change in the first
-// place.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";

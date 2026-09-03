@@ -11,12 +11,6 @@ export interface StageProgressProps {
   readonly label?: string;
 }
 
-/**
- * A named-stage progress indicator — generalizes the existing
- * registration ProgressIndicator pattern for any onboarding/multi-step
- * flow. Stages are passed in by the caller rather than assumed, so this
- * carries no domain knowledge of what the stages represent.
- */
 export function StageProgress({
   currentStage,
   label = "Progress",

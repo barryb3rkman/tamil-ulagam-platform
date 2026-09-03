@@ -28,7 +28,6 @@ export function useAdminOperationsService(): AdminOperationsService | null {
   }, [backendKind]);
 }
 
-/** Public-safe service selection for the anonymous partnership form. */
 export function usePublicPartnershipService(): AdminOperationsService | null {
   return useMemo(() => {
     const environment = getPlatformRuntimeEnvironment();

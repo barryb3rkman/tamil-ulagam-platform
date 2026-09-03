@@ -4,9 +4,6 @@ import { useId } from "react";
 
 import { isValidUrl, normalizeUrl } from "@/features/sangam/sangam-validation";
 
-// Recognised only for a compact, non-overengineered platform hint next
-// to each link (H3 brief section 16 — "do not overengineer social-
-// profile parsing"). Falls back to the bare hostname for anything else.
 const PLATFORM_HINTS: Readonly<Record<string, string>> = {
   "instagram.com": "Instagram",
   "facebook.com": "Facebook",
@@ -31,12 +28,6 @@ function platformHint(url: string): string {
   }
 }
 
-/**
- * "Social media links (optional)" — zero or more free-form URLs (H3
- * brief section 16), not hardcoded Instagram/Facebook/YouTube/LinkedIn
- * fields. Each row is a plain URL input with a compact remove control;
- * a trailing "Add another link" appends one more empty row.
- */
 export function SocialLinksField({
   error,
   links,
@@ -54,10 +45,6 @@ export function SocialLinksField({
   const removeAt = (index: number) => {
     onChange(links.filter((_, i) => i !== index));
   };
-  // Same reasoning as the Website field: a bare domain is fine while
-  // typing, but organization_social_links' own url-format check
-  // requires an explicit http(s):// scheme — normalize on blur so a
-  // saved link always satisfies it.
   const normalizeAt = (index: number) => {
     const current = links[index] ?? "";
     const normalized = normalizeUrl(current);

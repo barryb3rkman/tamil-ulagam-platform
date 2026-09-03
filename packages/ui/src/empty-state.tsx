@@ -8,12 +8,6 @@ export interface EmptyStateProps {
   readonly className?: string;
 }
 
-/**
- * A purposeful empty state — names what will appear in this space and,
- * where applicable, offers the one action that populates it. Never use
- * a bare "No results" text line; every empty state here should explain
- * itself.
- */
 export function EmptyState({
   action,
   className,

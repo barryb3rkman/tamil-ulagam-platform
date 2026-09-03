@@ -25,13 +25,6 @@ const relationshipPresentation: Record<
   revoked: { label: "Previously affiliated", tone: "neutral" },
 };
 
-/**
- * An app-level domain component (deliberately not in packages/ui — it
- * knows about EligibleOrganisation/Membership). An information-product
- * identity card: typography, subtle geometry, and a verification signal
- * rather than any photograph — see the Phase C2 report's visual-language
- * section for why no image is used here.
- */
 export function OrganisationDiscoveryCard({
   organisation,
   existingMembership,

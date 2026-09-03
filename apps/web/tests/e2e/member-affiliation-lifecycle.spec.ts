@@ -3,16 +3,6 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
 
-/**
- * Phase H4 — Member Registration V2 + affiliation verification. Persona
- * A (H4 brief section 42): a verified Tamil Sangam already exists, a
- * member selects it, submits an affiliation claim, the Sangam's own
- * manager confirms them, and the Member Workspace reflects the active
- * affiliation — driven through the actual five-stage UI (profile ->
- * affiliation type -> directory -> confirm -> success), not the old
- * single-directory-select flow. No part of the core lifecycle is mocked.
- */
-
 const member = {
   email: "local-browser-member@tamil-ulagam.test",
   password: "LocalBrowserMember!2048Aa",

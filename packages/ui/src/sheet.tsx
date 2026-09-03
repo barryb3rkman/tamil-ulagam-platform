@@ -10,21 +10,10 @@ export interface SheetProps {
   readonly onClose: () => void;
   readonly title: string;
   readonly children: ReactNode;
-  /** `bottom` (default) for the mobile bottom-sheet treatment, `right`
-   * for a desktop side drawer. A consumer typically switches this by
-   * breakpoint rather than picking one permanently. */
   readonly side?: "bottom" | "right";
   readonly className?: string;
 }
 
-/**
- * Drawer/Sheet foundation — same controlled open/close contract as
- * `Dialog` (native `<dialog>`, focus trap and Escape-to-close for
- * free), positioned and animated as an edge-anchored slide instead of a
- * centered modal. Intended consumers: a workspace switcher, a mobile
- * navigation panel, a decision dialog that reads better as a bottom
- * sheet on small screens.
- */
 export function Sheet({
   children,
   className,

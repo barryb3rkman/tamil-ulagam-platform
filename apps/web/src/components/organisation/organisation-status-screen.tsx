@@ -6,14 +6,6 @@ import { RegistrationStatusBadge } from "@/components/application/registration-s
 import { registrationStatusPresentation } from "@/content/enrollment";
 import { organisationSuccessContent } from "@/content/organisation";
 
-/**
- * Every non-editable Organisation application state (D2 brief section
- * 19/20): SUBMITTED, UNDER REVIEW, VERIFIED, REJECTED, SUSPENDED —
- * reached both right after a fresh submission and on any later visit
- * while the application is not in draft/needs_changes. Verified
- * transitions naturally into the Organisation Workspace rather than a
- * dead end — see section 20.
- */
 export function OrganisationStatusScreen({
   application,
 }: {

@@ -2,14 +2,6 @@ import type { MemberProfile } from "@tamil-ulagam/shared";
 
 import type { ValidationErrors } from "@/features/enrollment/validation";
 
-/**
- * Phase H4 — validation for the Member affiliation flow's own two small
- * forms (personal profile, category connection question). Deliberately
- * separate from features/enrollment/validation.ts, the same "don't risk
- * an unrelated domain" reasoning sangam-validation.ts already
- * established for H3.
- */
-
 export function validateMemberProfile(
   profile: MemberProfile,
 ): ValidationErrors {

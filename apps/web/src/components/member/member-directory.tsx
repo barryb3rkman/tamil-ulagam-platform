@@ -15,17 +15,6 @@ import { memberDirectoryContent } from "@/content/member";
 import type { AffiliationType } from "./affiliation-type-stage";
 import { OrganisationDiscoveryCard } from "./organisation-discovery-card";
 
-/**
- * Search-first directory, scoped by the Step 2 affiliation-type choice
- * (H4 brief sections 6-8): a Tamil Sangam search only ever shows verified
- * Sangams; an Organisation search only ever shows verified, non-Sangam
- * organisations, filterable by category first. The full eligible-
- * organisation list is fetched once (member-registration.tsx) and
- * filtered entirely client-side here — the same reasonable choice this
- * component's own H2-era precedent already documented for a directory
- * this size; see that comment's own note about moving to a server-side
- * search RPC if the count grows into the thousands.
- */
 export function MemberDirectory({
   kind,
   myMembershipsByOrganisation,

@@ -13,7 +13,6 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   readonly placeholder?: string;
 }
 
-/** Bare select control — compose with `FormField`, matching `Input`. */
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   function Select(
     { className, options, placeholder = "Select an option", ...props },

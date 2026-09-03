@@ -7,13 +7,6 @@ import { memberSuccessContent } from "@/content/member";
 
 import { organisationKindLabel } from "./organisation-presentation";
 
-/**
- * A real product state after an affiliation claim is submitted — not a
- * bare toast (H4 brief section 20). Sets accurate expectations
- * (confirmation is the organisation's own decision, not automatic) and
- * offers "Add another affiliation" since a Member may hold several
- * concurrent, independently-confirmed affiliations.
- */
 export function MemberRequestSuccess({
   onAddAnother,
   organisation,

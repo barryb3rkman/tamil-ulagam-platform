@@ -15,17 +15,6 @@ import { useSangamRegistrationService } from "@/features/sangam/use-sangam-regis
 
 import { RegistrationDocumentViewButton } from "./registration-document-view-button";
 
-/**
- * The Sangam journey's own Review & Submit screen — rewritten for Phase
- * H3 as one dense composed surface (H3 brief section 21), replacing the
- * six-stacked-DetailGroup-cards pattern H2's visual QA flagged as a
- * MEDIUM defect on the shared ApplicationDetails composition. This is a
- * Sangam-only rewrite: ApplicationDetails/DetailGroup themselves are
- * untouched, so the Organisation review screen and Admin's own
- * application-review rendering (both of which still use
- * ApplicationDetails) keep their exact current appearance (H3 brief
- * section 28).
- */
 export function SangamReview({
   application,
   onEdit,

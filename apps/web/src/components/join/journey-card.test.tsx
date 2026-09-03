@@ -51,8 +51,6 @@ describe("JourneyCard", () => {
     expect(
       screen.queryByRole("heading", { name: "Register an Organisation" }),
     ).not.toBeInTheDocument();
-    // No href override supplied — falls back to the journey's own href
-    // (the wizard itself resolves to the in-progress draft).
     expect(
       screen.getByRole("link", { name: /Continue your registration/ }),
     ).toHaveAttribute("href", "/join/organisation");

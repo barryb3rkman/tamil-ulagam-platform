@@ -11,18 +11,6 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/supabase/database.types";
 import { mapSupabaseError } from "@/lib/supabase/errors";
 
-/**
- * MANAGEMENT ADMINISTRATION service boundary (Phase G1).
- *
- * Deliberately its own module rather than folded into
- * membership-service.ts (Phase A1) — Membership and Management are kept
- * conceptually and structurally separate throughout this codebase, and
- * mixing their service layers would blur exactly the distinction the
- * product depends on. Every write here is a narrow RPC; no UI component
- * or hook ever writes organization_managers/organization_manager_invitations/
- * organization_manager_history directly.
- */
-
 type ManagerRow =
   Database["public"]["Functions"]["list_organization_managers"]["Returns"][number];
 type PlainManagerRow =
@@ -46,10 +34,6 @@ function mapManagerRow(row: ManagerRow): ManagerWithProfile {
   };
 }
 
-/** accept/changeManagerRole return the plain organization_managers row
- * (no profile join — the caller already knows or can refetch the name
- * via listManagers), so this maps that shape directly rather than
- * forcing it through mapManagerRow's enriched-row type. */
 function mapPlainManagerRow(row: PlainManagerRow): ManagerWithProfile {
   return {
     id: row.id,
@@ -113,42 +97,24 @@ function mapHistoryRow(row: HistoryRow): ManagementHistoryEvent {
 }
 
 export interface ManagementService {
-  /** Active managers of the given organisation/Sangam, with the minimal
-   * co-manager display name (never phone/country/account email). */
   listManagers(organisationId: string): Promise<ManagerWithProfile[]>;
-  /** Invitations of every status for the given organisation — the UI is
-   * responsible for splitting pending from decided (brief section 13). */
   listInvitations(organisationId: string): Promise<ManagerInvitation[]>;
-  /** Owner-only. Rejects: not owner, already a manager, an existing
-   * pending invitation for the same email, inviting yourself. */
   inviteManager(
     organisationId: string,
     email: string,
     role: OrganizationManagerRole,
   ): Promise<ManagerInvitation>;
-  /** Owner-only; only a pending invitation can be revoked. */
   revokeInvitation(invitationId: string): Promise<ManagerInvitation>;
-  /** The caller's own pending invitations, across every organisation,
-   * matched by their authenticated account's own email. */
   listMyInvitations(): Promise<MyManagementInvitation[]>;
-  /** Only the account whose email matches the invitation may accept.
-   * Never creates an ordinary Membership row. */
   acceptInvitation(invitationId: string): Promise<ManagerWithProfile>;
   declineInvitation(invitationId: string): Promise<ManagerInvitation>;
-  /** Owner-only; target must currently be admin or representative — the
-   * owner's own role only ever changes through transferOwnership. */
   changeManagerRole(
     organisationId: string,
     userId: string,
     newRole: OrganizationManagerRole,
   ): Promise<ManagerWithProfile>;
-  /** Owner-only; the owner cannot be removed this way. */
   removeManager(organisationId: string, userId: string): Promise<void>;
-  /** Self-service for a non-owner manager; the owner must transfer
-   * ownership first. */
   leaveManagement(organisationId: string): Promise<void>;
-  /** Owner-only, atomic. previousOwnerOutcome is an explicit caller
-   * choice — never implicit. */
   transferOwnership(
     organisationId: string,
     newOwnerUserId: string,
@@ -188,11 +154,6 @@ export function createManagementService(
       if (error)
         throw mapSupabaseError(error, "The invitation could not be sent.");
       const invitation = mapInvitationRow(data);
-      // Fire-and-forget notification — the invitation itself already
-      // exists in the database above; a delivery failure here must never
-      // undo it (H5 brief section 26). Errors are deliberately swallowed:
-      // this is a best-effort side effect, not part of the invitation's
-      // own success/failure contract.
       void client.functions
         .invoke("send-management-invitation", {
           body: { invitationId: invitation.id, organizationId: organisationId },

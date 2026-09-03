@@ -19,11 +19,6 @@ async function signIn(
   page: Page,
   email: string,
   password: string,
-  // E1: a submitted/needs_changes/verified applicant's post-login /dashboard
-  // landing now immediately client-redirects on into the Organisation
-  // Workspace — /workspace/ is included here (alongside the pre-existing
-  // /dashboard and /register outcomes) so this default assertion isn't
-  // racing that redirect.
   expectedUrl: RegExp = /\/(?:dashboard|register|workspace)\/?/,
 ) {
   await page.goto("/login");
@@ -88,10 +83,6 @@ test.describe("local Supabase browser enrollment", () => {
       page.getByRole("heading", { name: "Account created" }),
     ).toBeVisible();
 
-    // E1: /dashboard now routes an authenticated visitor into the
-    // relevant V3 workspace rather than showing content itself — before
-    // a draft exists, that's the Member workspace (every authenticated
-    // user has one).
     await page.goto("/dashboard");
     await expect(page).toHaveURL(/\/workspace\/member\/?$/);
     await expect(
@@ -99,11 +90,6 @@ test.describe("local Supabase browser enrollment", () => {
     ).toBeVisible();
     await signOut(page);
     await signIn(page, applicant.email, applicant.password);
-    // E1.5: a fresh member-only login no longer defaults into Organisation
-    // registration (that used to silently create a blank draft the
-    // moment anyone signed in) — it lands on /dashboard, which routes an
-    // application-less account to the Member workspace. Registration is
-    // now always a deliberate visit to /join/organisation.
     await expect(page).toHaveURL(/\/workspace\/member\/?$/);
     await page.goto("/join/organisation");
 
@@ -118,14 +104,6 @@ test.describe("local Supabase browser enrollment", () => {
       .fill(
         "A professional services company supporting international community organisations.",
       );
-    // H2: registration autosaves — no manual "Save progress" button, and
-    // never click anything to trigger it. The debounce (1s) can fire
-    // once after the radio click alone before the later fields are even
-    // filled, briefly showing "Saved" for that earlier, incomplete
-    // snapshot — waiting past the debounce interval (rather than only
-    // asserting the text appears at some point) ensures the LAST edit's
-    // own save has actually reached Supabase before reloading to prove
-    // it persisted server-side, not just in local component state.
     await page.waitForTimeout(1300);
     await expect(page.getByText("Saved")).toBeVisible();
     await page.reload();
@@ -141,13 +119,6 @@ test.describe("local Supabase browser enrollment", () => {
     await page.getByLabel("Representative full name").fill("Nila Raj");
     await page.getByLabel(/^Phone/).fill("+1 416 555 0188");
     await page.getByLabel("Representative role").selectOption("leadership");
-    // H2 section 40: navigate Back immediately, before the autosave
-    // debounce would naturally have fired — Back must flush the pending
-    // edit to Supabase itself, not rely on the timer. A hard reload
-    // forces the wizard to rebuild its state entirely from a fresh
-    // fetch, so returning forward again showing the same values proves
-    // the flush actually reached the server, not just that client state
-    // survived the stage change (which was never at risk).
     await page.getByRole("button", { name: "Back" }).click();
     await expect(page.getByLabel("Organisation name")).toBeVisible();
     await page.reload();
@@ -175,8 +146,6 @@ test.describe("local Supabase browser enrollment", () => {
     await page.getByRole("button", { name: "Review & submit" }).click();
     await page.getByRole("button", { name: "Submit registration" }).click();
     await page.getByRole("button", { name: "Confirm submission" }).click();
-    // V3: submitting transitions in place into a real status screen at
-    // /register itself rather than bouncing to /dashboard.
     await expect(
       page.getByRole("heading", { name: "Registration submitted" }),
     ).toBeVisible();
@@ -188,10 +157,6 @@ test.describe("local Supabase browser enrollment", () => {
     await signIn(page, reviewer.email, reviewer.password, /\/admin\/?$/);
     await page.goto("/admin/registrations");
     await expect(page.getByText("Nila Global Services")).toBeVisible();
-    // Scoped to this application's own row: the shared local Supabase
-    // instance may carry other applications/organisations seeded by
-    // other e2e specs (e.g. member-affiliation-lifecycle.spec.ts), so a
-    // page-wide "Review" link locator is no longer reliably singular.
     await page
       .getByRole("listitem")
       .filter({ hasText: "Nila Global Services" })
@@ -209,8 +174,6 @@ test.describe("local Supabase browser enrollment", () => {
 
     await signOut(page);
     await signIn(page, applicant.email, applicant.password);
-    // E1: /dashboard redirects on to the Organisation Workspace, the
-    // now-unambiguous single managed organisation.
     await expect(page).toHaveURL(/\/workspace\/organisation\/?\?organization=/);
     await expect(
       page.getByText("Please confirm the industry selection."),

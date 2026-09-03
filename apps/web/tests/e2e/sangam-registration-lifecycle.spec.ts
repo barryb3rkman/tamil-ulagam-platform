@@ -3,24 +3,6 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
 
-/**
- * The real, end-to-end Tamil Sangam registration lifecycle (Phase D1),
- * driven through the actual UI against a real local Supabase instance:
- *
- *   registrant signs up -> /join/sangam -> completes all three stages
- *   -> submits -> admin reviewer signs in separately -> reviews ->
- *   verifies -> member (a third, separate account) signs in -> searches
- *   the newly verified Sangam at /join/member -> requests affiliation ->
- *   the Sangam's own manager (the registrant) sees and approves the
- *   request -> the member's workspace shows the approved affiliation.
- *
- * No part of the core lifecycle is mocked. This is the single test that
- * proves Organisation + Sangam + Member Registration are one coherent
- * ecosystem, not three disconnected features (D1 brief section 26).
- * Each actor gets its own isolated browser context, matching the
- * pattern member-affiliation-lifecycle.spec.ts (Phase C2) established.
- */
-
 const registrant = {
   fullName: "Kavi Selvam",
   email: "local-browser-sangam-registrant@tamil-ulagam.test",
@@ -142,11 +124,6 @@ test.describe("local Supabase real Tamil Sangam registration lifecycle", () => {
         .getByLabel(/State \/ Province \/ Region/)
         .fill("Nova Scotia");
       await registrantPage.getByLabel(/City/).fill("Halifax");
-      // H2 section 40 (Sangam repeats the Organisation wizard's autosave
-      // check): no "Save progress" button exists — wait past the
-      // debounce interval (1s) so the last field's own save has actually
-      // settled, not an earlier field's premature "Saved" flash, then
-      // hard-reload to prove it persisted server-side before continuing.
       await registrantPage.waitForTimeout(1300);
       await expect(registrantPage.getByText("Saved")).toBeVisible();
       await registrantPage.reload();
@@ -158,16 +135,12 @@ test.describe("local Supabase real Tamil Sangam registration lifecycle", () => {
       ).toHaveValue("180");
       await registrantPage.getByRole("button", { name: "Continue" }).click();
 
-      // Stage 2 — Registration details (informal Sangam — no registration
-      // number/document required, per the "informal is valid" rule)
       await expect(
         registrantPage.getByText("Is this Tamil Sangam formally registered?"),
       ).toBeVisible();
       await registrantPage.getByRole("radio", { name: "No" }).first().check();
       await registrantPage.getByRole("button", { name: "Continue" }).click();
 
-      // Stage 3 — Leadership & contact (SPOC + President, no generic
-      // "Representative" concept any more)
       await expect(
         registrantPage.getByText("Single Point of Contact (SPOC)"),
       ).toBeVisible();
@@ -226,8 +199,6 @@ test.describe("local Supabase real Tamil Sangam registration lifecycle", () => {
         .getByRole("link", { name: "Review" })
         .click();
       await expect(reviewerPage).toHaveURL(/\/admin\/reviews\/?\?application=/);
-      // Reviewer-facing Sangam-specific presentation, not a generic
-      // "Tamil / Community Organisation" label (D1 brief section 25).
       await expect(
         reviewerPage.getByText("Tamil Sangam", { exact: true }).first(),
       ).toBeVisible();
@@ -239,10 +210,6 @@ test.describe("local Supabase real Tamil Sangam registration lifecycle", () => {
         reviewerPage.getByText("Verified", { exact: true }).first(),
       ).toBeVisible();
 
-      // --- Member: the newly verified Sangam is discoverable and
-      // clearly labelled, submits an affiliation claim (H4 brief —
-      // profile -> type -> directory -> confirm; a Tamil Sangam asks no
-      // category-specific question) ---
       await signIn(memberPage, member.email, member.password);
       await memberPage.goto("/join/member");
       await memberPage.getByText("Your details").waitFor({ timeout: 15000 });
@@ -277,9 +244,6 @@ test.describe("local Supabase real Tamil Sangam registration lifecycle", () => {
         memberPage.getByRole("heading", { name: "Affiliation submitted" }),
       ).toBeVisible();
 
-      // --- Registrant (the Sangam's own manager): sees and confirms the
-      // affiliation via the same People surface an Organisation manager
-      // uses ---
       await registrantPage.goto("/workspace/sangam");
       await expect(
         registrantPage.getByRole("heading", { name: sangamName }),

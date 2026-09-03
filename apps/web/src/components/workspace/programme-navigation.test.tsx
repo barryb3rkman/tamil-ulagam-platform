@@ -3,8 +3,6 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ProgrammeNavigation } from "./programme-navigation";
 
-// Sheet is built on the native <dialog> element — polyfilled the same
-// way WorkspaceSwitcher's own test does.
 beforeAll(() => {
   if (!HTMLDialogElement.prototype.showModal) {
     HTMLDialogElement.prototype.showModal = function showModal(

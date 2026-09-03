@@ -1,16 +1,3 @@
-/**
- * Copy and structural data for the real Tamil Sangam registration
- * journey. Kept as data, matching every other content/*.ts module, so
- * copy can be revised without touching component logic.
- *
- * Phase H3 (Tamil Sangam registration V2) rewrote this file's stage
- * copy for the new four-stage structure (About your Sangam /
- * Registration details / Leadership & contact / Review & submit),
- * replacing the old three-intake-stage copy that asked for a generic
- * "Representative" and an "Official Sangam email" — both retired from
- * the Sangam UX (H3 brief sections 3/4).
- */
-
 export const sangamStages = [
   "About your Sangam",
   "Registration details",

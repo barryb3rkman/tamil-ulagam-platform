@@ -1,21 +1,3 @@
-// Small, shared transactional-email template. One function builds both
-// the HTML and the plain-text fallback for every event-specific sender,
-// so no Edge Function hand-writes a full HTML document.
-//
-// Deliberately table-based, inline-styled, no web fonts, no CSS beyond
-// what a `style` attribute can hold, no JavaScript, no animation — email
-// clients (especially Outlook's Word rendering engine) need this to be
-// readable with images off and in a client that drops <style> blocks.
-//
-// Tamil Ulagam visual direction, restrained: deep navy header, warm ivory
-// body background, heritage maroon for the primary action, a thin
-// antique-gold rule as the only accent. Every user-controlled string
-// (organisation name, member name, reviewer feedback, etc.) MUST be
-// passed through escapeHtml before it reaches this template — the
-// callers in this directory do so at the point that text is read from
-// the database, not here, so this module deliberately does not
-// re-escape its own inputs a second time.
-
 const COLORS = {
   deepNavy: "#0f2540",
   warmIvory: "#faf6ee",
@@ -26,10 +8,6 @@ const COLORS = {
   white: "#ffffff",
 } as const;
 
-/** Escapes the five HTML-significant characters. Apply to every piece of
- * user-controlled text (organisation names, member names, free-text
- * feedback, etc.) before it is interpolated into any template string in
- * this directory. */
 export function escapeHtml(value: string): string {
   return value
     .replace(/&/g, "&amp;")
@@ -40,16 +18,9 @@ export function escapeHtml(value: string): string {
 }
 
 export interface EmailTemplateInput {
-  /** Plain text, already escaped if it contains user content — shown as
-   * the large heading under the wordmark. */
   readonly heading: string;
-  /** One or more paragraphs of plain text (already escaped). Each string
-   * becomes its own <p>. */
   readonly paragraphs: readonly string[];
-  /** Optional primary call to action. */
   readonly cta?: { readonly label: string; readonly url: string };
-  /** Short line shown under the CTA in a smaller, muted style — used for
-   * things like "This link expires in 24 hours." */
   readonly footnote?: string;
 }
 
@@ -135,9 +106,6 @@ export function renderEmail(input: EmailTemplateInput): RenderedEmail {
   return { html, text };
 }
 
-/** paragraphs/footnote may contain simple inline markup (an <a> tag, for
- * example) produced by a caller — strip tags for the plain-text
- * fallback rather than showing raw HTML to plain-text clients. */
 function stripHtmlToText(value: string): string {
   return value
     .replace(/<a\s+[^>]*href="([^"]*)"[^>]*>(.*?)<\/a>/gi, "$2 ($1)")

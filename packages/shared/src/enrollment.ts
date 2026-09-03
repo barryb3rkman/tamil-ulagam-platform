@@ -21,7 +21,6 @@ export interface UserProfile {
   email: string;
   phone: string;
   country: string;
-  /** Platform Terms of Use / Privacy Policy consent, set once at signup. Never client-updatable afterward. */
   readonly termsAcceptedAt: string | null;
   readonly createdAt: string;
 }
@@ -45,23 +44,12 @@ export interface Organisation {
   registrationAuthority: string;
   registrationCountry: string;
   logoPreview: string;
-  /**
-   * Organisation-email verification (distinct from account-email
-   * confirmation): proves control of the declared official contact
-   * inbox. A strong admin-visible trust signal, never required to
-   * submit an application.
-   */
   readonly officialEmailVerifiedAt: string | null;
   readonly officialEmailVerificationSentAt: string | null;
   readonly createdAt: string;
   updatedAt: string;
 }
 
-/**
- * Booleans are safe for any authenticated caller (a gentle pre-submission
- * warning). `matches` is only ever populated for reviewers — ordinary
- * applicants never receive another organisation's identifying details.
- */
 export interface DuplicateOrganisationSignals {
   readonly nameMatch: boolean;
   readonly emailMatch: boolean;
@@ -106,31 +94,8 @@ export interface TamilCommunityProfile {
   chairpersonName: string;
   secretaryName: string;
   languages: string;
-  /**
-   * Tamil Sangam registration (Phase D1) only: "Is your Sangam already
-   * connected to a regional, national or international Tamil
-   * network/federation?" — optional, so "" doubles as both "not
-   * answered" and "prefer not to say" (the same convention already used
-   * by `tamilProgrammesOffered`/`licensed` elsewhere in this file).
-   * Meaningless for a plain tamil_community organisation registered
-   * through the generic Organisation wizard; left "" there.
-   */
   networkAffiliated: "yes" | "no" | "";
-  /** Only meaningful when networkAffiliated is "yes"; optional even then. */
   networkName: string;
-  /**
-   * Phase H3 (Tamil Sangam registration V2) — genuinely new Sangam-only
-   * fields. All stay at their empty defaults for a plain tamil_community
-   * organisation registered through the generic Organisation wizard,
-   * which never asks for or writes them — the same "unused elsewhere"
-   * convention chairpersonName/secretaryName above already establish.
-   *
-   * memberCount is kept as a string (not a number) at the domain layer,
-   * matching yearEstablished's own string-for-a-numeric-column
-   * convention — form inputs bind directly to it without a parse step,
-   * and the mapper layer (domain-mappers.ts) is the single place that
-   * converts to/from the underlying integer column.
-   */
   memberCount: string;
   spocFullName: string;
   spocEmail: string;
@@ -138,18 +103,9 @@ export interface TamilCommunityProfile {
   presidentFullName: string;
   presidentEmail: string;
   presidentPhone: string;
-  /** Storage object path (e.g. "<applicationId>/<generatedName>.pdf") —
-   * never a URL. Resolved to a short-lived signed URL on demand by the
-   * Sangam service; never persisted as a URL anywhere. */
   registrationDocumentPath: string;
-  /** The original filename the applicant uploaded, kept purely for
-   * display — the storage object's own key is a generated name (H3
-   * brief section 11), never the user-supplied filename. */
   registrationDocumentFilename: string;
   readonly registrationDocumentUploadedAt: string;
-  /** Zero or more social profile URLs, in the order the applicant added
-   * them (H3 brief section 16) — Sangam-only, same "stays empty
-   * elsewhere" convention as the rest of this block. */
   socialLinks: string[];
 }
 
@@ -255,18 +211,6 @@ export interface EnrollmentPlatformState {
 
 export type MockPlatformState = EnrollmentPlatformState;
 
-/**
- * True only for a tamil_community application whose recorded subtype is
- * exactly (case/whitespace-insensitively) "Tamil Sangam" — the same rule
- * `isTamilSangam` (membership.ts) applies to the narrower
- * `EligibleOrganisation` projection, applied here to the richer
- * registration-time shape. Never derived from the organisation's name.
- * Used to keep the Sangam journey's own draft resolution (Phase D1)
- * from ever being confused with a plain Organisation record, and vice
- * versa — see ensure_sangam_application_draft and the
- * currentApplicationFromState exclusion filter in supabase-services.ts/
- * platform-provider.tsx.
- */
 export function isTamilSangamProfile(
   profile: OrganisationCategoryProfile | null,
 ): boolean {

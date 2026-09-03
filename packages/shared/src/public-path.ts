@@ -12,10 +12,6 @@ function normalizeBasePath(basePath: string): string {
   return normalized.replace(/\/+$/, "");
 }
 
-/**
- * Prefixes root-relative public assets for project-site hosting while leaving
- * routes, external URLs, protocol URLs and fragments unchanged.
- */
 export function withBasePath(path: string, basePath = ""): string {
   if (!path.startsWith("/") || path.startsWith("//")) {
     return path;

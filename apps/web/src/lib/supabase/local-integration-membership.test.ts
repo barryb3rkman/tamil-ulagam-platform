@@ -9,12 +9,6 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import type { Database } from "./database.types";
 
-// Same skip/run convention as local-integration.test.ts, run by the same
-// `pnpm test:supabase` script (see supabase/tests/run-local-integration.sh).
-// Kept in a separate file rather than appended to the existing 780-line
-// suite so the two domains (organisation enrollment vs. Phase A1
-// membership/management) can evolve independently, matching the
-// join-images.ts precedent from Phase C1.
 const localDescribe =
   process.env.RUN_SUPABASE_INTEGRATION === "true"
     ? describe.sequential
@@ -97,14 +91,6 @@ localDescribe(
       return requireData(actors.get(slug), `Actor "${slug}"`);
     }
 
-    // ---------------------------------------------------------------------
-    // Fixtures: org1 (draft, unverified — created through the real RPC so
-    // the dual-write into organization_managers is exercised for real)
-    // and org2 (verified — created directly as service_role so eligibility
-    // tests don't depend on re-driving the whole submission workflow,
-    // which local-integration.test.ts already covers end to end).
-    // ---------------------------------------------------------------------
-
     let org1Id = "";
     let org2Id = "";
 
@@ -183,9 +169,6 @@ localDescribe(
     });
 
     it("anonymous: cannot read memberships/managers and cannot request membership", async () => {
-      // Neither table is granted to `anon` at all (matching the existing
-      // organization_members precedent) — a stronger guarantee than RLS
-      // filtering: the read is refused outright, not silently emptied.
       const memberships = await anon
         .from("organization_memberships")
         .select("*");
@@ -196,9 +179,6 @@ localDescribe(
       expect(managers.error).not.toBeNull();
       expect(managers.error?.code).toBe("42501");
 
-      // Not even granted execute on this function for `anon` — refused at
-      // the permission level, before the function body's own
-      // "Authentication is required" check would ever run.
       const request = await anon.rpc("request_organization_membership", {
         target_organization_id: org2Id,
       });
@@ -384,11 +364,6 @@ localDescribe(
     });
 
     it("also blocks a manager of a different organisation from approving/rejecting this one's pending requests", async () => {
-      // A dedicated actor, not member2 — this test deliberately leaves a
-      // pending request in place (both forbidden decisions must not
-      // change it), and member2 already has its own scripted story
-      // later in this file (invite/reject, then the uniqueness-
-      // constraint test) that a stray leftover pending row would break.
       await createActor("crossOrgTestMember", "Cross Org Test Member");
       const crossOrgTestMember = actor("crossOrgTestMember");
       const manager2 = actor("manager2");
@@ -551,8 +526,6 @@ localDescribe(
         status: "pending",
         requested_at: new Date().toISOString(),
       });
-      // member2's invite was rejected above (not active), so this first
-      // duplicate insert should succeed...
       expect(duplicate.error).toBeNull();
 
       const secondDuplicate = await admin
@@ -563,8 +536,6 @@ localDescribe(
           status: "pending",
           requested_at: new Date().toISOString(),
         });
-      // ...but a second concurrent *active* row for the same user+org must
-      // violate the partial unique index, independent of any RPC logic.
       expect(secondDuplicate.error).not.toBeNull();
     });
 
@@ -605,9 +576,6 @@ localDescribe(
       });
       expect(soleOwnerGrant.error).toBeNull();
 
-      // Deleting the whole organisation cascades to delete that sole
-      // owner's manager row too — the owner-safety trigger must not
-      // block this, since there is no organisation left to protect.
       const deleteOrganization = await admin
         .from("organizations")
         .delete()
@@ -647,16 +615,12 @@ localDescribe(
       );
       expect(approve.error).toBeNull();
 
-      // Another user (not even a manager — just not the owner of this
-      // membership) cannot leave it on someone else's behalf.
       const outsiderLeave = await outsiderManager.client.rpc(
         "leave_organization_membership",
         { target_membership_id: member3MembershipId },
       );
       expect(outsiderLeave.error).not.toBeNull();
 
-      // Nor can the organisation's own manager use "leave" as a backdoor
-      // revoke — the RPC only ever matches rows owned by the caller.
       const managerLeaveAttempt = await manager2.client.rpc(
         "leave_organization_membership",
         { target_membership_id: member3MembershipId },
@@ -674,8 +638,6 @@ localDescribe(
       expect(selfLeave.data).toMatchObject({ status: "revoked" });
       expect(selfLeave.data?.decided_by).toBe(member3.user.id);
 
-      // Leaving again (already revoked) is rejected, not silently
-      // treated as a no-op success.
       const secondLeave = await member3.client.rpc(
         "leave_organization_membership",
         { target_membership_id: member3MembershipId },
@@ -758,20 +720,9 @@ localDescribe(
         subtype: "Tamil Sangam",
       });
 
-      // org2 is also tamil_community, but has no recorded subtype — it
-      // must not be misidentified as a Sangam by name-guessing.
       const org2Row = list.data?.find((row) => row.id === org2Id);
       expect(org2Row?.subtype).toBeNull();
     });
-
-    // ---------------------------------------------------------------------
-    // Phase H4 — Member Registration V2 + affiliation verification. Fresh
-    // actors/organisations throughout, deliberately independent of the
-    // org1/org2/member1/member2 fixtures above (several of which are
-    // revoked/re-requested by the time this point in the sequential run
-    // is reached), so these assertions can't be accidentally satisfied by
-    // stale shared state.
-    // ---------------------------------------------------------------------
 
     it("H4: request_organization_membership records the caller's own email and the category-aware connection fields", async () => {
       const org3 = await admin

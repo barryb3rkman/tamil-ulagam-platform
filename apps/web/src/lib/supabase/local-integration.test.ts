@@ -165,18 +165,6 @@ localDescribe("local Supabase organisation enrollment security", () => {
 
     switch (category) {
       case "tamil_community": {
-        // Deliberately NOT "Tamil Sangam" — that exact (case/whitespace-
-        // insensitive) subtype string is the real identity rule
-        // isTamilSangamProfile()/is_sangam use to distinguish "a real
-        // Tamil Sangam registered through /join/sangam" from "a plain
-        // tamil_community organisation registered through the generic
-        // wizard" (H3 brief section 27; see the D1 migration's own
-        // comment giving "Cultural Organisation" as the example). This
-        // test exercises the generic Organisation flow's category-
-        // agnostic completeness check, not Sangam-specific requirements
-        // (year of commencement, SPOC, President, …) — using the real
-        // Sangam identity string here would incorrectly pull in H3's
-        // Sangam-only submit_organization_application validation.
         const { error } = await actor.client
           .from("organization_tamil_community_details")
           .upsert({
@@ -686,13 +674,6 @@ localDescribe("local Supabase organisation enrollment security", () => {
       representedMembership.error,
       "Create represented reviewer membership",
     );
-    // Phase H1 retired organization_members from the "represented"
-    // authorization check (is_organization_member() now reads
-    // organization_managers only — see
-    // 20260829000000_release_candidate_hardening.sql); a real
-    // represented reviewer always has a canonical grant too (every
-    // registration path dual-writes both tables), so the fixture must
-    // grant it here as well to accurately simulate that state.
     const representedGrant = await admin.from("organization_managers").insert({
       organization_id: nonprofit.application.organization_id,
       user_id: reviewer.user.id,

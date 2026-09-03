@@ -9,15 +9,6 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import type { Database } from "./database.types";
 
-// Same skip/run convention as every other local-integration-*.test.ts
-// file, run by the same `pnpm test:supabase` script. Phase H5 — the
-// organisation-email verification RPCs (issue_organization_email_
-// verification_token / verify_organization_email) predate H5 but had no
-// integration coverage at all until now; the email-change invalidation
-// trigger and the email_deliveries idempotency constraint are new in H5.
-// Edge Function HTTP behaviour itself is out of scope here — these RPCs
-// are the actual security boundary the Edge Functions merely front (see
-// docs/operations/resend-email.md for the full test-layer rationale).
 const localDescribe =
   process.env.RUN_SUPABASE_INTEGRATION === "true"
     ? describe.sequential
@@ -123,12 +114,6 @@ localDescribe("local Supabase Resend email infrastructure (Phase H5)", () => {
     return org.data.id;
   }
 
-  // verify_organization_email is granted to anon/authenticated only, by
-  // design (the person clicking an emailed link may have no session at
-  // all) — never to service_role. Every call in this file goes through a
-  // plain, session-less client, matching how the app itself calls it,
-  // rather than the admin/service-role client used for direct table
-  // setup elsewhere in these tests.
   function verifyOrganizationEmail(organizationId: string, rawToken: string) {
     const anonClient = createClient<Database>(apiUrl, anonKey, {
       auth: { autoRefreshToken: false, persistSession: false },
@@ -170,9 +155,6 @@ localDescribe("local Supabase Resend email infrastructure (Phase H5)", () => {
       .single();
     expect(afterVerify.data?.official_email_verified_at).not.toBeNull();
 
-    // Issue a SECOND, still-unconsumed token before changing the email —
-    // proves the trigger invalidates outstanding tokens, not just the
-    // already-consumed one above.
     const secondToken = await admin.rpc(
       "issue_organization_email_verification_token",
       { target_organization_id: orgId },

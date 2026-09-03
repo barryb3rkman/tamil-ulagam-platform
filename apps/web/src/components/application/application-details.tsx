@@ -264,11 +264,6 @@ export function ApplicationDetails({
   );
 }
 
-// Lean V2 intake only collects one or two classifying fields per
-// category; everything else here is optional profile-enrichment data
-// that may or may not exist yet. To avoid a wall of "Not provided
-// (optional)" rows, enrichment items are only included when they
-// actually have a value — the core intake field(s) always show.
 function categoryItems(
   profile: NonNullable<
     OrganisationApplication["registration"]["categoryProfile"]
@@ -302,10 +297,6 @@ function categoryItems(
                     : "Yes"
                   : "No",
           },
-          // Phase H3 (Tamil Sangam registration V2) — Sangam-only
-          // fields. Stay empty (and so filtered out by withValue) for a
-          // plain tamil_community organisation registered through the
-          // generic Organisation wizard, which never writes them.
           { label: "Approximate members", value: profile.memberCount },
           { label: "SPOC — full name", value: profile.spocFullName },
           { label: "SPOC — email", value: profile.spocEmail },

@@ -13,15 +13,6 @@ export interface DialogProps {
   readonly className?: string;
 }
 
-/**
- * A controlled wrapper over the native `<dialog>` element — generalizes
- * the existing `admin-registration-review.tsx` dialog pattern
- * (`showModal()`/`close()`, backdrop styling) into a reusable primitive.
- * Native `<dialog>` already provides focus trapping and Escape-to-close;
- * this wrapper only synchronizes the imperative open/close calls with a
- * declarative `open` prop and calls `onClose` for every close path
- * (Escape, the close button, or a caller-driven `open={false}`).
- */
 export function Dialog({
   children,
   className,

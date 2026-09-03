@@ -11,14 +11,6 @@ import {
 import { memberProfileContent } from "@/content/member";
 import type { ValidationErrors } from "@/features/enrollment/validation";
 
-/**
- * Step 1 (H4 brief section 4) — the account is already authenticated, so
- * account email is never asked again here. Pre-filled from whatever the
- * profile already has; always shown (not conditionally skipped) so a
- * returning member can still correct a typo, matching the rest of the
- * platform's "always show, pre-filled" convention rather than a
- * skip-if-already-set branch.
- */
 export function MemberProfileStage({
   errors,
   formError,

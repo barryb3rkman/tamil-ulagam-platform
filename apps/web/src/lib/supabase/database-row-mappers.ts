@@ -145,11 +145,6 @@ export function mapCategoryDetailRow(
           row,
           "registration_document_uploaded_at",
         ),
-        // Social links are a separate table, fetched and attached by the
-        // caller (sangam-registration-service.ts) — never available from
-        // this single-row detail mapper alone. Defaulting to [] here
-        // keeps every other caller of mapCategoryDetailRow (which never
-        // fetches social links) working unchanged.
         socialLinks: [],
       };
     case "education":

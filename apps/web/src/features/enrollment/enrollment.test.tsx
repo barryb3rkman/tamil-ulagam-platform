@@ -5,10 +5,6 @@ import { DashboardOverview } from "@/components/application/dashboard-overview";
 import { RegistrationStatusBadge } from "@/components/application/registration-status-badge";
 import { registrationStatusPresentation } from "@/content/enrollment";
 
-// DashboardOverview is now a client-side router into the relevant V3
-// workspace (Phase E1 brief section 17) rather than a content surface —
-// its own tests exercise that redirect, so next/navigation needs a
-// capturable mock here (the file otherwise never touches routing).
 const routerReplace = vi.fn();
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ replace: routerReplace, push: vi.fn() }),
@@ -101,8 +97,6 @@ describe("enrollment validation", () => {
   });
 
   it("keeps lean V2 intake fields optional beyond the core classifying question", () => {
-    // Registration number is a strong-optional trust signal, not a
-    // submission blocker, even when the organisation is registered.
     const organisation = createSeedState().organisations[0];
     expect(organisation).toBeDefined();
     expect(
@@ -110,16 +104,12 @@ describe("enrollment validation", () => {
         .registrationNumber,
     ).toBeUndefined();
 
-    // Education only requires the one classifying question at intake;
-    // programme detail, accreditation, and study areas are deferred.
     const education = {
       ...createEmptyCategoryProfile("education"),
       institutionType: "School",
     };
     expect(validateCategoryProfile(education)).toEqual({});
 
-    // Healthcare only requires facility type; licensing detail is
-    // deferred to post-verification profile enrichment.
     const healthcare = {
       ...createEmptyCategoryProfile("healthcare"),
       facilityType: "Clinic",
@@ -147,8 +137,6 @@ describe("enrollment validation", () => {
         accuracyDeclaration: false,
       }),
     ).toEqual(expect.objectContaining({ declaration: expect.any(String) }));
-    // Both underlying flags still have to be true — the single checkbox
-    // sets them together, but validation still checks both.
     expect(
       validateRepresentative({
         ...representative!,
@@ -317,9 +305,6 @@ describe("status and dashboard presentation", () => {
         <DashboardOverview />
       </PlatformProvider>,
     );
-    // The demo user manages exactly one application (organisation-toronto,
-    // deliberately not a Tamil Sangam — see mock-data.ts) — unambiguous,
-    // so /dashboard redirects there without asking.
     await waitFor(() =>
       expect(routerReplace).toHaveBeenCalledWith(
         "/workspace/organisation?organization=organisation-toronto",

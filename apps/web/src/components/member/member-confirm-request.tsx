@@ -27,13 +27,6 @@ export interface ConnectionAnswer {
   readonly connectionContextExtra: string;
 }
 
-/**
- * Step 4 — "Confirm your affiliation" (H4 brief section 18), not another
- * form. Shows the member's own details, the selected entity, and (only
- * when the selected organisation's category has one) the category-aware
- * connection question inline — this is the one place that question is
- * ever asked, so it doesn't need its own separate wizard stage.
- */
 export function MemberConfirmRequest({
   answer,
   onAnswerChange,

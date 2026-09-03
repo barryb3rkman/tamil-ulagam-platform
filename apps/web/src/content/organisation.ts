@@ -1,9 +1,3 @@
-/**
- * Copy and structural data for the real V3 Organisation registration
- * journey (Phase D2) — mirrors content/sangam.ts's shape for the sibling
- * journey. Kept as data, matching every other content/*.ts module.
- */
-
 export const organisationStages = [
   "Your Organisation",
   "Contact & Representative",

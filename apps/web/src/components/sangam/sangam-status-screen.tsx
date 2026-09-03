@@ -6,14 +6,6 @@ import { RegistrationStatusBadge } from "@/components/application/registration-s
 import { registrationStatusPresentation } from "@/content/enrollment";
 import { sangamSuccessContent } from "@/content/sangam";
 
-/**
- * Every non-editable Sangam application state (D1 brief section 22/32):
- * SUBMITTED, UNDER REVIEW, VERIFIED, REJECTED, SUSPENDED — reached both
- * right after a fresh submission (a real "Registration submitted" state,
- * not a bare toast) and on any later visit to /join/sangam while the
- * application is not in draft/needs_changes. needs_changes is NOT
- * handled here — that status stays editable and returns to the wizard.
- */
 export function SangamStatusScreen({
   application,
 }: {

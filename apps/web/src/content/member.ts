@@ -3,14 +3,6 @@ import type {
   OrganisationCategory,
 } from "@tamil-ulagam/shared";
 
-/**
- * Copy for the real Member Registration + affiliation experience.
- * Rewritten for Phase H4 — this is an AFFILIATION CLAIM flow ("I already
- * belong to this Organisation/Sangam, connect that to my account"), not
- * an open-membership request system. See the H4 brief section 1/2 for
- * the full product-language rationale.
- */
-
 export const memberLoggedOutContent = {
   eyebrow: "MEMBERSHIP",
   title: "Connect your membership",
@@ -96,13 +88,6 @@ export const memberSuccessContent = {
   secondaryCta: "Add another affiliation",
 } as const;
 
-/**
- * H4 brief sections 9-17 — keyed by the six canonical
- * OrganisationCategory values. `null` means no tailored question at all
- * (section 17: "do NOT invent one" — currently only "other"). A Tamil
- * Sangam (tamil_community + isTamilSangam) is handled as its own special
- * case in code, ahead of this map, and asks nothing extra (section 10).
- */
 export const categoryConnectionQuestions: Readonly<
   Record<OrganisationCategory, CategoryConnectionQuestion | null>
 > = {
@@ -164,5 +149,4 @@ export const categoryConnectionQuestions: Readonly<
   other: null,
 } as const;
 
-/** The Tamil Sangam special case (H4 brief section 10) — no question. */
 export const sangamConnectionQuestion: CategoryConnectionQuestion | null = null;

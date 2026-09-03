@@ -86,7 +86,6 @@ export interface PartnershipEnquiryInput {
   readonly country: string;
   readonly area: PartnershipArea;
   readonly message: string;
-  /** Reserved for a future server-verified CAPTCHA integration. */
   readonly captchaToken?: string;
 }
 

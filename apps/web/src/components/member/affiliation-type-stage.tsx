@@ -10,11 +10,6 @@ const icons: Record<AffiliationType, typeof SangamMark> = {
   organisation: OrganisationMark,
 };
 
-/**
- * Step 2 (H4 brief section 5) — "Where are you already a member?", not
- * "What would you like to join?". A single click selects AND advances —
- * this is an obvious fork, not a form field with a separate Continue.
- */
 export function AffiliationTypeStage({
   onBack,
   onSelect,

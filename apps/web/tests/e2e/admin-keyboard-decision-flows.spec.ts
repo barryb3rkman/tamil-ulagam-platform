@@ -3,26 +3,6 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
 
-/**
- * Phase F1.5 — literal keyboard-only coverage (Tab/Shift+Tab/Enter/
- * Escape, no .click() anywhere in the interaction sequence) of the
- * Federation Admin decision-dialog mechanics F1 introduced: Registration
- * Review (the pre-existing raw <dialog> pattern in
- * admin-registration-review.tsx), Membership Operations and Partnership
- * Operations (both built on the shared packages/ui Dialog primitive),
- * plus Admin navigation order/focus-visibility and a 390px mobile pass.
- *
- * This complements, rather than duplicates, F1's own axe-based
- * federation-admin-operations.spec.ts: axe proves the accessibility
- * *tree* is well-formed, but does not prove a real Tab/Enter/Escape
- * sequence actually reaches and operates every control — which is what
- * this spec physically exercises. Kept permanent per the F1.5 brief
- * ("where useful, create a permanent Playwright keyboard test for the
- * shared Admin decision-dialog mechanics") since the manual walkthrough
- * found this coverage genuinely absent, not redundant with anything
- * existing.
- */
-
 const password = "LocalF15AdminQa!2048Aa";
 const admin1 = {
   email: "f15-admin@tamil-ulagam.test",
@@ -61,10 +41,6 @@ async function focusRingPresent(page: Page) {
   });
 }
 
-/** Tab forward until an element whose accessible text matches `matcher`
- * receives focus, or `max` presses are exhausted. Tolerates the known
- * Chromium transient body-focus stop (documented in E1.6) by simply not
- * counting it as a match and continuing. */
 async function tabUntil(
   page: Page,
   matcher: (
@@ -167,25 +143,8 @@ test.describe("F1.5 Admin keyboard QA", () => {
       return org.data.id;
     }
 
-    // service_role only holds insert/update on organization_applications
-    // (deliberately, per the Aug 25 membership-management migration's own
-    // comment — reads go through `authenticated` + RLS, not a
-    // service-role bypass) and, it turns out, upsert's ON CONFLICT
-    // resolution ALSO needs a SELECT privilege PostgREST doesn't grant
-    // here — confirmed by direct testing. A plain .insert() with no
-    // .select() chained works fine (needs only insert). So each org
-    // created for this run gets a unique, run-scoped name (rather than
-    // the usual check-then-reuse-by-name pattern) — a fresh org means a
-    // guaranteed-fresh application insert, with no conflict possible and
-    // nothing that ever needs to be selected, updated-by-upsert, or
-    // deleted directly on organization_applications. Deleting the parent
-    // organization at cleanup time cascades the application (and its
-    // review history) away automatically.
     const runToken = crypto.randomUUID().slice(0, 8);
 
-    // The admin's own review queue structurally excludes applications
-    // *they* submitted (pre-existing self-review protection, unrelated
-    // to F1) — the fixture needs a distinct applicant, not adminUserId.
     const applicantEmail = `f15-kb-applicant-${runToken}@tamil-ulagam.test`;
     const applicantCreated = await admin.auth.admin.createUser({
       email: applicantEmail,
@@ -217,16 +176,6 @@ test.describe("F1.5 Admin keyboard QA", () => {
     if (application.error)
       throw new Error(`Create application: ${application.error.message}`);
 
-    // A second, separately-submitted application for the Verify half of
-    // the same test: Verify is only a legal transition from
-    // submitted/under_review, not from needs_changes (a real, correctly
-    // enforced state-machine rule — the applicant must resubmit first).
-    // service_role can neither SELECT nor targeted-UPDATE
-    // organization_applications directly (confirmed by testing — even a
-    // filtered .update() needs the same missing SELECT privilege to
-    // evaluate its WHERE clause), so rather than trying to resubmit the
-    // first fixture, this is simply a second, independent submitted
-    // fixture dedicated to Verify.
     orgAppOrgNameVerify = `F15 KB QA Verifiable Org ${runToken}`;
     const verifyOrgId = await createOrg(orgAppOrgNameVerify, false);
     orgIds.push(verifyOrgId);
@@ -402,11 +351,6 @@ test.describe("F1.5 Admin keyboard QA", () => {
     expect(reachedNav).toBe(true);
     expect(await focusRingPresent(page)).toBe(true);
 
-    // The local queue can hold more than one submitted application (real
-    // fixtures from other lifecycle specs share this database) — narrow
-    // it to this fixture via the real "Search organisation" field first
-    // (itself a keyboard interaction) so the very next "Review" link is
-    // unambiguously ours, rather than assuming row order.
     await page.getByLabel("Search organisation").fill(orgAppOrgName);
     await page.waitForTimeout(500);
 
@@ -445,9 +389,6 @@ test.describe("F1.5 Admin keyboard QA", () => {
     const afterEscape = await activeInfo(page);
     expect(afterEscape?.text).toBe("Request Changes");
 
-    // Reopen, fill the required note via keyboard, Tab within the dialog,
-    // and confirm using keyboard only. Same Chromium native-<dialog>
-    // reopen-settle quirk documented in E1.6/the Partnership test above.
     await page.waitForTimeout(300);
     await page.keyboard.press("Enter");
     await expect(dialog).toBeVisible();
@@ -470,16 +411,10 @@ test.describe("F1.5 Admin keyboard QA", () => {
     await page.keyboard.press("Enter");
     await expect(dialog).not.toBeVisible({ timeout: 10000 });
 
-    // service_role has no SELECT grant on organization_applications by
-    // design (Aug 25 migration — reads go through `authenticated` + RLS,
-    // not a service-role bypass), so status is verified through the real
-    // UI the admin actually sees, not a direct DB read.
     await expect(page.getByText("Changes Requested").first()).toBeVisible({
       timeout: 10000,
     });
 
-    // Now exercise Verify (shared dialog component, no note field) — on
-    // the second, dedicated submitted fixture (see beforeAll for why).
     await page.goto(`/admin/reviews?application=${applicationIds.verify}`);
     await expect(
       page.getByRole("heading", { name: orgAppOrgNameVerify }),
@@ -595,8 +530,6 @@ test.describe("F1.5 Admin keyboard QA", () => {
       .single();
     expect(afterRevoke?.status).toBe("revoked");
 
-    // Reject (second fixture) — verify required-note validation blocks
-    // an empty confirm, then succeeds once a note is typed.
     await page.goto(`/admin/memberships?membership=${membershipPendingId2}`);
     await page
       .waitForLoadState("networkidle", { timeout: 5000 })
@@ -718,9 +651,6 @@ test.describe("F1.5 Admin keyboard QA", () => {
     const afterEscape = await activeInfo(page);
     expect(afterEscape?.text).toBe("Decline enquiry");
 
-    // Chromium's native <dialog> needs a short settle before it reliably
-    // re-opens right after an Escape-driven close (same quirk documented
-    // in E1.6 for the workspace switcher).
     await page.waitForTimeout(300);
     await page.keyboard.press("Enter");
     await expect(dialog).toBeVisible();
@@ -839,10 +769,6 @@ test.describe("F1.5 Admin keyboard QA", () => {
         .from("organization_managers")
         .delete()
         .eq("organization_id", id);
-      // organization_applications (and its own cascade to
-      // application_review_history) is never deleted directly —
-      // service_role holds no delete grant there by design. Deleting the
-      // parent organization below cascades both away automatically.
       await admin
         .from("organization_tamil_community_details")
         .delete()

@@ -38,36 +38,6 @@ export interface RegistrationDocumentUploadResult {
   readonly uploadedAt: string;
 }
 
-/**
- * The Tamil Sangam registration journey's own service boundary (Phase
- * D1) — deliberately independent of PlatformProvider/supabase-services.ts,
- * the same way membership-service.ts (Phase A1/C2) is independent of it.
- *
- * Why not extend PlatformProvider's ensureDraft/currentApplication
- * instead? Those resolve a single "current application" from the
- * caller's PRIMARY organisation membership, with no category awareness
- * — correct for "one Organisation registration at a time", wrong for
- * "an account may register an Organisation and a Tamil Sangam
- * independently" (D1 brief section 21). Rather than teaching that
- * primary-membership resolution about categories, this service resolves
- * (and edits) a Sangam application purely by its own id, fetched once
- * via ensureDraft()/reload() and then threaded explicitly through every
- * write — see ensure_sangam_application_draft in the Phase D1 migration
- * for the matching server-side draft resolution.
- *
- * What IS reused, not reimplemented: the domain types, the row mappers
- * (mapOrganizationRow/mapCategoryDetailRow/mapApplicationRow), the
- * organisation/representative-to-database mappers, the existing
- * submit_organization_application and check_duplicate_organization_signals
- * RPCs (the latter called directly via usePlatform().checkDuplicateSignals
- * — already category-agnostic, no reason to wrap it again here), and the
- * same RLS/grants the Organisation journey already relies on for
- * `organizations`/`organization_applications`/
- * `organization_tamil_community_details` (can_manage_organization +
- * organization_application_is_editable) — nothing new was added to those
- * tables' policies for this service to work.
- */
-
 function assertNoError(error: unknown, fallback: string): void {
   if (error) throw mapSupabaseError(error, fallback);
 }
@@ -196,20 +166,8 @@ async function loadApplicationById(
 }
 
 export interface SangamRegistrationService {
-  /** Creates (or idempotently re-reads) the caller's own Tamil Sangam
-   * draft — see ensure_sangam_application_draft. Never returns another
-   * account's Sangam, and never returns/creates a plain Organisation
-   * record even if that's the caller's primary membership. */
   ensureDraft(): Promise<OrganisationApplication>;
-  /** Re-reads one Sangam application by id — RLS (organisation manager
-   * or reviewer) is the only access control; there is no separate
-   * Sangam-specific check to keep in sync with it. */
   reload(applicationId: string): Promise<OrganisationApplication>;
-  /** One organisation has exactly one application (organization_id is
-   * unique on organization_applications) — used by the Sangam workspace,
-   * which already knows which organisation(s) the caller manages (via
-   * listMyManagedOrganisations) and needs the full application for one
-   * of them. Returns null rather than throwing when none exists. */
   findByOrganisation(
     organisationId: string,
   ): Promise<OrganisationApplication | null>;
@@ -217,10 +175,6 @@ export interface SangamRegistrationService {
     organisationId: string,
     input: Organisation,
   ): Promise<Organisation>;
-  /** subtype is always forced to "Tamil Sangam" here, regardless of what
-   * the caller's profile object carries — the Sangam wizard never offers
-   * a subtype choice, so this is defence in depth, not a real override
-   * of user intent. */
   updateCategoryProfile(
     organisationId: string,
     profile: TamilCommunityProfile,
@@ -230,28 +184,13 @@ export interface SangamRegistrationService {
     representative: OrganisationRepresentative,
   ): Promise<void>;
   updateCurrentStep(applicationId: string, step: 1 | 2 | 3 | 4): Promise<void>;
-  /** Reuses submit_organization_application as-is — the same lifecycle,
-   * validation and review-history behaviour an Organisation submission
-   * gets, including its existing (already lenient) tamil_community
-   * completeness check. */
   submit(applicationId: string): Promise<OrganisationApplication>;
-  /** Uploads (or replaces) the Sangam's registration document — a real
-   * Supabase Storage upload (H3 brief section 9), persisted immediately
-   * on upload completion, deliberately independent of the debounced
-   * text-field autosave (section 23/24). Rejects unsupported types/
-   * oversized files with a human-readable PlatformServiceError before
-   * any network call. Removes the previous object (if any) only after
-   * the new one is confirmed saved. */
   uploadRegistrationDocument(
     organisationId: string,
     applicationId: string,
     file: File,
   ): Promise<RegistrationDocumentUploadResult>;
-  /** Clears the registration document (storage object + DB pointer). */
   removeRegistrationDocument(organisationId: string): Promise<void>;
-  /** A short-lived (120s) signed URL for viewing/downloading — never a
-   * permanent public URL, never persisted as domain data (H3 brief
-   * sections 12/13). */
   getRegistrationDocumentSignedUrl(path: string): Promise<string>;
 }
 
@@ -337,12 +276,6 @@ export function createSangamRegistrationService(
         "The Sangam's community details could not be saved.",
       );
 
-      // Social links: full replace (delete-all then reinsert) — the
-      // simplest correct approach for a short, order-matters "zero or
-      // more links" list that is always saved as a complete unit from
-      // wizard state, never edited row-by-row from the server's
-      // perspective. Empty/whitespace-only entries are dropped rather
-      // than persisted as blank rows.
       const links = profile.socialLinks
         .map((url) => url.trim())
         .filter((url) => url.length > 0);
@@ -394,9 +327,6 @@ export function createSangamRegistrationService(
         );
       }
 
-      // Read the previous path (if any) before overwriting it, so the
-      // old object can be removed after the new one succeeds — never
-      // accumulate obsolete files (H3 brief section 15).
       const previous = await client
         .from("organization_tamil_community_details")
         .select("registration_document_path")
@@ -429,8 +359,6 @@ export function createSangamRegistrationService(
           { onConflict: "organization_id" },
         );
       if (error) {
-        // Roll back the just-uploaded object rather than leaving an
-        // orphan the DB doesn't know about.
         await client.storage.from(REGISTRATION_DOCUMENT_BUCKET).remove([path]);
         throw mapSupabaseError(
           error,

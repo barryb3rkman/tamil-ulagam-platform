@@ -16,15 +16,6 @@ function documentIcon(filename: string): string {
   return filename.toLowerCase().endsWith(".pdf") ? "📄" : "🖼️";
 }
 
-/**
- * Phase H3 — a real upload component (H3 brief section 9: "Do not create
- * a fake file input"), not a generic <input type="file"> left bare after
- * selection. Three renders: empty (a labelled dropzone-style button),
- * in-flight (H3 brief section 24 — a distinct "Uploading…" state, never
- * folded into the text-field autosave indicator), and uploaded (filename
- * + size + Replace/Remove, H3 brief section 14 — never looks like a
- * generic browser file input once a file exists).
- */
 export function RegistrationDocumentField({
   error,
   fileSize,

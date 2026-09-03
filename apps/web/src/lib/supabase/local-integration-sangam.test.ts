@@ -9,12 +9,6 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import type { Database } from "./database.types";
 
-// Same skip/run convention as local-integration.test.ts /
-// local-integration-membership.test.ts, run by the same `pnpm
-// test:supabase` script. Kept in its own file (Phase D1: Tamil Sangam
-// registration) rather than appended to either existing suite, matching
-// the precedent both of those set for keeping each phase's domain
-// independently runnable/reviewable.
 const localDescribe =
   process.env.RUN_SUPABASE_INTEGRATION === "true"
     ? describe.sequential
@@ -182,8 +176,6 @@ localDescribe(
         .eq("id", sangamOrgId)
         .select("id");
       expect(attempt.error).toBeNull();
-      // RLS silently returns zero affected rows rather than an error — the
-      // organisation's own name must remain unchanged.
       expect(attempt.data).toHaveLength(0);
       const unchanged = await admin
         .from("organizations")
@@ -194,17 +186,12 @@ localDescribe(
     });
 
     it("cannot forge application status, verification, or self-grant review permission via a raw table update", async () => {
-      // organization_applications.status is deliberately excluded from the
-      // authenticated column-update grant — this must fail outright as a
-      // permission error, not silently no-op.
       const forgedStatus = await actor("founder")
         .client.from("organization_applications")
         .update({ status: "verified" } as never)
         .eq("id", sangamApplicationId);
       expect(forgedStatus.error).not.toBeNull();
 
-      // organizations.official_email_verified_at is likewise excluded from
-      // the grant.
       const forgedVerification = await actor("founder")
         .client.from("organizations")
         .update({
@@ -213,9 +200,6 @@ localDescribe(
         .eq("id", sangamOrgId);
       expect(forgedVerification.error).not.toBeNull();
 
-      // The founder is not a reviewer/admin — reviewing their own
-      // submission must be rejected by review_organization_application
-      // regardless of the application's current status.
       const selfReview = await actor("founder").client.rpc(
         "review_organization_application",
         {
@@ -249,8 +233,6 @@ localDescribe(
         matches: readonly { id: string; name: string }[];
       };
       expect(result.nameMatch).toBe(true);
-      // An ordinary (non-reviewer) applicant never receives the matched
-      // organisation's identity — only reviewers do (Lean V2, unchanged).
       expect(result.matches).toHaveLength(0);
     });
 
@@ -332,13 +314,6 @@ localDescribe(
       expect(requireData(approve.data, "approval").status).toBe("approved");
     });
 
-    // ------------------------------------------------------------------
-    // Phase H3 — Tamil Sangam registration V2: new required-field
-    // server-side enforcement, independent of whatever the client
-    // validates. Continues to use the "founder" actor's own
-    // sangamOrgId/sangamApplicationId draft from the tests above.
-    // ------------------------------------------------------------------
-
     it("new SPOC/President/member-count columns round-trip through the normal update grant", async () => {
       const update = await actor("founder")
         .client.from("organization_tamil_community_details")
@@ -371,10 +346,6 @@ localDescribe(
     });
 
     it("submit_organization_application rejects a Sangam missing SPOC/President details even if the shared representative/declaration fields are already complete", async () => {
-      // Fill in everything the shared (non-Sangam-specific) validation
-      // requires, deliberately leaving SPOC/President incomplete — the
-      // server-side check must still block submission on its own, not
-      // rely on the client ever having asked for them.
       const orgUpdate = await admin
         .from("organizations")
         .update({
@@ -516,10 +487,6 @@ localDescribe(
         /registration number and registration document/i,
       );
 
-      // Both present — succeeds. (The document path itself is a Storage
-      // pointer; its actual upload path/RLS is covered end-to-end by
-      // sangam-registration-document-security.spec.ts. Here only the
-      // RPC's own "is a document recorded" check is being proven.)
       const documentUpdate = await admin
         .from("organization_tamil_community_details")
         .update({

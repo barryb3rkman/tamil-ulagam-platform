@@ -3,16 +3,6 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
 
-/**
- * Phase G1 — full local Supabase browser coverage of the management
- * administration lifecycle (brief section 47, Flows A-F): invite +
- * accept, role change, remove, self-leave, ownership transfer, and
- * Sangam parity. Uses separate browser contexts per persona so the
- * WorkspaceSwitcher/session state of one actor never leaks into
- * another's — the same discipline workspace-navigation-lifecycle.spec.ts
- * already established.
- */
-
 const password = "LocalManagementLifecycle!2048Aa";
 
 async function signIn(page: Page, email: string) {
@@ -221,9 +211,6 @@ test.describe("Management administration lifecycle", () => {
       recipientPage.getByText(users.recipientA.fullName).first(),
     ).toBeVisible();
 
-    // NOT a Member — /workspace/member shows no Organisation affiliation
-    // for this org (only the management-invitation attention item,
-    // already resolved above, and no ordinary membership row).
     const { data: membershipRows } = await admin
       .from("organization_memberships")
       .select("id")
@@ -349,13 +336,6 @@ test.describe("Management administration lifecycle", () => {
       .last()
       .click();
 
-    // Brief section 29: the current page/switcher may legitimately show
-    // stale/lost-access state immediately after the same session's own
-    // action (WorkspaceShell's inventory is fetched once on mount, not
-    // auto-refreshed by a child action) — "show stale state, then
-    // Switch workspace" is the explicitly-allowed pattern, not silent
-    // instant consistency. A reload (a real "next visit") is what
-    // guarantees the switcher reflects the change.
     await repPage.reload();
     await repPage.getByRole("button", { name: "Switch workspace" }).click();
     await expect(

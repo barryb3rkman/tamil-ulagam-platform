@@ -10,13 +10,6 @@ import type { ValidationErrors } from "@/features/enrollment/validation";
 
 type RepresentativeRole = (typeof representativeRoleOptions)[number]["value"];
 
-/**
- * The Contact & Representative stage offers four simplified role
- * groupings; the stored value stays the full eight-value enum so
- * historical records and admin review keep exact meaning — identical
- * mapping to the one the pre-V3 wizard used (content/enrollment.ts's
- * `representativeRelationships` remains the full list for display).
- */
 function roleToRelationship(
   role: RepresentativeRole | "",
 ): OrganisationRepresentative["relationship"] {

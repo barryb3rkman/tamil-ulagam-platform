@@ -1,17 +1,7 @@
 import type { SVGProps } from "react";
 
-/**
- * Small, geometric line-art marks — one per journey — deliberately not
- * a generic icon-library set. Each motif is a distinct symbolic shape
- * in the same restrained single-stroke language, giving every journey
- * card its own identity without introducing a photo or a person into
- * the /join composition (per the Phase C1 "zero people imagery on
- * /join" instruction).
- */
-
 type IconProps = SVGProps<SVGSVGElement>;
 
-/** Organisation — an institutional facade: a pediment over two columns. */
 export function OrganisationMark(props: IconProps) {
   return (
     <svg viewBox="0 0 40 40" fill="none" aria-hidden="true" {...props}>
@@ -38,8 +28,6 @@ export function OrganisationMark(props: IconProps) {
   );
 }
 
-/** Tamil Sangam — a kolam-derived radiating flower, echoing the linework
- * in the hero and Sangam journey imagery. */
 export function SangamMark(props: IconProps) {
   return (
     <svg viewBox="0 0 40 40" fill="none" aria-hidden="true" {...props}>
@@ -72,8 +60,6 @@ export function SangamMark(props: IconProps) {
   );
 }
 
-/** Member — a small constellation: one node joining an existing cluster,
- * symbolic of affiliation rather than a literal person. */
 export function MemberMark(props: IconProps) {
   return (
     <svg viewBox="0 0 40 40" fill="none" aria-hidden="true" {...props}>
@@ -98,8 +84,6 @@ export function MemberMark(props: IconProps) {
   );
 }
 
-/** Partner — two interlocking rings, symbolic of a collaboration formed
- * from two independent parties rather than a literal handshake. */
 export function PartnerMark(props: IconProps) {
   return (
     <svg viewBox="0 0 40 40" fill="none" aria-hidden="true" {...props}>

@@ -3,29 +3,6 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
 
-/**
- * The real, end-to-end V3 Organisation registration lifecycle (Phase
- * D2), driven through the actual UI against a real local Supabase
- * instance — proving the old Lean V2 backend still powers the new V3
- * UI, all the way through to the Organisation Workspace, People, and a
- * separate member discovering and joining the verified organisation:
- *
- *   registrant signs up -> /join/organisation -> completes all three
- *   stages -> submits -> admin reviewer signs in separately -> requests
- *   changes -> registrant resumes -> resubmits -> admin verifies ->
- *   registrant's Organisation Workspace opens -> People is accessible
- *   from it -> member (a third, separate account) signs in -> searches
- *   the newly verified organisation at /join/member -> requests
- *   affiliation -> the organisation's own manager (the registrant) sees
- *   and approves the request via the same People surface -> the
- *   member's workspace shows the approved affiliation.
- *
- * supabase-local.spec.ts already covers the needs_changes/resume/
- * resubmit/verify chain in isolation; this spec's own purpose is
- * proving that chain connects, unbroken, into Workspace/People/Member
- * Registration — the same proof D1 built for the Sangam journey.
- */
-
 const registrant = {
   fullName: "Priya Anand",
   email: "local-browser-org-registrant@tamil-ulagam.test",
@@ -218,11 +195,6 @@ test.describe("local Supabase real V3 Organisation registration lifecycle", () =
         reviewerPage.getByText("Changes Requested", { exact: true }).first(),
       ).toBeVisible();
 
-      // --- Registrant: resumes and resubmits ---
-      // submit_organization_application persists current_step = 3 (the
-      // last completed data-entry stage), so resuming lands back on
-      // Stage 3 — one "Back" click away from Stage 2, where the
-      // requested fix (official phone) actually lives.
       await registrantPage.goto("/join/organisation");
       await expect(
         registrantPage.getByText("Please confirm the official phone number."),
@@ -279,9 +251,6 @@ test.describe("local Supabase real V3 Organisation registration lifecycle", () =
         }),
       ).toBeVisible();
 
-      // --- Member: discovers the verified organisation, submits an
-      // affiliation claim (H4 brief — profile -> type -> directory ->
-      // confirm, with the healthcare category's own connection question) ---
       await signIn(memberPage, member.email, member.password);
       await memberPage.goto("/join/member");
       await memberPage.getByText("Your details").waitFor({ timeout: 15000 });

@@ -18,11 +18,6 @@ export interface DataTableProps<Row> {
   readonly className?: string;
 }
 
-/**
- * A deliberately small operational table primitive. Desktop receives a
- * semantic table; narrow screens receive the same labelled data as stacked
- * records rather than a squeezed or horizontally scrolling table.
- */
 export function DataTable<Row>({
   caption,
   className,

@@ -3,11 +3,6 @@ import { Dialog } from "@tamil-ulagam/ui";
 import { useState } from "react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
-// jsdom does not implement the native <dialog> element's imperative API
-// (showModal/close) — polyfill just enough of it here so Dialog's own
-// open/close-sync logic can be exercised. Real focus-trap/backdrop
-// behaviour is the browser's responsibility, not this component's; it
-// is intentionally not re-tested here.
 beforeAll(() => {
   if (!HTMLDialogElement.prototype.showModal) {
     HTMLDialogElement.prototype.showModal = function showModal(

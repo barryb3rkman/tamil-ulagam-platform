@@ -20,13 +20,6 @@ const mockedUseSangamRegistrationService = vi.mocked(
   useSangamRegistrationService,
 );
 
-/**
- * Phase H3 brief section 22: "The H2 visual QA caught a real stale-data
- * defect in Review. Do not repeat that class of bug." — these tests
- * assert the Review screen renders directly from the application object
- * it is passed (the caller's live, current wizard state), rather than
- * silently falling back to some other stale source.
- */
 function application(
   overrides: Partial<OrganisationApplication["registration"]> = {},
 ): OrganisationApplication {
