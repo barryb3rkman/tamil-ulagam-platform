@@ -16,7 +16,7 @@ export function LegalFinalNotice({ document }: LegalFinalNoticeProps) {
       aria-labelledby="legal-final-notice-title"
     >
       <Container size="narrow">
-        <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
+        <p className="text-heritage-maroon text-eyebrow">
           {document.finalNotice.eyebrow}
         </p>
         <h2

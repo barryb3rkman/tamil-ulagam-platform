@@ -152,9 +152,7 @@ function WorkspaceSwitcherSection({
 }) {
   return (
     <div>
-      <h3 className="text-slate mb-2 text-[0.68rem] font-bold tracking-[0.14em] uppercase">
-        {heading}
-      </h3>
+      <h3 className="text-slate text-eyebrow-sm mb-2">{heading}</h3>
       <ul className="grid gap-1.5">
         {options.map((option) => (
           <li key={`${option.type}-${option.id}`} className="min-w-0">
@@ -170,7 +168,7 @@ function WorkspaceSwitcherSection({
             >
               <span className="min-w-0 truncate">{option.label}</span>
               {option.current ? (
-                <span className="text-global-navy/60 shrink-0 text-xs font-bold tracking-[0.1em] uppercase">
+                <span className="text-global-navy/60 text-eyebrow-sm shrink-0">
                   Current
                 </span>
               ) : null}

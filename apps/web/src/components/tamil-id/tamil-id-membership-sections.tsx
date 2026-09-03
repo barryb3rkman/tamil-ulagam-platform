@@ -14,7 +14,7 @@ export function TamilIdJourney() {
           title={journey.title}
           description={journey.description}
         />
-        <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.14em] uppercase">
+        <p className="text-heritage-maroon text-eyebrow mt-7">
           Membership journey
         </p>
         <NumeralFeature
@@ -45,9 +45,7 @@ export function TamilIdCredentialPreview() {
           className="[&>p]:text-white/74"
         />
         <div className="border-heritage-gold/30 bg-deep-navy/45 border p-5 sm:p-8">
-          <p className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
-            Credential anatomy
-          </p>
+          <p className="text-heritage-gold text-eyebrow">Credential anatomy</p>
           <div className="motion-pop-group mt-6 grid gap-3 sm:grid-cols-2">
             {credential.areas.map((area) => (
               <div

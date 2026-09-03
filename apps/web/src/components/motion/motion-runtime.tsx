@@ -15,13 +15,22 @@ const groupRevealFrames: Keyframe[] = [
   { opacity: 1, transform: "translate3d(0, 0, 0) scale(1)" },
 ];
 
-const snapEasing = "cubic-bezier(0.22, 1.16, 0.36, 1)";
+/** Read from the same custom property the stylesheet uses, so the curve
+ * is defined once. The fallback only matters if the stylesheet has not
+ * applied yet. */
+function readSnapEasing(): string {
+  const value = getComputedStyle(document.documentElement)
+    .getPropertyValue("--tu-ease-snap")
+    .trim();
+  return value || "cubic-bezier(0.22, 1.16, 0.36, 1)";
+}
 
 export function MotionRuntime() {
   const pathname = usePathname();
 
   useEffect(() => {
     const root = document.documentElement;
+    const snapEasing = readSnapEasing();
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const supportsMotion =
       "IntersectionObserver" in window &&

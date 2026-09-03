@@ -27,9 +27,7 @@ export function TamilIdFeature() {
             />
           </div>
           <div className="lg:order-1">
-            <p className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
-              {tamilId.eyebrow}
-            </p>
+            <p className="text-heritage-gold text-eyebrow">{tamilId.eyebrow}</p>
             <h2
               id="tamil-id-title"
               className="mt-4 max-w-2xl text-4xl leading-[1.08] font-semibold tracking-[-0.035em] text-balance sm:text-5xl"

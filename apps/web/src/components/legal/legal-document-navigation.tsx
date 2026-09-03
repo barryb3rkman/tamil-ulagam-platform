@@ -17,9 +17,7 @@ export function LegalDocumentNavigation({
         aria-label={`${documentTitle} table of contents`}
         className="border-global-navy/14 bg-white px-5 py-6 lg:sticky lg:top-28 lg:px-6"
       >
-        <h2 className="text-global-navy text-sm font-semibold tracking-[0.14em] uppercase">
-          On this page
-        </h2>
+        <h2 className="text-global-navy text-eyebrow">On this page</h2>
         <ol className="border-global-navy/12 mt-5 max-h-[28rem] overflow-y-auto overscroll-contain border-t pr-2 sm:grid sm:max-h-[32rem] sm:grid-cols-2 sm:gap-x-6 lg:block lg:max-h-[calc(100vh-10rem)] lg:pr-2">
           {sections.map((section) => (
             <li key={section.id} className="border-global-navy/12 border-b">
@@ -47,7 +45,7 @@ interface RelatedLegalDocumentsProps {
 export function RelatedLegalDocuments({ links }: RelatedLegalDocumentsProps) {
   return (
     <nav aria-label="Related legal documents" className="mt-8">
-      <h3 className="text-global-navy text-sm font-semibold tracking-[0.14em] uppercase">
+      <h3 className="text-global-navy text-eyebrow">
         Related documents and guidance
       </h3>
       <ul className="mt-4 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:gap-5">

@@ -33,7 +33,7 @@ export function AuthShell({
               <span className="text-global-navy block text-sm font-bold sm:text-base">
                 Tamil Ulagam
               </span>
-              <span className="text-slate block text-[0.68rem] font-bold tracking-[0.12em] uppercase sm:text-xs">
+              <span className="text-slate text-eyebrow-sm block sm:text-xs">
                 {portalLabel}
               </span>
             </span>
@@ -150,9 +150,7 @@ function ProgrammeColumn({
           <span className="font-tamil text-heritage-gold/70 text-sm" lang="ta">
             {tamil}
           </span>
-          <span className="text-[0.7rem] font-semibold tracking-[0.18em] text-white/35 uppercase">
-            {english}
-          </span>
+          <span className="text-eyebrow text-white/35">{english}</span>
         </li>
       ))}
     </ul>

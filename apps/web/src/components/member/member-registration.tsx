@@ -238,7 +238,7 @@ export function MemberRegistration() {
   return (
     <Container className="py-10 sm:py-14 lg:py-16">
       <div className="mb-7 max-w-2xl">
-        <p className="text-heritage-maroon text-xs font-bold tracking-[0.16em] uppercase">
+        <p className="text-heritage-maroon text-eyebrow-sm">
           Member affiliation
         </p>
         <h1 className="text-global-navy mt-3 text-3xl leading-tight font-bold tracking-[-0.03em] sm:text-4xl">

@@ -31,7 +31,7 @@ export function GovernanceSection() {
             </p>
           </div>
           <div>
-            <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
+            <p className="text-heritage-maroon text-eyebrow">
               {governance.eyebrow}
             </p>
             <h2

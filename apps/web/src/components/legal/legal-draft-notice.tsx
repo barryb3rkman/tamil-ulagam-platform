@@ -17,7 +17,7 @@ export function LegalDraftNotice({ warning }: LegalDraftNoticeProps) {
       <Container size="wide">
         <div className="border-heritage-maroon border-l-4 bg-white px-6 py-7 shadow-sm sm:px-8 lg:grid lg:grid-cols-[0.8fr_1.2fr] lg:gap-14 lg:px-10 lg:py-9">
           <div>
-            <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
+            <p className="text-heritage-maroon text-eyebrow">
               {warning.eyebrow}
             </p>
             <h2

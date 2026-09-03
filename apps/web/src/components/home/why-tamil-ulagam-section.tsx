@@ -26,7 +26,7 @@ export function WhyTamilUlagamSection() {
             />
           </div>
           <div className="lg:order-1">
-            <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
+            <p className="text-heritage-maroon text-eyebrow">
               WHY TAMIL ULAGAM
             </p>
             <h2

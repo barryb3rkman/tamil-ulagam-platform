@@ -41,7 +41,7 @@ export function ChaptersFinalCta() {
       />
       <Container size="wide" className="relative">
         <div className="max-w-4xl">
-          <p className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
+          <p className="text-heritage-gold text-eyebrow">
             {finalCallToAction.eyebrow}
           </p>
           <h2

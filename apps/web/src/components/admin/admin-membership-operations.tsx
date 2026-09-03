@@ -311,9 +311,7 @@ function MembershipDetail({
     >
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-slate text-[0.64rem] font-bold tracking-[0.16em] uppercase">
-            Affiliation detail
-          </p>
+          <p className="text-slate text-eyebrow-sm">Affiliation detail</p>
           <h2
             id="membership-detail-title"
             className="text-global-navy mt-2 text-2xl font-bold"

@@ -72,9 +72,7 @@ export function ModuleComingSoon({
               aria-hidden="true"
               className="bg-heritage-gold size-2 animate-pulse rounded-full"
             />
-            <span className="text-[0.72rem] font-bold tracking-[0.16em] text-white/75 uppercase">
-              In development
-            </span>
+            <span className="text-eyebrow text-white/75">In development</span>
           </div>
 
           <p className="mx-auto mt-6 max-w-lg leading-7 text-white/50">

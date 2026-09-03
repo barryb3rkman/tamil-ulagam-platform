@@ -15,7 +15,7 @@ export function SharedPlatformSection() {
       <Container size="wide">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:gap-20">
           <div className="lg:sticky lg:top-24 lg:self-start">
-            <p className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
+            <p className="text-heritage-gold text-eyebrow">
               {sharedPlatform.eyebrow}
             </p>
             <h2

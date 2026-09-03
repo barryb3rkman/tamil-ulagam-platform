@@ -31,7 +31,7 @@ export function MemberRequestSuccess({
         >
           ✓
         </span>
-        <p className="text-heritage-maroon mt-4 text-xs font-bold tracking-[0.1em] uppercase">
+        <p className="text-heritage-maroon text-eyebrow-sm mt-4">
           {memberSuccessContent.eyebrow}
         </p>
         <h2 className="text-global-navy mt-3 text-2xl font-bold">

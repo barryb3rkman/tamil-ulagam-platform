@@ -44,7 +44,7 @@ export function SequenceSpine({
         >
           <span
             aria-hidden="true"
-            className={`absolute top-1 -left-9 grid size-6 place-items-center rounded-full border transition-[background-color,border-color,transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1.16,0.36,1)] group-data-[spine-reached]:scale-110 sm:-left-12 sm:size-8 ${
+            className={`ease-snap absolute top-1 -left-9 grid size-6 place-items-center rounded-full border transition-[background-color,border-color,transform,box-shadow] duration-300 group-data-[spine-reached]:scale-110 sm:-left-12 sm:size-8 ${
               dark
                 ? "bg-ink group-data-[spine-reached]:border-heritage-gold group-data-[spine-reached]:bg-heritage-gold/20 border-white/25"
                 : "border-global-navy/18 group-data-[spine-reached]:border-heritage-gold group-data-[spine-reached]:bg-heritage-gold/15 bg-white"

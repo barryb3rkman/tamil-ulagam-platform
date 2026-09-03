@@ -52,7 +52,7 @@ export function WorkspaceIdentity({
         className={`size-2.5 shrink-0 rounded-full ${accent?.dotClassName ?? "bg-white/30"}`}
       />
       <span className="min-w-0 leading-tight">
-        <span className="text-heritage-gold block text-[0.65rem] font-bold tracking-[0.14em] uppercase">
+        <span className="text-heritage-gold text-eyebrow-sm block">
           {accent?.typeLabel ?? "Workspace"}
         </span>
         <span className="block max-w-48 truncate text-sm font-bold text-white sm:max-w-72">

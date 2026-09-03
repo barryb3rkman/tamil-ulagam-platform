@@ -83,7 +83,7 @@ export function SangamReview({
     <section className="gradient-warm-welcome">
       <div className="mx-auto max-w-[74rem] px-5 py-10 sm:px-7 sm:py-14 lg:px-10">
         <div className="mb-7 max-w-3xl">
-          <p className="text-heritage-maroon text-xs font-bold tracking-[0.18em] uppercase">
+          <p className="text-heritage-maroon text-eyebrow-sm">
             {sangamReviewContent.eyebrow}
           </p>
           <h1 className="text-global-navy mt-3 text-3xl font-bold tracking-[-0.03em] sm:text-4xl">
@@ -157,7 +157,7 @@ export function SangamReview({
                   value={organisation.registrationNumber}
                 />
                 <div>
-                  <dt className="text-slate text-xs font-bold tracking-[0.1em] uppercase">
+                  <dt className="text-slate text-eyebrow-sm">
                     Registration certificate
                   </dt>
                   <dd className="mt-1 leading-6">
@@ -202,9 +202,7 @@ export function SangamReview({
           <ReviewSection title="Digital presence" onEdit={() => onEdit(3)}>
             <ReviewRow label="Website" value={organisation.website} />
             <div className="sm:col-span-2">
-              <dt className="text-slate text-xs font-bold tracking-[0.1em] uppercase">
-                Social media links
-              </dt>
+              <dt className="text-slate text-eyebrow-sm">Social media links</dt>
               <dd className="mt-1 leading-6">
                 {profile?.socialLinks.length ? (
                   <ul className="grid gap-1">
@@ -250,7 +248,7 @@ export function SangamReview({
 
         <div className="bg-deep-navy rounded-card mt-7 grid gap-6 p-6 text-white sm:p-7 lg:grid-cols-[1fr_auto] lg:items-end">
           <div>
-            <p className="text-heritage-gold text-xs font-bold tracking-[0.14em] uppercase">
+            <p className="text-heritage-gold text-eyebrow-sm">
               What happens next
             </p>
             <ol className="mt-4 grid gap-3 text-sm text-white/75 sm:grid-cols-3">
@@ -341,9 +339,7 @@ function ReviewRow({
 }) {
   return (
     <div className="min-w-0">
-      <dt className="text-slate text-xs font-bold tracking-[0.1em] uppercase">
-        {label}
-      </dt>
+      <dt className="text-slate text-eyebrow-sm">{label}</dt>
       <dd
         className={`mt-1 leading-6 break-words ${value ? "text-charcoal" : "text-slate italic"}`}
       >

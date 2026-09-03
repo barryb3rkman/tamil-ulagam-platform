@@ -37,7 +37,7 @@ export function CollapsibleSection({
       <div className="px-5 pt-5 sm:px-6">
         {eyebrow ? (
           <p
-            className={`text-[0.64rem] font-bold tracking-[0.16em] uppercase ${
+            className={`text-eyebrow-sm ${
               dark ? "text-heritage-gold/85" : "text-slate"
             }`}
           >

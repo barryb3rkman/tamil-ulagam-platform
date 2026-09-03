@@ -40,7 +40,7 @@ export function PillarsSection() {
                   />
                 </div>
                 <div className="p-6 sm:p-7">
-                  <p className="text-heritage-maroon text-xs font-semibold tracking-[0.14em] uppercase">
+                  <p className="text-heritage-maroon text-eyebrow-sm">
                     0{homepageContent.pillars.indexOf(pillar) + 1}
                   </p>
                   <h3 className="text-global-navy mt-3 text-3xl font-semibold tracking-[-0.03em]">

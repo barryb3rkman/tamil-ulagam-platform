@@ -19,7 +19,7 @@ export function SourceVerificationSection() {
           title={verification.title}
         />
         <div>
-          <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
+          <p className="text-heritage-maroon text-eyebrow">
             {verification.label}
           </p>
           <NumberedGrid items={verification.items} />
@@ -112,9 +112,7 @@ export function CorrectionsSection() {
             key={category.title}
             className="grid gap-2 py-4 first:pt-0 last:pb-0 sm:grid-cols-[12rem_1fr] sm:gap-7"
           >
-            <dt className="text-global-navy text-sm font-bold tracking-[0.1em] uppercase">
-              {category.title}
-            </dt>
+            <dt className="text-global-navy text-eyebrow">{category.title}</dt>
             <dd className="text-slate leading-7">{category.description}</dd>
           </div>
         ))}

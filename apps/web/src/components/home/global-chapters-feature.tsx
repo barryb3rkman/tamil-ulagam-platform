@@ -15,7 +15,7 @@ export function GlobalChaptersFeature() {
       <Container size="wide">
         <div className="grid items-stretch gap-0 lg:grid-cols-[0.95fr_1.05fr]">
           <div className="flex flex-col justify-center px-0 py-2 lg:px-8 lg:py-12">
-            <p className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
+            <p className="text-heritage-gold text-eyebrow">
               {chapters.eyebrow}
             </p>
             <h2

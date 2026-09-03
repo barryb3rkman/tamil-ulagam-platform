@@ -261,9 +261,7 @@ export function ManagerPeople() {
 
   return (
     <Container className="py-12 sm:py-16 lg:py-20">
-      <p className="text-heritage-maroon text-xs font-bold tracking-[0.14em] uppercase">
-        PEOPLE
-      </p>
+      <p className="text-heritage-maroon text-eyebrow-sm">PEOPLE</p>
       <h1 className="text-global-navy mt-2 text-3xl font-bold tracking-[-0.01em]">
         {activeOrganisation.name}
       </h1>

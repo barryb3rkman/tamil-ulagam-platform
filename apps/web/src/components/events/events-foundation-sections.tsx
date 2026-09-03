@@ -87,7 +87,7 @@ export function OrganiserModelSection() {
             {organisers.statement}
           </p>
           <div className="border-global-navy/12 mt-8 border-t pt-6">
-            <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
+            <p className="text-heritage-maroon text-eyebrow">
               Approval may be limited by
             </p>
             <ul className="mt-4 flex flex-wrap gap-3">
@@ -120,7 +120,7 @@ export function OrganiserPathwaySection() {
           description={organiserPathway.description}
           tone="inverse"
         />
-        <p className="text-heritage-gold mt-7 text-sm font-semibold tracking-[0.14em] uppercase">
+        <p className="text-heritage-gold text-eyebrow mt-7">
           Organiser pathway
         </p>
         <NumeralFeature
@@ -146,7 +146,7 @@ export function EventLifecycleSection() {
           title={lifecycle.title}
           description={lifecycle.description}
         />
-        <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.14em] uppercase">
+        <p className="text-heritage-maroon text-eyebrow mt-7">
           Event lifecycle
         </p>
         <NumeralFeature

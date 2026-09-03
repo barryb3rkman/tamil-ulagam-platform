@@ -40,7 +40,7 @@ export function ChapterGovernanceSection() {
             title={governance.title}
             description={governance.description}
           />
-          <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.14em] uppercase">
+          <p className="text-heritage-maroon text-eyebrow mt-7">
             Chapter governance principles
           </p>
           <NumeralFeature

@@ -102,7 +102,7 @@ export function AdminRegistrationQueue() {
   return (
     <div className="grid gap-6">
       <div>
-        <p className="text-heritage-maroon text-xs font-bold tracking-[0.14em] uppercase">
+        <p className="text-heritage-maroon text-eyebrow-sm">
           Application review
         </p>
         <h1 className="text-global-navy mt-3 text-3xl font-bold sm:text-4xl">

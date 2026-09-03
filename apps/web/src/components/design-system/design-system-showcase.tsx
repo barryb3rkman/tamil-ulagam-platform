@@ -426,7 +426,7 @@ export function DesignSystemShowcase() {
         >
           <div className="grid gap-12">
             <div>
-              <p className="text-slate text-[0.68rem] font-bold tracking-[0.16em] uppercase">
+              <p className="text-slate text-eyebrow-sm">
                 Sequence spine — order is real
               </p>
               <SequenceSpine
@@ -453,7 +453,7 @@ export function DesignSystemShowcase() {
               />
             </div>
             <div>
-              <p className="text-slate text-[0.68rem] font-bold tracking-[0.16em] uppercase">
+              <p className="text-slate text-eyebrow-sm">
                 Editorial mosaic — peer statements, high-traffic sections
               </p>
               <EditorialMosaic
@@ -478,7 +478,7 @@ export function DesignSystemShowcase() {
               />
             </div>
             <div>
-              <p className="text-slate text-[0.68rem] font-bold tracking-[0.16em] uppercase">
+              <p className="text-slate text-eyebrow-sm">
                 Numeral feature — peer statements, everywhere else
               </p>
               <NumeralFeature
@@ -502,7 +502,7 @@ export function DesignSystemShowcase() {
               />
             </div>
             <div>
-              <p className="text-slate text-[0.68rem] font-bold tracking-[0.16em] uppercase">
+              <p className="text-slate text-eyebrow-sm">
                 Portal cards — records that lead somewhere
               </p>
               <PortalCardGrid

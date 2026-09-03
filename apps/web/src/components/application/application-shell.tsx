@@ -107,10 +107,10 @@ export function ApplicationShell({
                 <span className="block truncate text-sm font-bold sm:text-base">
                   Tamil Ulagam
                 </span>
-                <span className="text-heritage-gold block text-[0.68rem] font-bold tracking-[0.12em] uppercase sm:hidden">
+                <span className="text-heritage-gold text-eyebrow-sm block sm:hidden">
                   {area === "admin" ? "Administration" : "Portal"}
                 </span>
-                <span className="text-heritage-gold hidden truncate text-xs font-bold tracking-[0.12em] uppercase sm:block">
+                <span className="text-heritage-gold text-eyebrow-sm hidden truncate sm:block">
                   {areaLabel}
                 </span>
               </span>
@@ -183,7 +183,7 @@ export function ApplicationShell({
           }
           className="border-global-navy/10 border-b bg-white/65 px-5 py-3 sm:px-7 lg:min-h-[calc(100vh-9rem)] lg:border-r lg:border-b-0 lg:bg-white/40 lg:px-5 lg:py-9"
         >
-          <p className="text-slate mb-4 hidden px-3 text-[0.68rem] font-bold tracking-[0.14em] uppercase lg:block">
+          <p className="text-slate text-eyebrow-sm mb-4 hidden px-3 lg:block">
             {area === "admin" ? "Review workspace" : "Your workspace"}
           </p>
           {area === "member" && availableOrganisations.length > 1 ? (
@@ -260,9 +260,7 @@ export function ApplicationShell({
             </p>
           ) : area === "admin" && !canReviewApplications ? (
             <section className="border-global-navy/12 rounded-card shadow-card border bg-white p-7 sm:p-9">
-              <p className="text-slate text-[0.66rem] font-bold tracking-[0.18em] uppercase">
-                Restricted workspace
-              </p>
+              <p className="text-slate text-eyebrow-sm">Restricted workspace</p>
               <h1 className="text-section-title text-gradient-ink mt-2">
                 Review access required
               </h1>

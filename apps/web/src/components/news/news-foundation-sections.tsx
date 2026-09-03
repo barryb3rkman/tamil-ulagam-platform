@@ -95,7 +95,7 @@ export function EditorialDistinctionsSection() {
               key={item.title}
               className="grid gap-3 py-6 sm:grid-cols-[13rem_1fr] sm:gap-7"
             >
-              <dt className="text-heritage-maroon text-sm font-semibold tracking-[0.12em] uppercase">
+              <dt className="text-heritage-maroon text-eyebrow">
                 {item.title}
               </dt>
               <dd className="text-slate leading-7">{item.description}</dd>
@@ -145,7 +145,7 @@ export function PublishingWorkflowSection() {
           title={workflow.title}
           description={workflow.description}
         />
-        <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.14em] uppercase">
+        <p className="text-heritage-maroon text-eyebrow mt-7">
           {workflow.label}
         </p>
         <NumeralFeature

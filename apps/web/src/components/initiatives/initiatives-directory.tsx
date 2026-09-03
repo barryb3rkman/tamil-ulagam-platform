@@ -16,7 +16,7 @@ export function InitiativesDirectory() {
       <Container size="wide">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
-            <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
+            <p className="text-heritage-maroon text-eyebrow">
               {directory.eyebrow}
             </p>
             <h2

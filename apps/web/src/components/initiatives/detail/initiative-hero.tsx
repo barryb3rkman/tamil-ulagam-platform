@@ -74,7 +74,7 @@ export function InitiativeHero({
             }
           >
             <p
-              className={`text-sm font-semibold tracking-[0.14em] uppercase ${isDark ? "text-heritage-gold" : "text-heritage-maroon"}`}
+              className={`text-eyebrow ${isDark ? "text-heritage-gold" : "text-heritage-maroon"}`}
             >
               {groupTitle}
             </p>

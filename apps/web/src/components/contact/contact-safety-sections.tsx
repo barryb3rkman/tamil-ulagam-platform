@@ -73,7 +73,7 @@ export function FutureContactModelSection() {
           title={workflow.title}
           description={workflow.description}
         />
-        <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.14em] uppercase">
+        <p className="text-heritage-maroon text-eyebrow mt-7">
           {workflow.label}
         </p>
         <NumeralFeature

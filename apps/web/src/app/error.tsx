@@ -16,9 +16,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
   return (
     <Container className="py-section" size="narrow">
       <div className="rounded-card border-error/20 shadow-card border bg-white p-8">
-        <p className="text-error text-sm font-semibold tracking-[0.12em] uppercase">
-          Page error
-        </p>
+        <p className="text-error text-eyebrow">Page error</p>
         <h1 className="text-global-navy mt-4 text-3xl font-semibold">
           This page could not be displayed
         </h1>

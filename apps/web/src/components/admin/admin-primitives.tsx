@@ -14,9 +14,7 @@ export function AdminPageHeader({
   return (
     <header className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
       <div>
-        <p className="text-slate text-[0.66rem] font-bold tracking-[0.18em] uppercase">
-          {eyebrow}
-        </p>
+        <p className="text-slate text-eyebrow-sm">{eyebrow}</p>
         <h1 className="text-page-title text-gradient-ink mt-2">{title}</h1>
         <p className="text-slate mt-3 max-w-3xl leading-7">{description}</p>
       </div>

@@ -91,7 +91,7 @@ export function MemberConfirmRequest({
         >
           <Icon className="size-6" />
         </span>
-        <p className="text-heritage-maroon mt-4 text-xs font-bold tracking-[0.1em] uppercase">
+        <p className="text-heritage-maroon text-eyebrow-sm mt-4">
           {organisationKindLabel(organisation)}
         </p>
         <h2 className="text-global-navy mt-1 text-2xl font-bold">
@@ -107,16 +107,12 @@ export function MemberConfirmRequest({
 
         <dl className="border-global-navy/10 mt-6 grid gap-4 border-t pt-5 text-sm sm:grid-cols-2">
           <div>
-            <dt className="text-slate text-xs font-bold tracking-[0.1em] uppercase">
-              Your details
-            </dt>
+            <dt className="text-slate text-eyebrow-sm">Your details</dt>
             <dd className="text-charcoal mt-1">{profile.fullName}</dd>
             <dd className="text-charcoal">{profile.phone}</dd>
           </div>
           <div>
-            <dt className="text-slate text-xs font-bold tracking-[0.1em] uppercase">
-              Location
-            </dt>
+            <dt className="text-slate text-eyebrow-sm">Location</dt>
             <dd className="text-charcoal mt-1">
               {[profile.city, profile.region, profile.country]
                 .filter(Boolean)

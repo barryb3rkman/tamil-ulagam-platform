@@ -11,7 +11,7 @@ export function ReadinessPrinciplesSection() {
       <Container size="wide">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20">
           <div>
-            <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
+            <p className="text-heritage-maroon text-eyebrow">
               {readiness.eyebrow}
             </p>
             <h2

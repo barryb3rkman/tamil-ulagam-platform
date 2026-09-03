@@ -22,9 +22,7 @@ export function PartnershipInvitation() {
             />
           </div>
           <div className="lg:order-1">
-            <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
-              PARTNERSHIPS
-            </p>
+            <p className="text-heritage-maroon text-eyebrow">PARTNERSHIPS</p>
             <h2
               id="partnership-title"
               className="text-global-navy mt-4 max-w-xl text-4xl leading-[1.08] font-semibold tracking-[-0.035em] sm:text-5xl"

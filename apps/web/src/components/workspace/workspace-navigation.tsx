@@ -88,7 +88,7 @@ export function WorkspaceNavigation({
     <nav aria-label="Workspace navigation" className={className}>
       {vertical && !collapsed ? (
         <p
-          className={`mb-2 px-3 text-[0.68rem] font-bold tracking-[0.16em] uppercase ${
+          className={`text-eyebrow-sm mb-2 px-3 ${
             variant === "sidebar" ? "text-heritage-gold/80" : "text-slate"
           }`}
         >

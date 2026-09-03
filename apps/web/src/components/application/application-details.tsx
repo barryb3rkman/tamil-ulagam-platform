@@ -45,9 +45,7 @@ export function DetailGroup({
             key={item.label}
             className="border-global-navy/8 min-w-0 border-t pt-4"
           >
-            <dt className="text-slate text-xs font-bold tracking-[0.1em] uppercase">
-              {item.label}
-            </dt>
+            <dt className="text-slate text-eyebrow-sm">{item.label}</dt>
             <dd
               className={`mt-1.5 leading-6 break-words ${item.value ? "text-charcoal" : "text-slate italic"}`}
             >

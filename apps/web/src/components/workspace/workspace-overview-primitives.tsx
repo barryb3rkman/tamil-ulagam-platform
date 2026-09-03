@@ -126,7 +126,7 @@ function StatRail({ stats }: { readonly stats: readonly WorkspaceStat[] }) {
             >
               <AnimatedCounter value={stat.value} />
             </dd>
-            <dt className="mt-2.5 text-[0.68rem] font-bold tracking-[0.16em] text-white/45 uppercase">
+            <dt className="text-eyebrow-sm mt-2.5 text-white/45">
               {stat.label}
             </dt>
           </div>
@@ -177,15 +177,13 @@ export function WorkspacePanel({
       {href ? (
         <span
           aria-hidden="true"
-          className="gradient-gold-leaf absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100"
+          className="gradient-gold-leaf ease-premium absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
         />
       ) : null}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           {eyebrow ? (
-            <p className="text-slate text-[0.64rem] font-bold tracking-[0.16em] uppercase">
-              {eyebrow}
-            </p>
+            <p className="text-slate text-eyebrow-sm">{eyebrow}</p>
           ) : null}
           <h3 className="text-global-navy mt-1.5 text-[1.0625rem] font-bold tracking-[-0.01em]">
             {title}

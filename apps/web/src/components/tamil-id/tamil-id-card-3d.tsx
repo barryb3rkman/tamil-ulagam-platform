@@ -52,11 +52,16 @@ export function TamilIdCard3D({
       <div
         ref={ref}
         aria-hidden="true"
-        className="relative aspect-[1.586/1] w-full overflow-hidden rounded-[1.5rem] border border-white/15 shadow-[0_2.5rem_5rem_rgba(120,20,45,0.45)] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] [transform-style:preserve-3d] motion-reduce:!transform-none"
+        className="ease-premium relative aspect-[1.586/1] w-full overflow-hidden rounded-[1.5rem] border border-white/15 shadow-[0_2.5rem_5rem_rgba(120,20,45,0.45)] transition-transform duration-300 [transform-style:preserve-3d] motion-reduce:!transform-none"
         style={{
           transform: `rotate3d(1, 0, 0, ${rotateX}deg) rotate3d(0, 1, 0, ${rotateY}deg)`,
-          backgroundImage:
-            "linear-gradient(135deg, #8e1f34 0%, #b32943 42%, #d1466a 68%, #8e1f34 100%)",
+          backgroundImage: [
+            "linear-gradient(135deg,",
+            "var(--tu-maroon-deep) 0%,",
+            "var(--tu-maroon-mid) 42%,",
+            "var(--tu-maroon-light) 68%,",
+            "var(--tu-maroon-deep) 100%)",
+          ].join(" "),
         }}
       >
         <span
@@ -100,9 +105,7 @@ export function TamilIdCard3D({
         aria-hidden="true"
         className="motion-pop border-global-navy/[0.09] absolute -top-6 -left-4 hidden rounded-2xl border bg-white px-4 py-3 shadow-[0_1rem_2.5rem_rgba(6,29,50,0.14)] sm:block"
       >
-        <p className="text-slate text-[0.62rem] font-bold tracking-[0.14em] uppercase">
-          One identity
-        </p>
+        <p className="text-slate text-eyebrow-sm">One identity</p>
         <p className="text-global-navy font-display mt-1 text-lg font-semibold">
           Every workspace
         </p>
@@ -111,9 +114,7 @@ export function TamilIdCard3D({
         aria-hidden="true"
         className="motion-pop border-global-navy/[0.09] absolute -right-4 -bottom-7 hidden rounded-2xl border bg-white px-4 py-3 shadow-[0_1rem_2.5rem_rgba(6,29,50,0.14)] [animation-delay:220ms] sm:block"
       >
-        <p className="text-slate text-[0.62rem] font-bold tracking-[0.14em] uppercase">
-          Verified by
-        </p>
+        <p className="text-slate text-eyebrow-sm">Verified by</p>
         <p className="text-global-navy font-display mt-1 text-lg font-semibold">
           The federation
         </p>

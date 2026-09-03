@@ -58,7 +58,7 @@ export function DashboardRegistration() {
     <div className="grid gap-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-heritage-maroon text-xs font-bold tracking-[0.14em] uppercase">
+          <p className="text-heritage-maroon text-eyebrow-sm">
             Registration record
           </p>
           <h1 className="text-global-navy mt-3 text-3xl font-bold">

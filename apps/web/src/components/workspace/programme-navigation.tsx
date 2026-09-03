@@ -64,9 +64,7 @@ export function ProgrammeNavigation({
   if (variant === "drawer") {
     return (
       <nav aria-label="Tamil Ulagam programmes">
-        <p className="text-slate mb-2 px-3 text-[0.68rem] font-bold tracking-[0.16em] uppercase">
-          Programmes
-        </p>
+        <p className="text-slate text-eyebrow-sm mb-2 px-3">Programmes</p>
         <ProgrammeLinks
           type={type}
           entityId={entityId}
@@ -161,7 +159,7 @@ function SidebarProgrammes({
         onClick={toggle}
         aria-expanded={expanded}
         aria-controls="workspace-programmes-list"
-        className={`focus-visible:ring-focus-inverse motion-control rounded-button flex min-h-9 w-full items-center justify-between px-3 text-[0.68rem] font-bold tracking-[0.16em] uppercase ${
+        className={`focus-visible:ring-focus-inverse motion-control rounded-button text-eyebrow-sm flex min-h-9 w-full items-center justify-between px-3 ${
           isOnAModule ? "text-white" : "text-white/58 hover:text-white/80"
         }`}
       >

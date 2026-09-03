@@ -27,7 +27,7 @@ export function KnowledgeCultureSection() {
     <Section tone="ivory" aria-labelledby="knowledge-culture-title">
       <Container size="wide">
         <div className="max-w-4xl">
-          <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
+          <p className="text-heritage-maroon text-eyebrow">
             {knowledgeCultureGlobal.eyebrow}
           </p>
           <h2

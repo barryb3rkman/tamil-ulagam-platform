@@ -114,7 +114,7 @@ export function AffiliationCard({
             <Icon className="size-5" />
           </span>
           <div>
-            <p className="text-heritage-maroon text-xs font-bold tracking-[0.1em] uppercase">
+            <p className="text-heritage-maroon text-eyebrow-sm">
               {organisationKindLabel(organisation)}
             </p>
             <h3 className="text-global-navy mt-1 text-lg font-bold">

@@ -71,7 +71,7 @@ export function OrganisationReview({
     <section className="gradient-warm-welcome">
       <div className="mx-auto max-w-[74rem] px-5 py-10 sm:px-7 sm:py-14 lg:px-10">
         <div className="mb-7 max-w-3xl">
-          <p className="text-heritage-maroon text-xs font-bold tracking-[0.18em] uppercase">
+          <p className="text-heritage-maroon text-eyebrow-sm">
             {content.eyebrow}
           </p>
           <h1 className="text-global-navy mt-3 text-3xl font-bold tracking-[-0.03em] sm:text-4xl">
@@ -100,7 +100,7 @@ export function OrganisationReview({
 
         <div className="bg-deep-navy rounded-card mt-7 grid gap-6 p-6 text-white sm:p-7 lg:grid-cols-[1fr_auto] lg:items-end">
           <div>
-            <p className="text-heritage-gold text-xs font-bold tracking-[0.14em] uppercase">
+            <p className="text-heritage-gold text-eyebrow-sm">
               What happens next
             </p>
             <ol className="mt-4 grid gap-3 text-sm text-white/75 sm:grid-cols-3">

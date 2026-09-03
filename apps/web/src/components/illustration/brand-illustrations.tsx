@@ -14,9 +14,9 @@ function Frame({
     >
       <defs>
         <linearGradient id="tu-ill-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#c9973c" />
-          <stop offset="45%" stopColor="#f0cf82" />
-          <stop offset="100%" stopColor="#b8862f" />
+          <stop offset="0%" stopColor="var(--tu-gold-mid)" />
+          <stop offset="45%" stopColor="var(--tu-gold-light)" />
+          <stop offset="100%" stopColor="var(--tu-gold-shade)" />
         </linearGradient>
       </defs>
       {children}

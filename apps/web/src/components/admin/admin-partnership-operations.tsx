@@ -315,9 +315,7 @@ function PartnershipDetail({
     >
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-slate text-[0.64rem] font-bold tracking-[0.16em] uppercase">
-            Enquiry detail
-          </p>
+          <p className="text-slate text-eyebrow-sm">Enquiry detail</p>
           <h2
             id="partnership-detail-title"
             className="text-global-navy mt-2 text-2xl font-bold"

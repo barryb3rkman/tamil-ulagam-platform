@@ -151,9 +151,7 @@ export function AccountForm() {
           className="rounded-large border-global-navy/10 grid gap-6 border bg-white p-6 sm:p-8 lg:p-9"
         >
           <div className="border-global-navy/10 border-b pb-5">
-            <p className="text-slate text-[0.66rem] font-bold tracking-[0.14em] uppercase">
-              Profile information
-            </p>
+            <p className="text-slate text-eyebrow-sm">Profile information</p>
             <h2 className="text-section-title text-gradient-ink mt-2">
               Personal profile
             </h2>

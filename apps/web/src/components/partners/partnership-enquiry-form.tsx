@@ -85,9 +85,7 @@ export function PartnershipEnquiryForm() {
         aria-live="polite"
         className="border-success/25 bg-success/5 rounded-large border p-6 sm:p-8"
       >
-        <p className="text-success text-xs font-bold tracking-[0.12em] uppercase">
-          Enquiry received
-        </p>
+        <p className="text-success text-eyebrow-sm">Enquiry received</p>
         <h3 className="text-global-navy mt-3 text-2xl font-bold">
           Your enquiry was received.
         </h3>

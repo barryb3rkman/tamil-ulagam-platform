@@ -26,7 +26,7 @@ export function OpportunityEconomySection() {
       <Container size="wide">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
           <div className="lg:sticky lg:top-24 lg:self-start">
-            <p className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
+            <p className="text-heritage-gold text-eyebrow">
               {opportunityEconomy.eyebrow}
             </p>
             <h2

@@ -40,7 +40,7 @@ export function PortalCardGrid({
           <article className="rounded-card border-global-navy/[0.09] motion-lift group hover:border-global-navy/20 relative flex h-full w-full flex-col overflow-hidden border bg-white p-6 hover:shadow-[0_1.25rem_3rem_rgba(6,29,50,0.13)]">
             <span
               aria-hidden="true"
-              className="gradient-gold-leaf absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1.16,0.36,1)] group-hover:scale-x-100"
+              className="gradient-gold-leaf ease-snap absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
             />
             {card.marker ? (
               <span

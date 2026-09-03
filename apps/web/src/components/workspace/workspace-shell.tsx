@@ -151,7 +151,7 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
           onClick={toggleSidebar}
           aria-expanded={!sidebarCollapsed}
           aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className="focus-visible:ring-focus-inverse motion-control mx-3 mb-2 flex min-h-9 items-center gap-2 rounded-lg px-3 text-[0.68rem] font-bold tracking-[0.16em] text-white/40 uppercase hover:bg-white/6 hover:text-white/70 focus-visible:outline-none"
+          className="focus-visible:ring-focus-inverse motion-control text-eyebrow-sm mx-3 mb-2 flex min-h-9 items-center gap-2 rounded-lg px-3 text-white/40 hover:bg-white/6 hover:text-white/70 focus-visible:outline-none"
         >
           <svg
             aria-hidden="true"
@@ -299,7 +299,7 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
               aria-label="Current workspace"
               className="hidden min-w-0 lg:block"
             >
-              <p className="text-slate text-[0.66rem] font-bold tracking-[0.16em] uppercase">
+              <p className="text-slate text-eyebrow-sm">
                 Tamil Ulagam
                 <span aria-hidden="true" className="text-global-navy/25 mx-1.5">
                   ·
@@ -451,7 +451,7 @@ function WorkspaceBrand({
           <span className="block text-[0.95rem] font-bold tracking-[-0.01em]">
             Tamil Ulagam
           </span>
-          <span className="text-heritage-gold/75 mt-1 block text-[0.62rem] font-bold tracking-[0.17em] uppercase">
+          <span className="text-heritage-gold/75 text-eyebrow-sm mt-1 block">
             Global Federation
           </span>
         </span>

@@ -37,9 +37,7 @@ export function SiteFooter() {
         >
           {footerNavigation.map((group) => (
             <div key={group.label}>
-              <h2 className="text-heritage-gold text-sm font-semibold tracking-[0.12em] uppercase">
-                {group.label}
-              </h2>
+              <h2 className="text-heritage-gold text-eyebrow">{group.label}</h2>
               <ul className="mt-4 grid gap-2">
                 {group.children?.map((entry) => (
                   <li key={entry.href}>

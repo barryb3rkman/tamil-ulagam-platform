@@ -17,16 +17,16 @@ export function BrandMark({
     >
       <defs>
         <linearGradient id="tu-mark-gold" x1="12%" y1="4%" x2="88%" y2="96%">
-          <stop offset="0%" stopColor="#c9973c" />
-          <stop offset="26%" stopColor="#f0cf82" />
-          <stop offset="44%" stopColor="#fff4d6" />
-          <stop offset="62%" stopColor="#e8bd63" />
-          <stop offset="100%" stopColor="#b8862f" />
+          <stop offset="0%" stopColor="var(--tu-gold-mid)" />
+          <stop offset="26%" stopColor="var(--tu-gold-light)" />
+          <stop offset="44%" stopColor="var(--tu-gold-highlight)" />
+          <stop offset="62%" stopColor="var(--tu-color-lux-gold)" />
+          <stop offset="100%" stopColor="var(--tu-gold-shade)" />
         </linearGradient>
         <linearGradient id="tu-mark-core" x1="20%" y1="0%" x2="80%" y2="100%">
-          <stop offset="0%" stopColor="#f4d795" />
-          <stop offset="50%" stopColor="#d6a84b" />
-          <stop offset="100%" stopColor="#a9781f" />
+          <stop offset="0%" stopColor="var(--tu-gold-pale)" />
+          <stop offset="50%" stopColor="var(--tu-color-heritage-gold)" />
+          <stop offset="100%" stopColor="var(--tu-gold-deep)" />
         </linearGradient>
       </defs>
 

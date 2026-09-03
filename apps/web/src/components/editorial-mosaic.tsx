@@ -34,7 +34,7 @@ export function EditorialMosaic({
         className={`rounded-large motion-lift group relative isolate flex min-h-[19rem] grow basis-full flex-col justify-end overflow-hidden border p-7 sm:p-9 lg:basis-[calc(66.666%-0.667rem)] ${shell}`}
       >
         <div
-          className={`pointer-events-none absolute -top-10 -right-12 w-72 transition-transform duration-700 ease-[cubic-bezier(0.22,1.16,0.36,1)] group-hover:-translate-y-2 sm:w-96 ${
+          className={`ease-snap pointer-events-none absolute -top-10 -right-12 w-72 transition-transform duration-700 group-hover:-translate-y-2 sm:w-96 ${
             dark
               ? "text-white/70 opacity-40"
               : "text-global-navy opacity-[0.11]"
@@ -71,7 +71,7 @@ export function EditorialMosaic({
         >
           <span
             aria-hidden="true"
-            className="gradient-gold-leaf absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1.16,0.36,1)] group-hover:scale-x-100"
+            className="gradient-gold-leaf ease-snap absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
           />
           <div className="flex items-start gap-3">
             <span

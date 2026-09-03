@@ -88,7 +88,7 @@ export function AdminOverview() {
           className="grid gap-5 xl:grid-cols-[1.35fr_0.65fr]"
         >
           <div className="bg-global-navy rounded-large shadow-card p-6 text-white sm:p-8">
-            <p className="text-heritage-gold text-xs font-bold tracking-[0.14em] uppercase">
+            <p className="text-heritage-gold text-eyebrow-sm">
               Needs attention
             </p>
             <h2
@@ -126,7 +126,7 @@ export function AdminOverview() {
           </div>
 
           <aside className="border-global-navy/12 rounded-large border bg-white p-6 sm:p-8">
-            <p className="text-heritage-maroon text-xs font-bold tracking-[0.14em] uppercase">
+            <p className="text-heritage-maroon text-eyebrow-sm">
               Review responsibility
             </p>
             <h2 className="text-global-navy mt-3 text-xl font-bold">
@@ -145,7 +145,7 @@ export function AdminOverview() {
 
       {capabilities.canOperateFederation ? (
         <section aria-labelledby="directories-title">
-          <p className="text-heritage-maroon text-xs font-bold tracking-[0.14em] uppercase">
+          <p className="text-heritage-maroon text-eyebrow-sm">
             Federation directories
           </p>
           <h2

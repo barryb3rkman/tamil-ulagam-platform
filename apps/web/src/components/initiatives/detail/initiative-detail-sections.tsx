@@ -136,7 +136,7 @@ export function InitiativeParticipationSection({
       <Container className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
         <div>
           <p
-            className={`text-sm font-semibold tracking-[0.14em] uppercase ${dark ? "text-heritage-gold" : "text-heritage-maroon"}`}
+            className={`text-eyebrow ${dark ? "text-heritage-gold" : "text-heritage-maroon"}`}
           >
             PARTICIPATION AND PARTNERSHIP
           </p>
@@ -215,7 +215,7 @@ export function RelatedInitiatives({
                   href={`/initiatives/${entry.slug}`}
                   className="motion-card border-global-navy/12 focus-visible:ring-focus block h-full border p-6 focus-visible:outline-none"
                 >
-                  <p className="text-heritage-maroon text-xs font-semibold tracking-[0.14em] uppercase">
+                  <p className="text-heritage-maroon text-eyebrow-sm">
                     {group.title}
                   </p>
                   <h3 className="text-global-navy mt-3 text-2xl font-semibold">
@@ -258,7 +258,7 @@ export function InitiativePreviousNext({
             href={previous.href}
             aria-label={`Previous initiative: ${previous.title}`}
           >
-            <span className="text-heritage-maroon text-xs font-semibold tracking-[0.14em] uppercase">
+            <span className="text-heritage-maroon text-eyebrow-sm">
               ← Previous initiative
             </span>
             <span className="text-global-navy mt-2 block text-xl font-semibold">
@@ -274,7 +274,7 @@ export function InitiativePreviousNext({
             href={next.href}
             aria-label={`Next initiative: ${next.title}`}
           >
-            <span className="text-heritage-maroon text-xs font-semibold tracking-[0.14em] uppercase">
+            <span className="text-heritage-maroon text-eyebrow-sm">
               Next initiative →
             </span>
             <span className="text-global-navy mt-2 block text-xl font-semibold">
@@ -302,7 +302,7 @@ export function InitiativeFinalCta({
     >
       <Container className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
         <div>
-          <p className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
+          <p className="text-heritage-gold text-eyebrow">
             ONE CONNECTED ECOSYSTEM
           </p>
           <h2

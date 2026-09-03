@@ -24,9 +24,7 @@ export function HomeFinalCta() {
       <Container size="wide" className="relative">
         <div className="flex min-h-[500px] items-center py-20 sm:min-h-[620px] sm:py-24">
           <div className="max-w-2xl">
-            <p className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
-              THE NEXT CHAPTER
-            </p>
+            <p className="text-heritage-gold text-eyebrow">THE NEXT CHAPTER</p>
             <h2
               id="final-cta-title"
               className="mt-4 text-4xl leading-[1.06] font-semibold tracking-[-0.04em] text-balance sm:text-6xl lg:text-7xl"

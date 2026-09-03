@@ -3,9 +3,7 @@ import { Container, LinkButton } from "@tamil-ulagam/ui";
 export default function NotFound() {
   return (
     <Container className="py-section text-center" size="narrow">
-      <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
-        404
-      </p>
+      <p className="text-heritage-maroon text-eyebrow">404</p>
       <h1 className="text-global-navy mt-4 text-4xl font-semibold tracking-[-0.025em] sm:text-5xl">
         Page not found
       </h1>

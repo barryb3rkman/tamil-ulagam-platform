@@ -87,7 +87,7 @@ export function AdminShell({ children }: { readonly children: ReactNode }) {
                 <span className="block truncate text-sm font-bold sm:text-base">
                   Tamil Ulagam
                 </span>
-                <span className="text-heritage-gold block truncate text-[0.68rem] font-bold tracking-[0.12em] uppercase">
+                <span className="text-heritage-gold text-eyebrow-sm block truncate">
                   Federation Admin
                 </span>
               </span>
@@ -143,7 +143,7 @@ export function AdminShell({ children }: { readonly children: ReactNode }) {
           aria-label="Admin navigation"
           className="border-global-navy/10 border-b bg-white/70 px-5 py-3 sm:px-7 lg:min-h-[calc(100vh-9rem)] lg:border-r lg:border-b-0 lg:bg-white/45 lg:px-5 lg:py-8"
         >
-          <p className="text-slate mb-4 hidden px-3 text-[0.68rem] font-bold tracking-[0.14em] uppercase lg:block">
+          <p className="text-slate text-eyebrow-sm mb-4 hidden px-3 lg:block">
             Federation operations
           </p>
           <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-1">
@@ -220,9 +220,7 @@ function AdminShellMessage({
 }) {
   return (
     <section className="border-global-navy/12 rounded-card shadow-card border bg-white p-7 sm:p-9">
-      <p className="text-slate text-[0.66rem] font-bold tracking-[0.18em] uppercase">
-        Restricted workspace
-      </p>
+      <p className="text-slate text-eyebrow-sm">Restricted workspace</p>
       <h1 className="text-section-title text-gradient-ink mt-2">{title}</h1>
       <p className="text-slate mt-3 max-w-xl leading-7">{message}</p>
       <Link

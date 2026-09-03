@@ -15,9 +15,7 @@ export function LegalDecisionRequired({
       aria-label={decision.label}
       className="border-heritage-maroon/50 bg-heritage-maroon/5 mt-8 border-l-4 px-5 py-6 sm:px-7"
     >
-      <p className="text-heritage-maroon text-xs font-semibold tracking-[0.14em] uppercase">
-        {decision.label}
-      </p>
+      <p className="text-heritage-maroon text-eyebrow-sm">{decision.label}</p>
       <h3 className="text-global-navy mt-3 text-xl font-semibold">
         {decision.title}
       </h3>
@@ -48,9 +46,7 @@ export function LegalOperationalTrigger({
       aria-label={trigger.label}
       className="border-heritage-gold bg-warm-ivory mt-8 border-l-4 px-5 py-6 sm:px-7"
     >
-      <p className="text-warning text-xs font-semibold tracking-[0.14em] uppercase">
-        {trigger.label}
-      </p>
+      <p className="text-warning text-eyebrow-sm">{trigger.label}</p>
       <h3 className="text-global-navy mt-3 text-xl font-semibold">
         {trigger.title}
       </h3>

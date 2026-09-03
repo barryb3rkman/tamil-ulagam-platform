@@ -24,11 +24,11 @@ export function RegistrationAttendanceSection() {
           title={registration.title}
         />
         <div>
-          <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
+          <p className="text-heritage-maroon text-eyebrow">
             Participation models
           </p>
           <CheckGrid columns={2} items={registration.models} />
-          <p className="text-heritage-maroon mt-9 text-sm font-semibold tracking-[0.14em] uppercase">
+          <p className="text-heritage-maroon text-eyebrow mt-9">
             Registration principles
           </p>
           <NumberedGrid items={registration.principles} />
@@ -152,11 +152,11 @@ export function HybridArchiveSection() {
           title={hybridArchive.title}
         />
         <div>
-          <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
+          <p className="text-heritage-maroon text-eyebrow">
             Participation support
           </p>
           <CheckGrid columns={2} items={hybridArchive.possibilities} />
-          <p className="text-heritage-maroon mt-9 text-sm font-semibold tracking-[0.14em] uppercase">
+          <p className="text-heritage-maroon text-eyebrow mt-9">
             Required safeguards
           </p>
           <CheckGrid columns={2} items={hybridArchive.safeguards} />
@@ -185,9 +185,7 @@ export function EventStatusSection() {
           tone="inverse"
         />
         <div>
-          <h3 className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
-            Public statuses
-          </h3>
+          <h3 className="text-heritage-gold text-eyebrow">Public statuses</h3>
           <ul className="mt-5 flex flex-wrap gap-3">
             {statusModel.publicStatuses.map((status) => (
               <li key={status}>
@@ -200,7 +198,7 @@ export function EventStatusSection() {
               </li>
             ))}
           </ul>
-          <h3 className="text-heritage-gold mt-9 text-sm font-semibold tracking-[0.14em] uppercase">
+          <h3 className="text-heritage-gold text-eyebrow mt-9">
             Administrative statuses
           </h3>
           <ul className="mt-5 flex flex-wrap gap-3">

@@ -34,8 +34,8 @@ const inverseStatusDot: Record<RegistrationStatus, string> = {
   draft: "bg-white/65",
   submitted: "bg-heritage-gold",
   under_review: "bg-heritage-gold",
-  needs_changes: "bg-[#ffb1b8]",
-  verified: "bg-[#78ddb5]",
-  rejected: "bg-[#ffb1b8]",
-  suspended: "bg-[#ffb1b8]",
+  needs_changes: "bg-error-inverse",
+  verified: "bg-success-inverse",
+  rejected: "bg-error-inverse",
+  suspended: "bg-error-inverse",
 };

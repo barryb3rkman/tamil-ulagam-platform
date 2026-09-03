@@ -24,7 +24,7 @@ export function CulturalStatementSection() {
           <p className="text-heritage-maroon mt-7 text-xl leading-8 font-medium sm:text-2xl">
             {culturalStatement.translation}
           </p>
-          <footer className="text-slate mt-5 text-sm font-semibold tracking-[0.1em] uppercase">
+          <footer className="text-slate text-eyebrow mt-5">
             {culturalStatement.attribution}
           </footer>
         </blockquote>

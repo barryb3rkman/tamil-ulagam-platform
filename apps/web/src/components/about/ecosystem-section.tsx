@@ -14,7 +14,7 @@ export function EcosystemSection() {
       <Container size="wide">
         <div className="grid gap-12 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20">
           <div className="lg:sticky lg:top-24 lg:self-start">
-            <p className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
+            <p className="text-heritage-gold text-eyebrow">
               {ecosystem.eyebrow}
             </p>
             <h2

@@ -16,7 +16,7 @@ export function LegalReviewChecklist({ checklist }: LegalReviewChecklistProps) {
       <Container size="wide">
         <div className="grid gap-10 lg:grid-cols-[0.68fr_1.32fr] lg:gap-20">
           <div>
-            <p className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
+            <p className="text-heritage-gold text-eyebrow">
               {checklist.eyebrow}
             </p>
             <h2

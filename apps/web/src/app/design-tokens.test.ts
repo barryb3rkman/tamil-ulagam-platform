@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import { describe, expect, it } from "vitest";
@@ -106,4 +106,53 @@ describe("design tokens (globals.css) — presence and consistency", () => {
       /@media \(max-width: 1023\.98px\) \{[\s\S]*?\[data-motion-ambient\]/,
     );
   });
+
+  it("keeps the eyebrow, easing and inverse-status tokens the components rely on", () => {
+    for (const utility of ["text-eyebrow", "text-eyebrow-sm"]) {
+      expect(css).toContain(`@utility ${utility} {`);
+    }
+    for (const token of [
+      "--tu-ease-snap",
+      "--tu-color-success-inverse",
+      "--tu-color-error-inverse",
+      "--tu-gold-mid",
+      "--tu-gold-light",
+      "--tu-gold-shade",
+    ]) {
+      expect(css).toContain(token);
+    }
+  });
+
+  it("keeps colour and easing out of the components", () => {
+    const files = componentSources();
+    const rawHex = files.flatMap(([file, source]) =>
+      [...source.matchAll(/#[0-9a-fA-F]{6}/g)].map(
+        (match) => `${file}: ${match[0]}`,
+      ),
+    );
+    // Every colour lives in the palette. A hex here means one was
+    // written into a component instead.
+    expect(rawHex).toEqual([]);
+
+    const inlineEasing = files.flatMap(([file, source]) =>
+      [...source.matchAll(/ease-\[cubic-bezier/g)].map(() => file),
+    );
+    expect(inlineEasing).toEqual([]);
+  });
 });
+
+function componentSources(): [string, string][] {
+  const root = path.join(process.cwd(), "src/components");
+  const walk = (dir: string): string[] =>
+    readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) return walk(full);
+      return entry.name.endsWith(".tsx") && !entry.name.includes(".test.")
+        ? [full]
+        : [];
+    });
+  return walk(root).map((file) => [
+    path.relative(root, file),
+    readFileSync(file, "utf8"),
+  ]);
+}

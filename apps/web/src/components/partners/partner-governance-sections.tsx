@@ -21,7 +21,7 @@ export function PartnershipPathwaySection() {
           title={pathway.title}
           description={pathway.description}
         />
-        <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.14em] uppercase">
+        <p className="text-heritage-maroon text-eyebrow mt-7">
           Partnership pathway
         </p>
         <NumeralFeature
@@ -50,7 +50,7 @@ export function DueDiligenceSection() {
           description={dueDiligence.description}
         />
         <div>
-          <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
+          <p className="text-heritage-maroon text-eyebrow">
             Due-diligence areas
           </p>
           <NumberedGrid items={dueDiligence.items} />

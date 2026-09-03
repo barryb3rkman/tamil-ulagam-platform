@@ -53,7 +53,7 @@ export function NumberedGrid({
           >
             <span
               aria-hidden="true"
-              className="gradient-gold-leaf absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100"
+              className="gradient-gold-leaf ease-premium absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
             />
             <span
               aria-hidden="true"

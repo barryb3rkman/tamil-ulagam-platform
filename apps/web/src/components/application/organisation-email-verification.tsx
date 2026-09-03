@@ -45,9 +45,7 @@ export function OrganisationEmailVerificationCard({
     <section className="border-global-navy/[0.09] rounded-card relative flex h-full min-h-48 flex-col overflow-hidden border bg-white p-5 sm:p-6">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-slate text-[0.64rem] font-bold tracking-[0.16em] uppercase">
-            Trust signal
-          </p>
+          <p className="text-slate text-eyebrow-sm">Trust signal</p>
           <h2 className="text-global-navy mt-1.5 text-[1.0625rem] font-bold tracking-[-0.01em]">
             Organisation email
           </h2>

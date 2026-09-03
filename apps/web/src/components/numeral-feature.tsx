@@ -47,11 +47,11 @@ export function NumeralFeature({
           >
             <span
               aria-hidden="true"
-              className="gradient-gold-leaf absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1.16,0.36,1)] group-hover:scale-x-100"
+              className="gradient-gold-leaf ease-snap absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
             />
             <span
               aria-hidden="true"
-              className={`font-display pointer-events-none absolute -top-5 -right-1 -z-10 text-[5.5rem] leading-none font-semibold tracking-[-0.04em] transition-transform duration-700 ease-[cubic-bezier(0.22,1.16,0.36,1)] group-hover:-translate-y-1 sm:text-[7rem] ${
+              className={`font-display ease-snap pointer-events-none absolute -top-5 -right-1 -z-10 text-[5.5rem] leading-none font-semibold tracking-[-0.04em] transition-transform duration-700 group-hover:-translate-y-1 sm:text-[7rem] ${
                 dark
                   ? "text-white opacity-[0.07]"
                   : "text-gradient-gold opacity-[0.22]"

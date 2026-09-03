@@ -22,7 +22,7 @@ export function HumanDevelopmentSection() {
     <Section tone="white" aria-labelledby="human-development-title">
       <Container size="wide">
         <div className="max-w-3xl">
-          <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
+          <p className="text-heritage-maroon text-eyebrow">
             {humanDevelopment.eyebrow}
           </p>
           <h2
