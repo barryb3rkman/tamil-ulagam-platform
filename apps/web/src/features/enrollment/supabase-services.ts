@@ -957,6 +957,17 @@ export function createSupabasePlatformServices(
       });
       return !error && data === true;
     },
+    async listManagedOrganisationIds(userId) {
+      const { data, error } = await client
+        .from("organization_managers")
+        .select("organization_id")
+        .eq("user_id", userId);
+      // A failure here means the caller sees only the organisations it
+      // can reach by membership, which is the same place the provider
+      // landed before this moved behind the contract.
+      if (error) return [];
+      return (data ?? []).map((row) => row.organization_id);
+    },
     onAuthStateChange(listener) {
       const { data } = client.auth.onAuthStateChange((event) => {
         const mappedEvent = mapAuthEvent(event);

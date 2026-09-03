@@ -56,6 +56,7 @@ const TOP_LEVEL_METHODS = [
   "checkDuplicateSignals",
   "requestOrganisationEmailVerification",
   "completeOrganisationEmailVerification",
+  "listManagedOrganisationIds",
   "onAuthStateChange",
 ] as const;
 

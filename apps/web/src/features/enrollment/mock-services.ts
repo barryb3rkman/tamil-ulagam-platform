@@ -435,6 +435,10 @@ export function createMockPlatformServices(
     requestOrganisationEmailVerification: () =>
       Promise.resolve({ ok: false, reason: "not_configured" }),
     completeOrganisationEmailVerification: () => Promise.resolve(false),
+    // The mock has no management grants separate from membership, which
+    // is what the provider assumed when it skipped this query outside
+    // Supabase.
+    listManagedOrganisationIds: () => Promise.resolve([]),
     onAuthStateChange: () => () => undefined,
   };
 }

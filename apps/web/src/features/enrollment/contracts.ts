@@ -23,6 +23,8 @@ export type RuntimeAuthResult =
       readonly message: string;
     };
 
+export type PlatformBackendKind = "mock" | "supabase" | "unavailable";
+
 export type AuthCallbackIntent = "confirmation" | "recovery";
 
 export type RuntimeAuthEvent =
@@ -124,6 +126,13 @@ export interface PlatformServices {
     organisationId: string,
     token: string,
   ) => Promise<boolean>;
+  /** Organisations this account manages through a management grant,
+   * which is not the same as belonging to one. The provider used to ask
+   * Supabase for this directly, so the mock backend had no answer at all
+   * and the two behaved differently. */
+  readonly listManagedOrganisationIds: (
+    userId: string,
+  ) => Promise<readonly string[]>;
   readonly onAuthStateChange: (
     listener: (event: RuntimeAuthEvent) => void,
   ) => () => void;

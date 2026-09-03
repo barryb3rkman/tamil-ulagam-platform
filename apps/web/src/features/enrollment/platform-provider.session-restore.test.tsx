@@ -121,6 +121,7 @@ function createFakeSupabaseServices(options: {
     },
     snapshot: async () => (await sharedCheck()).state,
     canReviewApplications: async () => (await sharedCheck()).reviewer,
+    listManagedOrganisationIds: async () => [],
     checkDuplicateSignals: unimplemented,
     requestOrganisationEmailVerification: unimplemented,
     completeOrganisationEmailVerification: unimplemented,
@@ -190,6 +191,7 @@ describe("PlatformProvider session restoration race", () => {
       }),
       snapshot: async () => memberState,
       canReviewApplications: async () => false,
+      listManagedOrganisationIds: async () => [],
     };
     vi.mocked(createSupabasePlatformServices).mockReturnValue(services);
 
@@ -249,6 +251,7 @@ describe("PlatformProvider session restoration race", () => {
       }),
       snapshot: () => Promise.reject(new Error("session expired")),
       canReviewApplications: () => Promise.reject(new Error("session expired")),
+      listManagedOrganisationIds: async () => [],
     };
     vi.mocked(createSupabasePlatformServices).mockReturnValue(services);
 

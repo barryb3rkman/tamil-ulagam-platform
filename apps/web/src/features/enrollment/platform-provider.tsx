@@ -11,24 +11,24 @@ import type {
   RegistrationStatus,
   UserProfile,
 } from "@tamil-ulagam/shared";
-import { isTamilSangamProfile } from "@tamil-ulagam/shared";
 import {
   createContext,
   type ReactNode,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useRef,
-  useState,
 } from "react";
 
-import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { type CaptchaConfiguration } from "@/lib/supabase/environment";
+
+import { useManagedOrganisationIds } from "./use-managed-organisation-ids";
+import { unavailableMessage, usePlatformSession } from "./use-platform-session";
 import {
-  getPlatformRuntimeEnvironment,
-  type CaptchaConfiguration,
-} from "@/lib/supabase/environment";
-import { getPlatformErrorMessage } from "@/lib/supabase/errors";
+  selectApplications,
+  selectAvailableOrganisations,
+  selectCurrentApplication,
+  selectMyOrganisationApplications,
+} from "./platform-selectors";
 
 import {
   type AuthCallbackIntent,
@@ -38,15 +38,8 @@ import {
   type PlatformServices,
   type RuntimeAuthResult,
 } from "./contracts";
-import { BrowserMockStateRepository } from "./repository";
-import {
-  createMockPlatformServices,
-  type LoginInput,
-  type SignupInput,
-} from "./mock-services";
-import { createSupabasePlatformServices } from "./supabase-services";
-
-type PlatformBackendKind = "mock" | "supabase" | "unavailable";
+import type { PlatformBackendKind } from "./contracts";
+import { type LoginInput, type SignupInput } from "./mock-services";
 
 type PlatformLoginResult =
   | (Extract<RuntimeAuthResult, { readonly ok: true }> & {
@@ -127,263 +120,50 @@ interface PlatformContextValue {
 
 const PlatformContext = createContext<PlatformContextValue | null>(null);
 
-function createRuntimeServices(): {
-  readonly services: PlatformServices | null;
-  readonly captcha: CaptchaConfiguration;
-  readonly error: string;
-} {
-  const environment = getPlatformRuntimeEnvironment();
-  if (
-    environment.backend === "supabase-local" ||
-    environment.backend === "supabase-hosted"
-  ) {
-    return {
-      services: createSupabasePlatformServices(getSupabaseBrowserClient()),
-      captcha: environment.captcha,
-      error: "",
-    };
-  }
-  if (environment.backend === "mock") {
-    return {
-      services: createMockPlatformServices(
-        new BrowserMockStateRepository(window.localStorage),
-      ),
-      captcha: environment.captcha,
-      error: "",
-    };
-  }
-  return {
-    services: null,
-    captcha: environment.captcha,
-    error:
-      environment.backend === "unavailable"
-        ? environment.message
-        : unavailableMessage,
-  };
-}
-
-function applicationFromState(
-  state: EnrollmentPlatformState,
-  registrationId: string,
-): OrganisationApplication | null {
-  const registration = state.registrations.find(
-    (item) => item.id === registrationId,
-  );
-  if (!registration) return null;
-  const organisation = state.organisations.find(
-    (item) => item.id === registration.organisationId,
-  );
-  const representativeUser = state.users.find(
-    (item) => item.id === registration.applicantUserId,
-  );
-  if (!organisation || !representativeUser) return null;
-  return {
-    organisation,
-    registration,
-    representativeUser,
-    reviewHistory: state.reviewHistory?.filter(
-      (event) => event.applicationId === registration.id,
-    ),
-  };
-}
-
-const unavailableMessage =
-  "Organisation enrollment is not configured for this deployment. Set the public Supabase environment values and rebuild the site.";
-
 export function PlatformProvider({
   children,
 }: {
   readonly children: ReactNode;
 }) {
-  const [services, setServices] = useState<PlatformServices | null>(null);
-  const [backendKind, setBackendKind] =
-    useState<PlatformBackendKind>("unavailable");
-  const [state, setState] = useState<EnrollmentPlatformState | null>(null);
-  const [canReviewApplications, setCanReviewApplications] = useState(false);
-  const [isHydrated, setIsHydrated] = useState(false);
-  const [platformError, setPlatformError] = useState("");
-  const [captcha, setCaptcha] = useState<CaptchaConfiguration>({
-    enabled: false,
-  });
-  const [managerOnlyOrganisationIds, setManagerOnlyOrganisationIds] = useState<
-    ReadonlySet<string>
-  >(new Set());
-  const refreshSequence = useRef(0);
-
-  const refresh = useCallback(async (runtime: PlatformServices) => {
-    const sequence = ++refreshSequence.current;
-    try {
-      const [nextState, reviewer] = await Promise.all([
-        runtime.snapshot(),
-        runtime.canReviewApplications(),
-      ]);
-      if (sequence === refreshSequence.current) {
-        setState(nextState);
-        setCanReviewApplications(reviewer);
-        setPlatformError("");
-        setIsHydrated(true);
-      }
-      return { state: nextState, canReview: reviewer };
-    } catch (error: unknown) {
-      if (sequence === refreshSequence.current) {
-        setIsHydrated(true);
-        setPlatformError(getPlatformErrorMessage(error));
-      }
-      throw error;
-    }
-  }, []);
-
-  useEffect(() => {
-    let active = true;
-    let unsubscribe: () => void = () => undefined;
-
-    let refreshStarted = false;
-
-    const initialise = async () => {
-      try {
-        const configuration = createRuntimeServices();
-        const runtime = configuration.services;
-        setCaptcha(configuration.captcha);
-        if (!runtime) {
-          if (!active) return;
-          setBackendKind("unavailable");
-          setPlatformError(configuration.error || unavailableMessage);
-          setIsHydrated(true);
-          return;
-        }
-
-        if (!active) return;
-        setServices(runtime);
-        setBackendKind(runtime.kind);
-        unsubscribe = runtime.onAuthStateChange(() => {
-          void refresh(runtime).catch(() => undefined);
-        });
-        refreshStarted = true;
-        const first = await refresh(runtime);
-
-        if (
-          active &&
-          runtime.kind === "supabase" &&
-          !first.state.currentUserId
-        ) {
-          await new Promise((resolve) => setTimeout(resolve, 300));
-          if (active) await refresh(runtime).catch(() => undefined);
-        }
-      } catch (error: unknown) {
-        if (active && !refreshStarted) {
-          setPlatformError(getPlatformErrorMessage(error));
-          setIsHydrated(true);
-        }
-      }
-    };
-
-    void initialise();
-    return () => {
-      active = false;
-      unsubscribe();
-    };
-  }, [refresh]);
+  const {
+    applyState,
+    backendKind,
+    canReviewApplications,
+    captcha,
+    isHydrated,
+    platformError,
+    refresh,
+    services,
+    state,
+  } = usePlatformSession();
 
   const currentUser =
     state?.users.find((user) => user.id === state.currentUserId) ?? null;
 
-  useEffect(() => {
-    if (backendKind !== "supabase" || !currentUser) return;
-    let cancelled = false;
-    getSupabaseBrowserClient()
-      .from("organization_managers")
-      .select("organization_id")
-      .eq("user_id", currentUser.id)
-      .then(
-        ({ data }) => {
-          if (cancelled) return;
-          setManagerOnlyOrganisationIds(
-            new Set((data ?? []).map((row) => row.organization_id)),
-          );
-        },
-        () => {
-          if (!cancelled) setManagerOnlyOrganisationIds(new Set());
-        },
-      );
-    return () => {
-      cancelled = true;
-    };
-  }, [backendKind, currentUser]);
+  const managerOnlyOrganisationIds = useManagedOrganisationIds(
+    services,
+    currentUser?.id ?? null,
+  );
 
-  const applications = useMemo(() => {
-    if (!state) return [];
-    const linkedOrganisationIds = new Set(
-      state.memberships
-        .filter((membership) => membership.userId === state.currentUserId)
-        .map((membership) => membership.organisationId),
-    );
-    return state.registrations.flatMap((registration) => {
-      if (
-        backendKind === "supabase" &&
-        canReviewApplications &&
-        (registration.applicantUserId === state.currentUserId ||
-          linkedOrganisationIds.has(registration.organisationId))
-      ) {
-        return [];
-      }
-      const application = applicationFromState(state, registration.id);
-      return application ? [application] : [];
-    });
-  }, [backendKind, canReviewApplications, state]);
+  const applications = useMemo(
+    () => selectApplications(state, backendKind, canReviewApplications),
+    [backendKind, canReviewApplications, state],
+  );
 
-  const myOrganisationApplications = useMemo(() => {
-    if (!state) return [];
-    const linkedOrganisationIds = new Set([
-      ...state.memberships
-        .filter((membership) => membership.userId === state.currentUserId)
-        .map((membership) => membership.organisationId),
-      ...managerOnlyOrganisationIds,
-    ]);
-    return state.registrations.flatMap((registration) => {
-      if (
-        registration.applicantUserId !== state.currentUserId &&
-        !linkedOrganisationIds.has(registration.organisationId)
-      ) {
-        return [];
-      }
-      const application = applicationFromState(state, registration.id);
-      return application ? [application] : [];
-    });
-  }, [state, managerOnlyOrganisationIds]);
+  const myOrganisationApplications = useMemo(
+    () => selectMyOrganisationApplications(state, managerOnlyOrganisationIds),
+    [state, managerOnlyOrganisationIds],
+  );
 
-  const availableOrganisations = useMemo(() => {
-    if (!state?.currentUserId) return [];
-    const organisationIds = new Set(
-      state.memberships
-        .filter((membership) => membership.userId === state.currentUserId)
-        .map((membership) => membership.organisationId),
-    );
-    return state.organisations.filter((organisation) =>
-      organisationIds.has(organisation.id),
-    );
-  }, [state]);
+  const availableOrganisations = useMemo(
+    () => selectAvailableOrganisations(state),
+    [state],
+  );
 
-  const currentApplication = useMemo(() => {
-    if (!state?.currentUserId) return null;
-    const isSangamOrganisationId = (organisationId: string): boolean => {
-      const registration = state.registrations.find(
-        (item) => item.organisationId === organisationId,
-      );
-      return isTamilSangamProfile(registration?.categoryProfile ?? null);
-    };
-    const memberships = state.memberships.filter(
-      (membership) =>
-        membership.userId === state.currentUserId &&
-        !isSangamOrganisationId(membership.organisationId),
-    );
-    const membership =
-      memberships.find((item) => item.isPrimary) ?? memberships.at(0);
-    if (!membership) return null;
-    const registration = state.registrations.find(
-      (item) => item.organisationId === membership.organisationId,
-    );
-    return registration ? applicationFromState(state, registration.id) : null;
-  }, [state]);
+  const currentApplication = useMemo(
+    () => selectCurrentApplication(state),
+    [state],
+  );
 
   const requireServices = useCallback((): PlatformServices => {
     if (!services) throw new Error(platformError || unavailableMessage);
@@ -506,7 +286,7 @@ export function PlatformProvider({
       resetDemo: async () => {
         const runtime = requireServices();
         if (!runtime.reset) return;
-        setState(await runtime.reset());
+        applyState(await runtime.reset());
       },
       checkDuplicateSignals: async (input) =>
         requireServices().checkDuplicateSignals(input),
@@ -519,6 +299,7 @@ export function PlatformProvider({
         ),
     }),
     [
+      applyState,
       applications,
       availableOrganisations,
       backendKind,
