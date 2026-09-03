@@ -80,12 +80,11 @@ export const typedConfig = (tsconfigRootDir) =>
       },
     },
     {
-      // Adapters and test doubles that satisfy an async interface. A
-      // method returning a resolved value with nothing to await is the
-      // whole point of implementing the contract; there is no bug to
-      // find here.
+      // Test doubles that satisfy an async interface. A method returning
+      // a resolved value with nothing to await is the whole point of
+      // implementing the contract; there is no bug to find here.
       files: [
-        "**/features/enrollment/platform-services.ts",
+        "**/features/enrollment/services.ts",
         "**/features/**/mock-*.ts",
         "**/*.test.{ts,tsx}",
       ],

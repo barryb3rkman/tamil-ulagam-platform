@@ -8,7 +8,7 @@ import { usePlatform } from "@/features/enrollment/platform-provider";
 import type {
   AuthCallbackIntent,
   AuthCallbackResult,
-} from "@/features/enrollment/platform-services";
+} from "@/features/enrollment/contracts";
 import {
   isValid,
   validatePasswordRecovery,

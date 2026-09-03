@@ -49,8 +49,8 @@ import type {
   PlatformServices,
   RuntimeAuthEvent,
   RuntimeAuthResult,
-} from "./platform-services";
-import type { LoginInput, SignupInput } from "./services";
+} from "./contracts";
+import type { LoginInput, SignupInput } from "./mock-services";
 
 const categoryTables = [
   "organization_tamil_community_details",

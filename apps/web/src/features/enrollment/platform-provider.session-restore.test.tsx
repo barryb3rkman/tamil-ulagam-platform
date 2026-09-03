@@ -5,7 +5,7 @@ import type { EnrollmentPlatformState } from "@tamil-ulagam/shared";
 
 import { ApplicationShell } from "@/components/application/application-shell";
 
-import type { PlatformServices, RuntimeAuthEvent } from "./platform-services";
+import type { PlatformServices, RuntimeAuthEvent } from "./contracts";
 import { PlatformProvider } from "./platform-provider";
 
 vi.mock("@/lib/supabase/environment", () => ({

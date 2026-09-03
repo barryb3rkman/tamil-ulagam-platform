@@ -31,20 +31,19 @@ import {
 import { getPlatformErrorMessage } from "@/lib/supabase/errors";
 
 import {
-  adaptMockPlatformServices,
   type AuthCallbackIntent,
   type AuthCallbackResult,
   type DuplicateSignalsInput,
   type OrganisationEmailVerificationSendResult,
   type PlatformServices,
   type RuntimeAuthResult,
-} from "./platform-services";
+} from "./contracts";
 import { BrowserMockStateRepository } from "./repository";
 import {
   createMockPlatformServices,
   type LoginInput,
   type SignupInput,
-} from "./services";
+} from "./mock-services";
 import { createSupabasePlatformServices } from "./supabase-services";
 
 type PlatformBackendKind = "mock" | "supabase" | "unavailable";
@@ -146,10 +145,8 @@ function createRuntimeServices(): {
   }
   if (environment.backend === "mock") {
     return {
-      services: adaptMockPlatformServices(
-        createMockPlatformServices(
-          new BrowserMockStateRepository(window.localStorage),
-        ),
+      services: createMockPlatformServices(
+        new BrowserMockStateRepository(window.localStorage),
       ),
       captcha: environment.captcha,
       error: "",

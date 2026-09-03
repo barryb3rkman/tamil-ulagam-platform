@@ -1,12 +1,17 @@
 import type {
+  DuplicateSignalsInput,
+  PlatformServices,
+  RuntimeAdminService,
+  RuntimeAuthService,
+  RuntimeOrganisationService,
+  RuntimeRegistrationService,
+} from "./contracts";
+import type {
+  DuplicateOrganisationSignals,
   MockPlatformState,
   Organisation,
   OrganisationApplication,
-  OrganisationCategory,
-  OrganisationCategoryProfile,
   OrganisationRegistration,
-  OrganisationRepresentative,
-  RegistrationStatus,
   UserProfile,
 } from "@tamil-ulagam/shared";
 
@@ -38,61 +43,6 @@ export type AuthResult =
   | { readonly ok: true; readonly user: UserProfile }
   | { readonly ok: false; readonly message: string };
 
-export interface AuthService {
-  signup(input: SignupInput): Promise<AuthResult>;
-  login(input: LoginInput): Promise<AuthResult>;
-  requestPasswordReset(email: string, captchaToken?: string): Promise<void>;
-  completePasswordRecovery(password: string): Promise<void>;
-  signOut(): void;
-  getCurrentUser(): UserProfile | null;
-  updateProfile(
-    input: Pick<UserProfile, "fullName" | "email" | "phone" | "country">,
-  ): UserProfile;
-}
-
-export interface OrganisationService {
-  getCurrentOrganisation(): Organisation | null;
-  listCurrentOrganisations(): Organisation[];
-  selectCurrentOrganisation(organisationId: string): void;
-  updateCurrentOrganisation(input: Partial<Organisation>): Organisation;
-}
-
-export interface RegistrationService {
-  ensureCurrentDraft(): OrganisationApplication;
-  getCurrentApplication(): OrganisationApplication | null;
-  updateCategory(category: OrganisationCategory): OrganisationApplication;
-  updateCategoryProfile(
-    profile: OrganisationCategoryProfile,
-  ): OrganisationApplication;
-  updateRepresentative(
-    representative: OrganisationRepresentative,
-  ): OrganisationApplication;
-  updateCurrentStep(step: 1 | 2 | 3 | 4): OrganisationApplication;
-  submit(): OrganisationApplication;
-}
-
-export interface AdminService {
-  listApplications(): OrganisationApplication[];
-  getApplication(id: string): OrganisationApplication | null;
-  updateStatus(
-    id: string,
-    status: Extract<
-      RegistrationStatus,
-      "under_review" | "verified" | "needs_changes" | "rejected" | "suspended"
-    >,
-    feedback?: string,
-  ): OrganisationApplication;
-}
-
-export interface MockPlatformServices {
-  readonly auth: AuthService;
-  readonly organisations: OrganisationService;
-  readonly registrations: RegistrationService;
-  readonly admin: AdminService;
-  readonly snapshot: () => MockPlatformState;
-  readonly reset: () => MockPlatformState;
-}
-
 function delay(duration = 320): Promise<void> {
   return new Promise((resolve) => window.setTimeout(resolve, duration));
 }
@@ -114,7 +64,7 @@ function applicationFromState(
 export function createMockPlatformServices(
   repository: MockStateRepository,
   now: () => string = () => new Date().toISOString(),
-): MockPlatformServices {
+): PlatformServices {
   const save = (state: MockPlatformState) => {
     repository.save(state);
     return state;
@@ -181,7 +131,7 @@ export function createMockPlatformServices(
     return { organisation, registration, representativeUser: user };
   };
 
-  const auth: AuthService = {
+  const auth: RuntimeAuthService = {
     async signup(input) {
       await delay();
       const state = repository.load();
@@ -260,6 +210,22 @@ export function createMockPlatformServices(
       await delay();
     },
 
+    async resolveAuthCallback(intent, callbackUrl) {
+      await Promise.resolve();
+      const flow = new URL(callbackUrl).searchParams.get("mock");
+      if (intent === "recovery" && flow === "recovery") {
+        return { status: "recovery_ready" };
+      }
+      if (intent === "confirmation" && flow === "confirmation") {
+        return { status: "confirmation_success", hasSession: true };
+      }
+      return {
+        status: "invalid",
+        message:
+          "This link is invalid or has expired. Request a new link and try again.",
+      };
+    },
+
     async completePasswordRecovery() {
       await delay();
       const state = repository.load();
@@ -267,20 +233,20 @@ export function createMockPlatformServices(
       save(state);
     },
 
-    signOut() {
+    async signOut() {
       const state = repository.load();
       state.currentUserId = null;
       save(state);
     },
 
-    getCurrentUser() {
+    async getCurrentUser() {
       const state = repository.load();
       return (
         state.users.find((user) => user.id === state.currentUserId) ?? null
       );
     },
 
-    updateProfile(input) {
+    async updateProfile(input) {
       const state = repository.load();
       const index = state.users.findIndex(
         (user) => user.id === state.currentUserId,
@@ -294,11 +260,11 @@ export function createMockPlatformServices(
     },
   };
 
-  const organisations: OrganisationService = {
-    getCurrentOrganisation() {
+  const organisations: RuntimeOrganisationService = {
+    async getCurrentOrganisation() {
       return currentApplication(repository.load())?.organisation ?? null;
     },
-    listCurrentOrganisations() {
+    async listCurrentOrganisations() {
       const state = repository.load();
       if (!state.currentUserId) return [];
       const organisationIds = new Set(
@@ -310,7 +276,7 @@ export function createMockPlatformServices(
         organisationIds.has(organisation.id),
       );
     },
-    selectCurrentOrganisation(organisationId) {
+    async selectCurrentOrganisation(organisationId) {
       const state = repository.load();
       if (!state.currentUserId) {
         throw new Error("Sign in before selecting an organisation.");
@@ -330,7 +296,7 @@ export function createMockPlatformServices(
       }
       save(state);
     },
-    updateCurrentOrganisation(input) {
+    async updateCurrentOrganisation(input) {
       const state = repository.load();
       const application = currentApplication(state);
       if (!application) throw new Error("Start a registration first.");
@@ -350,12 +316,12 @@ export function createMockPlatformServices(
     },
   };
 
-  const registrations: RegistrationService = {
-    ensureCurrentDraft: ensureDraft,
-    getCurrentApplication() {
+  const registrations: RuntimeRegistrationService = {
+    ensureCurrentDraft: () => Promise.resolve(ensureDraft()),
+    async getCurrentApplication() {
       return currentApplication(repository.load());
     },
-    updateCategory(category) {
+    async updateCategory(category) {
       const state = repository.load();
       const application = currentApplication(state) ?? ensureDraft();
       const freshState = repository.load();
@@ -381,7 +347,7 @@ export function createMockPlatformServices(
         registration,
       ) as OrganisationApplication;
     },
-    updateCategoryProfile(profile) {
+    async updateCategoryProfile(profile) {
       const state = repository.load();
       const application = currentApplication(state);
       if (!application) throw new Error("Start a registration first.");
@@ -390,7 +356,7 @@ export function createMockPlatformServices(
       save(state);
       return application;
     },
-    updateRepresentative(representative) {
+    async updateRepresentative(representative) {
       const state = repository.load();
       const application = currentApplication(state);
       if (!application) throw new Error("Start a registration first.");
@@ -399,7 +365,7 @@ export function createMockPlatformServices(
       save(state);
       return application;
     },
-    updateCurrentStep(step) {
+    async updateCurrentStep(step) {
       const state = repository.load();
       const application = currentApplication(state);
       if (!application) throw new Error("Start a registration first.");
@@ -408,7 +374,7 @@ export function createMockPlatformServices(
       save(state);
       return application;
     },
-    submit() {
+    async submit() {
       const state = repository.load();
       const application = currentApplication(state);
       if (!application) throw new Error("Start a registration first.");
@@ -423,8 +389,8 @@ export function createMockPlatformServices(
     },
   };
 
-  const admin: AdminService = {
-    listApplications() {
+  const admin: RuntimeAdminService = {
+    async listApplications() {
       const state = repository.load();
       return state.registrations
         .map((registration) => applicationFromState(state, registration))
@@ -433,12 +399,12 @@ export function createMockPlatformServices(
             application !== null,
         );
     },
-    getApplication(id) {
+    async getApplication(id) {
       const state = repository.load();
       const registration = state.registrations.find((item) => item.id === id);
       return registration ? applicationFromState(state, registration) : null;
     },
-    updateStatus(id, status, feedback = "") {
+    async updateStatus(id, status, feedback = "") {
       const state = repository.load();
       const registration = state.registrations.find((item) => item.id === id);
       if (!registration) throw new Error("Registration not found.");
@@ -456,11 +422,48 @@ export function createMockPlatformServices(
   };
 
   return {
+    kind: "mock",
     auth,
     organisations,
     registrations,
     admin,
-    snapshot: () => repository.load(),
-    reset: () => repository.reset(),
+    snapshot: () => Promise.resolve(repository.load()),
+    reset: () => Promise.resolve(repository.reset()),
+    canReviewApplications: () => Promise.resolve(true),
+    checkDuplicateSignals: (input) =>
+      Promise.resolve(duplicateSignals(repository.load(), input)),
+    requestOrganisationEmailVerification: () =>
+      Promise.resolve({ ok: false, reason: "not_configured" }),
+    completeOrganisationEmailVerification: () => Promise.resolve(false),
+    onAuthStateChange: () => () => undefined,
+  };
+}
+
+function duplicateSignals(
+  state: MockPlatformState,
+  input: DuplicateSignalsInput,
+): DuplicateOrganisationSignals {
+  const name = input.name.trim().toLowerCase();
+  const email = input.officialEmail.trim().toLowerCase();
+  const number = input.registrationNumber.trim().toLowerCase();
+  const others = state.organisations.filter(
+    (organisation) => organisation.id !== input.excludeOrganisationId,
+  );
+  const matches = (
+    value: string,
+    read: (organisation: Organisation) => string,
+  ) =>
+    value !== "" &&
+    others.some(
+      (organisation) => read(organisation).trim().toLowerCase() === value,
+    );
+  return {
+    nameMatch: matches(name, (organisation) => organisation.name),
+    emailMatch: matches(email, (organisation) => organisation.officialEmail),
+    registrationNumberMatch: matches(
+      number,
+      (organisation) => organisation.registrationNumber,
+    ),
+    matches: [],
   };
 }

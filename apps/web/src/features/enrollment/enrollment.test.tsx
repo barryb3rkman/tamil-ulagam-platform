@@ -21,7 +21,7 @@ import {
   mockStorageKey,
   type StorageAdapter,
 } from "./repository";
-import { createMockPlatformServices } from "./services";
+import { createMockPlatformServices } from "./mock-services";
 import {
   validateCategoryProfile,
   validateCaptchaToken,
@@ -192,7 +192,7 @@ describe("mock service boundary", () => {
     ).toBe(true);
   });
 
-  it("selects one deterministic primary organisation for a multi-organisation user", () => {
+  it("selects one deterministic primary organisation for a multi-organisation user", async () => {
     const repository = new BrowserMockStateRepository(new MemoryStorage());
     const state = createSeedState();
     state.currentUserId = "user-demo";
@@ -211,7 +211,9 @@ describe("mock service boundary", () => {
     repository.save(state);
     const services = createMockPlatformServices(repository);
 
-    services.organisations.selectCurrentOrganisation(secondOrganisation!.id);
+    await services.organisations.selectCurrentOrganisation(
+      secondOrganisation!.id,
+    );
 
     expect(
       repository
@@ -225,7 +227,7 @@ describe("mock service boundary", () => {
     ]);
   });
 
-  it("persists a category selection, draft submission and explicit admin transitions", () => {
+  it("persists a category selection, draft submission and explicit admin transitions", async () => {
     const storage = new MemoryStorage();
     const repository = new BrowserMockStateRepository(storage);
     const seed = createSeedState();
@@ -244,40 +246,46 @@ describe("mock service boundary", () => {
       repository,
       () => "2026-08-20T10:00:00.000Z",
     );
-    services.registrations.ensureCurrentDraft();
-    services.registrations.updateCategory("business");
+    await services.registrations.ensureCurrentDraft();
+    await services.registrations.updateCategory("business");
     expect(
       new BrowserMockStateRepository(storage)
         .load()
         .registrations.find((item) => item.id === "registration-current")
         ?.categoryProfile?.category,
     ).toBe("business");
-    expect(services.registrations.submit().registration.status).toBe(
+    expect((await services.registrations.submit()).registration.status).toBe(
       "submitted",
     );
     expect(
-      services.admin.updateStatus(
-        "registration-current",
-        "needs_changes",
-        "Confirm the official email.",
+      (
+        await services.admin.updateStatus(
+          "registration-current",
+          "needs_changes",
+          "Confirm the official email.",
+        )
       ).registration.adminFeedback,
     ).toBe("Confirm the official email.");
     expect(
-      services.admin.updateStatus("registration-current", "verified")
+      (await services.admin.updateStatus("registration-current", "verified"))
         .registration.status,
     ).toBe("verified");
     expect(
-      services.admin.updateStatus(
-        "registration-current",
-        "suspended",
-        "Access is paused pending a governance review.",
+      (
+        await services.admin.updateStatus(
+          "registration-current",
+          "suspended",
+          "Access is paused pending a governance review.",
+        )
       ).registration.status,
     ).toBe("suspended");
     expect(
-      services.admin.updateStatus(
-        "registration-current",
-        "rejected",
-        "Unable to verify authority.",
+      (
+        await services.admin.updateStatus(
+          "registration-current",
+          "rejected",
+          "Unable to verify authority.",
+        )
       ).registration.status,
     ).toBe("rejected");
   });
