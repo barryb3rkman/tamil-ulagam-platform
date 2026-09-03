@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import type { OrganisationApplication } from "@tamil-ulagam/shared";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -107,7 +107,6 @@ function application(
 }
 
 afterEach(() => {
-  cleanup();
   vi.clearAllMocks();
 });
 

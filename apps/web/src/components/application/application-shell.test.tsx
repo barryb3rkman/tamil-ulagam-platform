@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -104,7 +104,6 @@ function mockPlatform(overrides: Partial<ReturnType<typeof usePlatform>>) {
 }
 
 afterEach(() => {
-  cleanup();
   vi.clearAllMocks();
   pathname = "/dashboard/registration";
 });

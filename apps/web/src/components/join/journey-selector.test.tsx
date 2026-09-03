@@ -1,11 +1,9 @@
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import { joinJourneys } from "@/content/join";
 
 import { JourneySelector } from "./journey-selector";
-
-afterEach(() => cleanup());
 
 describe("JourneySelector", () => {
   it("renders all four journeys as a list of links", () => {

@@ -561,6 +561,6 @@ export function focusFirstInvalidField(form: HTMLFormElement): void {
     );
     if (!firstInvalid) return;
     firstInvalid.focus();
-    firstInvalid.scrollIntoView?.({ block: "center" });
+    firstInvalid.scrollIntoView({ block: "center" });
   });
 }

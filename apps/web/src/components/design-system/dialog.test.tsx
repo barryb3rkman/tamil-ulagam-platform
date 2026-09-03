@@ -1,7 +1,7 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { Dialog } from "@tamil-ulagam/ui";
 import { useState } from "react";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 beforeAll(() => {
   if (!HTMLDialogElement.prototype.showModal) {
@@ -29,8 +29,6 @@ function ControlledDialog() {
     </Dialog>
   );
 }
-
-afterEach(() => cleanup());
 
 describe("Dialog", () => {
   it("shows the title and content when open", () => {

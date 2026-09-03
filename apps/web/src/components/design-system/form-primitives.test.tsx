@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import {
   Checkbox,
   FormField,
@@ -9,9 +9,7 @@ import {
   descriptionId,
 } from "@tamil-ulagam/ui";
 import { useState } from "react";
-import { afterEach, describe, expect, it, vi } from "vitest";
-
-afterEach(() => cleanup());
+import { describe, expect, it, vi } from "vitest";
 
 describe("Input composed with FormField", () => {
   it("associates the label, and — wired explicitly per the documented pattern — the error via aria-describedby + role=alert", () => {

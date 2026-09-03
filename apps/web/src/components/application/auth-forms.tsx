@@ -19,6 +19,7 @@ import { getSafeReturnTarget, withReturnTarget } from "@/lib/return-target";
 import { authJourneyPresentation } from "./auth-journey";
 import { focusFirstInvalidField, FormError, TextField } from "./form-fields";
 import { CaptchaChallenge } from "./captcha-challenge";
+import { asEventHandler } from "@/lib/event-handlers";
 
 type SubmissionState = "idle" | "loading" | "success" | "error";
 
@@ -119,7 +120,7 @@ export function SignupForm() {
   }
 
   return (
-    <form noValidate onSubmit={submit} className="grid gap-5">
+    <form noValidate onSubmit={asEventHandler(submit)} className="grid gap-5">
       <div>
         <h2 className="text-global-navy text-2xl font-bold">
           Personal details
@@ -310,7 +311,7 @@ export function LoginForm() {
   };
 
   return (
-    <form noValidate onSubmit={submit} className="grid gap-5">
+    <form noValidate onSubmit={asEventHandler(submit)} className="grid gap-5">
       <FormError message={formError || platformError} />
       <TextField
         label="Email"
@@ -436,7 +437,7 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form noValidate onSubmit={submit} className="grid gap-5">
+    <form noValidate onSubmit={asEventHandler(submit)} className="grid gap-5">
       <div>
         <h2 className="text-global-navy text-2xl font-bold">
           Account recovery

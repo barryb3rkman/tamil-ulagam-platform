@@ -1,11 +1,9 @@
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import AboutPage from "@/app/about/page";
 import { aboutEditorialImageKeys, images } from "@/config/images";
 import { aboutContent } from "@/content/about";
-
-afterEach(() => cleanup());
 
 describe("public About page", () => {
   it("renders one h1 and the approved hero content", () => {

@@ -1,8 +1,6 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { Button, EmptyState, Skeleton, Surface } from "@tamil-ulagam/ui";
-import { afterEach, describe, expect, it } from "vitest";
-
-afterEach(() => cleanup());
+import { describe, expect, it } from "vitest";
 
 describe("Skeleton", () => {
   it("is hidden from assistive technology — the loading region it sits inside owns the accessible status", () => {

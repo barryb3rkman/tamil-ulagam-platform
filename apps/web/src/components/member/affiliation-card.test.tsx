@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import type { EligibleOrganisation, Membership } from "@tamil-ulagam/shared";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
@@ -62,7 +62,6 @@ function makeMembership(overrides: Partial<Membership> = {}): Membership {
 }
 
 afterEach(() => {
-  cleanup();
   vi.clearAllMocks();
 });
 

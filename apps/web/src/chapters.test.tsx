@@ -1,11 +1,9 @@
-import { cleanup, render, screen, fireEvent } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import ChaptersPage from "@/app/chapters/page";
 import { chaptersEditorialImageKeys, images } from "@/config/images";
 import { chaptersContent } from "@/content/chapters";
-
-afterEach(() => cleanup());
 
 describe("public Chapters page", () => {
   it("renders one chapter-network heading and central registry media", () => {

@@ -1,11 +1,9 @@
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import type { JoinJourney } from "@/content/join";
 
 import { JourneyCard } from "./journey-card";
-
-afterEach(() => cleanup());
 
 const journey: JoinJourney = {
   id: "organisation",

@@ -34,6 +34,7 @@ import { OrganisationStageContact } from "./organisation-stage-contact";
 import { OrganisationStageIdentity } from "./organisation-stage-identity";
 import { OrganisationStageStanding } from "./organisation-stage-standing";
 import { OrganisationStatusScreen } from "./organisation-status-screen";
+import { asEventHandler } from "@/lib/event-handlers";
 
 type Stage = 1 | 2 | 3 | 4;
 
@@ -325,7 +326,11 @@ export function OrganisationRegistration() {
 
   return (
     <OrganisationFrame currentStage={stage}>
-      <form noValidate onSubmit={submitStage} className="grid gap-6">
+      <form
+        noValidate
+        onSubmit={asEventHandler(submitStage)}
+        className="grid gap-6"
+      >
         {currentApplication.registration.status === "needs_changes" &&
         currentApplication.registration.adminFeedback ? (
           <Alert tone="warning" title="Changes requested">

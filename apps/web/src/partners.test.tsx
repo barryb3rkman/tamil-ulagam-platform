@@ -1,11 +1,9 @@
-import { cleanup, render, screen, fireEvent } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import PartnersPage from "@/app/partners/page";
 import { images, partnersEditorialImageKeys } from "@/config/images";
 import { partnersContent } from "@/content/partners";
-
-afterEach(() => cleanup());
 
 describe("public Partners page", () => {
   it("renders one partnership heading and the approved registry image", () => {

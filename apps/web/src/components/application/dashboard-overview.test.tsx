@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import type {
   EligibleOrganisation,
   EnrollmentPlatformState,
@@ -97,7 +97,6 @@ const sangamA: EligibleOrganisation = {
 };
 
 afterEach(() => {
-  cleanup();
   vi.clearAllMocks();
 });
 

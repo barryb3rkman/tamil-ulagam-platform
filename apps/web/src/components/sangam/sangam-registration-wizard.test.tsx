@@ -1,11 +1,4 @@
-import {
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  within,
-} from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import type { OrganisationApplication } from "@tamil-ulagam/shared";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -134,7 +127,6 @@ function draftApplication(
 }
 
 afterEach(() => {
-  cleanup();
   vi.clearAllMocks();
 });
 
@@ -190,9 +182,7 @@ describe("SangamRegistrationWizard auth-aware states", () => {
 
     render(<SangamRegistrationWizard />);
 
-    await waitFor(() =>
-      expect(screen.getByLabelText(/Sangam name/)).toBeInTheDocument(),
-    );
+    expect(await screen.findByLabelText(/Sangam name/)).toBeInTheDocument();
     expect(ensureDraft).toHaveBeenCalledTimes(1);
     expect(screen.queryByText(/subtype/i)).not.toBeInTheDocument();
   });
@@ -214,14 +204,12 @@ describe("SangamRegistrationWizard auth-aware states", () => {
 
     render(<SangamRegistrationWizard />);
 
-    await waitFor(() =>
-      expect(screen.getByLabelText(/Sangam name/)).toBeInTheDocument(),
-    );
+    expect(await screen.findByLabelText(/Sangam name/)).toBeInTheDocument();
     screen.getByRole("button", { name: "Continue" }).click();
 
-    await waitFor(() =>
-      expect(screen.getByText("Enter the Sangam's name.")).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("Enter the Sangam's name."),
+    ).toBeInTheDocument();
   });
 
   it("shows the locked status screen (not the editable form) for a submitted application", async () => {
@@ -242,9 +230,9 @@ describe("SangamRegistrationWizard auth-aware states", () => {
 
     render(<SangamRegistrationWizard />);
 
-    await waitFor(() =>
-      expect(screen.getByText("Registration submitted")).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("Registration submitted"),
+    ).toBeInTheDocument();
     expect(screen.queryByLabelText("Sangam name")).not.toBeInTheDocument();
   });
 
@@ -269,9 +257,7 @@ describe("SangamRegistrationWizard auth-aware states", () => {
 
     render(<SangamRegistrationWizard />);
 
-    await waitFor(() =>
-      expect(screen.getByLabelText(/Sangam name/)).toBeInTheDocument(),
-    );
+    expect(await screen.findByLabelText(/Sangam name/)).toBeInTheDocument();
   });
 });
 
@@ -308,9 +294,7 @@ describe("SangamRegistrationWizard V2 fields", () => {
 
     render(<SangamRegistrationWizard />);
 
-    await waitFor(() =>
-      expect(screen.getByLabelText(/Sangam name/)).toBeInTheDocument(),
-    );
+    expect(await screen.findByLabelText(/Sangam name/)).toBeInTheDocument();
     expect(screen.getByLabelText(/Year of commencement/)).toBeInTheDocument();
     expect(
       screen.getByLabelText(/Approximate number of members/),
@@ -331,11 +315,9 @@ describe("SangamRegistrationWizard V2 fields", () => {
 
     render(<SangamRegistrationWizard />);
 
-    await waitFor(() =>
-      expect(
-        screen.getByText("Is this Tamil Sangam formally registered?"),
-      ).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("Is this Tamil Sangam formally registered?"),
+    ).toBeInTheDocument();
     expect(
       screen.queryByLabelText(/Registration number/),
     ).not.toBeInTheDocument();
@@ -358,11 +340,9 @@ describe("SangamRegistrationWizard V2 fields", () => {
 
     render(<SangamRegistrationWizard />);
 
-    await waitFor(() =>
-      expect(
-        screen.getByText("Single Point of Contact (SPOC)"),
-      ).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("Single Point of Contact (SPOC)"),
+    ).toBeInTheDocument();
     expect(screen.getByText("President")).toBeInTheDocument();
     // No generic "Representative role" selector any more.
     expect(
@@ -383,9 +363,7 @@ describe("SangamRegistrationWizard V2 fields", () => {
 
     render(<SangamRegistrationWizard />);
 
-    await waitFor(() =>
-      expect(screen.getByText("Digital presence")).toBeInTheDocument(),
-    );
+    expect(await screen.findByText("Digital presence")).toBeInTheDocument();
     expect(
       screen.queryByLabelText(/Social media link 1/),
     ).not.toBeInTheDocument();

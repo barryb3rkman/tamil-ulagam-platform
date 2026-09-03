@@ -11,6 +11,7 @@ import {
 } from "@/features/enrollment/validation";
 
 import { FormError, TextField } from "./form-fields";
+import { asEventHandler } from "@/lib/event-handlers";
 
 function initials(fullName: string): string {
   return (
@@ -146,7 +147,7 @@ export function AccountForm() {
       <div className="mt-8 grid max-w-6xl items-start gap-5">
         <form
           noValidate
-          onSubmit={submit}
+          onSubmit={asEventHandler(submit)}
           className="rounded-large border-global-navy/10 grid gap-6 border bg-white p-6 sm:p-8 lg:p-9"
         >
           <div className="border-global-navy/10 border-b pb-5">

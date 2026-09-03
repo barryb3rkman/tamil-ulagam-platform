@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import type {
   EligibleOrganisation,
   OrganisationApplication,
@@ -143,7 +143,6 @@ function sangamApplication(
 }
 
 afterEach(() => {
-  cleanup();
   vi.clearAllMocks();
   searchParamValue = "";
 });
@@ -177,11 +176,9 @@ describe("SangamWorkspace", () => {
 
     render(<SangamWorkspace />);
 
-    await waitFor(() =>
-      expect(
-        screen.getByText("You don't manage a Tamil Sangam yet"),
-      ).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("You don't manage a Tamil Sangam yet"),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: "Register a Tamil Sangam" }),
     ).toHaveAttribute("href", "/join/sangam");
@@ -206,11 +203,9 @@ describe("SangamWorkspace", () => {
 
     render(<SangamWorkspace />);
 
-    await waitFor(() =>
-      expect(
-        screen.getByRole("heading", { name: "Riverside Tamil Sangam" }),
-      ).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByRole("heading", { name: "Riverside Tamil Sangam" }),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "Federation status" }),
     ).toBeInTheDocument();
@@ -239,9 +234,7 @@ describe("SangamWorkspace", () => {
 
     render(<SangamWorkspace />);
 
-    await waitFor(() =>
-      expect(screen.getByText("Choose a Sangam")).toBeInTheDocument(),
-    );
+    expect(await screen.findByText("Choose a Sangam")).toBeInTheDocument();
     expect(screen.getByText("Riverside Tamil Sangam")).toBeInTheDocument();
     expect(screen.getByText("Harbour Tamil Sangam")).toBeInTheDocument();
   });

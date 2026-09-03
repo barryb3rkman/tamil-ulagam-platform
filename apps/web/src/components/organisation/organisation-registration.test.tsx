@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import type { OrganisationApplication } from "@tamil-ulagam/shared";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -113,7 +113,6 @@ function platform(overrides: Record<string, unknown>) {
 }
 
 afterEach(() => {
-  cleanup();
   vi.clearAllMocks();
 });
 
@@ -207,11 +206,9 @@ describe("OrganisationRegistration auth-aware states", () => {
     render(<OrganisationRegistration />);
     screen.getByRole("button", { name: "Continue" }).click();
 
-    await waitFor(() =>
-      expect(
-        screen.getByText("Enter the organisation name."),
-      ).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("Enter the organisation name."),
+    ).toBeInTheDocument();
   });
 
   it("shows guidance toward Tamil Sangam registration when the community category is selected", () => {

@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import type {
   EligibleOrganisation,
   MembershipRequestSummary,
@@ -95,7 +95,6 @@ function makeRequest(
 }
 
 afterEach(() => {
-  cleanup();
   vi.clearAllMocks();
   searchParams = new URLSearchParams();
 });
@@ -127,11 +126,9 @@ describe("ManagerPeople", () => {
 
     render(<ManagerPeople />);
 
-    await waitFor(() =>
-      expect(
-        screen.getByText("You don't manage an organisation"),
-      ).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("You don't manage an organisation"),
+    ).toBeInTheDocument();
   });
 
   it("shows a picker when the user manages more than one organisation and none is selected", async () => {
@@ -142,9 +139,9 @@ describe("ManagerPeople", () => {
 
     render(<ManagerPeople />);
 
-    await waitFor(() =>
-      expect(screen.getByText("Choose an organisation")).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("Choose an organisation"),
+    ).toBeInTheDocument();
     expect(screen.getByText("Organisation A")).toBeInTheDocument();
     expect(screen.getByText("Organisation B")).toBeInTheDocument();
   });
@@ -158,11 +155,9 @@ describe("ManagerPeople", () => {
 
     render(<ManagerPeople />);
 
-    await waitFor(() =>
-      expect(
-        screen.getByText("You don't manage this organisation"),
-      ).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("You don't manage this organisation"),
+    ).toBeInTheDocument();
   });
 
   it("shows the pending queue for the selected organisation, and lets a manager approve", async () => {
@@ -183,9 +178,7 @@ describe("ManagerPeople", () => {
 
     render(<ManagerPeople />);
 
-    await waitFor(() =>
-      expect(screen.getByText("Nila Raj")).toBeInTheDocument(),
-    );
+    expect(await screen.findByText("Nila Raj")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "Organisation A" }),
     ).toBeInTheDocument();
@@ -213,17 +206,13 @@ describe("ManagerPeople", () => {
     } as unknown as ReturnType<typeof useMembershipService>);
 
     render(<ManagerPeople />);
-    await waitFor(() =>
-      expect(screen.getByText("Nila Raj")).toBeInTheDocument(),
-    );
+    expect(await screen.findByText("Nila Raj")).toBeInTheDocument();
 
     // The row control opens a confirmation; it must not decide anything.
     screen.getByRole("button", { name: "Not a member" }).click();
-    await waitFor(() =>
-      expect(
-        screen.getByRole("heading", { name: "Decline this affiliation?" }),
-      ).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByRole("heading", { name: "Decline this affiliation?" }),
+    ).toBeInTheDocument();
     expect(rejectMembership).not.toHaveBeenCalled();
 
     // Only the dialog's own confirm actually declines.
@@ -251,9 +240,7 @@ describe("ManagerPeople", () => {
 
     render(<ManagerPeople />);
 
-    await waitFor(() =>
-      expect(screen.getByText("Nila Raj")).toBeInTheDocument(),
-    );
+    expect(await screen.findByText("Nila Raj")).toBeInTheDocument();
     expect(screen.getByText("Kavi Selvam")).toBeInTheDocument();
 
     const pendingHeading = screen.getByRole("heading", {
@@ -297,9 +284,7 @@ describe("ManagerPeople", () => {
 
     render(<ManagerPeople />);
 
-    await waitFor(() =>
-      expect(screen.getByText("Nila Raj")).toBeInTheDocument(),
-    );
+    expect(await screen.findByText("Nila Raj")).toBeInTheDocument();
     expect(screen.queryByText("Owner")).not.toBeInTheDocument();
 
     screen.getByRole("tab", { name: "Managers" }).click();

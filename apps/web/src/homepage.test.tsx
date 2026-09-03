@@ -1,12 +1,10 @@
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import HomePage from "@/app/page";
 import { homepageEditorialImageKeys, images } from "@/config/images";
 import { homepageContent } from "@/content/homepage";
 import { initiatives } from "@/content/initiatives";
-
-afterEach(() => cleanup());
 
 describe("public homepage composition", () => {
   it("renders one primary heading and the hero routes", () => {

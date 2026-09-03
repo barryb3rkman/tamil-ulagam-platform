@@ -1,11 +1,9 @@
-import { cleanup, render, screen, fireEvent } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import EventsPage from "@/app/events/page";
 import { eventsEditorialImageKeys, images } from "@/config/images";
 import { eventsContent } from "@/content/events";
-
-afterEach(() => cleanup());
 
 describe("public Events page", () => {
   it("renders one global-events heading and the approved registry image", () => {

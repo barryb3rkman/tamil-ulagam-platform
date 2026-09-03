@@ -1,8 +1,6 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { Alert, StatusBadge } from "@tamil-ulagam/ui";
-import { afterEach, describe, expect, it } from "vitest";
-
-afterEach(() => cleanup());
+import { describe, expect, it } from "vitest";
 
 describe("StatusBadge", () => {
   it("never communicates status by color alone — a dot or icon is always present", () => {

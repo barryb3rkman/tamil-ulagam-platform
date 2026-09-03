@@ -1,8 +1,6 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { StageProgress } from "@tamil-ulagam/ui";
-import { afterEach, describe, expect, it } from "vitest";
-
-afterEach(() => cleanup());
+import { describe, expect, it } from "vitest";
 
 describe("StageProgress", () => {
   const stages = ["Identity", "Reachability", "Confirmation"];

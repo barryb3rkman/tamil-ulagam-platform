@@ -1,10 +1,8 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { ImageWithFallback } from "@tamil-ulagam/ui";
-import { afterEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { joinImages } from "./join-images";
-
-afterEach(() => cleanup());
 
 describe("joinImages", () => {
   it("declares all three pilot assets as available now that the files exist", () => {

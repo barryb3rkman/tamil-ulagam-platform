@@ -791,7 +791,7 @@ export function getInitiativeEcosystemGroup(slug: InitiativeSlug) {
 }
 
 export function getInitiativeImageKey(slug: InitiativeSlug): ImageKey {
-  return getInitiativeDetailIdentity(slug).imageKey as ImageKey;
+  return getInitiativeDetailIdentity(slug).imageKey;
 }
 
 export const initiativeDetailSlugs = Object.keys(

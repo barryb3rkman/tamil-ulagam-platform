@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { usePlatform } from "@/features/enrollment/platform-provider";
@@ -20,7 +20,6 @@ vi.mock("@/features/enrollment/platform-provider", () => ({
 const mockedUsePlatform = vi.mocked(usePlatform);
 
 afterEach(() => {
-  cleanup();
   vi.clearAllMocks();
   searchParams = new URLSearchParams();
 });

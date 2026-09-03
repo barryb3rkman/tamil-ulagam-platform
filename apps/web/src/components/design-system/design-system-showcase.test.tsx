@@ -1,11 +1,11 @@
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, beforeAll, describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { DesignSystemShowcase } from "./design-system-showcase";
 
 beforeAll(() => {
   if (!window.matchMedia) {
-    window.matchMedia = ((query: string) => ({
+    window.matchMedia = (query: string) => ({
       matches: false,
       media: query,
       onchange: null,
@@ -14,7 +14,7 @@ beforeAll(() => {
       addListener: () => undefined,
       removeListener: () => undefined,
       dispatchEvent: () => false,
-    })) as unknown as typeof window.matchMedia;
+    });
   }
   if (!HTMLDialogElement.prototype.showModal) {
     HTMLDialogElement.prototype.showModal = function showModal(
@@ -32,8 +32,6 @@ beforeAll(() => {
     };
   }
 });
-
-afterEach(() => cleanup());
 
 describe("DesignSystemShowcase", () => {
   it("renders every documented section without throwing, proving no primitive import is broken", () => {

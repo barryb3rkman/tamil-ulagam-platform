@@ -466,6 +466,9 @@ function callbackErrorFromUrl(callbackUrl: URL): AuthCallbackResult | null {
   return invalidCallback();
 }
 
+type EdgeFunctionResponse<T> =
+  { data: T; error: null } | { data: null; error: unknown };
+
 export function createSupabasePlatformServices(
   client: SupabaseClient<Database>,
 ): PlatformServices {
@@ -929,12 +932,17 @@ export function createSupabasePlatformServices(
         withBasePath("/dashboard/registration", basePath),
         window.location.origin,
       ).toString();
-      const { data, error } = await client.functions.invoke(
-        "organization-email-verification",
-        { body: { organizationId: organisationId, redirectPath } },
-      );
-      if (error) return { ok: false, reason: "error" };
-      const result = data as { ok?: boolean; reason?: string } | null;
+      // supabase-js types the failure branch's `error` as `any`.
+      // Annotating the response narrows it to `unknown` here so the
+      // library's escape hatch stops at this line.
+      const response: EdgeFunctionResponse<{
+        ok?: boolean;
+        reason?: string;
+      }> = await client.functions.invoke("organization-email-verification", {
+        body: { organizationId: organisationId, redirectPath },
+      });
+      if (response.error) return { ok: false, reason: "error" };
+      const result = response.data;
       if (result?.ok) return { ok: true };
       return {
         ok: false,

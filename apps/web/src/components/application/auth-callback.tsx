@@ -18,6 +18,7 @@ import { getSafeReturnTarget, withReturnTarget } from "@/lib/return-target";
 
 import { authJourneyPresentation } from "./auth-journey";
 import { FormError, TextField } from "./form-fields";
+import { asEventHandler } from "@/lib/event-handlers";
 
 type CallbackView =
   | { readonly status: "processing" }
@@ -206,7 +207,7 @@ function PasswordRecoveryForm({
   };
 
   return (
-    <form noValidate onSubmit={submit} className="grid gap-5">
+    <form noValidate onSubmit={asEventHandler(submit)} className="grid gap-5">
       <div>
         <h2 className="text-global-navy text-2xl font-bold">
           Set a new password

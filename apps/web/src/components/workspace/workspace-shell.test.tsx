@@ -1,10 +1,4 @@
-import {
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-  within,
-} from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import type { EligibleOrganisation, UserProfile } from "@tamil-ulagam/shared";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
@@ -103,7 +97,6 @@ const orgB: EligibleOrganisation = {
 };
 
 afterEach(() => {
-  cleanup();
   vi.clearAllMocks();
   pathname = "/workspace/organisation";
   query = "organization=org-1";

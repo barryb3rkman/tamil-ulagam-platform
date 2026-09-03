@@ -61,9 +61,8 @@ function isMockPlatformState(value: unknown): value is MockPlatformState {
         registration &&
         typeof registration === "object" &&
         typeof (registration as { id?: unknown }).id === "string" &&
-        validStatus.has(
-          String((registration as { status?: unknown }).status ?? ""),
-        ) &&
+        typeof (registration as { status?: unknown }).status === "string" &&
+        validStatus.has((registration as { status: string }).status) &&
         typeof (registration as { representative?: unknown }).representative ===
           "object",
     )

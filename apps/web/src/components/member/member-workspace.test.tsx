@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import type { EligibleOrganisation, Membership } from "@tamil-ulagam/shared";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -65,7 +65,6 @@ const org: EligibleOrganisation = {
 };
 
 afterEach(() => {
-  cleanup();
   vi.clearAllMocks();
 });
 
@@ -98,9 +97,7 @@ describe("MemberWorkspace auth-aware states", () => {
 
     render(<MemberWorkspace />);
 
-    await waitFor(() =>
-      expect(screen.getByText("No affiliations yet")).toBeInTheDocument(),
-    );
+    expect(await screen.findByText("No affiliations yet")).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: "Connect your membership" }),
     ).toHaveAttribute("href", "/join/member");

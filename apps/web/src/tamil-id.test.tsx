@@ -1,11 +1,9 @@
-import { cleanup, render, screen, fireEvent } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import TamilIdPage from "@/app/tamil-id/page";
 import { images, tamilIdEditorialImageKeys } from "@/config/images";
 import { tamilIdContent } from "@/content/tamil-id";
-
-afterEach(() => cleanup());
 
 describe("public Tamil ID page", () => {
   it("renders one digital-membership heading and the approved registry image", () => {

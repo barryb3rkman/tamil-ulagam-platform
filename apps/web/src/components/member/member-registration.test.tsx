@@ -1,10 +1,4 @@
-import {
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { EligibleOrganisation, Membership } from "@tamil-ulagam/shared";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -107,7 +101,6 @@ function service(overrides: Record<string, unknown> = {}) {
 }
 
 afterEach(() => {
-  cleanup();
   vi.clearAllMocks();
 });
 
@@ -156,9 +149,7 @@ describe("MemberRegistration auth-aware states", () => {
 
     render(<MemberRegistration />);
 
-    await waitFor(() =>
-      expect(screen.getByText("Network down")).toBeInTheDocument(),
-    );
+    expect(await screen.findByText("Network down")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Try again" }),
     ).toBeInTheDocument();
@@ -175,18 +166,16 @@ describe("MemberRegistration — the full affiliation-claim flow", () => {
 
     render(<MemberRegistration />);
 
-    await waitFor(() =>
-      expect(
-        screen.getByRole("heading", { name: "Your details" }),
-      ).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByRole("heading", { name: "Your details" }),
+    ).toBeInTheDocument();
     // No account email re-asked (H4 brief section 4).
     expect(screen.queryByLabelText(/email/i)).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
-    await waitFor(() =>
-      expect(screen.getByText("Enter your full name.")).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("Enter your full name."),
+    ).toBeInTheDocument();
   });
 
   it("goes profile -> type -> directory -> confirm -> success for a Tamil Sangam affiliation", async () => {
@@ -199,34 +188,30 @@ describe("MemberRegistration — the full affiliation-claim flow", () => {
     render(<MemberRegistration />);
 
     // Step 1 — already filled, just continue.
-    await waitFor(() =>
-      expect(screen.getByDisplayValue("Nila Raj")).toBeInTheDocument(),
-    );
+    expect(await screen.findByDisplayValue("Nila Raj")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
 
     // Step 2 — "Where are you already a member?"
-    await waitFor(() =>
-      expect(
-        screen.getByText("Where are you already a member?"),
-      ).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("Where are you already a member?"),
+    ).toBeInTheDocument();
     expect(
       screen.queryByText(/what would you like to join/i),
     ).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /^Tamil Sangam/ }));
 
     // Step 3 — directory, Sangam-scoped only.
-    await waitFor(() =>
-      expect(screen.getByText("Find your Tamil Sangam")).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("Find your Tamil Sangam"),
+    ).toBeInTheDocument();
     expect(screen.getByText("Toronto Tamil Sangam")).toBeInTheDocument();
     expect(screen.queryByText("Toronto Tamil School")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Select" }));
 
     // Step 4 — confirm. No category question for a Sangam.
-    await waitFor(() =>
-      expect(screen.getByText("Confirm your affiliation")).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("Confirm your affiliation"),
+    ).toBeInTheDocument();
     expect(screen.queryByText("Your involvement")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Submit affiliation" }));
 
@@ -239,9 +224,9 @@ describe("MemberRegistration — the full affiliation-claim flow", () => {
     );
 
     // Step 5 — success, with the "add another affiliation" path.
-    await waitFor(() =>
-      expect(screen.getByText("Affiliation submitted")).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("Affiliation submitted"),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: "Open Member Workspace" }),
     ).toHaveAttribute("href", "/workspace/member");
@@ -259,27 +244,23 @@ describe("MemberRegistration — the full affiliation-claim flow", () => {
 
     render(<MemberRegistration />);
 
-    await waitFor(() =>
-      expect(screen.getByDisplayValue("Nila Raj")).toBeInTheDocument(),
-    );
+    expect(await screen.findByDisplayValue("Nila Raj")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
-    await waitFor(() => screen.getByText("Where are you already a member?"));
+    await screen.findByText("Where are you already a member?");
     fireEvent.click(screen.getByRole("button", { name: /^Organisation/ }));
 
-    await waitFor(() => screen.getByText("Find your Organisation"));
+    await screen.findByText("Find your Organisation");
     fireEvent.click(screen.getByRole("button", { name: "Select" }));
 
-    await waitFor(() => screen.getByText("Confirm your affiliation"));
+    await screen.findByText("Confirm your affiliation");
     expect(
       screen.getByText("Your connection to this organisation"),
     ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Submit affiliation" }));
-    await waitFor(() =>
-      expect(
-        screen.getByText("Select the option that best describes you."),
-      ).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("Select the option that best describes you."),
+    ).toBeInTheDocument();
     expect(svc.requestMembership).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByRole("radio", { name: "Student" }));

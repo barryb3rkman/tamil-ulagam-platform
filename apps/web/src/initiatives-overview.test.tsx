@@ -1,5 +1,5 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { render, screen, within } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import InitiativesPage from "@/app/initiatives/page";
 import { initiativesEditorialImageKeys, images } from "@/config/images";
@@ -8,8 +8,6 @@ import {
   initiativeOverviewContent,
   initiativeOverviewDetails,
 } from "@/content/initiatives-overview";
-
-afterEach(() => cleanup());
 
 describe("public Initiatives overview page", () => {
   it("renders one h1 and all initiative identities and routes", () => {

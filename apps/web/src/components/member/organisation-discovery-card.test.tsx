@@ -1,10 +1,8 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import type { EligibleOrganisation, Membership } from "@tamil-ulagam/shared";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { OrganisationDiscoveryCard } from "./organisation-discovery-card";
-
-afterEach(() => cleanup());
 
 const org: EligibleOrganisation = {
   id: "organisation-1",
@@ -105,8 +103,6 @@ describe("OrganisationDiscoveryCard", () => {
     expect(
       screen.getByText("Tamil / Community Organisation"),
     ).toBeInTheDocument();
-
-    cleanup();
 
     render(<OrganisationDiscoveryCard organisation={org} onSelect={vi.fn()} />);
     expect(screen.getByText("Tamil Sangam")).toBeInTheDocument();

@@ -1,17 +1,9 @@
-import {
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-  within,
-} from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { fireEvent, render, screen, within } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import NewsPage from "@/app/news/page";
 import { images, newsEditorialImageKeys } from "@/config/images";
 import { newsContent } from "@/content/news";
-
-afterEach(() => cleanup());
 
 describe("public News page", () => {
   it("renders one newsroom heading and the approved registry image", () => {

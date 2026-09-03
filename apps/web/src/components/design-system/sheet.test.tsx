@@ -1,6 +1,6 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { Sheet } from "@tamil-ulagam/ui";
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 
 beforeAll(() => {
   if (!HTMLDialogElement.prototype.showModal) {
@@ -19,8 +19,6 @@ beforeAll(() => {
     };
   }
 });
-
-afterEach(() => cleanup());
 
 describe("Sheet", () => {
   it("shows the title and content when open, defaulting to a bottom sheet", () => {

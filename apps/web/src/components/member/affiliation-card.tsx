@@ -12,6 +12,8 @@ import { useState } from "react";
 import { OrganisationMark, SangamMark } from "@/components/join/journey-icons";
 import { useMembershipService } from "@/features/membership/use-membership-service";
 
+import { asEventHandler } from "@/lib/event-handlers";
+
 import {
   organisationKindLabel,
   organisationLocationLabel,
@@ -141,7 +143,7 @@ export function AffiliationCard({
             {reason === null ? (
               <button
                 type="button"
-                onClick={loadReason}
+                onClick={asEventHandler(loadReason)}
                 className="text-global-navy focus-visible:ring-focus rounded-button mt-1 text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
               >
                 See why
@@ -193,7 +195,7 @@ export function AffiliationCard({
         <div className="mt-5 flex flex-wrap items-center gap-4">
           <button
             type="button"
-            onClick={confirmLeave}
+            onClick={asEventHandler(confirmLeave)}
             disabled={leaving}
             aria-busy={leaving}
             className="bg-heritage-maroon hover:bg-deep-navy focus-visible:ring-focus rounded-button motion-control inline-flex min-h-10 items-center px-4 text-sm font-semibold text-white focus-visible:outline-none disabled:opacity-60"

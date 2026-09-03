@@ -56,6 +56,7 @@ import { SangamLoggedOut } from "./sangam-logged-out";
 import { SangamReview } from "./sangam-review";
 import { SangamStatusScreen } from "./sangam-status-screen";
 import { SocialLinksField } from "./social-links-field";
+import { asEventHandler } from "@/lib/event-handlers";
 
 type LoadState = "loading" | "loaded" | "error";
 type Stage = 1 | 2 | 3 | 4;
@@ -448,7 +449,11 @@ export function SangamRegistrationWizard() {
 
   return (
     <SangamFrame currentStage={stage}>
-      <form noValidate onSubmit={submitStage} className="grid gap-6">
+      <form
+        noValidate
+        onSubmit={asEventHandler(submitStage)}
+        className="grid gap-6"
+      >
         {stage === 1 ? (
           <StageAboutYourSangam
             organisation={organisation}

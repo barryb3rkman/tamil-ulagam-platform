@@ -110,12 +110,16 @@ export function ImageWithFallback({
     } = getImageProps({
       alt: asset.alt,
       height: asset.mobileHeight,
-      loader: props.loader,
-      quality: props.quality,
       sizes,
       src: mobileSrcWithBasePath,
-      unoptimized: props.unoptimized,
       width: asset.mobileWidth,
+      // Spread rather than assign: under exactOptionalPropertyTypes an
+      // explicit `loader: undefined` is not the same as omitting it.
+      ...(props.loader !== undefined && { loader: props.loader }),
+      ...(props.quality !== undefined && { quality: props.quality }),
+      ...(props.unoptimized !== undefined && {
+        unoptimized: props.unoptimized,
+      }),
     });
 
     return (

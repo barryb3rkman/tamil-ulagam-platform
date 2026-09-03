@@ -33,12 +33,12 @@ export function AffiliationTypeStage({
         className="grid gap-4 sm:grid-cols-2"
       >
         {memberAffiliationTypeContent.options.map((option) => {
-          const Icon = icons[option.value as AffiliationType];
+          const Icon = icons[option.value];
           return (
             <button
               key={option.value}
               type="button"
-              onClick={() => onSelect(option.value as AffiliationType)}
+              onClick={() => onSelect(option.value)}
               className="motion-control border-global-navy/15 hover:border-heritage-maroon focus-visible:ring-focus rounded-card border bg-white p-5 text-left"
             >
               <span

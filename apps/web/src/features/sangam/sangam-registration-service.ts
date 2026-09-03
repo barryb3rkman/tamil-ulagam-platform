@@ -18,7 +18,6 @@ import {
   mapOrganizationRow,
   mapProfileRow,
   type CategoryDetailRow,
-  type OrganizationApplicationRow,
   type OrganizationRow,
   type ProfileRow,
 } from "@/lib/supabase/database-row-mappers";
@@ -83,7 +82,7 @@ async function loadApplicationById(
       "not_found",
     );
   }
-  const appRow = appData as OrganizationApplicationRow;
+  const appRow = appData;
 
   const [organizationResult, detailsResult, socialLinksResult, reviewerResult] =
     await Promise.all([
@@ -135,9 +134,7 @@ async function loadApplicationById(
     );
   }
 
-  const organisation = mapOrganizationRow(
-    organizationResult.data as OrganizationRow,
-  );
+  const organisation = mapOrganizationRow(organizationResult.data);
   const categoryProfile = mapCategoryDetailRow(
     "tamil_community",
     (detailsResult.data as CategoryDetailRow | null) ?? undefined,

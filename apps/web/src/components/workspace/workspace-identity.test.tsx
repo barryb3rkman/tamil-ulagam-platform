@@ -1,11 +1,9 @@
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import type { WorkspaceOption } from "@/features/workspace/workspace-options";
 
 import { WorkspaceIdentity } from "./workspace-identity";
-
-afterEach(cleanup);
 
 const organisationOption: WorkspaceOption = {
   type: "organisation",

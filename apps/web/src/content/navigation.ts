@@ -23,7 +23,7 @@ export const primaryNavigation = [
   { label: "News", href: "/news" },
 ] as const satisfies readonly NavigationEntry[];
 
-export const footerNavigation = [
+export const footerNavigation: readonly NavigationEntry[] = [
   {
     label: "Federation",
     href: "/about",

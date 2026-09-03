@@ -7,13 +7,15 @@
   },
   "include": [
     "next-env.d.ts",
+    "next.config.ts",
     ".next/types/**/*.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
     "vitest.config.ts",
     "playwright.config.ts",
     "playwright.pages.config.ts",
-    "tests/**/*.ts"
+    "tests/**/*.ts",
+    "eslint.config.mjs"
   ],
   "exclude": ["node_modules"]
 }

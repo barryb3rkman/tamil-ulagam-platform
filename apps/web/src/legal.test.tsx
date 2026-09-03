@@ -1,11 +1,9 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { render, screen, within } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import PrivacyPage from "@/app/privacy/page";
 import TermsPage from "@/app/terms/page";
 import { privacyPolicy, termsOfUse } from "@/content/legal";
-
-afterEach(() => cleanup());
 
 function expectDraftDocumentBasics(
   container: HTMLElement,

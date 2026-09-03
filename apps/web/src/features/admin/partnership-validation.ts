@@ -1,7 +1,4 @@
-import type {
-  PartnershipArea,
-  PartnershipEnquiryInput,
-} from "@tamil-ulagam/shared";
+import type { PartnershipEnquiryInput } from "@tamil-ulagam/shared";
 import { partnershipAreas } from "@tamil-ulagam/shared";
 
 export type PartnershipField =
@@ -26,7 +23,7 @@ export function validatePartnershipEnquiry(
   const countryLength = input.country.trim().length;
   if (countryLength < 2 || countryLength > 120)
     errors.country = "Enter a country between 2 and 120 characters.";
-  if (!partnershipAreas.includes(input.area as PartnershipArea))
+  if (!partnershipAreas.includes(input.area))
     errors.area = "Choose a partnership area.";
   const messageLength = input.message.trim().length;
   if (messageLength < 20 || messageLength > 3000)

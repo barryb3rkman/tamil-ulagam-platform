@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import type { OrganisationApplication } from "@tamil-ulagam/shared";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -136,7 +136,6 @@ function platform(overrides: Record<string, unknown>) {
 }
 
 afterEach(() => {
-  cleanup();
   vi.clearAllMocks();
   searchParamValue = "";
 });
@@ -187,11 +186,9 @@ describe("OrganisationWorkspace", () => {
 
     render(<OrganisationWorkspace />);
 
-    await waitFor(() =>
-      expect(
-        screen.getByRole("heading", { name: "Nila Global Services" }),
-      ).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByRole("heading", { name: "Nila Global Services" }),
+    ).toBeInTheDocument();
     expect(
       screen.queryByText(sangam.organisation.name),
     ).not.toBeInTheDocument();
@@ -208,11 +205,9 @@ describe("OrganisationWorkspace", () => {
 
     render(<OrganisationWorkspace />);
 
-    await waitFor(() =>
-      expect(
-        screen.getByRole("heading", { name: "Nila Global Services" }),
-      ).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByRole("heading", { name: "Nila Global Services" }),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "Federation status" }),
     ).toBeInTheDocument();
@@ -242,9 +237,7 @@ describe("OrganisationWorkspace", () => {
 
     render(<OrganisationWorkspace />);
 
-    await waitFor(() =>
-      expect(screen.getByText("Changes Requested")).toBeInTheDocument(),
-    );
+    expect(await screen.findByText("Changes Requested")).toBeInTheDocument();
     expect(
       screen.getByText("Confirm the official email address."),
     ).toBeInTheDocument();
@@ -267,9 +260,9 @@ describe("OrganisationWorkspace", () => {
 
     render(<OrganisationWorkspace />);
 
-    await waitFor(() =>
-      expect(screen.getByText("Choose an organisation")).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("Choose an organisation"),
+    ).toBeInTheDocument();
     expect(screen.getByText("Nila Global Services")).toBeInTheDocument();
     expect(screen.getByText("Second Organisation")).toBeInTheDocument();
   });

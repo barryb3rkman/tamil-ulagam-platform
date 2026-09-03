@@ -27,7 +27,7 @@ export function RegistrationDocumentViewButton({
       const { data, error: signedError } = await client.storage
         .from(REGISTRATION_DOCUMENT_BUCKET)
         .createSignedUrl(path, SIGNED_URL_TTL_SECONDS);
-      if (signedError || !data) throw signedError ?? new Error("no data");
+      if (signedError) throw signedError;
       window.open(data.signedUrl, "_blank", "noopener,noreferrer");
     } catch {
       setError("Couldn't open the document. Try again.");

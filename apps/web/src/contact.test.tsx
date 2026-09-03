@@ -1,10 +1,8 @@
-import { cleanup, render, screen, fireEvent } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import ContactPage from "@/app/contact/page";
 import { contactContent } from "@/content/contact";
-
-afterEach(() => cleanup());
 
 describe("public Contact page", () => {
   it("renders one contact heading and keeps the page free of operational contact controls", () => {

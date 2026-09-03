@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { EnrollmentPlatformState } from "@tamil-ulagam/shared";
@@ -136,7 +136,6 @@ vi.mock("./supabase-services", () => ({
 }));
 
 afterEach(() => {
-  cleanup();
   vi.clearAllMocks();
 });
 
@@ -158,10 +157,9 @@ describe("PlatformProvider session restoration race", () => {
       </PlatformProvider>,
     );
 
-    await waitFor(
-      () => expect(screen.getByText("Admin content")).toBeInTheDocument(),
-      { timeout: 2000 },
-    );
+    expect(
+      await screen.findByText("Admin content", undefined, { timeout: 2000 }),
+    ).toBeInTheDocument();
     expect(
       screen.queryByText("Review access required"),
     ).not.toBeInTheDocument();
@@ -203,9 +201,9 @@ describe("PlatformProvider session restoration race", () => {
       </PlatformProvider>,
     );
 
-    await waitFor(() =>
-      expect(screen.getByText("Review access required")).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("Review access required"),
+    ).toBeInTheDocument();
     expect(screen.queryByText("Admin content")).not.toBeInTheDocument();
   });
 
@@ -233,11 +231,11 @@ describe("PlatformProvider session restoration race", () => {
     expect(screen.queryByText("Admin content")).not.toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent(/loading/i);
 
-    await waitFor(
-      () =>
-        expect(screen.getByText("Review access required")).toBeInTheDocument(),
-      { timeout: 2000 },
-    );
+    expect(
+      await screen.findByText("Review access required", undefined, {
+        timeout: 2000,
+      }),
+    ).toBeInTheDocument();
     expect(screen.queryByText("Admin content")).not.toBeInTheDocument();
   });
 
@@ -263,9 +261,9 @@ describe("PlatformProvider session restoration race", () => {
     );
 
     // Must resolve to a denial rather than hang in the loading state.
-    await waitFor(() =>
-      expect(screen.getByText("Review access required")).toBeInTheDocument(),
-    );
+    expect(
+      await screen.findByText("Review access required"),
+    ).toBeInTheDocument();
     expect(screen.queryByText("Admin content")).not.toBeInTheDocument();
   });
 });

@@ -1,5 +1,5 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import type { WorkspaceOption } from "@/features/workspace/workspace-options";
 
@@ -24,7 +24,7 @@ beforeAll(() => {
 });
 
 function mockMatchMedia(matches: boolean) {
-  window.matchMedia = ((query: string) => ({
+  window.matchMedia = (query: string) => ({
     matches,
     media: query,
     onchange: null,
@@ -33,12 +33,10 @@ function mockMatchMedia(matches: boolean) {
     addListener: () => undefined,
     removeListener: () => undefined,
     dispatchEvent: () => false,
-  })) as unknown as typeof window.matchMedia;
+  });
 }
 
 beforeEach(() => mockMatchMedia(true));
-afterEach(cleanup);
-
 const memberOption: WorkspaceOption = {
   type: "member",
   id: "member",

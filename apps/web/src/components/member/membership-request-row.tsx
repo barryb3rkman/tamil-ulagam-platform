@@ -5,6 +5,7 @@ import type { MembershipRequestSummary } from "@tamil-ulagam/shared";
 import { useState } from "react";
 
 import { ConfirmDialog } from "@/components/application/confirm-dialog";
+import { asEventHandler } from "@/lib/event-handlers";
 
 const statusPresentation: Record<
   MembershipRequestSummary["status"],
@@ -105,7 +106,7 @@ export function MembershipRequestRow({
         <div className="flex items-center gap-3 sm:justify-end">
           <button
             type="button"
-            onClick={() => act("approve")}
+            onClick={asEventHandler(() => act("approve"))}
             disabled={busy !== null}
             aria-busy={busy === "approve"}
             className="bg-success hover:bg-success/85 focus-visible:ring-focus rounded-button motion-control inline-flex min-h-9 items-center px-4 text-sm font-semibold text-white focus-visible:outline-none disabled:opacity-60"

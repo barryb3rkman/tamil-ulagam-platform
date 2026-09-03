@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ProgrammeNavigation } from "./programme-navigation";
@@ -28,7 +28,6 @@ vi.mock("next/navigation", () => ({
 }));
 
 afterEach(() => {
-  cleanup();
   pathname = "/workspace/organisation";
 });
 

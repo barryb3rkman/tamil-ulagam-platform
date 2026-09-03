@@ -38,7 +38,7 @@ export async function generateMetadata({
   return createPageMetadata(
     `${initiative.title} Initiative`,
     `${detail.heroStatement} Explore its purpose, capabilities and connections across the Tamil Ulagam ecosystem.`,
-    initiative.href as `/initiatives/${string}`,
+    initiative.href,
     images[getInitiativeImageKey(detail.slug)],
   );
 }
