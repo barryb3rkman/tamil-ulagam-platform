@@ -6,6 +6,8 @@ import {
   findCurrentWorkspace,
   groupWorkspaceOptions,
   resolveActiveWorkspace,
+  switcherHasSomewhereToGo,
+  visibleSwitcherOptions,
   type ActiveWorkspace,
 } from "./workspace-options";
 
@@ -46,6 +48,17 @@ describe("resolveActiveWorkspace", () => {
     });
   });
 
+  it("keeps the existing account URL inside the Member workspace context", () => {
+    expect(resolveActiveWorkspace("/dashboard/account", null)).toEqual({
+      type: "member",
+      id: "member",
+    });
+    expect(resolveActiveWorkspace("/dashboard/account/", null)).toEqual({
+      type: "member",
+      id: "member",
+    });
+  });
+
   it("resolves organisation from the query param, including the People sub-route", () => {
     expect(
       resolveActiveWorkspace(
@@ -77,8 +90,15 @@ describe("resolveActiveWorkspace", () => {
     });
   });
 
-  it("resolves null for an unrelated path", () => {
+  it("uses the Member context for the dashboard compatibility route", () => {
     expect(resolveActiveWorkspace("/dashboard", null)).toEqual({
+      type: "member",
+      id: "member",
+    });
+  });
+
+  it("resolves null for an unrelated path", () => {
+    expect(resolveActiveWorkspace("/unrelated", null)).toEqual({
       type: null,
       id: null,
     });
@@ -161,11 +181,6 @@ describe("buildWorkspaceOptions", () => {
   });
 
   it("builds a management-grant-only list — approved membership never creates an Organisation/Sangam option", () => {
-    // Membership/affiliation data is deliberately not a parameter here at
-    // all: buildWorkspaceOptions only ever accepts managedOrganisations
-    // (organization_managers-sourced). This test documents that contract
-    // rather than exercising a code path that could leak membership data
-    // in — the type signature itself is the guarantee.
     const options = buildWorkspaceOptions({
       isAuthenticated: true,
       canReviewApplications: false,
@@ -192,17 +207,12 @@ describe("buildWorkspaceOptions", () => {
       isAuthenticated: true,
       canReviewApplications: false,
       managedOrganisations: [makeOrg(), makeSangam()],
-      // resolveActiveWorkspace reports "organisation" here because
-      // /workspace/organisation/people has no Sangam-specific route —
-      // the exact condition that produced the bug.
       active: { type: "organisation", id: "sangam-1" },
     });
     const current = findCurrentWorkspace(options);
     expect(current?.id).toBe("sangam-1");
     expect(current?.type).toBe("sangam");
     expect(options.filter((o) => o.current)).toHaveLength(1);
-    // The real organisation, with a different id, must never be marked
-    // current just because active.type also says "organisation".
     expect(options.find((o) => o.type === "organisation")?.current).toBe(false);
   });
 
@@ -247,5 +257,94 @@ describe("findCurrentWorkspace", () => {
       active: { type: "organisation", id: "org-does-not-exist" },
     });
     expect(findCurrentWorkspace(options)).toBeNull();
+  });
+});
+
+describe("visibleSwitcherOptions", () => {
+  it("drops the implicit Member entry once the account manages a real organisation", () => {
+    const options = buildWorkspaceOptions({
+      isAuthenticated: true,
+      canReviewApplications: false,
+      managedOrganisations: [makeOrg()],
+      active: { type: "organisation", id: "org-1" },
+    });
+    expect(visibleSwitcherOptions(options).map((o) => o.type)).toEqual([
+      "organisation",
+    ]);
+  });
+
+  it("drops the implicit Member entry once the account manages a Tamil Sangam", () => {
+    const options = buildWorkspaceOptions({
+      isAuthenticated: true,
+      canReviewApplications: false,
+      managedOrganisations: [makeSangam()],
+      active: { type: "sangam", id: "sangam-1" },
+    });
+    expect(visibleSwitcherOptions(options).map((o) => o.type)).toEqual([
+      "sangam",
+    ]);
+  });
+
+  it("drops Member even while the Member workspace is the page being viewed, so a single-org manager never sees a two-item switcher", () => {
+    const options = buildWorkspaceOptions({
+      isAuthenticated: true,
+      canReviewApplications: false,
+      managedOrganisations: [makeOrg()],
+      active: { type: "member", id: "member" },
+    });
+    expect(visibleSwitcherOptions(options).map((o) => o.type)).toEqual([
+      "organisation",
+    ]);
+  });
+
+  it("keeps Member untouched for an account with no managed organisation or Sangam", () => {
+    const options = buildWorkspaceOptions({
+      isAuthenticated: true,
+      canReviewApplications: true,
+      managedOrganisations: [],
+      active: noneActive,
+    });
+    expect(visibleSwitcherOptions(options).map((o) => o.type)).toEqual([
+      "member",
+      "admin",
+    ]);
+  });
+});
+
+describe("switcherHasSomewhereToGo", () => {
+  it("is false when the only visible workspace is the one already open", () => {
+    const options = buildWorkspaceOptions({
+      isAuthenticated: true,
+      canReviewApplications: false,
+      managedOrganisations: [makeSangam()],
+      active: { type: "sangam", id: "sangam-1" },
+    });
+    expect(switcherHasSomewhereToGo(visibleSwitcherOptions(options))).toBe(
+      false,
+    );
+  });
+
+  it("is true when the single visible workspace is somewhere else — a Sangam manager sitting on their own Member page still needs a way back", () => {
+    const options = buildWorkspaceOptions({
+      isAuthenticated: true,
+      canReviewApplications: false,
+      managedOrganisations: [makeSangam()],
+      active: { type: "member", id: "member" },
+    });
+    const visible = visibleSwitcherOptions(options);
+    expect(visible.map((o) => o.type)).toEqual(["sangam"]);
+    expect(switcherHasSomewhereToGo(visible)).toBe(true);
+  });
+
+  it("is false for a member-only account, whose one workspace is always the current one", () => {
+    const options = buildWorkspaceOptions({
+      isAuthenticated: true,
+      canReviewApplications: false,
+      managedOrganisations: [],
+      active: { type: "member", id: "member" },
+    });
+    expect(switcherHasSomewhereToGo(visibleSwitcherOptions(options))).toBe(
+      false,
+    );
   });
 });
