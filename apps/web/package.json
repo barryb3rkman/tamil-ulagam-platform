@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "clean": "rimraf .next coverage playwright-report test-results *.tsbuildinfo"
+    "clean": "rimraf .next coverage playwright-report test-results *.tsbuildinfo",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.4",
@@ -35,6 +36,7 @@
     "@types/node": "24.13.3",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
+    "@vitest/coverage-v8": "4.1.10",
     "eslint": "9.39.5",
     "jsdom": "30.0.0",
     "postcss": "8.5.24",

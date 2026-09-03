@@ -22,6 +22,15 @@ export default defineConfig({
     include: ["src/**/*.test.{ts,tsx}"],
     coverage: {
       reporter: ["text", "html"],
+      // Set to the levels measured when thresholds were introduced, so
+      // coverage can only go up. Raise these as it improves; never lower
+      // them to make a build pass.
+      thresholds: {
+        statements: 56,
+        branches: 55,
+        functions: 52,
+        lines: 58,
+      },
     },
   },
 });

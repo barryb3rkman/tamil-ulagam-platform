@@ -55,3 +55,6 @@ pnpm-debug.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# husky installs its shims here
+.husky/_
