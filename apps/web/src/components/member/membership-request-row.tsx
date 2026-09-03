@@ -4,6 +4,8 @@ import { StatusBadge } from "@tamil-ulagam/ui";
 import type { MembershipRequestSummary } from "@tamil-ulagam/shared";
 import { useState } from "react";
 
+import { ConfirmDialog } from "@/components/application/confirm-dialog";
+
 const statusPresentation: Record<
   MembershipRequestSummary["status"],
   {
@@ -37,15 +39,6 @@ function locationLabel(request: MembershipRequestSummary): string {
     .join(", ");
 }
 
-/**
- * One pending affiliation confirmation in the manager's People queue
- * (H4 brief section 21) — "Confirm member"/"Not a member", never
- * "Approve join request". Shows only what a manager is permitted to see
- * (full name/phone/location via the profiles RLS policy the service
- * layer already enforces, email captured directly on the affiliation
- * row at submission time) plus the category-aware connection answer,
- * when one was asked.
- */
 export function MembershipRequestRow({
   onApprove,
   onReject,
@@ -57,6 +50,7 @@ export function MembershipRequestRow({
 }) {
   const [busy, setBusy] = useState<"approve" | "reject" | null>(null);
   const [error, setError] = useState("");
+  const [confirmingReject, setConfirmingReject] = useState(false);
   const presentation = statusPresentation[request.status];
   const location = locationLabel(request);
 
@@ -120,7 +114,7 @@ export function MembershipRequestRow({
           </button>
           <button
             type="button"
-            onClick={() => act("reject")}
+            onClick={() => setConfirmingReject(true)}
             disabled={busy !== null}
             aria-busy={busy === "reject"}
             className="border-heritage-maroon text-heritage-maroon hover:bg-heritage-maroon rounded-button motion-control inline-flex min-h-9 items-center border px-4 text-sm font-semibold hover:text-white focus-visible:outline-none disabled:opacity-60"
@@ -131,6 +125,20 @@ export function MembershipRequestRow({
       ) : (
         <span aria-hidden="true" />
       )}
+      {confirmingReject ? (
+        <ConfirmDialog
+          title="Decline this affiliation?"
+          description={`${request.memberFullName || "This person"} will be told their affiliation could not be confirmed, and the claim will be closed. They can submit a new claim later if this was a mistake.`}
+          confirmLabel="Decline affiliation"
+          pendingLabel="Declining…"
+          tone="destructive"
+          onCancel={() => setConfirmingReject(false)}
+          onConfirm={async () => {
+            await act("reject");
+            setConfirmingReject(false);
+          }}
+        />
+      ) : null}
     </div>
   );
 }

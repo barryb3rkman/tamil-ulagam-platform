@@ -10,12 +10,15 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+import { useRealtimeRefresh } from "@/features/realtime/use-realtime-refresh";
+
 import { usePlatform } from "@/features/enrollment/platform-provider";
 import { useMembershipService } from "@/features/membership/use-membership-service";
 import { withReturnTarget } from "@/lib/return-target";
 
 import { MembershipRequestRow } from "./membership-request-row";
 import { OrganisationManagers } from "./organisation-managers";
+import { ListSkeleton } from "@/components/workspace/workspace-skeleton";
 import {
   organisationKindLabel,
   organisationLocationLabel,
@@ -24,14 +27,6 @@ import {
 type DataState = "loading" | "loaded" | "error";
 type Tab = "members" | "managers";
 
-/**
- * The smallest coherent manager-facing People surface for Phase C2 —
- * not the later, complete Organisation Workspace redesign. Query-param
- * organisation selection (`?organization=<uuid>`) rather than a dynamic
- * route segment, matching this repository's proven static-export-safe
- * pattern (see e.g. dashboard-registration.tsx's `?organisation=`
- * usage) rather than introducing SSR.
- */
 export function ManagerPeople() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -48,13 +43,12 @@ export function ManagerPeople() {
   const [managedError, setManagedError] = useState("");
 
   const [requestsState, setRequestsState] = useState<DataState>("loading");
+  const [requestsReloadKey, setRequestsReloadKey] = useState(0);
   const [requests, setRequests] = useState<readonly MembershipRequestSummary[]>(
     [],
   );
   const [requestsError, setRequestsError] = useState("");
 
-  // Load the organisations this user manages, to power the picker (no
-  // ?organization= yet) and to resolve the current organisation's name.
   useEffect(() => {
     if (!isHydrated || !currentUser || !membershipService) return;
     let cancelled = false;
@@ -85,9 +79,6 @@ export function ManagerPeople() {
     [managedOrganisations, requestedOrganisationId],
   );
 
-  // Convenience: with exactly one managed organisation and no explicit
-  // selection yet, go straight there — an unambiguous shortcut, not a
-  // cross-domain redirect.
   useEffect(() => {
     if (
       managedState === "loaded" &&
@@ -124,7 +115,16 @@ export function ManagerPeople() {
     return () => {
       cancelled = true;
     };
-  }, [membershipService, activeOrganisation]);
+  }, [membershipService, activeOrganisation, requestsReloadKey]);
+
+  useRealtimeRefresh({
+    table: "organization_memberships",
+    enabled: Boolean(activeOrganisation),
+    filter: activeOrganisation
+      ? `organization_id=eq.${activeOrganisation.id}`
+      : undefined,
+    onChange: () => setRequestsReloadKey((value) => value + 1),
+  });
 
   const replaceRequest = (updated: MembershipRequestSummary) => {
     setRequests((previous) =>
@@ -147,11 +147,7 @@ export function ManagerPeople() {
   };
 
   if (!isHydrated) {
-    return (
-      <Container className="py-16 sm:py-20">
-        <Skeleton className="h-64 w-full" />
-      </Container>
-    );
+    return <ListSkeleton />;
   }
 
   if (!currentUser) {
@@ -190,11 +186,7 @@ export function ManagerPeople() {
   }
 
   if (managedState === "loading") {
-    return (
-      <Container className="py-16 sm:py-20">
-        <Skeleton className="h-64 w-full" />
-      </Container>
-    );
+    return <ListSkeleton />;
   }
 
   if (managedState === "error") {

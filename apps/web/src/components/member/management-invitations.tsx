@@ -18,6 +18,7 @@ import { usePlatform } from "@/features/enrollment/platform-provider";
 import { useManagementService } from "@/features/management/use-management-service";
 import { getPlatformErrorMessage } from "@/lib/supabase/errors";
 import { withReturnTarget } from "@/lib/return-target";
+import { ListSkeleton } from "@/components/workspace/workspace-skeleton";
 
 type DataState = "loading" | "loaded" | "error";
 
@@ -27,12 +28,6 @@ const roleLabel: Record<OrganizationManagerRole, string> = {
   representative: "Representative",
 };
 
-/**
- * The recipient's own management-invitation screen (brief section 15) —
- * a small, dedicated route rather than mixed into ordinary membership
- * requests, since accepting here never implies Member affiliation
- * (brief section 16).
- */
 export function ManagementInvitations() {
   const { currentUser, isHydrated } = usePlatform();
   const managementService = useManagementService();
@@ -48,8 +43,6 @@ export function ManagementInvitations() {
   useEffect(() => {
     if (!isHydrated || !currentUser || !managementService) return;
     let cancelled = false;
-    // dataState already starts "loading" (see useState above) — no
-    // synchronous setState needed before the async call.
     managementService
       .listMyInvitations()
       .then((data) => {
@@ -73,15 +66,6 @@ export function ManagementInvitations() {
     setActionError("");
     try {
       await managementService.acceptInvitation(invitation.id);
-      // WorkspaceShell (the persistent /workspace/* layout) fetches the
-      // switcher's managed-organisation inventory once on mount and has
-      // no cross-component signal this page can reach to ask it to
-      // refetch (brief section 29 explicitly rules out a second,
-      // parallel cache/fetch as the fix). A real reload is the simplest
-      // way to guarantee the switcher reflects the new grant immediately
-      // rather than only after the visitor's next unrelated hard
-      // navigation — reasonable for a deliberate, infrequent action like
-      // accepting management authority.
       window.location.reload();
     } catch (caught: unknown) {
       setActionError(getPlatformErrorMessage(caught));
@@ -106,11 +90,7 @@ export function ManagementInvitations() {
   };
 
   if (!isHydrated) {
-    return (
-      <Container className="py-16 sm:py-20">
-        <Skeleton className="h-64 w-full" />
-      </Container>
-    );
+    return <ListSkeleton />;
   }
 
   if (!currentUser) {

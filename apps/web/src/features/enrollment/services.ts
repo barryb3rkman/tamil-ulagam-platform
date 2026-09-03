@@ -25,6 +25,7 @@ export interface SignupInput {
   readonly password: string;
   readonly termsAccepted: boolean;
   readonly captchaToken?: string;
+  readonly returnTarget?: string | null;
 }
 
 export interface LoginInput {

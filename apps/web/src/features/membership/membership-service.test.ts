@@ -47,10 +47,6 @@ function makeClient(options: {
   queryBuilder.select.mockReturnValue(queryBuilder);
   queryBuilder.eq.mockReturnValue(queryBuilder);
   queryBuilder.update.mockReturnValue(queryBuilder);
-  // .order() is the terminal call in every organization_memberships list
-  // method below, so it resolves the promise (a real supabase-js query
-  // builder is thenable at any point; mocking only the terminal await
-  // keeps this simple).
   queryBuilder.order.mockResolvedValue(
     options.fromResult ?? { data: [membershipRow], error: null },
   );
@@ -252,6 +248,15 @@ describe("createMembershipService", () => {
     expect(result[0]).toMatchObject({ id: "membership-1" });
   });
 
+  it("listMyMemberships filters by the caller's own user id — not just RLS — so a manager never sees another member's row of an organisation they manage mislabelled as their own", async () => {
+    const { client, queryBuilder } = makeClient({ userId: "user-1" });
+    const service = createMembershipService(client);
+
+    await service.listMyMemberships();
+
+    expect(queryBuilder.eq).toHaveBeenCalledWith("user_id", "user-1");
+  });
+
   it("listOrganisationMembershipRequests filters by organisation id and enriches with the requester's name", async () => {
     const { client, queryBuilder, profilesBuilder } = makeClient({});
     const service = createMembershipService(client);
@@ -319,9 +324,6 @@ describe("createMembershipService", () => {
       service.requestMembership("organization-1"),
     ).rejects.toBeInstanceOf(PlatformServiceError);
   });
-
-  // Phase H4 — the small common Member profile + category-aware
-  // connection fields.
 
   it("getMyProfile reads the caller's own full_name/phone/country/region/city", async () => {
     const { client, from } = makeClient({});

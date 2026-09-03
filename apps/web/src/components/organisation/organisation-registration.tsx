@@ -5,16 +5,15 @@ import type {
   OrganisationCategoryProfile,
   OrganisationRepresentative,
 } from "@tamil-ulagam/shared";
-import {
-  Alert,
-  ImageWithFallback,
-  Skeleton,
-  StageProgress,
-} from "@tamil-ulagam/ui";
+import { Alert, Skeleton, StageProgress } from "@tamil-ulagam/ui";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 
-import { FormActions, FormError } from "@/components/application/form-fields";
-import { joinImages } from "@/config/join-images";
+import {
+  focusFirstInvalidField,
+  FormActions,
+  FormError,
+} from "@/components/application/form-fields";
+import { JourneyMasthead } from "@/components/join/journey-masthead";
 import { organisationStages } from "@/content/organisation";
 import { usePlatform } from "@/features/enrollment/platform-provider";
 import { useAutosave } from "@/features/enrollment/use-autosave";
@@ -40,19 +39,6 @@ type Stage = 1 | 2 | 3 | 4;
 
 const editableStatuses = new Set(["draft", "needs_changes"]);
 
-/**
- * Top-level /join/organisation (and, unchanged in behaviour, /register)
- * orchestrator — the V3 replacement for the old bordered-card
- * RegistrationWizard. Mounted at both routes deliberately (D2 brief
- * section 3): one implementation, two entry points, no duplicated UX.
- * Reuses the existing, already-proven Organisation service layer
- * (usePlatform().ensureDraft/updateCategory/updateOrganisation/...) —
- * no new service, no new RPC, no schema change. Auth-aware states never
- * flash incorrectly: hydration → logged out → platform-unavailable →
- * draft loading → draft-load error with retry → locked status screen
- * (submitted/under_review/verified/rejected/suspended) → the editable
- * stages, in that order.
- */
 export function OrganisationRegistration() {
   const {
     currentApplication,
@@ -81,17 +67,6 @@ export function OrganisationRegistration() {
   const [draftAttempt, setDraftAttempt] = useState(0);
   const initializedApplicationRef = useRef<string | null>(null);
 
-  // Autosave (H2 brief sections 13/15) replaces the old manual "Save
-  // progress" button. persistCurrentStage is the same per-stage
-  // persistence the button used to trigger by hand — now the sole save
-  // path, driven by useAutosave's debounce, and also what Back flushes
-  // in moveTo below so an edit is never lost by navigating away before
-  // the debounce fires. useAutosave itself must be called unconditionally
-  // (Rules of Hooks) — organisation/representative/profile can still be
-  // null this early (before the draft has loaded), so the persist
-  // function and the `enabled` flag both guard for that explicitly,
-  // rather than this hook call moving below the loading-state early
-  // returns further down.
   const persistCurrentStage = async () => {
     if (!organisation || !representative) return;
     if (stage === 1 && organisation.category) {
@@ -116,17 +91,6 @@ export function OrganisationRegistration() {
 
   useEffect(() => {
     if (isHydrated && currentUser && !currentApplication && !platformError) {
-      // ensureDraft (and every other value pulled from usePlatform())
-      // must stay a genuine effect dependency here, not be routed
-      // through a separately memoized callback with its own, narrower
-      // dependency array — PlatformProvider's context value is recreated
-      // on every provider re-render (its own useMemo depends on state/
-      // applications/etc.), so a callback memoized only on draftAttempt
-      // would freeze a stale ensureDraft closure from the very first
-      // render, before hydration/services were ready, and every later
-      // retry would silently keep calling that same stale, broken
-      // closure. draftAttempt is still a dependency so the "Try again"
-      // button's increment reliably re-triggers this effect.
       void ensureDraft().catch((error: unknown) => {
         setDraftError(
           error instanceof Error
@@ -215,11 +179,6 @@ export function OrganisationRegistration() {
     );
   }
 
-  // profile (categoryProfile) is deliberately NOT required here: a brand
-  // new draft has no category chosen yet, so profile is still null —
-  // Stage 1 (choosing the category) doesn't need it at all, and only
-  // Stages 3/4 do, once updateCategory() has created it (see submitStage's
-  // stage-1 branch below).
   if (!currentApplication || !organisation || !representative) {
     return (
       <OrganisationFrame currentStage={1}>
@@ -233,11 +192,26 @@ export function OrganisationRegistration() {
   }
 
   const moveTo = async (nextStage: Stage) => {
-    await autosave.flush();
-    await updateCurrentStep(nextStage);
-    setStage(nextStage);
-    setErrors({});
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const saved = await autosave.flush();
+    if (!saved) {
+      setErrors({
+        form: "Your latest changes could not be saved. Retry before leaving this stage.",
+      });
+      return;
+    }
+    try {
+      await updateCurrentStep(nextStage);
+      setStage(nextStage);
+      setErrors({});
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (error: unknown) {
+      setErrors({
+        form:
+          error instanceof Error
+            ? error.message
+            : "Your progress could not be updated. Please try again.",
+      });
+    }
   };
 
   const submitStage = async (event: FormEvent<HTMLFormElement>) => {
@@ -245,11 +219,15 @@ export function OrganisationRegistration() {
     if (stage === 1) {
       if (!organisation.category) {
         setErrors({ category: "Choose an organisation category." });
+        focusFirstInvalidField(event.currentTarget);
         return;
       }
       const nextErrors = validateOrganisationIdentity(organisation);
       setErrors(nextErrors);
-      if (!isValid(nextErrors)) return;
+      if (!isValid(nextErrors)) {
+        focusFirstInvalidField(event.currentTarget);
+        return;
+      }
       setPending(true);
       try {
         const updated = await updateCategory(organisation.category);
@@ -274,7 +252,10 @@ export function OrganisationRegistration() {
         ...validateRepresentativeIdentity(representative),
       };
       setErrors(nextErrors);
-      if (!isValid(nextErrors)) return;
+      if (!isValid(nextErrors)) {
+        focusFirstInvalidField(event.currentTarget);
+        return;
+      }
       setPending(true);
       try {
         await updateOrganisation(organisation);
@@ -299,7 +280,10 @@ export function OrganisationRegistration() {
         ...validateDeclaration(representative),
       };
       setErrors(nextErrors);
-      if (!isValid(nextErrors) || !profile) return;
+      if (!isValid(nextErrors) || !profile) {
+        focusFirstInvalidField(event.currentTarget);
+        return;
+      }
       setPending(true);
       try {
         await updateOrganisation(organisation);
@@ -328,14 +312,6 @@ export function OrganisationRegistration() {
           registration: {
             ...currentApplication.registration,
             categoryProfile: profile,
-            // representative must be merged in the same way organisation
-            // and profile are above — currentApplication.registration.representative
-            // is only as fresh as the last currentApplication load (initial
-            // load / post-submit reload), while phone/role/declaration are
-            // edited locally and persisted explicitly on stage navigation
-            // without ever refetching. Without this, the review screen
-            // shows stale (often empty) representative data even though
-            // the correct values are already saved server-side.
             representative,
           },
         }}
@@ -406,40 +382,20 @@ function OrganisationFrame({
   readonly currentStage: number;
 }) {
   return (
-    <section className="surface-canvas">
-      <div className="mx-auto max-w-[74rem] px-5 py-10 sm:px-7 sm:py-14 lg:px-10">
-        <div className="mb-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.7fr)] lg:items-center">
-          <div>
-            <p className="text-heritage-maroon text-xs font-bold tracking-[0.16em] uppercase">
-              Organisation registration
-            </p>
-            <h1 className="text-global-navy mt-3 text-3xl leading-tight font-bold tracking-[-0.03em] sm:text-4xl">
-              Register your organisation
-            </h1>
-            <p className="text-slate mt-3 max-w-xl leading-7">
-              A few short stages to get your organisation into federation
-              review.
-            </p>
-          </div>
-          {currentStage === 1 ? (
-            <div className="rounded-large border-global-navy/10 shadow-navigation relative hidden aspect-[4/3] overflow-hidden border sm:block">
-              <ImageWithFallback
-                asset={joinImages.organisationJourneyHero}
-                className="h-full w-full object-cover"
-                priority
-                sizes="(min-width: 1024px) 32vw, 100vw"
-              />
-              <div
-                aria-hidden="true"
-                className="gradient-federation-night pointer-events-none absolute inset-x-0 bottom-0 h-1/2 opacity-70 mix-blend-multiply"
-              />
-            </div>
-          ) : null}
-        </div>
+    <section className="surface-page">
+      <JourneyMasthead
+        compact
+        align="start"
+        eyebrow="Organisation registration"
+        title="Register your organisation"
+        description="A few short stages to get your organisation into federation review."
+      >
         <StageProgress
           stages={[...organisationStages]}
           currentStage={currentStage}
         />
+      </JourneyMasthead>
+      <div className="mx-auto max-w-[74rem] px-5 py-10 sm:px-7 sm:py-12 lg:px-10">
         {children}
       </div>
     </section>

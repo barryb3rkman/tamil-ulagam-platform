@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, Container } from "@tamil-ulagam/ui";
+import { Alert, Container, StageProgress } from "@tamil-ulagam/ui";
 import type {
   EligibleOrganisation,
   MemberProfile,
@@ -8,6 +8,7 @@ import type {
 } from "@tamil-ulagam/shared";
 import { type FormEvent, useCallback, useEffect, useState } from "react";
 
+import { focusFirstInvalidField } from "@/components/application/form-fields";
 import { usePlatform } from "@/features/enrollment/platform-provider";
 import {
   isValid,
@@ -38,18 +39,22 @@ const emptyAnswer: ConnectionAnswer = {
   connectionContextExtra: "",
 };
 
-/**
- * Auth-aware entry point for /join/member — rewritten for Phase H4 as an
- * AFFILIATION CLAIM flow (H4 brief section 1), not an open-membership
- * request system: "I already belong to this Organisation/Sangam, connect
- * that to my account", never "please let me join". Five stages: personal
- * profile -> where you're already a member -> directory search ->
- * confirm (with the category-aware connection question inline) ->
- * success. A person may hold several independently-confirmed
- * affiliations at once, so a full round trip resets straight back to
- * the type-choice stage via "Add another affiliation" rather than
- * re-asking for the profile again.
- */
+const memberStages = [
+  "Your details",
+  "Affiliation type",
+  "Find your organisation",
+  "Confirm",
+  "Submitted",
+] as const;
+
+const memberStageNumber: Record<Stage, number> = {
+  profile: 1,
+  type: 2,
+  directory: 3,
+  confirm: 4,
+  success: 5,
+};
+
 export function MemberRegistration() {
   const { isHydrated, currentUser } = usePlatform();
   const membershipService = useMembershipService();
@@ -122,7 +127,10 @@ export function MemberRegistration() {
     event.preventDefault();
     const nextErrors = validateMemberProfile(profile);
     setProfileErrors(nextErrors);
-    if (!isValid(nextErrors)) return;
+    if (!isValid(nextErrors)) {
+      focusFirstInvalidField(event.currentTarget);
+      return;
+    }
     if (!membershipService) return;
     setProfileSaving(true);
     setProfileFormError("");
@@ -228,7 +236,25 @@ export function MemberRegistration() {
   }
 
   return (
-    <Container className="py-16 sm:py-20 lg:py-24">
+    <Container className="py-10 sm:py-14 lg:py-16">
+      <div className="mb-7 max-w-2xl">
+        <p className="text-heritage-maroon text-xs font-bold tracking-[0.16em] uppercase">
+          Member affiliation
+        </p>
+        <h1 className="text-global-navy mt-3 text-3xl leading-tight font-bold tracking-[-0.03em] sm:text-4xl">
+          Connect your membership
+        </h1>
+        <p className="text-slate mt-3 leading-7">
+          Connect your account to a Tamil Sangam or organisation you already
+          belong to. The organisation confirms the affiliation after you submit
+          it.
+        </p>
+      </div>
+      <StageProgress
+        stages={[...memberStages]}
+        currentStage={memberStageNumber[stage]}
+        label="Member affiliation progress"
+      />
       {stage === "success" && justSubmitted ? (
         <MemberRequestSuccess
           organisation={justSubmitted}

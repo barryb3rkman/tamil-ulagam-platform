@@ -3,13 +3,6 @@ import type {
   WorkspaceType,
 } from "@/features/workspace/workspace-options";
 
-/**
- * Subtle, workspace-specific accent (brief section 10) — a colour dot
- * and type label only, never a full-app recolour on switch. Reuses the
- * platform's existing token set (the same colours the Federation Night
- * and Sangam Dusk gradients already draw from) rather than inventing a
- * new palette.
- */
 const accentByType: Record<
   WorkspaceType,
   { readonly dotClassName: string; readonly typeLabel: string }
@@ -20,24 +13,17 @@ const accentByType: Record<
   admin: { dotClassName: "bg-heritage-maroon", typeLabel: "Federation Admin" },
 };
 
+export function workspaceTypeLabel(type: WorkspaceType | null): string {
+  return type ? accentByType[type].typeLabel : "Workspace";
+}
+
 export interface WorkspaceIdentityProps {
   readonly loading: boolean;
   readonly current: WorkspaceOption | null;
-  /** The workspace type implied by the URL even when `current` could not
-   * be resolved (a stale/invalid id) — lets the identity bar still say
-   * "Organisation" rather than falling back to something generic. */
   readonly fallbackType: WorkspaceType | null;
-  /** The raw entity id from the URL, if any — distinguishes "no
-   * particular workspace chosen yet" (the multi-workspace picker screen,
-   * `fallbackId` is null) from "a specific id was requested but isn't
-   * one of the caller's own workspaces" (a genuinely stale/invalid link,
-   * `fallbackId` is set but `current` is still null). Only the second
-   * case should read as "Unavailable" — the picker is not an error. */
   readonly fallbackId: string | null;
 }
 
-/** "You are currently managing X" (brief section 5) — the always-visible
- * workspace identity readout in the shell header. */
 export function WorkspaceIdentity({
   loading,
   current,

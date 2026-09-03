@@ -3,7 +3,7 @@ import type {
   EligibleOrganisation,
   MembershipRequestSummary,
 } from "@tamil-ulagam/shared";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { usePlatform } from "@/features/enrollment/platform-provider";
 import { useManagementService } from "@/features/management/use-management-service";
@@ -100,6 +100,24 @@ afterEach(() => {
   searchParams = new URLSearchParams();
 });
 
+beforeAll(() => {
+  if (!HTMLDialogElement.prototype.showModal) {
+    HTMLDialogElement.prototype.showModal = function showModal(
+      this: HTMLDialogElement,
+    ) {
+      this.setAttribute("open", "");
+    };
+  }
+  if (!HTMLDialogElement.prototype.close) {
+    HTMLDialogElement.prototype.close = function close(
+      this: HTMLDialogElement,
+    ) {
+      this.removeAttribute("open");
+      this.dispatchEvent(new Event("close"));
+    };
+  }
+});
+
 describe("ManagerPeople", () => {
   it("shows an empty state for a user who manages no organisation", async () => {
     platform({});
@@ -179,6 +197,42 @@ describe("ManagerPeople", () => {
     );
   });
 
+  it("never declines an affiliation on a single click — the destructive half of the decision is confirmed first", async () => {
+    searchParams = new URLSearchParams({ organization: orgA.id });
+    platform({});
+    const rejectMembership = vi
+      .fn()
+      .mockResolvedValue(makeRequest({ status: "rejected" }));
+    mockedUseMembershipService.mockReturnValue({
+      listMyManagedOrganisations: vi.fn().mockResolvedValue([orgA]),
+      listOrganisationMembershipRequests: vi
+        .fn()
+        .mockResolvedValue([makeRequest()]),
+      listOrganisationManagers: vi.fn().mockResolvedValue([]),
+      rejectMembership,
+    } as unknown as ReturnType<typeof useMembershipService>);
+
+    render(<ManagerPeople />);
+    await waitFor(() =>
+      expect(screen.getByText("Nila Raj")).toBeInTheDocument(),
+    );
+
+    // The row control opens a confirmation; it must not decide anything.
+    screen.getByRole("button", { name: "Not a member" }).click();
+    await waitFor(() =>
+      expect(
+        screen.getByRole("heading", { name: "Decline this affiliation?" }),
+      ).toBeInTheDocument(),
+    );
+    expect(rejectMembership).not.toHaveBeenCalled();
+
+    // Only the dialog's own confirm actually declines.
+    screen.getByRole("button", { name: "Decline affiliation" }).click();
+    await waitFor(() =>
+      expect(rejectMembership).toHaveBeenCalledWith("membership-1"),
+    );
+  });
+
   it("H4 visual QA fix: a decided affiliation never appears under the 'Pending affiliation confirmations' heading", async () => {
     searchParams = new URLSearchParams({ organization: orgA.id });
     platform({});
@@ -208,10 +262,6 @@ describe("ManagerPeople", () => {
     const otherHeading = screen.getByRole("heading", {
       name: "Other affiliations",
     });
-    // The pending row sits after its own heading and before the
-    // "Other affiliations" heading; the already-decided row sits after
-    // that second heading — proving the decided row is never presented
-    // as something still awaiting confirmation.
     const position = (a: Node, b: Node) =>
       a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
     expect(position(pendingHeading, screen.getByText("Nila Raj"))).toBeTruthy();
@@ -254,9 +304,6 @@ describe("ManagerPeople", () => {
 
     screen.getByRole("tab", { name: "Managers" }).click();
 
-    // DataTable renders both its desktop <table> and mobile <ul> markup
-    // simultaneously (jsdom applies no real viewport/media-query
-    // filtering), so the same cell text legitimately appears twice.
     await waitFor(() =>
       expect(screen.getAllByText("Owner").length).toBeGreaterThan(0),
     );

@@ -17,10 +17,12 @@ describe("JoinHero", () => {
     expect(screen.getByText(joinHeroContent.description)).toBeInTheDocument();
   });
 
-  it("gives the hero image a real, descriptive alt and keeps decorative layers out of the accessibility tree", () => {
-    render(<JoinHero />);
+  it("keeps every decorative layer out of the accessibility tree", () => {
+    const { container } = render(<JoinHero />);
 
-    const image = screen.getByRole("img");
-    expect(image.getAttribute("alt")).toMatch(/Federation Night/);
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+    for (const decorative of container.querySelectorAll("svg, canvas")) {
+      expect(decorative).toHaveAttribute("aria-hidden", "true");
+    }
   });
 });

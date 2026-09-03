@@ -27,6 +27,13 @@ function isApplicationPath(pathname: string): boolean {
 export function RouteFrame({ children }: { readonly children: ReactNode }) {
   const pathname = usePathname();
   const isApplication = isApplicationPath(pathname);
+  const isPremiumWorkspace =
+    pathname === "/dashboard" ||
+    pathname === "/dashboard/" ||
+    pathname === "/dashboard/account" ||
+    pathname === "/dashboard/account/" ||
+    pathname === "/workspace" ||
+    pathname.startsWith("/workspace/");
 
   if (isApplication) {
     return (
@@ -34,31 +41,7 @@ export function RouteFrame({ children }: { readonly children: ReactNode }) {
         <main id="main-content" className="flex-1" tabIndex={-1}>
           <div data-route-transition="enter">{children}</div>
         </main>
-        <footer className="border-global-navy/10 bg-deep-navy border-t py-5 text-white">
-          <div className="mx-auto flex w-full max-w-[106rem] flex-col gap-3 px-5 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-7 lg:px-10">
-            <p className="font-semibold">Tamil Ulagam Global Federation</p>
-            <nav aria-label="Portal legal navigation">
-              <ul className="flex gap-5 text-white/70">
-                <li>
-                  <Link
-                    href="/privacy"
-                    className="focus-visible:ring-focus hover:text-heritage-gold underline-offset-4 hover:underline"
-                  >
-                    Privacy
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/terms"
-                    className="focus-visible:ring-focus hover:text-heritage-gold underline-offset-4 hover:underline"
-                  >
-                    Terms
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </footer>
+        {isPremiumWorkspace ? null : <PortalFooter />}
       </div>
     );
   }
@@ -71,5 +54,35 @@ export function RouteFrame({ children }: { readonly children: ReactNode }) {
       </main>
       <SiteFooter />
     </div>
+  );
+}
+
+function PortalFooter() {
+  return (
+    <footer className="border-global-navy/10 bg-deep-navy border-t py-5 text-white">
+      <div className="mx-auto flex w-full max-w-[106rem] flex-col gap-3 px-5 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-7 lg:px-10">
+        <p className="font-semibold">Tamil Ulagam Global Federation</p>
+        <nav aria-label="Portal legal navigation">
+          <ul className="flex gap-5 text-white/70">
+            <li>
+              <Link
+                href="/privacy"
+                className="focus-visible:ring-focus hover:text-heritage-gold underline-offset-4 hover:underline"
+              >
+                Privacy
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/terms"
+                className="focus-visible:ring-focus hover:text-heritage-gold underline-offset-4 hover:underline"
+              >
+                Terms
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
   );
 }

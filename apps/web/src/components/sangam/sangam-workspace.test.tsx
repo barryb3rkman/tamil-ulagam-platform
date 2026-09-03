@@ -195,6 +195,8 @@ describe("SangamWorkspace", () => {
     });
     mockedUseMembershipService.mockReturnValue({
       listMyManagedOrganisations: vi.fn().mockResolvedValue([sangam]),
+      listOrganisationMembershipRequests: vi.fn().mockResolvedValue([]),
+      listOrganisationManagers: vi.fn().mockResolvedValue([]),
     } as unknown as ReturnType<typeof useMembershipService>);
     mockedUseSangamRegistrationService.mockReturnValue({
       findByOrganisation: vi
@@ -209,9 +211,14 @@ describe("SangamWorkspace", () => {
         screen.getByRole("heading", { name: "Riverside Tamil Sangam" }),
       ).toBeInTheDocument(),
     );
-    expect(screen.getByText("Verified Organisation")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Federation status" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Verified")).toBeInTheDocument();
     expect(screen.getByText("Organisation email")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Open People" })).toHaveAttribute(
+    expect(
+      screen.getByRole("link", { name: "Open people management" }),
+    ).toHaveAttribute(
       "href",
       `/workspace/organisation/people?organization=${sangam.id}`,
     );

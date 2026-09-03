@@ -16,7 +16,8 @@ import {
 } from "@/features/enrollment/validation";
 import { getSafeReturnTarget, withReturnTarget } from "@/lib/return-target";
 
-import { FormError, TextField } from "./form-fields";
+import { authJourneyPresentation } from "./auth-journey";
+import { focusFirstInvalidField, FormError, TextField } from "./form-fields";
 import { CaptchaChallenge } from "./captcha-challenge";
 
 type SubmissionState = "idle" | "loading" | "success" | "error";
@@ -24,6 +25,7 @@ type SubmissionState = "idle" | "loading" | "success" | "error";
 export function SignupForm() {
   const router = useRouter();
   const returnTarget = getSafeReturnTarget(useSearchParams().get("next"));
+  const journey = authJourneyPresentation(returnTarget, "signup");
   const { captcha, platformError, signup } = usePlatform();
   const [values, setValues] = useState({
     fullName: "",
@@ -51,10 +53,13 @@ export function SignupForm() {
     setErrors(nextErrors);
     setCaptchaError(nextCaptchaError);
     setFormError("");
-    if (!isValid(nextErrors) || nextCaptchaError) return;
+    if (!isValid(nextErrors) || nextCaptchaError) {
+      focusFirstInvalidField(event.currentTarget);
+      return;
+    }
     setState("loading");
     try {
-      const result = await signup({ ...values, captchaToken });
+      const result = await signup({ ...values, captchaToken, returnTarget });
       if (!result.ok) {
         setState("error");
         setFormError(result.message);
@@ -89,8 +94,8 @@ export function SignupForm() {
           </h2>
           <p className="text-slate mt-2 max-w-md leading-7">
             {requiresEmailConfirmation
-              ? "Check your email and confirm your account before signing in. Organisation information remains a separate enrollment step."
-              : "Your account is ready. Organisation information remains a separate enrollment step."}
+              ? `Check your email and confirm your account before signing in. ${journey.accountLead}`
+              : journey.successLead}
           </p>
         </div>
         <Button
@@ -120,7 +125,7 @@ export function SignupForm() {
           Personal details
         </h2>
         <p className="text-slate mt-2">
-          Begin with your personal account. Organisation details come next.
+          Begin with your personal account. {journey.accountLead}
         </p>
       </div>
       <FormError message={formError || platformError} />
@@ -273,7 +278,10 @@ export function LoginForm() {
     setErrors(nextErrors);
     setCaptchaError(nextCaptchaError);
     setFormError("");
-    if (!isValid(nextErrors) || nextCaptchaError) return;
+    if (!isValid(nextErrors) || nextCaptchaError) {
+      focusFirstInvalidField(event.currentTarget);
+      return;
+    }
     setState("loading");
     try {
       const result = await login({ ...values, captchaToken });
@@ -284,20 +292,6 @@ export function LoginForm() {
         return;
       }
       setState("success");
-      // E1.5: a fresh member-only sign-in (no application, no review
-      // role) used to fall through to /register, whose own bootstrap
-      // effect immediately calls ensureDraft() — silently enrolling
-      // every such visitor as the owner of a blank organisation the
-      // moment they logged in, long before they ever chose a journey.
-      // /dashboard's own compatibility routing (Phase E1) already
-      // handles every case correctly — including "no managed workspace
-      // at all" (→ /workspace/member) — so it replaces the old
-      // no-application branch here. hasApplication still takes priority
-      // over canReview, exactly as before this fix: a dual-role account
-      // (their own organisation *and* a reviewer grant) lands on their
-      // own context first — /admin stays one switcher click away via
-      // its Federation entry — rather than being routed straight past
-      // their own organisation every time they sign in.
       router.push(
         returnTarget ??
           (!result.hasApplication && result.canReview
@@ -317,12 +311,6 @@ export function LoginForm() {
 
   return (
     <form noValidate onSubmit={submit} className="grid gap-5">
-      <div>
-        <h2 className="text-global-navy text-2xl font-bold">Account access</h2>
-        <p className="text-slate mt-2">
-          Continue your organisation enrollment journey.
-        </p>
-      </div>
       <FormError message={formError || platformError} />
       <TextField
         label="Email"
@@ -408,7 +396,10 @@ export function ForgotPasswordForm() {
     setError(emailError);
     setCaptchaError(nextCaptchaError);
     setFormError("");
-    if (emailError || nextCaptchaError) return;
+    if (emailError || nextCaptchaError) {
+      focusFirstInvalidField(event.currentTarget);
+      return;
+    }
     setState("loading");
     try {
       await requestPasswordReset(email, captchaToken);

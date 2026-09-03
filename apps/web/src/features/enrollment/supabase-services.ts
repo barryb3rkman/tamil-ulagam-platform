@@ -41,6 +41,7 @@ import {
   mapSupabaseError,
   PlatformServiceError,
 } from "@/lib/supabase/errors";
+import { getSafeReturnTarget } from "@/lib/return-target";
 
 import type {
   AuthCallbackIntent,
@@ -366,15 +367,6 @@ function applicationFromState(
   };
 }
 
-// A Tamil Sangam (Phase D1) is registered through its own entry point
-// (ensure_sangam_application_draft) precisely so it never becomes "the"
-// application the generic Organisation journey resolves and edits — see
-// that function's doc comment. This filter is the client-side half of
-// that guarantee: even if a Sangam ever ended up as a caller's primary
-// organisation_members row (e.g. it was their first-ever registration),
-// the Organisation journey's own draft resolution must still skip past
-// it rather than silently editing the Sangam record. A caller with no
-// Sangam at all is completely unaffected — this filter is then a no-op.
 function isSangamOrganisationId(
   state: EnrollmentPlatformState,
   organisationId: string,
@@ -427,13 +419,18 @@ function authFailure(error: unknown): RuntimeAuthResult {
   return { ok: false, message: getPlatformErrorMessage(error) };
 }
 
-function authCallbackUrl(intent: AuthCallbackIntent): string {
+function authCallbackUrl(
+  intent: AuthCallbackIntent,
+  returnTarget?: string | null,
+): string {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
   const url = new URL(
     withBasePath("/auth/callback", basePath),
     window.location.origin,
   );
   url.searchParams.set("flow", intent);
+  const safeTarget = getSafeReturnTarget(returnTarget);
+  if (safeTarget) url.searchParams.set("next", safeTarget);
   return url.toString();
 }
 
@@ -491,7 +488,7 @@ export function createSupabasePlatformServices(
             full_name: input.fullName.trim(),
             terms_accepted: "true",
           },
-          emailRedirectTo: authCallbackUrl("confirmation"),
+          emailRedirectTo: authCallbackUrl("confirmation", input.returnTarget),
           ...(input.captchaToken ? { captchaToken: input.captchaToken } : {}),
         },
       });
@@ -873,10 +870,6 @@ export function createSupabasePlatformServices(
         reviewArgs,
       );
       assertNoError(error, "The review decision could not be saved.");
-      // Fire-and-forget notification (needs_changes/verified/rejected
-      // only — the Edge Function itself no-ops for any other status).
-      // The review decision above already succeeded; a delivery failure
-      // must never undo it (H5 brief section 26).
       void client.functions
         .invoke("send-registration-status", { body: { applicationId: id } })
         .catch(() => {});

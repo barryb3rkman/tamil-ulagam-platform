@@ -18,33 +18,12 @@ import {
   mapMembershipRow,
 } from "@/lib/supabase/membership-row-mappers";
 
-/**
- * Typed MEMBERSHIP vs MANAGEMENT service boundary (Product V3, Phase A1).
- *
- * Prepared ahead of the Member Registration UI per the phase brief: no
- * screen calls this yet, and it is not wired into PlatformProvider. Every
- * write is a narrow RPC (never a raw `.update()`), matching the
- * migration's design — privileged fields (status, decided_at/by,
- * invited_by) are never client-supplied. UI code that needs this later
- * should call these functions rather than reaching into Supabase
- * directly, keeping the UI -> service -> Supabase boundary the rest of
- * the codebase already follows.
- */
-
 function toDatabaseMembershipType(
   membershipType: MembershipType | undefined,
 ): Database["public"]["Enums"]["organization_membership_type"] | undefined {
   return membershipType ? membershipType : undefined;
 }
 
-/**
- * Fire-and-forget "Affiliation confirmed" / "Affiliation could not be
- * confirmed" notification (H5 brief sections 18-19). The membership
- * decision itself already succeeded before this is called — a delivery
- * failure must never undo it (brief section 26), so errors are
- * deliberately swallowed rather than surfaced to the manager who just
- * confirmed or declined the member.
- */
 function notifyAffiliationOutcome(
   client: SupabaseClient<Database>,
   membership: Membership,
@@ -66,50 +45,20 @@ export interface AffiliationConnectionInput {
 }
 
 export interface MembershipService {
-  /** The caller's own small common profile (H4 brief section 4) —
-   * reads profiles.full_name/phone/country/region/city directly; not
-   * routed through PlatformProvider's broader UserProfile. */
   getMyProfile(): Promise<MemberProfile>;
-  /** Updates the same narrow set of columns, always as the caller. */
   updateMyProfile(profile: MemberProfile): Promise<MemberProfile>;
-  /** Verified organisations/Sangams a member could request to join —
-   * a safe, narrow projection (see EligibleOrganisation). */
   listEligibleOrganisations(): Promise<EligibleOrganisation[]>;
-  /** Create (or idempotently re-read) the caller's own pending/approved
-   * request for an eligible organisation. Always acts as the caller —
-   * there is no way to pass another user's id. The optional connection
-   * fields carry the category-aware "your connection to this
-   * organisation" answer (H4 brief sections 9-17); omitted entirely for
-   * a Sangam or any category with no tailored question. */
   requestMembership(
     organisationId: string,
     membershipType?: MembershipType,
     connection?: AffiliationConnectionInput,
   ): Promise<Membership>;
-  /** The caller's own membership rows, across every organisation. */
   listMyMemberships(): Promise<Membership[]>;
-  /** Organisation identity (the same safe EligibleOrganisation shape)
-   * for every organisation the caller has ANY membership relationship
-   * with — unlike listEligibleOrganisations, not limited to verified
-   * organisations, so a Member Workspace can still show identity for a
-   * rejected/revoked historical row. Self-scoped server-side; there is
-   * no parameter through which another user's affiliated organisations
-   * could be read. */
   listMyAffiliatedOrganisations(): Promise<EligibleOrganisation[]>;
-  /** Organisations the given user manages (own use only in practice —
-   * the underlying table's RLS only ever returns the caller's own
-   * management grants for an id-filtered query like this one). Used to
-   * build the manager's own organisation picker. */
   listMyManagedOrganisations(userId: string): Promise<EligibleOrganisation[]>;
-  /** Every membership row for one organisation, enriched with the
-   * requester's permitted display name — RLS restricts both the
-   * membership rows and the profile lookups to that organisation's own
-   * managers (or a reviewer); a manager of a different organisation
-   * gets an empty result, not an error. */
   listOrganisationMembershipRequests(
     organisationId: string,
   ): Promise<MembershipRequestSummary[]>;
-  /** An organisation manager invites a specific existing user. */
   inviteMember(
     organisationId: string,
     userId: string,
@@ -118,16 +67,10 @@ export interface MembershipService {
   approveMembership(membershipId: string, note?: string): Promise<Membership>;
   rejectMembership(membershipId: string, note?: string): Promise<Membership>;
   revokeMembership(membershipId: string, note?: string): Promise<Membership>;
-  /** The caller ends their OWN approved affiliation. There is no way to
-   * target another user's membership — the RPC verifies ownership
-   * itself, independent of anything this function passes. */
   leaveMembership(membershipId: string, note?: string): Promise<Membership>;
-  /** Audit history for one membership row (own row, or the owning
-   * organisation's managers/reviewers). */
   listMembershipHistory(
     membershipId: string,
   ): Promise<MembershipHistoryEvent[]>;
-  /** The management roster for one organisation. */
   listOrganisationManagers(organisationId: string): Promise<ManagementGrant[]>;
 }
 
@@ -228,9 +171,17 @@ export function createMembershipService(
     },
 
     async listMyMemberships() {
+      const { data: userData, error: userError } = await client.auth.getUser();
+      if (userError || !userData.user) {
+        throw new PlatformServiceError(
+          "Authentication is required.",
+          "authentication",
+        );
+      }
       const { data, error } = await client
         .from("organization_memberships")
         .select("*")
+        .eq("user_id", userData.user.id)
         .order("created_at", { ascending: false });
       if (error)
         throw mapSupabaseError(error, "Your memberships could not be loaded.");
@@ -271,12 +222,6 @@ export function createMembershipService(
           .from("organizations")
           .select("id, name, category, city, region, country")
           .in("id", organisationIds),
-        // Phase D1: needed so a manager's People page and Sangam
-        // workspace can tell a Tamil Sangam apart from a plain
-        // tamil_community organisation among the accounts they manage
-        // (organisationKindLabel/isTamilSangam) — one extra, narrow join,
-        // same shape as list_membership_eligible_organizations' own
-        // subtype projection.
         client
           .from("organization_tamil_community_details")
           .select("organization_id, subtype")
@@ -323,13 +268,6 @@ export function createMembershipService(
       const memberships = (data ?? []).map(mapMembershipRow);
       if (memberships.length === 0) return [];
 
-      // Enriched here, in the service boundary, rather than leaving each
-      // React component to query profiles independently — one extra
-      // RLS-protected read, reusing the Phase A1
-      // profiles_select_organization_manager_for_member policy (a
-      // manager only ever receives names for members of their own
-      // organisation; RLS silently omits anything else rather than
-      // erroring).
       const userIds = [...new Set(memberships.map((m) => m.userId))];
       const profiles = await client
         .from("profiles")

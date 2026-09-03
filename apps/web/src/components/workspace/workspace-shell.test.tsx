@@ -1,4 +1,10 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/react";
 import type { EligibleOrganisation, UserProfile } from "@tamil-ulagam/shared";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
@@ -7,8 +13,6 @@ import { useMembershipService } from "@/features/membership/use-membership-servi
 
 import { WorkspaceShell } from "./workspace-shell";
 
-// Sheet (used by WorkspaceSwitcher) is built on the native <dialog>
-// element — polyfilled exactly as Dialog's own test does.
 beforeAll(() => {
   if (!HTMLDialogElement.prototype.showModal) {
     HTMLDialogElement.prototype.showModal = function showModal(
@@ -88,6 +92,16 @@ const orgA: EligibleOrganisation = {
   country: "India",
 };
 
+const orgB: EligibleOrganisation = {
+  id: "org-2",
+  name: "Second Sample Trust",
+  category: "education",
+  subtype: "",
+  city: "Coimbatore",
+  region: "",
+  country: "India",
+};
+
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
@@ -127,7 +141,7 @@ describe("WorkspaceShell", () => {
 
   it("shows workspace identity, switcher and local navigation for an authenticated Organisation manager", async () => {
     platform({ isHydrated: true, currentUser: makeUser() });
-    membershipService([orgA]);
+    membershipService([orgA, orgB]);
     render(
       <WorkspaceShell>
         <p>Organisation content</p>
@@ -139,18 +153,48 @@ describe("WorkspaceShell", () => {
     ).toBeInTheDocument();
     expect(within(identity).getByText("Organisation")).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "Switch workspace" }),
-    ).toBeInTheDocument();
+      screen.getAllByRole("button", { name: "Switch workspace" }),
+    ).toHaveLength(2);
     const nav = screen.getByRole("navigation", {
       name: "Workspace navigation",
     });
     expect(nav).toHaveTextContent("Overview");
     expect(nav).toHaveTextContent("People");
-    // The Programmes entry point (H6) sits alongside operational
-    // navigation, never mixed into the same tab list.
-    expect(
-      screen.getByRole("button", { name: /Programmes/ }),
-    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /Programmes/ }));
+    const programmes = screen.getByRole("navigation", {
+      name: "Tamil Ulagam programmes",
+    });
+    expect(programmes).toHaveTextContent("Events");
+    expect(programmes).toHaveTextContent("Education");
+  });
+
+  it("uses the caller-scoped application identity when a separate management service is unavailable", async () => {
+    platform({
+      myOrganisationApplications: [
+        {
+          organisation: {
+            id: "org-1",
+            name: "Acme Education Trust",
+            category: "education",
+            city: "Chennai",
+            region: "Tamil Nadu",
+            country: "India",
+          },
+          registration: { categoryProfile: { category: "education" } },
+        },
+      ],
+    });
+    mockedUseMembershipService.mockReturnValue(null);
+
+    render(
+      <WorkspaceShell>
+        <p>Organisation content</p>
+      </WorkspaceShell>,
+    );
+
+    const identity = screen.getByRole("group", { name: "Current workspace" });
+    expect(within(identity).getByText("Acme Education Trust")).toBeVisible();
+    expect(screen.queryByText("Unavailable workspace")).toBeNull();
   });
 
   it("never fabricates an Administration link for a manager without review capability", async () => {

@@ -176,7 +176,9 @@ describe("MemberRegistration — the full affiliation-claim flow", () => {
     render(<MemberRegistration />);
 
     await waitFor(() =>
-      expect(screen.getByText("Your details")).toBeInTheDocument(),
+      expect(
+        screen.getByRole("heading", { name: "Your details" }),
+      ).toBeInTheDocument(),
     );
     // No account email re-asked (H4 brief section 4).
     expect(screen.queryByLabelText(/email/i)).not.toBeInTheDocument();

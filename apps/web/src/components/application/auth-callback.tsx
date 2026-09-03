@@ -14,7 +14,9 @@ import {
   validatePasswordRecovery,
   type ValidationErrors,
 } from "@/features/enrollment/validation";
+import { getSafeReturnTarget, withReturnTarget } from "@/lib/return-target";
 
+import { authJourneyPresentation } from "./auth-journey";
 import { FormError, TextField } from "./form-fields";
 
 type CallbackView =
@@ -30,15 +32,20 @@ function callbackIntent(url: URL): AuthCallbackIntent | null {
 export function AuthCallbackPanel() {
   const { isHydrated, platformError, resolveAuthCallback } = usePlatform();
   const [view, setView] = useState<CallbackView>({ status: "processing" });
+  const [intent, setIntent] = useState<AuthCallbackIntent | null>(null);
+  const [returnTarget, setReturnTarget] = useState<string | null>(null);
   const callbackStarted = useRef(false);
 
   useEffect(() => {
     if (!isHydrated || callbackStarted.current) return;
     callbackStarted.current = true;
-    const intent = callbackIntent(new URL(window.location.href));
+    const callbackUrl = new URL(window.location.href);
+    const requestedIntent = callbackIntent(callbackUrl);
+    setIntent(requestedIntent);
+    setReturnTarget(getSafeReturnTarget(callbackUrl.searchParams.get("next")));
     let active = true;
-    const resolution: Promise<AuthCallbackResult> = intent
-      ? resolveAuthCallback(intent, window.location.href)
+    const resolution: Promise<AuthCallbackResult> = requestedIntent
+      ? resolveAuthCallback(requestedIntent, window.location.href)
       : Promise.resolve({
           status: "invalid",
           message:
@@ -83,12 +90,14 @@ export function AuthCallbackPanel() {
         </h2>
         <FormError message={platformError || view.message} />
         <div className="flex flex-wrap gap-4">
-          <Link
-            className="text-global-navy focus-visible:ring-focus font-semibold underline underline-offset-4"
-            href="/forgot-password"
-          >
-            Request a new reset link
-          </Link>
+          {intent === "recovery" ? (
+            <Link
+              className="text-global-navy focus-visible:ring-focus font-semibold underline underline-offset-4"
+              href="/forgot-password"
+            >
+              Request a new reset link
+            </Link>
+          ) : null}
           <Link
             className="text-global-navy focus-visible:ring-focus font-semibold underline underline-offset-4"
             href="/login"
@@ -101,6 +110,8 @@ export function AuthCallbackPanel() {
   }
 
   if (view.status === "confirmation_success") {
+    const journey = authJourneyPresentation(returnTarget, "signup");
+    const destination = returnTarget ?? "/register";
     return (
       <div className="grid min-h-72 content-center gap-5" aria-live="polite">
         <span
@@ -115,15 +126,23 @@ export function AuthCallbackPanel() {
           </h2>
           <p className="text-slate mt-2 max-w-md leading-7">
             {view.hasSession
-              ? "Your email is confirmed and your secure session is ready. Continue to organisation enrollment."
-              : "Your email is confirmed. Sign in to continue to organisation enrollment."}
+              ? `Your email is confirmed and your secure session is ready. ${journey.accountLead}`
+              : `Your email is confirmed. Sign in to continue. ${journey.accountLead}`}
           </p>
         </div>
         <Link
           className="bg-global-navy focus-visible:ring-focus rounded-button w-fit px-5 py-3 font-semibold text-white"
-          href={view.hasSession ? "/register" : "/login"}
+          href={
+            view.hasSession
+              ? destination
+              : withReturnTarget("/login", returnTarget)
+          }
         >
-          {view.hasSession ? "Continue registration" : "Continue to sign in"}
+          {view.hasSession
+            ? returnTarget
+              ? "Continue your journey"
+              : "Continue registration"
+            : "Continue to sign in"}
         </Link>
       </div>
     );

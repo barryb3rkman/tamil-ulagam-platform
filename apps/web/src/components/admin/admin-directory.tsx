@@ -271,7 +271,7 @@ function OperationalEntityDetail({
     >
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-heritage-maroon text-xs font-bold tracking-[0.12em] uppercase">
+          <p className="text-slate text-[0.64rem] font-bold tracking-[0.16em] uppercase">
             Operational detail
           </p>
           <h2

@@ -5,12 +5,7 @@ import type {
   OrganisationApplication,
   TamilCommunityProfile,
 } from "@tamil-ulagam/shared";
-import {
-  Alert,
-  ImageWithFallback,
-  Skeleton,
-  StageProgress,
-} from "@tamil-ulagam/ui";
+import { Alert, Skeleton, StageProgress } from "@tamil-ulagam/ui";
 import {
   type FormEvent,
   useCallback,
@@ -21,6 +16,7 @@ import {
 
 import {
   CheckboxField,
+  focusFirstInvalidField,
   FormActions,
   FormError,
   RadioGroup,
@@ -50,7 +46,7 @@ import {
   validateWebsite,
 } from "@/features/sangam/sangam-validation";
 import { useSangamRegistrationService } from "@/features/sangam/use-sangam-registration-service";
-import { joinImages } from "@/config/join-images";
+import { JourneyMasthead } from "@/components/join/journey-masthead";
 
 import {
   RegistrationDocumentField,
@@ -66,21 +62,6 @@ type Stage = 1 | 2 | 3 | 4;
 
 const editableStatuses = new Set(["draft", "needs_changes"]);
 
-/**
- * Top-level /join/sangam orchestrator — Phase H3 (Tamil Sangam
- * registration V2) rewrite. Four stages (About your Sangam /
- * Registration details / Leadership & contact / Review & submit),
- * replacing the old three-intake-stage structure that asked for a
- * generic "Representative" and an "Official Sangam email" — both
- * retired from the Sangam UX (H3 brief sections 3/4). SPOC is the one
- * human contact mapped into the shared `representative` concept
- * (fullName/email/phone/relationship + declaration) purely for storage
- * compatibility with submit_organization_application; the President is
- * genuinely new, Sangam-only state living on TamilCommunityProfile.
- * There is deliberately no separate `representative` state any more —
- * it is derived at persist-time from `profile`'s SPOC fields plus the
- * local `declared` flag.
- */
 export function SangamRegistrationWizard() {
   const { currentUser, isHydrated } = usePlatform();
   const service = useSangamRegistrationService();
@@ -100,12 +81,6 @@ export function SangamRegistrationWizard() {
   const [documentError, setDocumentError] = useState("");
   const initializedRef = useRef<string | null>(null);
 
-  // Autosave (preserved from H2) — text/select/radio/social-link edits
-  // autosave normally through the same shared hook. Document upload is
-  // deliberately NOT part of this: it persists on upload completion via
-  // its own dedicated call (handleDocumentSelect below), so an unrelated
-  // text-field autosave tick can never re-upload the same file (H3 brief
-  // section 23).
   const persistCurrentStage = async () => {
     if (!service || !application || !organisation || !profile) return;
     if (stage === 1) {
@@ -251,17 +226,30 @@ export function SangamRegistrationWizard() {
   }
 
   const moveTo = async (nextStage: Stage) => {
-    await autosave.flush();
-    await service.updateCurrentStep(application.registration.id, nextStage);
-    setStage(nextStage);
-    setErrors({});
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const saved = await autosave.flush();
+    if (!saved) {
+      setErrors({
+        form: "Your latest changes could not be saved. Retry before leaving this stage.",
+      });
+      return;
+    }
+    try {
+      await service.updateCurrentStep(application.registration.id, nextStage);
+      setStage(nextStage);
+      setErrors({});
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (error: unknown) {
+      setErrors({
+        form:
+          error instanceof Error
+            ? error.message
+            : "Your progress could not be updated. Please try again.",
+      });
+    }
   };
 
   const handleRegistrationStatusChange = (value: string) => {
     const previous = organisation.registrationStatus;
-    // H3 brief section 8: switching from Yes to No must not preserve a
-    // now-irrelevant registration number/document.
     const clearingDocument = previous === "registered" && value === "informal";
     setOrganisation({
       ...organisation,
@@ -272,10 +260,9 @@ export function SangamRegistrationWizard() {
     });
     if (clearingDocument) {
       if (profile.registrationDocumentPath) {
-        void service.removeRegistrationDocument(organisation.id).catch(() => {
-          // Best-effort — the field is no longer required either way;
-          // a leftover object is cleaned up on the next successful call.
-        });
+        void service
+          .removeRegistrationDocument(organisation.id)
+          .catch(() => {});
       }
       setProfile({
         ...profile,
@@ -337,8 +324,6 @@ export function SangamRegistrationWizard() {
   const submitStage = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (documentStatus === "uploading") {
-      // H3 brief section 24 — Continue must behave safely mid-upload
-      // rather than advancing with a not-yet-confirmed document.
       setErrors({
         form: "Wait for the registration document to finish uploading.",
       });
@@ -347,7 +332,10 @@ export function SangamRegistrationWizard() {
     if (stage === 1) {
       const nextErrors = validateSangamIdentity(organisation, profile);
       setErrors(nextErrors);
-      if (!isValid(nextErrors)) return;
+      if (!isValid(nextErrors)) {
+        focusFirstInvalidField(event.currentTarget);
+        return;
+      }
       setPending(true);
       try {
         await service.updateOrganisation(organisation.id, organisation);
@@ -372,7 +360,10 @@ export function SangamRegistrationWizard() {
           Boolean(profile.registrationDocumentPath),
       );
       setErrors(nextErrors);
-      if (!isValid(nextErrors)) return;
+      if (!isValid(nextErrors)) {
+        focusFirstInvalidField(event.currentTarget);
+        return;
+      }
       setPending(true);
       try {
         await service.updateOrganisation(organisation.id, organisation);
@@ -403,7 +394,10 @@ export function SangamRegistrationWizard() {
           "Confirm that you are authorised to represent this Tamil Sangam and that the information is accurate.";
       }
       setErrors(nextErrors);
-      if (!isValid(nextErrors)) return;
+      if (!isValid(nextErrors)) {
+        focusFirstInvalidField(event.currentTarget);
+        return;
+      }
       setPending(true);
       try {
         const [normalisedOrganisation, normalisedProfile] =
@@ -504,13 +498,6 @@ export function SangamRegistrationWizard() {
   );
 }
 
-/** Maps the SPOC — the Sangam UX's one human contact concept that
- * corresponds to the shared representative model (H3 brief section 4) —
- * into the exact shape submit_organization_application and the review
- * screen already expect. `relationship` is fixed to
- * "authorised_representative" rather than exposed as a choice: the
- * Sangam wizard no longer asks "what is your role", it asks for a named
- * SPOC and a named President as two separate, always-present fields. */
 function spocAsRepresentative(
   profile: TamilCommunityProfile,
   declared: boolean,
@@ -526,17 +513,6 @@ function spocAsRepresentative(
   };
 }
 
-/** Defensive normalization, applied right before either the debounced
- * autosave or the explicit stage-3 submit talks to the server — a bare
- * domain (accepted while typing, per H3 brief section 17) violates the
- * database's own `organizations_website_format`/
- * `organization_social_links_url_format` check constraints, which
- * require an explicit http(s):// scheme. The field-level onBlur handlers
- * already normalize on the way out of each input for a real user, but
- * autosave can also fire mid-typing (before any blur), so this is a
- * second, unconditional guarantee rather than the only one. Falls back
- * to the original (already-validated-or-empty) value when normalization
- * itself fails, rather than silently dropping user input. */
 function sanitiseUrlsForPersistence(
   organisation: Organisation,
   profile: TamilCommunityProfile,
@@ -561,31 +537,17 @@ function SangamFrame({
   readonly currentStage: number;
 }) {
   return (
-    <section className="gradient-warm-welcome">
-      <div className="mx-auto max-w-[74rem] px-5 py-10 sm:px-7 sm:py-14 lg:px-10">
-        <div className="mb-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.7fr)] lg:items-center">
-          <div>
-            <p className="text-heritage-maroon text-xs font-bold tracking-[0.16em] uppercase">
-              Tamil Sangam registration
-            </p>
-            <h1 className="text-global-navy mt-3 text-3xl leading-tight font-bold tracking-[-0.03em] sm:text-4xl">
-              Register your Sangam
-            </h1>
-            <p className="text-slate mt-3 max-w-xl leading-7">
-              A few short stages to get your Sangam into federation review.
-            </p>
-          </div>
-          {currentStage === 1 ? (
-            <div className="rounded-large border-global-navy/10 shadow-card hidden min-h-48 overflow-hidden border bg-white sm:block">
-              <ImageWithFallback
-                asset={joinImages.sangamJourneyHero}
-                className="h-full w-full object-cover"
-                sizes="(min-width: 1024px) 32vw, 100vw"
-              />
-            </div>
-          ) : null}
-        </div>
+    <section className="surface-page">
+      <JourneyMasthead
+        compact
+        align="start"
+        eyebrow="Tamil Sangam registration"
+        title="Register your Sangam"
+        description="A few short stages to get your Sangam into federation review."
+      >
         <StageProgress stages={[...sangamStages]} currentStage={currentStage} />
+      </JourneyMasthead>
+      <div className="mx-auto max-w-[74rem] px-5 py-10 sm:px-7 sm:py-12 lg:px-10">
         {children}
       </div>
     </section>
@@ -933,12 +895,6 @@ function StageLeadershipContact({
               value={organisation.website}
               error={errors.website}
               onChange={(event) => updateOrg("website", event.target.value)}
-              // A bare domain ("sangam.example.com") is accepted while
-              // typing (H3 brief section 17), but the database's own
-              // organizations_website_format check requires an explicit
-              // http(s):// scheme — normalize on blur so what gets
-              // persisted always satisfies it, and so the field visibly
-              // shows the same value that was actually saved.
               onBlur={(event) => {
                 const normalized = normalizeUrl(event.target.value);
                 if (normalized) updateOrg("website", normalized);

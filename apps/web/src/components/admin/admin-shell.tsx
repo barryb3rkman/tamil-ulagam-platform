@@ -220,10 +220,10 @@ function AdminShellMessage({
 }) {
   return (
     <section className="border-global-navy/12 rounded-card shadow-card border bg-white p-7 sm:p-9">
-      <p className="text-heritage-maroon text-xs font-bold tracking-[0.14em] uppercase">
+      <p className="text-slate text-[0.66rem] font-bold tracking-[0.18em] uppercase">
         Restricted workspace
       </p>
-      <h1 className="text-global-navy mt-3 text-3xl font-bold">{title}</h1>
+      <h1 className="text-section-title text-gradient-ink mt-2">{title}</h1>
       <p className="text-slate mt-3 max-w-xl leading-7">{message}</p>
       <Link
         href="/workspace/member"

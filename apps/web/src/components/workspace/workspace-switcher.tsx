@@ -6,26 +6,20 @@ import { useEffect, useState } from "react";
 
 import {
   groupWorkspaceOptions,
+  switcherHasSomewhereToGo,
   type WorkspaceOption,
 } from "@/features/workspace/workspace-options";
 
 export interface WorkspaceSwitcherProps {
   readonly options: readonly WorkspaceOption[];
   readonly loading: boolean;
+  readonly tone?: "dark" | "light";
+  readonly block?: boolean;
 }
 
-/** Tailwind's `sm` breakpoint — the same width every other mobile/desktop
- * split in this shell (account label, divider, local-nav) already keys
- * off. Below it the switcher reads as Sheet's own documented mobile
- * treatment (an edge-anchored bottom sheet); at or above it, a right-side
- * drawer — Sheet supports both, but leaves the choice to the consumer. */
 const DESKTOP_QUERY = "(min-width: 640px)";
 
 function useSheetSide(): "bottom" | "right" {
-  // Lazily read the real value at first render (client-only — static
-  // export means this can also run where `window` never existed) rather
-  // than setting it from an effect: the effect below exists purely to
-  // subscribe to later changes, not to establish the initial value.
   const [isDesktop, setIsDesktop] = useState(
     () =>
       typeof window !== "undefined" &&
@@ -45,23 +39,20 @@ function useSheetSide(): "bottom" | "right" {
   return isDesktop ? "right" : "bottom";
 }
 
-/**
- * The deliberate workspace switcher (brief sections 4, 5, 23) — Member /
- * Organisations / Tamil Sangams / Federation, each section present only
- * when it has entries (brief section 29). Built on the existing `Sheet`
- * primitive: a native `<dialog>` gives focus trap, Escape-to-close and
- * focus return for free, so the accessibility work here is choosing real
- * semantics (a `<nav>` of links with `aria-current`) rather than a
- * clickable-div menu.
- */
 export function WorkspaceSwitcher({
   options,
   loading,
+  tone = "dark",
+  block = false,
 }: WorkspaceSwitcherProps) {
   const [open, setOpen] = useState(false);
   const side = useSheetSide();
   const grouped = groupWorkspaceOptions(options);
   const current = options.find((option) => option.current) ?? null;
+
+  if (!loading && !switcherHasSomewhereToGo(options)) {
+    return null;
+  }
 
   return (
     <>
@@ -72,15 +63,27 @@ export function WorkspaceSwitcher({
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label="Switch workspace"
-        className="focus-visible:ring-focus-inverse rounded-button motion-control flex min-h-11 shrink-0 items-center gap-2 border border-white/20 px-3 py-1.5 text-sm font-semibold text-white hover:border-white/45 disabled:opacity-60"
+        className={`rounded-button motion-control flex min-h-11 shrink-0 items-center gap-2 border px-3 py-1.5 text-sm font-semibold disabled:opacity-60 ${
+          tone === "dark"
+            ? `focus-visible:ring-focus-inverse hover:border-heritage-gold/45 border-white/10 bg-black/10 text-white/82 hover:bg-white/7 hover:text-white ${
+                block ? "w-full justify-between" : ""
+              }`
+            : "border-global-navy/15 text-global-navy focus-visible:ring-focus hover:border-global-navy/35 bg-white"
+        }`}
       >
-        {/* Icon-only below sm: on a narrow header the workspace identity
-            needs the room far more than this label does — the aria-label
-            above keeps the accessible name identical at every width. */}
-        <span aria-hidden="true" className="text-sm">
-          &#8645;
+        <span className="flex items-center gap-2">
+          <span aria-hidden="true" className="text-sm">
+            &#8645;
+          </span>
+          <span className={tone === "dark" ? "inline" : "hidden sm:inline"}>
+            Switch workspace
+          </span>
         </span>
-        <span className="hidden sm:inline">Switch workspace</span>
+        {tone === "dark" ? (
+          <span aria-hidden="true" className="text-white/35">
+            ›
+          </span>
+        ) : null}
       </button>
 
       <Sheet
@@ -149,7 +152,7 @@ function WorkspaceSwitcherSection({
 }) {
   return (
     <div>
-      <h3 className="text-heritage-maroon mb-2 text-[0.68rem] font-bold tracking-[0.14em] uppercase">
+      <h3 className="text-slate mb-2 text-[0.68rem] font-bold tracking-[0.14em] uppercase">
         {heading}
       </h3>
       <ul className="grid gap-1.5">
@@ -167,7 +170,7 @@ function WorkspaceSwitcherSection({
             >
               <span className="min-w-0 truncate">{option.label}</span>
               {option.current ? (
-                <span className="text-heritage-maroon shrink-0 text-xs font-bold tracking-[0.1em] uppercase">
+                <span className="text-global-navy/60 shrink-0 text-xs font-bold tracking-[0.1em] uppercase">
                   Current
                 </span>
               ) : null}

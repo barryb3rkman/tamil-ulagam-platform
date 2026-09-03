@@ -193,6 +193,27 @@ describe("Supabase enrollment services", () => {
     );
   });
 
+  it("keeps a safe registration journey in the confirmation callback URL", async () => {
+    const { client, signUp } = clientWithAuth({ confirmationRequired: true });
+
+    await createSupabasePlatformServices(client).auth.signup({
+      fullName: "Nila Raj",
+      email: "nila@example.org",
+      password: "TamilMvp1!",
+      termsAccepted: true,
+      returnTarget: "/join/sangam",
+    });
+
+    expect(signUp).toHaveBeenCalledWith(
+      expect.objectContaining({
+        options: expect.objectContaining({
+          emailRedirectTo:
+            "http://localhost:3000/auth/callback?flow=confirmation&next=%2Fjoin%2Fsangam",
+        }),
+      }),
+    );
+  });
+
   it("restores the current user and delegates logout to Supabase Auth", async () => {
     const { client, signOut } = clientWithAuth({});
     const auth = createSupabasePlatformServices(client).auth;

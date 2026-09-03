@@ -115,8 +115,6 @@ export function OrganisationManagers({
   useEffect(() => {
     if (!managementService) return;
     let cancelled = false;
-    // loading/error already start "true"/"" (see useState above) — no
-    // synchronous setState needed before the async call.
     Promise.all([
       managementService.listManagers(organisationId),
       managementService.listInvitations(organisationId),
@@ -162,7 +160,14 @@ export function OrganisationManagers({
     (m) => m.userId !== currentUserId,
   );
 
-  if (loading) return <Skeleton className="h-64 w-full" />;
+  if (loading)
+    return (
+      <div role="status" aria-label="Loading managers" className="grid gap-3">
+        {Array.from({ length: 3 }, (_, index) => (
+          <Skeleton key={index} className="h-20" />
+        ))}
+      </div>
+    );
   if (error)
     return (
       <Alert tone="error" role="alert">

@@ -4,32 +4,33 @@ import {
   isTamilSangamProfile,
   type OrganisationApplication,
 } from "@tamil-ulagam/shared";
-import { Alert, Container, EmptyState, Skeleton } from "@tamil-ulagam/ui";
+import { Alert, Container, EmptyState } from "@tamil-ulagam/ui";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
 
 import { OrganisationEmailVerificationCard } from "@/components/application/organisation-email-verification";
 import { RegistrationStatusBadge } from "@/components/application/registration-status-badge";
-import { ModuleAccessStrip } from "@/components/workspace/module-access-strip";
+import {
+  ContactGlyph,
+  PeopleGlyph,
+  StatusGlyph,
+} from "@/components/workspace/panel-glyphs";
+import {
+  panelActionClassName,
+  WorkspaceMasthead,
+  WorkspacePanel,
+  workspacePrimaryActionClassName,
+  workspaceSecondaryActionClassName,
+  WorkspaceSectionHeading,
+  type WorkspaceStat,
+} from "@/components/workspace/workspace-overview-primitives";
+import { WorkspaceSkeleton } from "@/components/workspace/workspace-skeleton";
 import { registrationStatusPresentation } from "@/content/enrollment";
 import { usePlatform } from "@/features/enrollment/platform-provider";
+import { useWorkspacePeopleStats } from "@/features/workspace/use-workspace-people-stats";
 import { withReturnTarget } from "@/lib/return-target";
 
-/**
- * The V3 Organisation Workspace (D2 brief section 21/22) — identity,
- * review status, official-email verification, recent feedback, a People
- * link, one clear next action. Not a metrics dashboard. Query-param
- * organisation selection (`?organization=<uuid>`), the same
- * static-export-safe pattern the Sangam workspace and C2's People page
- * already use. Reuses `usePlatform().myOrganisationApplications`
- * (already fetched, already scoped to the caller's own organisations —
- * every application they are the applicant of or a linked member/manager
- * of, regardless of reviewer status; see that field's own doc comment on
- * `PlatformContextValue`) rather than a new service call — deliberately
- * excludes any Tamil Sangam, mirroring the Sangam workspace's inverse
- * filter, so the two workspaces never overlap.
- */
 export function OrganisationWorkspace() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -68,12 +69,10 @@ export function OrganisationWorkspace() {
     }
   }, [isHydrated, requestedOrganisationId, myOrganisations, router]);
 
+  const peopleStats = useWorkspacePeopleStats(active?.organisation.id ?? null);
+
   if (!isHydrated) {
-    return (
-      <Container className="py-16 sm:py-20">
-        <Skeleton className="h-64 w-full" />
-      </Container>
-    );
+    return <WorkspaceSkeleton />;
   }
 
   if (!currentUser) {
@@ -185,33 +184,79 @@ export function OrganisationWorkspace() {
   const canEdit =
     registration.status === "draft" || registration.status === "needs_changes";
 
-  return (
-    <Container className="py-12 sm:py-16 lg:py-20">
-      <p className="text-heritage-maroon text-xs font-bold tracking-[0.14em] uppercase">
-        ORGANISATION
-      </p>
-      <div className="mt-2 flex flex-wrap items-center gap-3">
-        <h1 className="text-global-navy text-3xl font-bold tracking-[-0.01em]">
-          {organisation.name || "Your organisation"}
-        </h1>
-        <RegistrationStatusBadge status={registration.status} />
-      </div>
-      <p className="text-slate mt-2">
-        {[organisation.city, organisation.region, organisation.country]
-          .filter(Boolean)
-          .join(", ")}
-      </p>
+  const location = [
+    organisation.city,
+    organisation.region,
+    organisation.country,
+  ]
+    .filter(Boolean)
+    .join(", ");
+  const peopleHref = `/workspace/organisation/people?organization=${organisation.id}`;
+  const stats: WorkspaceStat[] =
+    peopleStats.status === "loaded"
+      ? [
+          { label: "Members", value: peopleStats.approvedCount },
+          {
+            label: "Pending requests",
+            value: peopleStats.pendingCount,
+            tone: peopleStats.pendingCount > 0 ? "attention" : "default",
+          },
+          { label: "Managers", value: peopleStats.managerCount },
+        ]
+      : [];
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <section className="border-global-navy/12 rounded-card border bg-white p-5 sm:p-7">
-          <h2 className="text-global-navy text-lg font-bold">
-            {presentation.title}
-          </h2>
-          <p className="text-slate mt-2 leading-6">
-            {presentation.description}
-          </p>
+  return (
+    <Container size="wide" className="py-6 sm:py-8 lg:px-8 lg:py-9 xl:px-10">
+      <WorkspaceMasthead
+        eyebrow="Organisation workspace"
+        title={organisation.name || "Your organisation"}
+        location={location}
+        description="Your organisation's presence, registration and people across the federation."
+        status={
+          <RegistrationStatusBadge status={registration.status} inverse />
+        }
+        stats={stats}
+        updatedAt={
+          peopleStats.status === "loaded" ? peopleStats.updatedAt : undefined
+        }
+        actions={
+          <>
+            <Link
+              href={canEdit ? "/join/organisation" : peopleHref}
+              className={workspacePrimaryActionClassName}
+            >
+              {canEdit
+                ? registration.status === "needs_changes"
+                  ? "Update registration"
+                  : "Continue registration"
+                : "Manage people"}
+            </Link>
+            <Link
+              href="/dashboard/account"
+              className={workspaceSecondaryActionClassName}
+            >
+              Account settings
+            </Link>
+          </>
+        }
+      />
+
+      <div className="mt-10">
+        <WorkspaceSectionHeading
+          title="Workspace overview"
+          description="The essentials that need your attention, without unfinished programme areas competing with your work."
+        />
+      </div>
+
+      <div data-motion-group className="mt-6 grid gap-5 xl:grid-cols-3">
+        <WorkspacePanel
+          eyebrow="Registration"
+          title="Federation status"
+          icon={<StatusGlyph />}
+          description={presentation.description}
+        >
           {registration.adminFeedback ? (
-            <div className="border-heritage-gold/35 bg-heritage-gold/8 rounded-card mt-4 border p-4">
+            <div className="border-heritage-gold/35 bg-heritage-gold/8 rounded-card border p-4">
               <p className="text-global-navy text-sm font-bold">
                 Review feedback
               </p>
@@ -220,26 +265,38 @@ export function OrganisationWorkspace() {
               </p>
             </div>
           ) : null}
-          <div className="mt-5">
-            {canEdit ? (
-              <Link
-                href="/join/organisation"
-                className="bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button motion-control inline-flex min-h-11 items-center px-5 text-sm font-semibold text-white focus-visible:outline-none"
-              >
-                {registration.status === "needs_changes"
-                  ? "Update registration"
-                  : "Continue registration"}
-              </Link>
-            ) : (
-              <Link
-                href={`/workspace/organisation/people?organization=${organisation.id}`}
-                className="bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button motion-control inline-flex min-h-11 items-center px-5 text-sm font-semibold text-white focus-visible:outline-none"
-              >
-                Open People
-              </Link>
-            )}
-          </div>
-        </section>
+          {canEdit ? (
+            <Link href="/join/organisation" className={panelActionClassName}>
+              Open registration
+            </Link>
+          ) : null}
+        </WorkspacePanel>
+
+        <WorkspacePanel
+          eyebrow="People"
+          title="Members and managers"
+          icon={<PeopleGlyph />}
+          href={peopleHref}
+          linkLabel="Open people management"
+          description={
+            peopleStats.status === "loaded"
+              ? `${peopleStats.approvedCount} approved member${peopleStats.approvedCount === 1 ? "" : "s"}, ${peopleStats.managerCount} manager${peopleStats.managerCount === 1 ? "" : "s"}.`
+              : "Review affiliation requests and manage the people connected to this organisation."
+          }
+        >
+          {peopleStats.status === "loaded" && peopleStats.pendingCount > 0 ? (
+            <div className="border-heritage-gold/45 bg-heritage-gold/10 rounded-card flex items-center gap-2.5 border p-3">
+              <span
+                aria-hidden="true"
+                className="bg-heritage-maroon size-2 shrink-0 animate-pulse rounded-full"
+              />
+              <p className="text-global-navy text-sm font-bold">
+                {peopleStats.pendingCount} request
+                {peopleStats.pendingCount === 1 ? "" : "s"} awaiting your review
+              </p>
+            </div>
+          ) : null}
+        </WorkspacePanel>
 
         {organisation.officialEmail ? (
           <OrganisationEmailVerificationCard
@@ -249,23 +306,21 @@ export function OrganisationWorkspace() {
             verificationSentAt={organisation.officialEmailVerificationSentAt}
             canRequest={canEdit || registration.status === "submitted"}
           />
-        ) : null}
-      </div>
-
-      {!canEdit ? (
-        <p className="text-slate mt-6 text-sm">
-          Membership requests for this organisation appear in{" "}
-          <Link
-            href={`/workspace/organisation/people?organization=${organisation.id}`}
-            className="text-global-navy font-semibold underline-offset-4 hover:underline"
+        ) : (
+          <WorkspacePanel
+            eyebrow="Contact"
+            title="Official email needed"
+            icon={<ContactGlyph />}
+            description="Add an official email through registration so Tamil Ulagam can verify your organisation's contact channel."
           >
-            People
-          </Link>
-          .
-        </p>
-      ) : null}
-
-      <ModuleAccessStrip type="organisation" entityId={organisation.id} />
+            {canEdit ? (
+              <Link href="/join/organisation" className={panelActionClassName}>
+                Add official email
+              </Link>
+            ) : null}
+          </WorkspacePanel>
+        )}
+      </div>
     </Container>
   );
 }

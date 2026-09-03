@@ -65,14 +65,10 @@ function platform(overrides: Record<string, unknown> = {}) {
   } as unknown as ReturnType<typeof usePlatform>);
 }
 
-/** Supabase membership service unavailable — the mock-backend path,
- * DashboardOverview's fallback-classification branch. */
 function noMembershipService() {
   mockedUseMembershipService.mockReturnValue(null);
 }
 
-/** Supabase membership service available, resolving to the given
- * managed organisations — the primary, management-grant-sourced path. */
 function membershipService(
   managedOrganisations: readonly EligibleOrganisation[] = [],
 ) {
@@ -147,18 +143,14 @@ describe("DashboardOverview", () => {
     );
   });
 
-  it("shows a workspace-selection screen, never a silent redirect, when the account manages more than one", async () => {
+  it("enters the Member workspace when the account manages more than one, leaving selection to the premium switcher", async () => {
     platform();
     membershipService([orgA, sangamA]);
     render(<DashboardOverview />);
     await waitFor(() =>
-      expect(
-        screen.getByText("You manage more than one workspace"),
-      ).toBeInTheDocument(),
+      expect(routerReplace).toHaveBeenCalledWith("/workspace/member"),
     );
-    expect(screen.getByText("Acme Education Trust")).toBeInTheDocument();
-    expect(screen.getByText("Chennai Tamil Sangam")).toBeInTheDocument();
-    expect(routerReplace).not.toHaveBeenCalled();
+    expect(screen.queryByText("You manage more than one workspace")).toBeNull();
   });
 
   it("falls back to membership-based classification when the management-grant service is unavailable (mock backend)", async () => {

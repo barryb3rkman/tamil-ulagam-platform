@@ -34,8 +34,6 @@ describe("useAutosave", () => {
   it("debounces rapid edits into a single save carrying the latest state", async () => {
     let latest = "a";
     const save = vi.fn().mockImplementation(async () => {
-      // Captures whatever `latest` is at call time — proving the debounce
-      // collapsed every intermediate keystroke into the final value.
       void latest;
     });
     const { rerender } = renderHook(
@@ -69,7 +67,7 @@ describe("useAutosave", () => {
     expect(save).not.toHaveBeenCalled();
 
     await act(async () => {
-      await result.current.flush();
+      await expect(result.current.flush()).resolves.toBe(true);
     });
     expect(save).toHaveBeenCalledTimes(1);
   });
@@ -98,8 +96,6 @@ describe("useAutosave", () => {
     await act(async () => {
       await flushPromise;
     });
-    // Still exactly one call — flush joined the in-flight save instead of
-    // racing a second, concurrent request against it.
     expect(save).toHaveBeenCalledTimes(1);
   });
 
@@ -120,10 +116,26 @@ describe("useAutosave", () => {
     expect(result.current.status).toBe("error");
 
     await act(async () => {
-      await result.current.retry();
+      await expect(result.current.retry()).resolves.toBe(true);
     });
     expect(result.current.status).toBe("saved");
     expect(save).toHaveBeenCalledTimes(2);
+  });
+
+  it("reports a failed flush so a registration stage can block navigation", async () => {
+    const save = vi.fn().mockRejectedValue(new Error("network"));
+    const { result, rerender } = renderHook(
+      ({ watch }: { watch: readonly unknown[] }) => useAutosave(save, watch),
+      { initialProps: { watch: ["a"] } },
+    );
+
+    rerender({ watch: ["edited"] });
+    await act(async () => {
+      await expect(result.current.flush()).resolves.toBe(false);
+    });
+
+    expect(result.current.status).toBe("error");
+    expect(save).toHaveBeenCalledOnce();
   });
 
   it("an edit that arrives while a save is in flight triggers exactly one more save afterward, not a second overlapping request", async () => {
@@ -153,16 +165,12 @@ describe("useAutosave", () => {
     await act(async () => {
       await vi.advanceTimersByTimeAsync(1000);
     });
-    // The debounced timer for "c" fired, but runSave saw a save already in
-    // flight and only flagged a rerun rather than starting a second call.
     expect(save).toHaveBeenCalledTimes(1);
 
     await act(async () => {
       resolveFirst();
       await vi.advanceTimersByTimeAsync(0);
     });
-    // The coalesced rerun now happened — exactly one more call, never two
-    // overlapping ones.
     expect(save).toHaveBeenCalledTimes(2);
   });
 });

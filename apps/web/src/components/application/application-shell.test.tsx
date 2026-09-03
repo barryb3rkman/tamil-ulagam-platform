@@ -1,4 +1,5 @@
 import { cleanup, render, screen } from "@testing-library/react";
+import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { Organisation, UserProfile } from "@tamil-ulagam/shared";
@@ -7,9 +8,17 @@ import { usePlatform } from "@/features/enrollment/platform-provider";
 
 import { ApplicationShell } from "./application-shell";
 
+let pathname = "/dashboard/registration";
+
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/dashboard",
+  usePathname: () => pathname,
   useRouter: () => ({ push: vi.fn() }),
+}));
+
+vi.mock("@/components/workspace/workspace-shell", () => ({
+  WorkspaceShell: ({ children }: { readonly children: ReactNode }) => (
+    <div data-testid="premium-workspace-shell">{children}</div>
+  ),
 }));
 
 vi.mock("@/features/enrollment/platform-provider", () => ({
@@ -59,12 +68,6 @@ function makeOrganisation(overrides: Partial<Organisation> = {}): Organisation {
   };
 }
 
-/**
- * Builds a full usePlatform() return value. Reused across scenarios so each
- * test only needs to override the authorization-relevant fields — this
- * mirrors the platform-provider authorization result the shell actually
- * consumes, rather than any client-only or spoofable state.
- */
 function mockPlatform(overrides: Partial<ReturnType<typeof usePlatform>>) {
   mockedUsePlatform.mockReturnValue({
     backendKind: "supabase",
@@ -103,9 +106,26 @@ function mockPlatform(overrides: Partial<ReturnType<typeof usePlatform>>) {
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
+  pathname = "/dashboard/registration";
 });
 
 describe("ApplicationShell navigation authorization", () => {
+  it("uses the premium workspace shell for the dashboard transition route", () => {
+    pathname = "/dashboard";
+    mockPlatform({ availableOrganisations: [makeOrganisation()] });
+
+    render(
+      <ApplicationShell area="member">
+        <div>Transitioning</div>
+      </ApplicationShell>,
+    );
+
+    expect(screen.getByTestId("premium-workspace-shell")).toBeVisible();
+    expect(
+      screen.queryByRole("navigation", { name: "Account navigation" }),
+    ).not.toBeInTheDocument();
+  });
+
   it("does not show an Administration link for an ordinary member with no review capability", () => {
     mockPlatform({
       canReviewApplications: false,

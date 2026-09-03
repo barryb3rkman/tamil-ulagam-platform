@@ -5,11 +5,6 @@ import type { WorkspaceOption } from "@/features/workspace/workspace-options";
 
 import { WorkspaceSwitcher } from "./workspace-switcher";
 
-// jsdom does not implement the native <dialog> element's imperative API
-// (showModal/close) — polyfilled the same way Dialog's own test does,
-// since Sheet is built on the identical native <dialog> foundation.
-// Real focus-trap/Escape/backdrop behaviour is the browser's
-// responsibility and is not re-tested here.
 beforeAll(() => {
   if (!HTMLDialogElement.prototype.showModal) {
     HTMLDialogElement.prototype.showModal = function showModal(
@@ -28,10 +23,6 @@ beforeAll(() => {
   }
 });
 
-/** jsdom has no real viewport, so `matchMedia` is polyfilled per test to
- * return a configurable `matches` — lets tests choose mobile vs desktop
- * explicitly rather than depending on jsdom's default (irrelevant)
- * window size. */
 function mockMatchMedia(matches: boolean) {
   window.matchMedia = ((query: string) => ({
     matches,
@@ -89,8 +80,42 @@ function openSwitcher() {
 }
 
 describe("WorkspaceSwitcher", () => {
+  it("renders nothing when the only workspace is the one already open", () => {
+    const { container } = render(
+      <WorkspaceSwitcher
+        options={[{ ...memberOption, current: true }]}
+        loading={false}
+      />,
+    );
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("still renders for a single option that is somewhere else — a manager on their own Member page must keep a way back to the organisation they run", () => {
+    render(
+      <WorkspaceSwitcher
+        options={[{ ...organisationOption, current: false }]}
+        loading={false}
+      />,
+    );
+    expect(
+      screen.getByRole("button", { name: "Switch workspace" }),
+    ).toBeInTheDocument();
+  });
+
+  it("still renders while loading even with zero/one options, so it doesn't flash in once real data arrives", () => {
+    render(<WorkspaceSwitcher options={[memberOption]} loading />);
+    expect(
+      screen.getByRole("button", { name: "Switch workspace" }),
+    ).toBeInTheDocument();
+  });
+
   it("has an accessible trigger, closed by default", () => {
-    render(<WorkspaceSwitcher options={[memberOption]} loading={false} />);
+    render(
+      <WorkspaceSwitcher
+        options={[memberOption, organisationOption]}
+        loading={false}
+      />,
+    );
     const trigger = screen.getByRole("button", { name: "Switch workspace" });
     expect(trigger).toHaveAttribute("aria-haspopup", "dialog");
     expect(trigger).toHaveAttribute("aria-expanded", "false");
@@ -142,8 +167,13 @@ describe("WorkspaceSwitcher", () => {
     ).toHaveAttribute("href", "/admin");
   });
 
-  it("does not render an empty Organisations, Tamil Sangams or Federation section for a member-only user", () => {
-    render(<WorkspaceSwitcher options={[memberOption]} loading={false} />);
+  it("does not render an empty Organisations or Tamil Sangams section for an account with no managed organisations", () => {
+    render(
+      <WorkspaceSwitcher
+        options={[memberOption, adminOption]}
+        loading={false}
+      />,
+    );
     openSwitcher();
     expect(
       screen.queryByRole("heading", { name: "Organisations" }),
@@ -151,13 +181,16 @@ describe("WorkspaceSwitcher", () => {
     expect(
       screen.queryByRole("heading", { name: "Tamil Sangams" }),
     ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("heading", { name: "Federation" }),
-    ).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Federation" })).toBeVisible();
   });
 
   it("closes when the close control is activated", () => {
-    render(<WorkspaceSwitcher options={[memberOption]} loading={false} />);
+    render(
+      <WorkspaceSwitcher
+        options={[memberOption, organisationOption]}
+        loading={false}
+      />,
+    );
     openSwitcher();
     expect(document.querySelector("dialog")).toHaveAttribute("open");
     fireEvent.click(screen.getByRole("button", { name: "Close" }));
@@ -179,7 +212,10 @@ describe("WorkspaceSwitcher", () => {
   it("opens as a bottom sheet on mobile and a right-side drawer on desktop", () => {
     mockMatchMedia(false);
     const { unmount } = render(
-      <WorkspaceSwitcher options={[memberOption]} loading={false} />,
+      <WorkspaceSwitcher
+        options={[memberOption, organisationOption]}
+        loading={false}
+      />,
     );
     openSwitcher();
     expect(document.querySelector("dialog")).toHaveAttribute(
@@ -189,7 +225,12 @@ describe("WorkspaceSwitcher", () => {
     unmount();
 
     mockMatchMedia(true);
-    render(<WorkspaceSwitcher options={[memberOption]} loading={false} />);
+    render(
+      <WorkspaceSwitcher
+        options={[memberOption, organisationOption]}
+        loading={false}
+      />,
+    );
     openSwitcher();
     expect(document.querySelector("dialog")).toHaveAttribute(
       "data-side",
@@ -215,10 +256,6 @@ describe("WorkspaceSwitcher", () => {
     );
     openSwitcher();
     const label = screen.getByText(longOption.label);
-    // The truncating span, and every ancestor up to the <li> grid item,
-    // must allow shrinking below their content's natural width — a
-    // missing min-w-0 anywhere in that chain silently defeats `truncate`
-    // and the name overflows its row uncontained instead.
     expect(label).toHaveClass("truncate");
     expect(label.closest("li")).toHaveClass("min-w-0");
   });

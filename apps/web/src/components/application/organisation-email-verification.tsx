@@ -2,17 +2,11 @@
 
 import { useState } from "react";
 
+import { ContactGlyph } from "@/components/workspace/panel-glyphs";
 import { usePlatform } from "@/features/enrollment/platform-provider";
 
 import { formatDate } from "./application-details";
 
-/**
- * Organisation-email verification is a distinct trust signal from
- * Supabase account-email confirmation: it proves control of the
- * organisation's declared official contact inbox, not the signed-in
- * person's own login email. It is never required to submit or progress
- * an application — only ever a strong, admin-visible signal.
- */
 export function OrganisationEmailVerificationCard({
   organisationId,
   officialEmail,
@@ -48,14 +42,27 @@ export function OrganisationEmailVerificationCard({
   };
 
   return (
-    <section className="border-global-navy/12 rounded-card border bg-white p-5 sm:p-7">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="text-global-navy text-lg font-bold">
+    <section className="border-global-navy/[0.09] rounded-card relative flex h-full min-h-48 flex-col overflow-hidden border bg-white p-5 sm:p-6">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-slate text-[0.64rem] font-bold tracking-[0.16em] uppercase">
+            Trust signal
+          </p>
+          <h2 className="text-global-navy mt-1.5 text-[1.0625rem] font-bold tracking-[-0.01em]">
             Organisation email
           </h2>
-          <p className="text-charcoal mt-1 break-all">{officialEmail}</p>
         </div>
+        <span
+          aria-hidden="true"
+          className="border-global-navy/8 text-global-navy/35 grid size-10 shrink-0 place-items-center rounded-xl border bg-white"
+        >
+          <ContactGlyph />
+        </span>
+      </div>
+      <div className="mt-3 flex flex-wrap items-center gap-2.5">
+        <p className="text-charcoal min-w-0 text-sm break-all">
+          {officialEmail}
+        </p>
         <StatusPill status={status} />
       </div>
       <p className="text-slate mt-3 max-w-xl text-sm leading-6">
@@ -66,12 +73,12 @@ export function OrganisationEmailVerificationCard({
             : "Not yet verified. This is a strong trust signal for reviewers, but is never required to submit your application."}
       </p>
       {canRequest && status !== "verified" ? (
-        <div className="mt-4">
+        <div className="mt-auto pt-5">
           <button
             type="button"
             disabled={state === "sending"}
             onClick={() => void send()}
-            className="border-global-navy text-global-navy focus-visible:ring-focus rounded-button min-h-11 border px-4 py-2 text-sm font-semibold disabled:opacity-60"
+            className="border-global-navy/12 text-global-navy hover:border-heritage-gold/55 hover:bg-heritage-gold/8 focus-visible:ring-focus rounded-button motion-control inline-flex min-h-10 items-center border bg-white px-3.5 text-sm font-bold disabled:opacity-60"
           >
             {state === "sending"
               ? "Sending…"

@@ -7,11 +7,11 @@ import type { ReactNode } from "react";
 
 import { images } from "@/config/images";
 import { usePlatform } from "@/features/enrollment/platform-provider";
+import { WorkspaceShell } from "@/components/workspace/workspace-shell";
 
 interface PortalNavigationItem {
   readonly href: string;
   readonly label: string;
-  /** A cross-area mode switch (e.g. Administration, My Organisation) rather than a tab within the current area. */
   readonly variant?: "context";
 }
 
@@ -45,10 +45,16 @@ export function ApplicationShell({
     selectOrganisation,
     signOut,
   } = usePlatform();
-  // Review capability and organisation membership come from the platform
-  // provider's authorization result, not from any client-only or spoofable
-  // state. They only ever decide whether a nav link is *shown* — the
-  // destination routes remain protected by backend RLS regardless.
+
+  if (
+    area === "member" &&
+    (pathname === "/dashboard" ||
+      pathname === "/dashboard/" ||
+      pathname === "/dashboard/account" ||
+      pathname === "/dashboard/account/")
+  ) {
+    return <WorkspaceShell>{children}</WorkspaceShell>;
+  }
   const hasMemberWorkspace = availableOrganisations.length > 0;
   const navigation: readonly PortalNavigationItem[] =
     area === "admin"
@@ -71,7 +77,7 @@ export function ApplicationShell({
   const areaLabel = area === "admin" ? "Administration" : "Organisation Portal";
 
   return (
-    <div className="bg-warm-ivory min-h-[calc(100vh-4rem)]">
+    <div className="surface-page min-h-[calc(100vh-4rem)]">
       <header className="bg-deep-navy border-heritage-gold/25 relative z-20 border-b text-white">
         <div
           aria-hidden="true"
@@ -249,22 +255,15 @@ export function ApplicationShell({
             </div>
           ) : null}
           {area === "admin" && !isHydrated ? (
-            // Session/role restoration is still in flight — never render
-            // admin content *or* a denial until that resolves. Rendering
-            // children here would let real review workflows mount before
-            // access is confirmed; rendering the denial here would treat
-            // "not resolved yet" as "no access", which is exactly the
-            // false-negative this loading state exists to prevent (see
-            // platform-provider.tsx's session-restoration handling).
             <p role="status" className="text-slate">
               Loading…
             </p>
           ) : area === "admin" && !canReviewApplications ? (
             <section className="border-global-navy/12 rounded-card shadow-card border bg-white p-7 sm:p-9">
-              <p className="text-heritage-maroon text-xs font-bold tracking-[0.14em] uppercase">
+              <p className="text-slate text-[0.66rem] font-bold tracking-[0.18em] uppercase">
                 Restricted workspace
               </p>
-              <h1 className="text-global-navy mt-3 text-3xl font-bold">
+              <h1 className="text-section-title text-gradient-ink mt-2">
                 Review access required
               </h1>
               <p className="text-slate mt-3 max-w-xl leading-7">

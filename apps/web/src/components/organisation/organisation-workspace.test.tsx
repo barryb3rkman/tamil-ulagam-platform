@@ -213,9 +213,14 @@ describe("OrganisationWorkspace", () => {
         screen.getByRole("heading", { name: "Nila Global Services" }),
       ).toBeInTheDocument(),
     );
-    expect(screen.getByText("Verified Organisation")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Federation status" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Verified")).toBeInTheDocument();
     expect(screen.getByText("Organisation email")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Open People" })).toHaveAttribute(
+    expect(
+      screen.getByRole("link", { name: "Open people management" }),
+    ).toHaveAttribute(
       "href",
       "/workspace/organisation/people?organization=org-1",
     );
@@ -238,7 +243,7 @@ describe("OrganisationWorkspace", () => {
     render(<OrganisationWorkspace />);
 
     await waitFor(() =>
-      expect(screen.getByText("Changes requested")).toBeInTheDocument(),
+      expect(screen.getByText("Changes Requested")).toBeInTheDocument(),
     );
     expect(
       screen.getByText("Confirm the official email address."),

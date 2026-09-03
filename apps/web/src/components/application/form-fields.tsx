@@ -8,15 +8,10 @@ import type {
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
-import { useId } from "react";
+import { useId, useState } from "react";
 
-// placeholder:text-slate/90 — see packages/ui/src/input.tsx's
-// controlClassName for why /65 was replaced (AA contrast). min-h-11
-// (44px) rather than packages/ui/Input's min-h-12 — H2 brief: normal
-// one-line fields shouldn't look like textareas; 44px is still a full
-// touch target, just less oversized on desktop-dense forms.
 const controlClass =
-  "motion-control focus-visible:ring-focus border-global-navy/20 bg-warm-ivory/20 text-charcoal placeholder:text-slate/90 hover:border-global-navy/35 min-h-11 w-full rounded-button border px-4 py-2 text-base shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] focus-visible:border-interactive-blue focus-visible:bg-white focus-visible:outline-none aria-[invalid=true]:border-error aria-[invalid=true]:bg-error/3 disabled:bg-global-navy/5 disabled:cursor-not-allowed disabled:text-slate";
+  "motion-control focus-visible:ring-focus border-global-navy/15 bg-white/70 text-charcoal placeholder:text-slate/90 hover:border-global-navy/30 hover:bg-white min-h-12 w-full rounded-button border px-4 py-2 text-base shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] transition-[border-color,box-shadow,background-color] duration-200 focus-visible:border-heritage-gold/70 focus-visible:bg-white focus-visible:shadow-[0_0_0_4px_rgba(214,168,75,0.16),inset_0_1px_0_rgba(255,255,255,0.9)] focus-visible:outline-none aria-[invalid=true]:border-error aria-[invalid=true]:bg-error/3 aria-[invalid=true]:shadow-[0_0_0_4px_rgba(185,54,62,0.12)] disabled:bg-global-navy/5 disabled:cursor-not-allowed disabled:text-slate";
 
 interface FieldFrameProps {
   readonly id: string;
@@ -27,12 +22,6 @@ interface FieldFrameProps {
   readonly children: ReactNode;
 }
 
-// One platform-wide optional-field convention (H2 brief sections 2/9):
-// the qualifier lives in the label itself, muted, never as a standalone
-// "Optional." helper line. A field is optional whenever the caller
-// doesn't pass `required` — every call site in this codebase already
-// marks genuinely-required fields with `required`, so this is a safe,
-// single source of truth rather than a second flag to keep in sync.
 function FieldFrame({
   children,
   error,
@@ -91,10 +80,13 @@ export function TextField({
   label,
   maxLength = 200,
   required,
+  type,
   ...props
 }: TextFieldProps) {
   const generatedId = useId();
   const id = providedId ?? generatedId;
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const isPassword = type === "password";
   return (
     <FieldFrame
       id={id}
@@ -103,15 +95,37 @@ export function TextField({
       helperText={helperText}
       error={error}
     >
-      <input
-        id={id}
-        required={required}
-        aria-invalid={Boolean(error)}
-        aria-describedby={error || helperText ? `${id}-description` : undefined}
-        className={controlClass}
-        maxLength={maxLength}
-        {...props}
-      />
+      <div className={isPassword ? "relative" : undefined}>
+        <input
+          id={id}
+          required={required}
+          aria-invalid={Boolean(error)}
+          aria-describedby={
+            error || helperText ? `${id}-description` : undefined
+          }
+          className={`${controlClass} ${isPassword ? "pr-20" : ""}`}
+          maxLength={maxLength}
+          type={isPassword && passwordVisible ? "text" : type}
+          {...props}
+        />
+        {isPassword ? (
+          <button
+            type="button"
+            onClick={() => setPasswordVisible((visible) => !visible)}
+            aria-label={
+              passwordVisible
+                ? "Conceal characters in this field"
+                : "Reveal characters in this field"
+            }
+            aria-controls={id}
+            aria-pressed={passwordVisible}
+            title={`${passwordVisible ? "Hide" : "Show"} ${label.toLowerCase()}`}
+            className="text-global-navy focus-visible:ring-focus rounded-button absolute inset-y-0 right-1 my-auto min-h-10 px-3 text-xs font-bold"
+          >
+            {passwordVisible ? "Hide" : "Show"}
+          </button>
+        ) : null}
+      </div>
     </FieldFrame>
   );
 }
@@ -484,11 +498,6 @@ function AutosaveIndicator({
   );
 }
 
-// Deliberately not a card (H2 brief section 17/19 — the wizard footer
-// shouldn't read as its own dashboard surface): a slim, top-bordered row
-// that anchors the page without a large white container. Registration
-// autosaves (section 13) — there is no explicit "Save progress" action
-// any more, only a quiet save-status readout next to Continue.
 export function FormActions({
   backLabel = "Back",
   nextLabel = "Continue",
@@ -543,4 +552,15 @@ export function FormError({ message }: { readonly message: string }) {
       {message}
     </div>
   );
+}
+
+export function focusFirstInvalidField(form: HTMLFormElement): void {
+  window.requestAnimationFrame(() => {
+    const firstInvalid = form.querySelector<HTMLElement>(
+      '[aria-invalid="true"]',
+    );
+    if (!firstInvalid) return;
+    firstInvalid.focus();
+    firstInvalid.scrollIntoView?.({ block: "center" });
+  });
 }

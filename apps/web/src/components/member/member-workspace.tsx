@@ -1,13 +1,20 @@
 "use client";
 
-import { Alert, Container, EmptyState } from "@tamil-ulagam/ui";
+import { Alert, Container } from "@tamil-ulagam/ui";
 import type { EligibleOrganisation, Membership } from "@tamil-ulagam/shared";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { MemberDirectorySkeleton } from "@/components/member/member-directory";
-import { ModuleAccessStrip } from "@/components/workspace/module-access-strip";
+import { LinkGlyph } from "@/components/workspace/panel-glyphs";
+import {
+  WorkspaceMasthead,
+  workspacePrimaryActionClassName,
+  workspaceSecondaryActionClassName,
+  WorkspaceSectionHeading,
+} from "@/components/workspace/workspace-overview-primitives";
 import { usePlatform } from "@/features/enrollment/platform-provider";
+import { useRealtimeRefresh } from "@/features/realtime/use-realtime-refresh";
 import { useMembershipService } from "@/features/membership/use-membership-service";
 import { withReturnTarget } from "@/lib/return-target";
 
@@ -23,12 +30,6 @@ const statusOrder: Record<Membership["status"], number> = {
   revoked: 3,
 };
 
-/**
- * The first real Member Workspace (Phase C2). Deliberately not a
- * metric-card dashboard — the landing content is the affiliations list
- * itself, grouped by status, answering "what am I connected to / what's
- * pending / what changed" directly rather than through summary tiles.
- */
 export function MemberWorkspace() {
   const { currentUser, isHydrated } = usePlatform();
   const membershipService = useMembershipService();
@@ -71,6 +72,12 @@ export function MemberWorkspace() {
     };
   }, [isHydrated, currentUser, membershipService, reloadKey]);
 
+  useRealtimeRefresh({
+    table: "organization_memberships",
+    enabled: Boolean(currentUser && membershipService),
+    onChange: () => setReloadKey((value) => value + 1),
+  });
+
   const retry = useCallback(() => {
     setDataState("loading");
     setReloadKey((value) => value + 1);
@@ -94,6 +101,13 @@ export function MemberWorkspace() {
       previous.map((item) => (item.id === updated.id ? updated : item)),
     );
   };
+
+  const activeCount = memberships.filter(
+    (membership) => membership.status === "approved",
+  ).length;
+  const pendingCount = memberships.filter(
+    (membership) => membership.status === "pending",
+  ).length;
 
   if (!isHydrated) {
     return (
@@ -143,33 +157,54 @@ export function MemberWorkspace() {
   }
 
   return (
-    <Container className="py-12 sm:py-16 lg:py-20">
-      <div data-motion-reveal="">
-        <p className="text-heritage-maroon text-xs font-bold tracking-[0.14em] uppercase">
-          MEMBER WORKSPACE
-        </p>
-        <h1 className="text-global-navy mt-2 text-3xl font-bold tracking-[-0.01em]">
-          Your affiliations
-        </h1>
-        <p className="text-slate mt-2 max-w-xl">
-          Every Organisation and Tamil Sangam you&rsquo;ve connected with, and
-          anything waiting on a decision.
-        </p>
-        <p className="mt-4">
-          <Link
-            href="/dashboard/account"
-            className="text-global-navy focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
-          >
-            Account settings
-          </Link>
-        </p>
-      </div>
+    <Container size="wide" className="py-6 sm:py-8 lg:px-8 lg:py-9 xl:px-10">
+      <WorkspaceMasthead
+        eyebrow="Member workspace"
+        title="Your affiliations"
+        showMonogram={false}
+        description="The Tamil Sangams and organisations connected to your account, including anything awaiting confirmation."
+        stats={
+          dataState === "loaded" && memberships.length > 0
+            ? [
+                { label: "Active", value: activeCount },
+                {
+                  label: "Awaiting confirmation",
+                  value: pendingCount,
+                  tone: pendingCount > 0 ? "attention" : "default",
+                },
+              ]
+            : []
+        }
+        actions={
+          <>
+            <Link
+              href="/join/member"
+              className={workspacePrimaryActionClassName}
+            >
+              Connect a membership
+            </Link>
+            <Link
+              href="/dashboard/account"
+              className={workspaceSecondaryActionClassName}
+            >
+              Account settings
+            </Link>
+          </>
+        }
+      />
 
       <div className="mt-6">
         <ManagementInvitationsAttention />
       </div>
 
-      <div className="mt-8">
+      <div className="mt-10">
+        <WorkspaceSectionHeading
+          title="Connections"
+          description="Your real membership connections and their current confirmation status."
+        />
+      </div>
+
+      <div className="mt-6">
         {dataState === "loading" ? (
           <MemberDirectorySkeleton />
         ) : dataState === "error" ? (
@@ -188,20 +223,34 @@ export function MemberWorkspace() {
             </button>
           </Alert>
         ) : sortedMemberships.length === 0 ? (
-          <EmptyState
-            title="No affiliations yet"
-            description="Connect your account to a registered Tamil Sangam or Organisation you already belong to."
-            action={
-              <Link
-                href="/join/member"
-                className="bg-global-navy hover:bg-heritage-maroon focus-visible:ring-focus rounded-button motion-control inline-flex min-h-11 items-center px-5 text-sm font-semibold text-white focus-visible:outline-none"
-              >
-                Connect your membership
-              </Link>
-            }
-          />
+          <div className="gradient-aurora-light border-global-navy/[0.09] rounded-large relative isolate grid justify-items-center gap-3 overflow-hidden border px-6 py-14 text-center">
+            <span
+              aria-hidden="true"
+              data-motion-ambient
+              className="bg-heritage-gold/20 motion-float pointer-events-none absolute -top-16 right-1/4 size-48 rounded-full blur-3xl"
+            />
+            <span
+              aria-hidden="true"
+              className="border-heritage-gold/40 text-heritage-maroon relative grid size-14 shrink-0 place-items-center rounded-2xl border bg-white shadow-[0_0.75rem_2rem_rgba(214,168,75,0.22)]"
+            >
+              <LinkGlyph />
+            </span>
+            <p className="text-section-title text-gradient-ink relative mt-1">
+              No affiliations yet
+            </p>
+            <p className="text-slate relative max-w-sm text-sm leading-6">
+              Connect your account to a registered Tamil Sangam or Organisation
+              you already belong to, and it will appear here once confirmed.
+            </p>
+            <Link
+              href="/join/member"
+              className={`${workspacePrimaryActionClassName} relative mt-2`}
+            >
+              Connect your membership
+            </Link>
+          </div>
         ) : (
-          <ul data-motion-group className="grid grid-cols-1 gap-4">
+          <ul className="grid grid-cols-1 gap-4">
             {sortedMemberships.map((membership) => {
               const organisation = organisationById.get(
                 membership.organisationId,
@@ -220,8 +269,6 @@ export function MemberWorkspace() {
           </ul>
         )}
       </div>
-
-      <ModuleAccessStrip type="member" entityId={null} />
     </Container>
   );
 }

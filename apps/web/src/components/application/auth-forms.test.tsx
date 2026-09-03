@@ -41,7 +41,7 @@ describe("LoginForm return-target behavior", () => {
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "nila@example.org" },
     });
-    fireEvent.change(screen.getByLabelText(/password/i), {
+    fireEvent.change(screen.getByLabelText(/^password/i), {
       target: { value: "TamilMvp1!" },
     });
     fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
@@ -66,7 +66,7 @@ describe("LoginForm return-target behavior", () => {
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "nila@example.org" },
     });
-    fireEvent.change(screen.getByLabelText(/password/i), {
+    fireEvent.change(screen.getByLabelText(/^password/i), {
       target: { value: "TamilMvp1!" },
     });
     fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
@@ -75,11 +75,6 @@ describe("LoginForm return-target behavior", () => {
   });
 
   it("routes a dual-role login (own application AND a review role) to /dashboard, not straight past their own organisation to /admin", async () => {
-    // Regression guard: an account that both manages its own organisation
-    // and holds a reviewer grant must still land in its own context first
-    // on login — /admin remains one switcher click away via its
-    // Federation entry, rather than becoming the forced destination every
-    // time a dual-role account signs in.
     const login = vi
       .fn()
       .mockResolvedValue({ ok: true, hasApplication: true, canReview: true });
@@ -93,7 +88,7 @@ describe("LoginForm return-target behavior", () => {
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "nila@example.org" },
     });
-    fireEvent.change(screen.getByLabelText(/password/i), {
+    fireEvent.change(screen.getByLabelText(/^password/i), {
       target: { value: "TamilMvp1!" },
     });
     fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
@@ -116,7 +111,7 @@ describe("LoginForm return-target behavior", () => {
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "nila@example.org" },
     });
-    fireEvent.change(screen.getByLabelText(/password/i), {
+    fireEvent.change(screen.getByLabelText(/^password/i), {
       target: { value: "TamilMvp1!" },
     });
     fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
@@ -125,10 +120,6 @@ describe("LoginForm return-target behavior", () => {
   });
 
   it("routes a fresh member-only login (no application, no review role, no ?next=) to /dashboard rather than straight into Organisation registration", async () => {
-    // E1.5 regression guard: /register's own bootstrap effect calls
-    // ensureDraft() immediately on mount, which silently enrols the
-    // signed-in account as the owner of a blank organisation — a
-    // member-only visitor must never be routed there just by logging in.
     const login = vi
       .fn()
       .mockResolvedValue({ ok: true, hasApplication: false, canReview: false });
@@ -142,7 +133,7 @@ describe("LoginForm return-target behavior", () => {
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "nila@example.org" },
     });
-    fireEvent.change(screen.getByLabelText(/password/i), {
+    fireEvent.change(screen.getByLabelText(/^password/i), {
       target: { value: "TamilMvp1!" },
     });
     fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
@@ -167,6 +158,41 @@ describe("LoginForm return-target behavior", () => {
 });
 
 describe("SignupForm return-target behavior", () => {
+  it("passes the safe return target into signup so email confirmation keeps the selected journey", async () => {
+    searchParams = new URLSearchParams({ next: "/join/sangam" });
+    const signup = vi.fn().mockResolvedValue({
+      ok: true,
+      requiresEmailConfirmation: true,
+    });
+    mockedUsePlatform.mockReturnValue({
+      captcha: { enabled: false },
+      signup,
+      platformError: "",
+    } as unknown as ReturnType<typeof usePlatform>);
+
+    render(<SignupForm />);
+    fireEvent.change(screen.getByLabelText(/full name/i), {
+      target: { value: "Nila Raj" },
+    });
+    fireEvent.change(screen.getByLabelText(/email address/i), {
+      target: { value: "nila@example.org" },
+    });
+    fireEvent.change(screen.getByLabelText(/^password/i), {
+      target: { value: "TamilMvp1!" },
+    });
+    fireEvent.change(screen.getByLabelText(/^confirm password/i), {
+      target: { value: "TamilMvp1!" },
+    });
+    fireEvent.click(screen.getByLabelText(/I agree/i));
+    fireEvent.click(screen.getByRole("button", { name: /create account/i }));
+
+    await vi.waitFor(() =>
+      expect(signup).toHaveBeenCalledWith(
+        expect.objectContaining({ returnTarget: "/join/sangam" }),
+      ),
+    );
+  });
+
   it("carries the return target through the 'Sign in' cross-link", () => {
     searchParams = new URLSearchParams({ next: "/join/member" });
     mockedUsePlatform.mockReturnValue({

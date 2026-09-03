@@ -15,12 +15,10 @@ export function AdminPageHeader({
   return (
     <header className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
       <div>
-        <p className="text-heritage-maroon text-xs font-bold tracking-[0.14em] uppercase">
+        <p className="text-slate text-[0.66rem] font-bold tracking-[0.18em] uppercase">
           {eyebrow}
         </p>
-        <h1 className="text-global-navy mt-3 text-3xl leading-tight font-bold sm:text-4xl">
-          {title}
-        </h1>
+        <h1 className="text-page-title text-gradient-ink mt-2">{title}</h1>
         <p className="text-slate mt-3 max-w-3xl leading-7">{description}</p>
       </div>
       {action ? <div className="shrink-0">{action}</div> : null}
