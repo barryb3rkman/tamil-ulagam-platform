@@ -10,7 +10,7 @@ import { partnershipAreas } from "@tamil-ulagam/shared";
 import { Button, DataTable, Dialog, StatusBadge } from "@tamil-ulagam/ui";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import {
   SelectField,
@@ -23,7 +23,6 @@ import {
   partnershipAreaLabels,
   partnershipStatusPresentation,
 } from "@/features/admin/admin-presentation";
-import { getPlatformErrorMessage } from "@/lib/supabase/errors";
 
 import {
   AdminEmptyState,
@@ -31,80 +30,67 @@ import {
   AdminLoadingState,
   AdminPageHeader,
 } from "./admin-primitives";
+import {
+  useAdminDecision,
+  useAdminHistory,
+  useAdminRecords,
+} from "@/features/admin/use-admin-records";
 
 type PartnershipAction = Exclude<PartnershipStatus, "new">;
+
+/** Declining is the only transition that owes the sender an explanation. */
+function partnershipNoteRequirement(chosen: PartnershipAction): string | null {
+  return chosen === "declined"
+    ? "Enter a reason for declining this enquiry."
+    : null;
+}
 
 export function AdminPartnershipOperations() {
   const { capabilities, service } = useAdminOperations();
   const searchParams = useSearchParams();
   const selectedId = searchParams.get("enquiry");
   const requestedStatus = searchParams.get("status");
-  const [enquiries, setEnquiries] = useState<PartnershipEnquiry[]>([]);
-  const [history, setHistory] = useState<PartnershipHistoryEvent[]>([]);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<PartnershipStatus | "all">(
     requestedStatus === "new" ? "new" : "all",
   );
   const [area, setArea] = useState<PartnershipArea | "all">("all");
-  const [action, setAction] = useState<PartnershipAction | null>(null);
-  const [note, setNote] = useState("");
-  const [actionError, setActionError] = useState("");
-  const [pending, setPending] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
-  const loadEnquiries = useCallback(async () => {
-    if (!service || !capabilities.canOperateFederation) return;
-    setLoading(true);
-    try {
-      setEnquiries(await service.listPartnershipEnquiries());
-      setError("");
-    } catch (caught: unknown) {
-      setError(getPlatformErrorMessage(caught));
-    } finally {
-      setLoading(false);
-    }
-  }, [capabilities.canOperateFederation, service]);
+  const listEnquiries = useMemo(
+    () => (service ? () => service.listPartnershipEnquiries() : null),
+    [service],
+  );
+  const listHistory = useMemo(
+    () => (service ? (id: string) => service.listPartnershipHistory(id) : null),
+    [service],
+  );
 
-  useEffect(() => {
-    if (!service || !capabilities.canOperateFederation) return;
-    let cancelled = false;
-    service
-      .listPartnershipEnquiries()
-      .then((items) => {
-        if (!cancelled) {
-          setEnquiries(items);
-          setError("");
-        }
-      })
-      .catch((caught: unknown) => {
-        if (!cancelled) setError(getPlatformErrorMessage(caught));
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [capabilities.canOperateFederation, service]);
+  const {
+    records: enquiries,
+    loading,
+    error,
+    reload,
+  } = useAdminRecords<PartnershipEnquiry>({
+    enabled: capabilities.canOperateFederation,
+    load: listEnquiries,
+  });
+  const history = useAdminHistory<PartnershipHistoryEvent>({
+    load: listHistory,
+    recordId: selectedId,
+  });
+  const {
+    action,
+    begin: beginAction,
+    error: actionError,
+    note,
+    pending,
+    run: runDecision,
+    setNote,
+  } = useAdminDecision<PartnershipAction>({
+    noteRequirement: partnershipNoteRequirement,
+  });
 
   const selected = enquiries.find((item) => item.id === selectedId) ?? null;
-  useEffect(() => {
-    if (!service || !selected) return;
-    let cancelled = false;
-    service
-      .listPartnershipHistory(selected.id)
-      .then((events) => {
-        if (!cancelled) setHistory(events);
-      })
-      .catch(() => {
-        if (!cancelled) setHistory([]);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [selected, service]);
-
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
     return enquiries.filter(
@@ -117,30 +103,12 @@ export function AdminPartnershipOperations() {
     );
   }, [area, enquiries, search, status]);
 
-  const completeAction = async () => {
-    if (!service || !selected || !action) return;
-    if (action === "declined" && !note.trim()) {
-      setActionError("Enter a reason for declining this enquiry.");
-      return;
-    }
-    setPending(true);
-    setActionError("");
-    try {
-      await service.transitionPartnership(
-        selected.id,
-        action,
-        note.trim() || undefined,
-      );
-      setAction(null);
-      setNote("");
-      await loadEnquiries();
-      setHistory(await service.listPartnershipHistory(selected.id));
-    } catch (caught: unknown) {
-      setActionError(getPlatformErrorMessage(caught));
-    } finally {
-      setPending(false);
-    }
-  };
+  const completeAction = () =>
+    runDecision(async (chosen, reason) => {
+      if (!service || !selected) return;
+      await service.transitionPartnership(selected.id, chosen, reason);
+      reload();
+    });
 
   if (!capabilities.canOperateFederation)
     return (
@@ -159,11 +127,7 @@ export function AdminPartnershipOperations() {
         <PartnershipDetail
           enquiry={selected}
           history={history}
-          onAction={(nextAction) => {
-            setAction(nextAction);
-            setNote("");
-            setActionError("");
-          }}
+          onAction={beginAction}
         />
       ) : null}
       <section
@@ -291,10 +255,7 @@ export function AdminPartnershipOperations() {
 
       <Dialog
         open={action !== null}
-        onClose={() => {
-          setAction(null);
-          setActionError("");
-        }}
+        onClose={() => beginAction(null)}
         title={
           action === "in_discussion"
             ? "Begin discussion?"
@@ -318,14 +279,11 @@ export function AdminPartnershipOperations() {
             required={action === "declined"}
             value={note}
             error={actionError}
-            onChange={(event) => {
-              setNote(event.target.value);
-              setActionError("");
-            }}
+            onChange={(event) => setNote(event.target.value)}
           />
         </div>
         <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-          <Button variant="ghost" onClick={() => setAction(null)}>
+          <Button variant="ghost" onClick={() => beginAction(null)}>
             Cancel
           </Button>
           <Button

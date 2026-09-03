@@ -8,7 +8,7 @@ import type {
 import { Button, DataTable, Dialog, StatusBadge } from "@tamil-ulagam/ui";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import {
   SelectField,
@@ -20,7 +20,6 @@ import {
   formatOperationalDate,
   membershipStatusPresentation,
 } from "@/features/admin/admin-presentation";
-import { getPlatformErrorMessage } from "@/lib/supabase/errors";
 
 import {
   AdminEmptyState,
@@ -28,80 +27,67 @@ import {
   AdminLoadingState,
   AdminPageHeader,
 } from "./admin-primitives";
+import {
+  useAdminDecision,
+  useAdminHistory,
+  useAdminRecords,
+} from "@/features/admin/use-admin-records";
 
 type MembershipAction = "approve" | "reject" | "revoke";
+
+/** Turning someone down or taking access away has to be explained. */
+function membershipNoteRequirement(chosen: MembershipAction): string | null {
+  return chosen === "reject" || chosen === "revoke"
+    ? "Enter a clear reason for this decision."
+    : null;
+}
 
 export function AdminMembershipOperations() {
   const { capabilities, service } = useAdminOperations();
   const searchParams = useSearchParams();
   const selectedId = searchParams.get("membership");
   const requestedStatus = searchParams.get("status");
-  const [memberships, setMemberships] = useState<AdminMembershipSummary[]>([]);
-  const [history, setHistory] = useState<MembershipHistoryEvent[]>([]);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<MembershipStatus | "all">(
     requestedStatus === "pending" ? "pending" : "all",
   );
   const [kind, setKind] = useState<"all" | "organisation" | "sangam">("all");
-  const [action, setAction] = useState<MembershipAction | null>(null);
-  const [note, setNote] = useState("");
-  const [actionError, setActionError] = useState("");
-  const [pending, setPending] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
-  const loadMemberships = useCallback(async () => {
-    if (!service || !capabilities.canOperateFederation) return;
-    setLoading(true);
-    try {
-      setMemberships(await service.listMemberships());
-      setError("");
-    } catch (caught: unknown) {
-      setError(getPlatformErrorMessage(caught));
-    } finally {
-      setLoading(false);
-    }
-  }, [capabilities.canOperateFederation, service]);
+  const listMemberships = useMemo(
+    () => (service ? () => service.listMemberships() : null),
+    [service],
+  );
+  const listHistory = useMemo(
+    () => (service ? (id: string) => service.listMembershipHistory(id) : null),
+    [service],
+  );
 
-  useEffect(() => {
-    if (!service || !capabilities.canOperateFederation) return;
-    let cancelled = false;
-    service
-      .listMemberships()
-      .then((items) => {
-        if (!cancelled) {
-          setMemberships(items);
-          setError("");
-        }
-      })
-      .catch((caught: unknown) => {
-        if (!cancelled) setError(getPlatformErrorMessage(caught));
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [capabilities.canOperateFederation, service]);
+  const {
+    records: memberships,
+    loading,
+    error,
+    reload,
+  } = useAdminRecords<AdminMembershipSummary>({
+    enabled: capabilities.canOperateFederation,
+    load: listMemberships,
+  });
+  const history = useAdminHistory<MembershipHistoryEvent>({
+    load: listHistory,
+    recordId: selectedId,
+  });
+  const {
+    action,
+    begin: beginAction,
+    error: actionError,
+    note,
+    pending,
+    run: runDecision,
+    setNote,
+  } = useAdminDecision<MembershipAction>({
+    noteRequirement: membershipNoteRequirement,
+  });
 
   const selected = memberships.find((item) => item.id === selectedId) ?? null;
-  useEffect(() => {
-    if (!service || !selected) return;
-    let cancelled = false;
-    service
-      .listMembershipHistory(selected.id)
-      .then((events) => {
-        if (!cancelled) setHistory(events);
-      })
-      .catch(() => {
-        if (!cancelled) setHistory([]);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [selected, service]);
-
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
     return memberships.filter(
@@ -114,30 +100,12 @@ export function AdminMembershipOperations() {
     );
   }, [kind, memberships, search, status]);
 
-  const completeAction = async () => {
-    if (!service || !selected || !action) return;
-    if ((action === "reject" || action === "revoke") && !note.trim()) {
-      setActionError("Enter a clear reason for this decision.");
-      return;
-    }
-    setPending(true);
-    setActionError("");
-    try {
-      await service.decideMembership(
-        selected.id,
-        action,
-        note.trim() || undefined,
-      );
-      setAction(null);
-      setNote("");
-      await loadMemberships();
-      setHistory(await service.listMembershipHistory(selected.id));
-    } catch (caught: unknown) {
-      setActionError(getPlatformErrorMessage(caught));
-    } finally {
-      setPending(false);
-    }
-  };
+  const completeAction = () =>
+    runDecision(async (chosen, reason) => {
+      if (!service || !selected) return;
+      await service.decideMembership(selected.id, chosen, reason);
+      reload();
+    });
 
   if (!capabilities.canOperateFederation)
     return (
@@ -157,9 +125,7 @@ export function AdminMembershipOperations() {
           membership={selected}
           history={history}
           onAction={(nextAction) => {
-            setAction(nextAction);
-            setNote("");
-            setActionError("");
+            beginAction(nextAction);
           }}
         />
       ) : null}
@@ -279,10 +245,7 @@ export function AdminMembershipOperations() {
 
       <Dialog
         open={action !== null}
-        onClose={() => {
-          setAction(null);
-          setActionError("");
-        }}
+        onClose={() => beginAction(null)}
         title={
           action === "approve"
             ? "Confirm this member?"
@@ -303,10 +266,7 @@ export function AdminMembershipOperations() {
               required
               value={note}
               error={actionError}
-              onChange={(event) => {
-                setNote(event.target.value);
-                setActionError("");
-              }}
+              onChange={(event) => setNote(event.target.value)}
             />
           </div>
         ) : actionError ? (
@@ -315,7 +275,7 @@ export function AdminMembershipOperations() {
           </p>
         ) : null}
         <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-          <Button variant="ghost" onClick={() => setAction(null)}>
+          <Button variant="ghost" onClick={() => beginAction(null)}>
             Cancel
           </Button>
           <Button
