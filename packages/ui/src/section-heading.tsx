@@ -10,6 +10,7 @@ export interface SectionHeadingProps extends Omit<
   readonly title: string;
   readonly description?: string;
   readonly align?: "left" | "center";
+  readonly tone?: "ink" | "inverse";
   readonly headingLevel?: "h1" | "h2" | "h3";
 }
 
@@ -20,6 +21,7 @@ export function SectionHeading({
   eyebrow,
   headingLevel = "h2",
   title,
+  tone = "ink",
   ...props
 }: SectionHeadingProps) {
   const Heading = headingLevel;
@@ -35,11 +37,21 @@ export function SectionHeading({
       {...props}
     >
       {eyebrow ? (
-        <p className="text-heritage-maroon mb-3 text-sm font-semibold tracking-[0.14em] uppercase">
+        <p
+          className={cx(
+            "mb-3 text-sm font-semibold tracking-[0.14em] uppercase",
+            tone === "inverse" ? "text-heritage-gold" : "text-heritage-maroon",
+          )}
+        >
           {eyebrow}
         </p>
       ) : null}
-      <Heading className="font-english text-4xl leading-tight font-semibold tracking-[-0.025em] text-balance sm:text-5xl">
+      <Heading
+        className={cx(
+          "font-english text-4xl leading-tight font-semibold tracking-[-0.025em] text-balance sm:text-5xl",
+          tone === "inverse" ? "text-white" : "text-gradient-ink",
+        )}
+      >
         {title}
       </Heading>
       {description ? (

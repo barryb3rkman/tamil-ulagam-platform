@@ -9,50 +9,31 @@
   --tu-color-warm-ivory: #f8f5ee;
   --tu-color-white: #ffffff;
   --tu-color-charcoal: #1c2733;
-  /*
-   * Darkened from the original #657381 in Phase E1.6: the previous value
-   * cleared AA (4.5:1) against white but fell just short against the
-   * warm-ivory canvas (4.46:1) and failed outright against the champagne
-   * surface used in the Warm Welcome gradient (3.72:1). #54606d holds the
-   * same hue/family (a quiet blue-grey, not a step toward charcoal) while
-   * clearing 4.5:1+ against every real background this token appears on
-   * (warm-ivory 5.90:1, white 6.42:1, champagne 4.91:1), preserving a
-   * clear primary/secondary gap against charcoal (11.6-15.1:1).
-   */
   --tu-color-slate: #54606d;
   --tu-color-interactive-blue: #246b9e;
-  /*
-   * Darkened from the original #247a59 in Phase E1.6. That value already
-   * cleared AA as plain text and as white-on-button, but failed against
-   * its own badge/pill tint background (text-success on bg-success/10:
-   * 4.24:1). #1f6b4e clears 4.5:1+ in every role the token is actually
-   * used in — plain text, white text on a solid success button, and text
-   * on its own light tint — so a single value covers it; no split into
-   * separate success/success-strong tokens was needed.
-   */
   --tu-color-success: #1f6b4e;
   --tu-color-warning: #b87416;
   --tu-color-error: #b9363e;
 
-  /*
-   * V3 supporting palette (Phase B1). These four tokens exist to mix
-   * gradients (§ named gradients below) and to tint a small number of
-   * "Deep"-surface accents — they are not meant to become standalone UI
-   * colors in their own right (a button, a link, or a status should
-   * still reach for the foundation palette above first). Keeping them
-   * named and centralized here is what stops each new screen from
-   * inventing its own one-off gradient stop.
-   */
   --tu-color-indigo-depth: #2c2a5c;
   --tu-color-crimson-ember: #a8324a;
   --tu-color-champagne: #efe0bd;
   --tu-color-teal-depth: #0d3b3f;
 
   --tu-font-english:
-    var(--font-inter), Inter, ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, "Segoe UI", sans-serif;
+    var(--font-jakarta), "Plus Jakarta Sans", ui-sans-serif, system-ui,
+    -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --tu-font-display:
+    var(--font-fraunces), Fraunces, "Iowan Old Style", Georgia, ui-serif, serif;
   --tu-font-tamil:
     var(--font-noto-tamil), "Noto Sans Tamil", "Latha", "Nirmala UI", sans-serif;
+
+  --tu-color-royal-indigo: #1b2f6b;
+  --tu-color-vivid-maroon: #a52340;
+  --tu-color-lux-gold: #e8bd63;
+  --tu-color-aurora-violet: #4b2a6d;
+  --tu-color-aurora-teal: #14555c;
+  --tu-color-ink: #050f1c;
 
   --tu-space-section-compact: clamp(3rem, 6vw, 4.5rem);
   --tu-space-section: clamp(4.5rem, 8vw, 7rem);
@@ -70,20 +51,8 @@
 
   --tu-shadow-card: 0 1rem 2.5rem rgba(6, 29, 50, 0.08);
   --tu-shadow-navigation: 0 1.25rem 3rem rgba(6, 29, 50, 0.13);
-  /* Surface system (§ Surfaces below): Elevated is one deliberate step
-     up from Card — a stronger shadow plus a hairline gold-tinted
-     border — reserved for the one primary action area a screen has
-     (a decision rail, a completion card), never the default card
-     treatment. */
   --tu-shadow-elevated: 0 1.5rem 3.5rem rgba(6, 29, 50, 0.16);
 
-  /*
-   * Density (§ Spacing/Density below): "comfortable" is the existing,
-   * unchanged rhythm every current screen already uses — nothing here
-   * changes today's spacing. "compact" exists only for future
-   * data/list-dense surfaces (an admin queue, a membership list) and is
-   * opt-in via the Surface/density utility, never applied globally.
-   */
   --tu-space-density-comfortable-gap: 1.25rem;
   --tu-space-density-comfortable-padding: 1.75rem;
   --tu-space-density-compact-gap: 0.75rem;
@@ -124,8 +93,15 @@
   --color-crimson-ember: var(--tu-color-crimson-ember);
   --color-champagne: var(--tu-color-champagne);
   --color-teal-depth: var(--tu-color-teal-depth);
+  --color-royal-indigo: var(--tu-color-royal-indigo);
+  --color-vivid-maroon: var(--tu-color-vivid-maroon);
+  --color-lux-gold: var(--tu-color-lux-gold);
+  --color-aurora-violet: var(--tu-color-aurora-violet);
+  --color-aurora-teal: var(--tu-color-aurora-teal);
+  --color-ink: var(--tu-color-ink);
 
   --font-english: var(--tu-font-english);
+  --font-display: var(--tu-font-display);
   --font-tamil: var(--tu-font-tamil);
   --font-sans: var(--tu-font-english);
 
@@ -165,20 +141,6 @@
       var(--tu-color-interactive-blue);
 }
 
-/* Phase E1.6: ring-focus's own interactive-blue only measures 2.99:1
- * against deep-navy and 2.56:1 against global-navy — short of the 3:1
- * WCAG non-text-contrast minimum a focus indicator needs against the
- * surface around it. Rather than changing the shared ring-focus default
- * (which reads fine at 5.2-5.7:1 on the warm-ivory/white surfaces the
- * vast majority of controls actually sit on), this is a second, explicit
- * utility for the specific controls that live on a Deep surface
- * (surface-deep, gradient-federation-night/gradient-sangam-dusk hero
- * panels, the workspace shell's own deep-navy header) — heritage-gold
- * reuses a color those surfaces already use for their own accents
- * (7.8:1 on deep-navy, 6.7:1 on global-navy) rather than introducing a
- * new one, and the offset color switches to deep-navy so the ring reads
- * as a floating gold outline, not a white halo fighting the dark fill.
- */
 @utility ring-focus-inverse {
   box-shadow:
     0 0 0 var(--tu-focus-ring-offset) var(--tu-color-deep-navy),
@@ -186,20 +148,6 @@
       var(--tu-color-heritage-gold);
 }
 
-/* ---------------------------------------------------------------------
- * Named gradients (Phase B1 design system).
- *
- * Exactly four, each with one documented job. A screen reaches for one
- * of these by name — it never blends its own stops. Every gradient is
- * a 3-stop-or-fewer, ≤90°-hue-span mix restrained to this palette; none
- * are meant to sit behind body text directly (place a Card/Elevated
- * surface on top for content, per the Surfaces section below).
- * --------------------------------------------------------------------- */
-
-/* Federation Night — deep-navy → indigo-depth → a restrained maroon
-   glow. Use for: the platform's most identity-defining "Deep" hero
-   moments (a future /join hub hero, admin operations header) — the
-   default Deep-surface background when a screen wants one. */
 @utility gradient-federation-night {
   background-image: linear-gradient(
     135deg,
@@ -214,9 +162,6 @@
   );
 }
 
-/* Warm Welcome — warm-ivory → champagne. Very low contrast, almost
-   textural. Use for: onboarding stage backgrounds and completion
-   screens — a calm backdrop, never a focal element. */
 @utility gradient-warm-welcome {
   background-image: linear-gradient(
     160deg,
@@ -225,10 +170,6 @@
   );
 }
 
-/* Sangam Dusk — teal-depth → global-navy → a restrained gold glow.
-   Use for: Tamil Sangam-specific hero/banner moments only — this is
-   what gives that journey its own identity without a different brand
-   system. Do not use outside Sangam-specific surfaces. */
 @utility gradient-sangam-dusk {
   background-image: linear-gradient(
     135deg,
@@ -243,11 +184,6 @@
   );
 }
 
-/* Trust Signal — global-navy → a violet-blue depth → a restrained
-   crimson-ember. Use for: verification/trust-related surfaces (a
-   "verified" state background, a duplicate-signal banner) — ties trust
-   visually to the brand family instead of borrowing a generic
-   green/red. Mostly navy; the crimson-ember appears only as a glow. */
 @utility gradient-trust-signal {
   background-image: linear-gradient(
     135deg,
@@ -267,23 +203,11 @@
   );
 }
 
-/* ---------------------------------------------------------------------
- * Surface system — exactly four, used everywhere. A component reaches
- * for one of these by name rather than hand-rolling a shadow/border
- * combination. Canvas and Card are the existing, unchanged treatments
- * every current screen already uses; Elevated and Deep are additive.
- * --------------------------------------------------------------------- */
-
-/* Canvas — the page background. Existing `bg-warm-ivory` usage is this
-   surface; the utility exists so new code can name it explicitly. */
 @utility surface-canvas {
   background-color: var(--tu-color-warm-ivory);
   color: var(--tu-color-charcoal);
 }
 
-/* Card — the workhorse surface for most content. Matches the existing
-   `rounded-card` + `shadow-card` + hairline-border pattern already used
-   throughout the app (e.g. application-details.tsx's DetailGroup). */
 @utility surface-card {
   background-color: var(--tu-color-white);
   border-radius: var(--tu-radius-card);
@@ -293,10 +217,6 @@
   color: var(--tu-color-charcoal);
 }
 
-/* Elevated — one deliberate step up from Card: a stronger shadow and a
-   hairline gold-tinted border. Reserved for the one primary action area
-   a screen has (a decision rail, a completion card) — using it more
-   than once per screen defeats its purpose. */
 @utility surface-elevated {
   background-color: var(--tu-color-white);
   border-radius: var(--tu-radius-card);
@@ -306,20 +226,12 @@
   color: var(--tu-color-charcoal);
 }
 
-/* Deep — the existing navy portal-header surface, formalized for reuse
-   in hero/banner moments. White text by default; never used for body
-   content, only identity/hero moments, so it stays special rather than
-   becoming wallpaper. */
 @utility surface-deep {
   background-color: var(--tu-color-deep-navy);
   color: var(--tu-color-white);
   border-radius: var(--tu-radius-large);
 }
 
-/* Glass — a constrained variant that exists ONLY layered over a Deep or
-   gradient surface (never over plain Canvas, where it would just read
-   as low contrast). Use sparingly — a frosted stat chip over a hero,
-   not a general-purpose card style. */
 @utility surface-glass {
   background-color: color-mix(in srgb, var(--tu-color-white) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--tu-color-white) 22%, transparent);
@@ -328,25 +240,69 @@
   border-radius: var(--tu-radius-card);
 }
 
-/* ---------------------------------------------------------------------
- * Typography system additions. Page title, section heading, and body
- * scales already exist correctly (SectionHeading, existing h1 patterns)
- * and are unchanged. These three are the genuinely missing scales.
- * --------------------------------------------------------------------- */
+@utility premium-sidebar-scroll {
+  scrollbar-color: color-mix(
+      in srgb,
+      var(--tu-color-heritage-gold) 38%,
+      transparent
+    )
+    transparent;
+  scrollbar-width: thin;
+}
 
-/* Display — reserved for rare, high-impact moments (a journey hub, a
-   completion screen). Deliberately not used for routine page titles;
-   scarcity is what keeps it feeling premium. */
+.premium-sidebar-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.premium-sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.premium-sidebar-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(
+    in srgb,
+    var(--tu-color-heritage-gold) 38%,
+    transparent
+  );
+}
+
 @utility text-display {
-  font-family: var(--tu-font-english);
+  font-family: var(--tu-font-display);
   font-weight: 600;
   font-size: clamp(2.75rem, 5vw + 1rem, 5rem);
   line-height: 1.02;
   letter-spacing: -0.03em;
+  font-variation-settings:
+    "SOFT" 30,
+    "WONK" 1,
+    "opsz" 100;
 }
 
-/* Label — form labels, nav items, small headers. Slightly more
-   deliberate than the ad hoc `text-sm font-semibold` used inline today. */
+@utility text-page-title {
+  font-family: var(--tu-font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 2.4vw + 1.1rem, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  font-variation-settings:
+    "SOFT" 24,
+    "WONK" 1,
+    "opsz" 72;
+}
+
+@utility text-section-title {
+  font-family: var(--tu-font-display);
+  font-weight: 600;
+  font-size: clamp(1.375rem, 0.9vw + 1.1rem, 1.875rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-variation-settings:
+    "SOFT" 20,
+    "WONK" 0,
+    "opsz" 40;
+}
+
 @utility text-label {
   font-size: 0.8125rem;
   font-weight: 600;
@@ -354,29 +310,16 @@
   letter-spacing: 0.01em;
 }
 
-/* Metadata — timestamps, reference IDs, secondary detail. Smaller and
-   more muted than body text so primary/secondary information is
-   visually distinct at a glance (the gap the Stripe-style detail-page
-   pattern depends on). */
 @utility text-metadata {
   font-size: 0.8125rem;
   line-height: 1.5;
   color: var(--tu-color-slate);
 }
 
-/* Numeric — tabular figures for counts/metrics, so digits don't jitter
-   in width as they change. */
 @utility text-numeric {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
-
-/* ---------------------------------------------------------------------
- * Density (§ Spacing/Density). "Comfortable" matches the padding/gap
- * every existing card-shaped surface already uses (unchanged); "compact"
- * is a smaller, opt-in rhythm for future data/list-dense surfaces (an
- * admin queue, a membership list) — never applied globally.
- * --------------------------------------------------------------------- */
 
 @utility density-comfortable {
   padding: var(--tu-space-density-comfortable-padding);
@@ -428,8 +371,8 @@ body {
 
 @keyframes tu-hero-enter {
   from {
-    opacity: 0;
-    transform: translate3d(0, 14px, 0);
+    opacity: 0.9;
+    transform: translate3d(0, 8px, 0);
   }
   to {
     opacity: 1;
@@ -439,8 +382,8 @@ body {
 
 @keyframes tu-hero-image-enter {
   from {
-    opacity: 0;
-    transform: scale(1.015);
+    opacity: 0.92;
+    transform: scale(1.008);
   }
   to {
     opacity: 1;
@@ -478,15 +421,15 @@ body {
 
 .motion-ready[data-motion-preference="standard"]
   [data-motion-reveal]:not([data-motion-complete="true"]) {
-  opacity: 0.01;
-  transform: translate3d(0, var(--tu-motion-reveal-distance), 0);
+  opacity: 1;
+  transform: translate3d(0, 8px, 0);
 }
 
 .motion-ready[data-motion-preference="standard"]
   [data-motion-group]:not([data-motion-complete="true"])
   > * {
-  opacity: 0.01;
-  transform: translate3d(0, 14px, 0);
+  opacity: 1;
+  transform: translate3d(0, 6px, 0);
 }
 
 .motion-control {
@@ -560,21 +503,102 @@ body {
 
 .motion-site-header {
   min-height: var(--tu-navigation-height);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #fffdf8 96%, transparent) 0%,
+    color-mix(in srgb, var(--tu-color-warm-ivory) 94%, transparent) 100%
+  );
   transition:
-    background-color var(--tu-motion-base) var(--tu-ease-standard),
+    background var(--tu-motion-base) var(--tu-ease-standard),
     border-color var(--tu-motion-base) var(--tu-ease-standard),
     box-shadow var(--tu-motion-base) var(--tu-ease-standard);
+}
+
+.motion-site-header::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  height: 1px;
+  opacity: 0.45;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--tu-color-heritage-gold) 55%, transparent) 22%,
+    color-mix(in srgb, var(--tu-color-heritage-gold) 90%, transparent) 50%,
+    color-mix(in srgb, var(--tu-color-heritage-gold) 55%, transparent) 78%,
+    transparent 100%
+  );
+  transition: opacity var(--tu-motion-base) var(--tu-ease-standard);
 }
 
 .motion-site-header[data-scrolled="true"] {
   border-color: color-mix(
     in srgb,
-    var(--tu-color-global-navy) 16%,
+    var(--tu-color-global-navy) 10%,
     transparent
   );
-  background: color-mix(in srgb, var(--tu-color-warm-ivory) 92%, transparent);
-  box-shadow: 0 0.45rem 1.4rem rgba(6, 29, 50, 0.07);
-  backdrop-filter: blur(12px);
+  background: color-mix(in srgb, var(--tu-color-warm-ivory) 90%, transparent);
+  box-shadow:
+    0 0.5rem 1.75rem rgba(6, 29, 50, 0.09),
+    0 0.0625rem 0 rgba(255, 255, 255, 0.6) inset;
+  backdrop-filter: blur(22px) saturate(1.6);
+  -webkit-backdrop-filter: blur(22px) saturate(1.6);
+}
+
+.motion-site-header[data-scrolled="true"]::after {
+  opacity: 1;
+}
+
+.nav-link {
+  position: relative;
+  border-radius: var(--tu-radius-button);
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--tu-color-global-navy);
+  transition:
+    color var(--tu-motion-fast) var(--tu-ease-standard),
+    background-color var(--tu-motion-fast) var(--tu-ease-standard);
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0.75rem;
+  bottom: 0.3rem;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--tu-color-heritage-gold),
+    #fff0cb 45%,
+    var(--tu-color-lux-gold)
+  );
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--tu-motion-base) var(--tu-ease-premium);
+}
+
+.nav-link:hover {
+  color: var(--tu-color-heritage-maroon);
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+.nav-link[aria-current="page"] {
+  color: var(--tu-color-heritage-maroon);
+  background-color: color-mix(
+    in srgb,
+    var(--tu-color-heritage-gold) 9%,
+    transparent
+  );
+}
+
+.nav-link[aria-current="page"]::after {
+  transform: scaleX(1);
 }
 
 .motion-mobile-panel {
@@ -599,16 +623,6 @@ body {
   transition-delay: 0s;
 }
 
-/* Drawer/Sheet foundation — an edge-anchored slide, generalizing the
-   mobile-panel pattern above onto the native <dialog> element.
-   `data-side="bottom"` (default, mobile bottom-sheet) or
-   `data-side="right"` (desktop side drawer). Uses `@starting-style` +
-   `transition-behavior: allow-discrete` to animate the dialog's
-   display/overlay transition — this is the one pattern in the motion
-   system that depends on a comparatively recent CSS feature; browsers
-   without support simply show/hide the sheet instantly (motion is an
-   enhancement here, never required to understand state, matching the
-   accessibility requirement). */
 .motion-sheet {
   transition:
     opacity var(--tu-motion-medium) var(--tu-ease-premium),
@@ -663,17 +677,6 @@ button[data-state="open"] .motion-menu-line:last-child {
   transform: translate3d(0, -8px, 0) rotate(-45deg);
 }
 
-/* ---------------------------------------------------------------------
- * V3 motion vocabulary (Phase B1). Extends the existing token/runtime
- * system above — no new library, no new runtime. Every pattern here
- * animates only transform/opacity/clip-path (compositor-friendly) and
- * is reduced to its resolved end-state by the blanket
- * `prefers-reduced-motion` rule below (the existing global 0.01ms
- * override already catches all of these); the ambient-drift pattern
- * additionally gets an explicit `animation: none` since a looping
- * animation should stop outright, not just play imperceptibly fast.
- * --------------------------------------------------------------------- */
-
 @keyframes tu-mask-reveal {
   from {
     clip-path: inset(0 100% 0 0);
@@ -683,11 +686,6 @@ button[data-state="open"] .motion-menu-line:last-child {
   }
 }
 
-/* Masked hero reveal — a clip-path wipe rather than an opacity fade,
-   reserved for hero imagery (one signature moment per screen, not every
-   card). Pair with `data-motion-reveal` timing via the runtime, or use
-   standalone via `[data-motion-mask]` on IntersectionObserver-driven
-   elements. */
 [data-motion-mask] {
   animation: tu-mask-reveal var(--tu-motion-medium) var(--tu-ease-premium) both;
 }
@@ -701,10 +699,6 @@ button[data-state="open"] .motion-menu-line:last-child {
   }
 }
 
-/* Progress fill — the active segment of a stepper/progress bar animates
-   its fill rather than snapping. Set `--tu-progress-from`/
-   `--tu-progress-to` (0–1) inline per use. transform-origin must be set
-   to `left` by the consuming component. */
 [data-motion-progress-fill] {
   animation: tu-progress-fill var(--tu-motion-base) var(--tu-ease-standard) both;
 }
@@ -718,11 +712,6 @@ button[data-state="open"] .motion-menu-line:last-child {
   }
 }
 
-/* Ambient Deep-gradient drift — an extremely slow, barely-perceptible
-   background-position cycle. Reserved for full-bleed Deep/gradient hero
-   surfaces only (never content surfaces); disabled below the `lg`
-   breakpoint per the mobile motion guardrail (battery/perf, and mobile
-   rarely lingers on a hero long enough to notice it). */
 [data-motion-ambient] {
   background-size: 160% 160%;
   animation: tu-gradient-drift 24s ease-in-out infinite alternate;
@@ -744,9 +733,6 @@ button[data-state="open"] .motion-menu-line:last-child {
   }
 }
 
-/* Skeleton → content: the shimmer plays while a Skeleton is mounted;
-   the swap to real content is a plain opacity crossfade handled by the
-   consuming component (mount/unmount), not by this keyframe. */
 [data-motion-skeleton] {
   background-image: linear-gradient(
     100deg,
@@ -773,9 +759,6 @@ button[data-state="open"] .motion-menu-line:last-child {
   }
 }
 
-/* Status/success transition — a brief scale+fade for a state change
-   that's rare and meaningful (a verification success, an approval).
-   Not for routine status badges, which should render instantly. */
 [data-motion-success] {
   animation: tu-status-success var(--tu-motion-medium) var(--tu-ease-premium)
     both;
@@ -859,14 +842,6 @@ footer a:focus-visible {
     clip-path: none !important;
   }
 
-  /* .motion-sheet (Sheet/WorkspaceSwitcher) uses a `@starting-style`
-     discrete transition rather than a simple opacity/transform pair —
-     the universal `transition-duration: 0.01ms` rule above still applies
-     to it, but a starting-style-driven open can visibly render at its
-     pre-transition (closed) frame for that instant. Force the open state
-     directly so reduced-motion never shows a sheet mid-transition,
-     matching brief section 18: "no hidden content waiting for
-     animation." */
   .motion-sheet[open] {
     opacity: 1 !important;
     transform: translate3d(0, 0, 0) !important;
@@ -879,5 +854,416 @@ footer a:focus-visible {
 
   [data-roadmap-phase]::before {
     transform: none;
+  }
+}
+
+@utility gradient-aurora {
+  background-color: var(--tu-color-ink);
+  background-image:
+    radial-gradient(
+      62rem 34rem at 12% -10%,
+      color-mix(in srgb, var(--tu-color-royal-indigo) 78%, transparent) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      48rem 30rem at 88% 4%,
+      color-mix(in srgb, var(--tu-color-vivid-maroon) 62%, transparent) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      40rem 26rem at 68% 92%,
+      color-mix(in srgb, var(--tu-color-aurora-violet) 66%, transparent) 0%,
+      transparent 64%
+    ),
+    radial-gradient(
+      44rem 24rem at 4% 96%,
+      color-mix(in srgb, var(--tu-color-aurora-teal) 52%, transparent) 0%,
+      transparent 62%
+    );
+}
+
+@utility gradient-aurora-light {
+  background-color: var(--tu-color-warm-ivory);
+  background-image:
+    radial-gradient(
+      54rem 28rem at 6% -18%,
+      color-mix(in srgb, var(--tu-color-royal-indigo) 15%, transparent) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      42rem 24rem at 96% -8%,
+      color-mix(in srgb, var(--tu-color-heritage-gold) 24%, transparent) 0%,
+      transparent 58%
+    ),
+    radial-gradient(
+      38rem 22rem at 78% 110%,
+      color-mix(in srgb, var(--tu-color-vivid-maroon) 12%, transparent) 0%,
+      transparent 60%
+    );
+}
+
+@utility gradient-gold-leaf {
+  background-image: linear-gradient(
+    112deg,
+    var(--tu-color-heritage-gold) 0%,
+    var(--tu-color-lux-gold) 38%,
+    #fff2d0 52%,
+    var(--tu-color-lux-gold) 66%,
+    var(--tu-color-heritage-gold) 100%
+  );
+}
+
+@utility text-gradient-gold {
+  background-image: linear-gradient(
+    104deg,
+    var(--tu-color-heritage-gold) 0%,
+    #fff0cb 34%,
+    var(--tu-color-lux-gold) 58%,
+    var(--tu-color-heritage-gold) 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: tu-gradient-drift 9s var(--tu-ease-standard) infinite alternate;
+}
+
+@utility text-gradient-ink {
+  background-image: linear-gradient(
+    102deg,
+    var(--tu-color-global-navy) 0%,
+    var(--tu-color-royal-indigo) 34%,
+    var(--tu-color-vivid-maroon) 78%,
+    var(--tu-color-heritage-maroon) 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: tu-gradient-drift 11s var(--tu-ease-standard) infinite alternate;
+}
+
+@keyframes tu-gradient-drift {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 100% 50%;
+  }
+}
+
+@utility glow-gold {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--tu-color-heritage-gold) 38%, transparent),
+    0 0.5rem 1.5rem
+      color-mix(in srgb, var(--tu-color-heritage-gold) 22%, transparent),
+    0 1.5rem 3.5rem color-mix(in srgb, var(--tu-color-ink) 28%, transparent);
+}
+
+@utility glow-ring {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.07),
+    0 1.5rem 3.5rem rgba(5, 15, 28, 0.45);
+}
+
+@utility motion-lift {
+  transition:
+    transform var(--tu-motion-base) var(--tu-ease-premium),
+    box-shadow var(--tu-motion-base) var(--tu-ease-premium),
+    border-color var(--tu-motion-base) var(--tu-ease-premium);
+  will-change: transform;
+
+  &:hover {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+
+@utility marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+}
+
+@utility marquee-track {
+  display: flex;
+  width: max-content;
+  animation: tu-marquee 42s linear infinite;
+
+  &:hover {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes tu-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@utility shimmer {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      104deg,
+      transparent 38%,
+      rgba(255, 255, 255, 0.09) 50%,
+      transparent 62%
+    );
+    background-size: 260% 100%;
+    animation: tu-shimmer 6.5s var(--tu-ease-standard) infinite;
+    pointer-events: none;
+  }
+}
+
+@keyframes tu-shimmer {
+  from {
+    background-position: 140% 0;
+  }
+  to {
+    background-position: -40% 0;
+  }
+}
+
+@keyframes tu-float {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(0, -14px, 0) scale(1.05);
+  }
+}
+
+@utility motion-float {
+  animation: tu-float 7s var(--tu-ease-standard) infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-gradient-gold,
+  .text-gradient-ink,
+  .marquee-track,
+  .shimmer::after,
+  .motion-float {
+    animation: none !important;
+  }
+
+  .motion-lift:hover {
+    transform: none !important;
+  }
+}
+
+@utility surface-page {
+  background-color: var(--tu-color-warm-ivory);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E"),
+    radial-gradient(
+      50rem 30rem at 88% -6%,
+      color-mix(in srgb, var(--tu-color-heritage-gold) 13%, transparent) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      46rem 32rem at -8% 2%,
+      color-mix(in srgb, var(--tu-color-royal-indigo) 9%, transparent) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      42rem 34rem at 60% 108%,
+      color-mix(in srgb, var(--tu-color-vivid-maroon) 6%, transparent) 0%,
+      transparent 64%
+    );
+  background-size:
+    140px 140px,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+  background-attachment: fixed, fixed, fixed, fixed;
+  background-blend-mode: soft-light, normal, normal, normal;
+}
+
+@keyframes tu-orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.tu-orbit {
+  animation: tu-orbit-spin 34s linear infinite;
+}
+
+@utility marquee-y {
+  overflow: hidden;
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    #000 14%,
+    #000 86%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    #000 14%,
+    #000 86%,
+    transparent 100%
+  );
+}
+
+@utility marquee-y-track {
+  display: flex;
+  flex-direction: column;
+  height: max-content;
+  animation: tu-marquee-y 34s linear infinite;
+
+  &:hover {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes tu-marquee-y {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -50%, 0);
+  }
+}
+
+@keyframes tu-halo {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.72;
+    transform: scale(1.09);
+  }
+}
+
+@utility motion-halo {
+  animation: tu-halo 6s var(--tu-ease-standard) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tu-orbit,
+  .marquee-y-track,
+  .motion-halo {
+    animation: none !important;
+  }
+}
+
+@utility text-accent-gold {
+  background-image: linear-gradient(
+    100deg,
+    var(--tu-color-heritage-gold) 0%,
+    #fff0cb 40%,
+    var(--tu-color-lux-gold) 70%,
+    var(--tu-color-heritage-gold) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility text-accent-maroon {
+  background-image: linear-gradient(
+    100deg,
+    var(--tu-color-heritage-maroon) 0%,
+    var(--tu-color-vivid-maroon) 55%,
+    #d1466a 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility text-stat {
+  font-family: var(--tu-font-display);
+  font-weight: 600;
+  font-size: clamp(2.25rem, 2.2vw + 1.4rem, 3.25rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variation-settings:
+    "SOFT" 20,
+    "WONK" 0,
+    "opsz" 60;
+}
+
+@utility blob {
+  border-radius: 44% 56% 62% 38% / 48% 42% 58% 52%;
+  filter: blur(0.5px);
+}
+
+@utility blob-alt {
+  border-radius: 62% 38% 45% 55% / 40% 58% 42% 60%;
+}
+
+@keyframes tu-pop-in {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(0.94);
+  }
+  62% {
+    opacity: 1;
+    transform: translate3d(0, -3px, 0) scale(1.015);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@utility motion-pop {
+  animation: tu-pop-in 620ms var(--tu-ease-premium) both;
+}
+
+@utility motion-pop-group {
+  & > * {
+    animation: tu-pop-in 620ms var(--tu-ease-premium) both;
+  }
+  & > *:nth-child(2) {
+    animation-delay: 90ms;
+  }
+  & > *:nth-child(3) {
+    animation-delay: 180ms;
+  }
+  & > *:nth-child(4) {
+    animation-delay: 270ms;
+  }
+  & > *:nth-child(5) {
+    animation-delay: 360ms;
+  }
+  & > *:nth-child(6) {
+    animation-delay: 450ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-pop,
+  .motion-pop-group > * {
+    animation: none !important;
   }
 }

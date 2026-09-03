@@ -3,9 +3,6 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-// vitest.config.ts always runs with cwd = apps/web (its own `@` alias is
-// resolved the same way), so this is stable regardless of test-runner
-// transform details.
 const globalsCssPath = path.join(process.cwd(), "src/app/globals.css");
 const css = readFileSync(globalsCssPath, "utf8");
 
@@ -30,25 +27,24 @@ describe("design tokens (globals.css) — presence and consistency", () => {
       "--tu-color-teal-depth",
     ]) {
       expect(css).toContain(token);
-      // Every new color token is also exposed through @theme inline as a
-      // Tailwind color utility — a token that isn't wired through here
-      // silently can't be used as `bg-*`/`text-*` anywhere.
       const themeName = token.replace("--tu-color-", "--color-");
       expect(css).toContain(themeName);
     }
   });
 
-  it("defines exactly the four named gradients, each documented", () => {
+  it("defines exactly the named gradients, each documented", () => {
     const gradients = [
       "gradient-federation-night",
       "gradient-warm-welcome",
       "gradient-sangam-dusk",
       "gradient-trust-signal",
+      "gradient-aurora",
+      "gradient-aurora-light",
+      "gradient-gold-leaf",
     ];
     for (const gradient of gradients) {
       expect(css).toContain(`@utility ${gradient}`);
     }
-    // No fifth gradient utility should quietly appear.
     const matches = css.match(/@utility gradient-[\w-]+/g) ?? [];
     expect(new Set(matches).size).toBe(gradients.length);
   });

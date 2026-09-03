@@ -6,14 +6,16 @@ import { useEffect } from "react";
 const revealSelector = "[data-motion-reveal], [data-motion-group]";
 
 const standardRevealFrames: Keyframe[] = [
-  { opacity: 0.01, transform: "translate3d(0, 20px, 0)" },
-  { opacity: 1, transform: "translate3d(0, 0, 0)" },
+  { opacity: 0.55, transform: "translate3d(0, 18px, 0) scale(0.99)" },
+  { opacity: 1, transform: "translate3d(0, 0, 0) scale(1)" },
 ];
 
 const groupRevealFrames: Keyframe[] = [
-  { opacity: 0.01, transform: "translate3d(0, 14px, 0)" },
-  { opacity: 1, transform: "translate3d(0, 0, 0)" },
+  { opacity: 0.5, transform: "translate3d(0, 15px, 0) scale(0.994)" },
+  { opacity: 1, transform: "translate3d(0, 0, 0) scale(1)" },
 ];
+
+const snapEasing = "cubic-bezier(0.22, 1.16, 0.36, 1)";
 
 export function MotionRuntime() {
   const pathname = usePathname();
@@ -25,8 +27,10 @@ export function MotionRuntime() {
       "IntersectionObserver" in window &&
       typeof Element.prototype.animate === "function";
     let revealObserver: IntersectionObserver | undefined;
-    let phaseObserver: IntersectionObserver | undefined;
+    let ruleObserver: IntersectionObserver | undefined;
     let animationFrame: number | undefined;
+    let spineFrame: number | undefined;
+    let detachSpines: (() => void) | undefined;
     let remainingTargets = 0;
     const activeAnimations = new Set<Animation>();
 
@@ -47,9 +51,9 @@ export function MotionRuntime() {
         const animation = element.animate(
           isGroup ? groupRevealFrames : standardRevealFrames,
           {
-            duration: 420,
-            delay: desktopStagger && isGroup ? Math.min(index, 3) * 55 : 0,
-            easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+            duration: 400,
+            delay: desktopStagger && isGroup ? Math.min(index, 7) * 45 : 0,
+            easing: snapEasing,
             fill: "both",
           },
         );
@@ -72,49 +76,80 @@ export function MotionRuntime() {
       updateObserverCount();
     };
 
-    const setupPhaseTracking = () => {
-      window.removeEventListener("scroll", setupPhaseTracking);
-      const phases = Array.from(
-        document.querySelectorAll<HTMLElement>("[data-roadmap-phase]"),
+    const setupSpines = () => {
+      const spines = Array.from(
+        document.querySelectorAll<HTMLElement>("[data-spine]"),
       );
+      if (spines.length === 0) return;
 
-      if (phases.length === 0 || !("IntersectionObserver" in window)) {
-        return;
-      }
+      const paint = () => {
+        spineFrame = undefined;
+        const viewport = window.innerHeight;
+        for (const spine of spines) {
+          const box = spine.getBoundingClientRect();
+          const from = viewport * 0.78;
+          const to = viewport * 0.45;
+          const travelled = from - box.top;
+          const span = Math.max(1, box.height + (from - to));
+          const progress = Math.min(1, Math.max(0, travelled / span));
+          spine.style.setProperty("--spine-progress", progress.toFixed(4));
 
-      const visibility = new Map<Element, number>();
-      phaseObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            visibility.set(entry.target, entry.intersectionRatio);
-          });
-
-          const firstPhase = phases[0];
-          if (!firstPhase) return;
-
-          const activePhase = phases.reduce((current, phase) =>
-            (visibility.get(phase) ?? 0) > (visibility.get(current) ?? 0)
-              ? phase
-              : current,
+          const nodes = Array.from(
+            spine.querySelectorAll<HTMLElement>("[data-spine-node]"),
           );
+          for (const node of nodes) {
+            const nodeBox = node.getBoundingClientRect();
+            const nodeCentre = nodeBox.top + nodeBox.height / 2;
+            const reached =
+              (nodeCentre - box.top) / Math.max(1, box.height) <= progress;
+            if (reached) node.dataset.spineReached = "true";
+            else delete node.dataset.spineReached;
+          }
+        }
+      };
 
-          if ((visibility.get(activePhase) ?? 0) > 0) {
-            phases.forEach((phase) => {
-              if (phase === activePhase) {
-                phase.setAttribute("data-roadmap-active", "true");
-              } else {
-                phase.removeAttribute("data-roadmap-active");
-              }
-            });
+      const onScroll = () => {
+        if (spineFrame !== undefined) return;
+        spineFrame = window.requestAnimationFrame(paint);
+      };
+
+      paint();
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll, { passive: true });
+      detachSpines = () => {
+        window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("resize", onScroll);
+      };
+    };
+
+    const setupRules = () => {
+      const rules = Array.from(
+        document.querySelectorAll<HTMLElement>("[data-motion-draw]"),
+      );
+      if (rules.length === 0 || !("IntersectionObserver" in window)) return;
+      ruleObserver = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            const rule = entry.target as HTMLElement;
+            const animation = rule.animate(
+              [{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }],
+              { duration: 560, easing: snapEasing, fill: "both" },
+            );
+            activeAnimations.add(animation);
+            void animation.finished
+              .then(() => {
+                rule.dataset.motionComplete = "true";
+                activeAnimations.delete(animation);
+                animation.cancel();
+              })
+              .catch(() => undefined);
+            ruleObserver?.unobserve(rule);
           }
         },
-        {
-          rootMargin: "-20% 0px -45% 0px",
-          threshold: [0, 0.15, 0.35, 0.6],
-        },
+        { rootMargin: "0px 0px -8% 0px", threshold: 0 },
       );
-
-      phases.forEach((phase) => phaseObserver?.observe(phase));
+      rules.forEach((rule) => ruleObserver?.observe(rule));
     };
 
     const initialize = () => {
@@ -137,12 +172,12 @@ export function MotionRuntime() {
       );
       const routeAnimation = route?.animate(
         [
-          { opacity: 0, transform: "translate3d(0, 10px, 0)" },
+          { opacity: 0.97, transform: "translate3d(0, 4px, 0)" },
           { opacity: 1, transform: "translate3d(0, 0, 0)" },
         ],
         {
-          duration: 420,
-          easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+          duration: 200,
+          easing: snapEasing,
           fill: "both",
         },
       );
@@ -168,7 +203,7 @@ export function MotionRuntime() {
           });
         },
         {
-          rootMargin: "0px 0px -10% 0px",
+          rootMargin: "0px 0px -4% 0px",
           threshold: 0,
         },
       );
@@ -178,12 +213,8 @@ export function MotionRuntime() {
       updateObserverCount();
       targets.forEach((target) => revealObserver?.observe(target));
 
-      if (document.querySelector("[data-roadmap-phase]")) {
-        window.addEventListener("scroll", setupPhaseTracking, {
-          once: true,
-          passive: true,
-        });
-      }
+      setupSpines();
+      setupRules();
     };
 
     const scheduleInitialization = () => {
@@ -200,7 +231,8 @@ export function MotionRuntime() {
       if (event.matches) {
         root.dataset.motionPreference = "reduced";
         revealObserver?.disconnect();
-        phaseObserver?.disconnect();
+        ruleObserver?.disconnect();
+        detachSpines?.();
         activeAnimations.forEach((animation) => animation.cancel());
         activeAnimations.clear();
         remainingTargets = 0;
@@ -212,11 +244,12 @@ export function MotionRuntime() {
 
     return () => {
       revealObserver?.disconnect();
-      phaseObserver?.disconnect();
+      ruleObserver?.disconnect();
+      detachSpines?.();
       activeAnimations.forEach((animation) => animation.cancel());
       window.removeEventListener("load", scheduleInitialization);
-      window.removeEventListener("scroll", setupPhaseTracking);
       window.cancelAnimationFrame(animationFrame ?? 0);
+      if (spineFrame !== undefined) window.cancelAnimationFrame(spineFrame);
       reducedMotion.removeEventListener("change", handleMotionPreference);
       root.dataset.motionObserverCount = "0";
     };
