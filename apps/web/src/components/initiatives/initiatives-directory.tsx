@@ -1,4 +1,6 @@
-import { Container, LinkButton, Section } from "@tamil-ulagam/ui";
+import { Container, Section } from "@tamil-ulagam/ui";
+
+import { PortalCardGrid } from "@/components/portal-card-grid";
 
 import { initiatives } from "@/content/initiatives";
 import {
@@ -28,41 +30,16 @@ export function InitiativesDirectory() {
             {directory.description}
           </p>
         </div>
-        <ul
-          data-testid="initiatives-directory"
-          data-motion-group="stagger"
-          className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4"
-        >
-          {initiatives.map((initiative, index) => {
-            const detail = initiativeOverviewDetails[initiative.slug];
-
-            return (
-              <li key={initiative.slug}>
-                <article className="motion-card border-global-navy/12 group flex h-full flex-col border bg-white p-6">
-                  <span className="text-heritage-gold text-sm font-semibold tracking-[0.12em]">
-                    0{index + 1}
-                  </span>
-                  <h3 className="text-global-navy mt-5 text-xl font-semibold tracking-[-0.025em]">
-                    {initiative.title}
-                  </h3>
-                  <p className="text-slate mt-3 flex-1 text-sm leading-6">
-                    {detail.purpose}
-                  </p>
-                  <LinkButton
-                    href={initiative.href}
-                    variant="text"
-                    className="mt-6 self-start text-sm"
-                  >
-                    Explore the vision
-                    <span aria-hidden="true" className="motion-arrow ml-2">
-                      →
-                    </span>
-                  </LinkButton>
-                </article>
-              </li>
-            );
-          })}
-        </ul>
+        <PortalCardGrid
+          testId="initiatives-directory"
+          linkLabel="Explore the vision"
+          cards={initiatives.map((initiative, index) => ({
+            title: initiative.title,
+            description: initiativeOverviewDetails[initiative.slug].purpose,
+            href: initiative.href,
+            marker: String(index + 1).padStart(2, "0"),
+          }))}
+        />
       </Container>
     </Section>
   );

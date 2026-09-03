@@ -1,6 +1,8 @@
 import { Container, Section } from "@tamil-ulagam/ui";
 
 import { initiativeOverviewContent } from "@/content/initiatives-overview";
+import { EditorialMosaic } from "@/components/editorial-mosaic";
+import { ExchangeIllustration } from "@/components/illustration/brand-illustrations";
 
 export function EcosystemIntroduction() {
   const { introduction } = initiativeOverviewContent;
@@ -28,21 +30,13 @@ export function EcosystemIntroduction() {
             <p className="text-slate max-w-2xl text-lg leading-8">
               {introduction.description}
             </p>
-            <ol className="border-global-navy/12 mt-9 grid divide-y border-y sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-              {introduction.principles.map((principle, index) => (
-                <li key={principle.title} className="p-6 sm:p-7">
-                  <span className="text-heritage-gold text-2xl font-semibold">
-                    0{index + 1}
-                  </span>
-                  <h3 className="text-global-navy mt-5 text-xl font-semibold tracking-[-0.025em]">
-                    {principle.title}
-                  </h3>
-                  <p className="text-slate mt-3 text-sm leading-6">
-                    {principle.description}
-                  </p>
-                </li>
-              ))}
-            </ol>
+            <EditorialMosaic
+              figure={<ExchangeIllustration />}
+              items={introduction.principles.map((principle) => ({
+                title: principle.title,
+                description: principle.description,
+              }))}
+            />
           </div>
         </div>
       </Container>

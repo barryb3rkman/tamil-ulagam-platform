@@ -7,6 +7,8 @@ import {
 } from "@tamil-ulagam/ui";
 
 import { partnersContent } from "@/content/partners";
+import { CheckGrid, NumberedGrid } from "@/components/numbered-grid";
+import { NumeralFeature } from "@/components/numeral-feature";
 
 export function PartnershipPathwaySection() {
   const { pathway } = partnersContent;
@@ -22,22 +24,12 @@ export function PartnershipPathwaySection() {
         <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.14em] uppercase">
           Partnership pathway
         </p>
-        <ol className="border-global-navy/12 mt-5 grid border-t md:grid-cols-2 xl:grid-cols-4">
-          {pathway.steps.map((step) => (
-            <li
-              key={step.number}
-              className="border-global-navy/12 border-b py-6 md:px-6 md:odd:pl-0 xl:border-r xl:[&:nth-child(4n)]:border-r-0 xl:[&:nth-child(4n+1)]:pl-0"
-            >
-              <span className="text-heritage-gold text-sm font-semibold tracking-[0.14em]">
-                {step.number}
-              </span>
-              <h3 className="text-global-navy mt-3 text-xl font-semibold">
-                {step.title}
-              </h3>
-              <p className="text-slate mt-3 leading-7">{step.description}</p>
-            </li>
-          ))}
-        </ol>
+        <NumeralFeature
+          items={pathway.steps.map((step) => ({
+            title: step.title,
+            description: step.description,
+          }))}
+        />
       </Container>
     </Section>
   );
@@ -61,19 +53,7 @@ export function DueDiligenceSection() {
           <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
             Due-diligence areas
           </p>
-          <ol className="border-global-navy/12 mt-5 grid border-t sm:grid-cols-2">
-            {dueDiligence.items.map((item, index) => (
-              <li
-                key={item}
-                className="border-global-navy/12 grid gap-4 border-b py-5 sm:grid-cols-[2rem_1fr] sm:px-5 sm:odd:pl-0 sm:even:border-l"
-              >
-                <span className="text-heritage-maroon text-sm font-semibold">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <p className="text-charcoal leading-7">{item}</p>
-              </li>
-            ))}
-          </ol>
+          <NumberedGrid items={dueDiligence.items} />
         </div>
       </Container>
     </Section>
@@ -89,7 +69,7 @@ export function GovernanceAndAccessSection() {
           id="partnership-governance-title"
           eyebrow={governance.eyebrow}
           title={governance.title}
-          className="[&>h2]:text-white"
+          tone="inverse"
         />
         <div className="mt-10 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
           {governance.groups.map((group) => (
@@ -100,13 +80,7 @@ export function GovernanceAndAccessSection() {
               <h3 className="text-heritage-gold text-xl font-semibold">
                 {group.title}
               </h3>
-              <ul className="mt-5 space-y-3 border-t border-white/16 pt-4">
-                {group.items.map((item) => (
-                  <li key={item} className="leading-7 text-white/80">
-                    {item}
-                  </li>
-                ))}
-              </ul>
+              <CheckGrid columns={2} items={group.items} tone="dark" />
             </section>
           ))}
         </div>

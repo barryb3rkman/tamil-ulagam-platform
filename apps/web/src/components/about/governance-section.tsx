@@ -7,6 +7,7 @@ import {
 
 import { images } from "@/config/images";
 import { aboutContent } from "@/content/about";
+import { NumeralFeature } from "@/components/numeral-feature";
 
 export function GovernanceSection() {
   const { governance } = aboutContent;
@@ -42,26 +43,13 @@ export function GovernanceSection() {
             <p className="text-slate mt-6 max-w-2xl text-lg leading-8">
               {governance.description}
             </p>
-            <ol className="border-global-navy/12 divide-global-navy/12 mt-9 divide-y border-y">
-              {governance.principles.map((principle, index) => (
-                <li
-                  key={principle.title}
-                  className="grid gap-4 py-6 sm:grid-cols-[2.5rem_1fr] sm:gap-5"
-                >
-                  <span className="text-heritage-gold text-lg font-semibold">
-                    0{index + 1}
-                  </span>
-                  <div>
-                    <h3 className="text-global-navy text-lg font-semibold">
-                      {principle.title}
-                    </h3>
-                    <p className="text-slate mt-2 leading-7">
-                      {principle.description}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ol>
+            <NumeralFeature
+              columns={2}
+              items={governance.principles.map((principle) => ({
+                title: principle.title,
+                description: principle.description,
+              }))}
+            />
             <LinkButton
               href={governance.callToAction.href}
               variant="text"

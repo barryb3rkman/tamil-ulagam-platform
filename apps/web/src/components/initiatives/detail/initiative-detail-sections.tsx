@@ -13,6 +13,7 @@ import {
   type InitiativeRelatedEntry,
 } from "@/content/initiative-details";
 import type { InitiativeEntry } from "@tamil-ulagam/shared";
+import { NumeralFeature } from "@/components/numeral-feature";
 
 export function InitiativePurposeSection({
   detail,
@@ -60,7 +61,6 @@ export function InitiativeCapabilitiesSection({
   readonly layout: InitiativeDetailLayout;
 }) {
   const dark = layout === "opportunity";
-  const finalRowSize = detail.capabilities.length % 3;
 
   return (
     <Section
@@ -74,46 +74,19 @@ export function InitiativeCapabilitiesSection({
           eyebrow="INITIATIVE CAPABILITIES"
           title="Connected capabilities shaped around trust and community value."
           description="Each capability contributes to the initiative’s purpose and the wider Tamil Ulagam ecosystem."
-          className={dark ? "[&>h2]:text-white [&>p]:text-white/75" : undefined}
+          tone={dark ? "inverse" : "ink"}
+          className={dark ? "[&>p]:text-white/75" : undefined}
         />
-        <ol
-          aria-label="Capability list"
-          className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-6"
-        >
-          {detail.capabilities.map((capability, index) => (
-            <li
-              key={capability.title}
-              data-capability-card
-              className={`border p-6 xl:col-span-2 ${
-                finalRowSize === 2 && index === detail.capabilities.length - 2
-                  ? "xl:col-start-2"
-                  : ""
-              } ${
-                finalRowSize === 1 && index === detail.capabilities.length - 1
-                  ? "xl:col-start-3"
-                  : ""
-              } ${
-                dark
-                  ? "bg-deep-navy border-white/18"
-                  : "border-global-navy/10 bg-warm-ivory"
-              }`}
-            >
-              <span className="text-heritage-gold text-sm font-semibold tracking-[0.14em]">
-                0{index + 1}
-              </span>
-              <h3
-                className={`mt-4 text-xl font-semibold ${dark ? "text-white" : "text-global-navy"}`}
-              >
-                {capability.title}
-              </h3>
-              <p
-                className={`mt-3 leading-7 ${dark ? "text-white/75" : "text-slate"}`}
-              >
-                {capability.description}
-              </p>
-            </li>
-          ))}
-        </ol>
+        <NumeralFeature
+          headingLevel={3}
+          itemAttribute="data-capability-card"
+          label="Capability list"
+          tone={dark ? "dark" : "light"}
+          items={detail.capabilities.map((capability) => ({
+            title: capability.title,
+            description: capability.description,
+          }))}
+        />
       </Container>
     </Section>
   );
@@ -203,11 +176,11 @@ export function InitiativeParticipationSection({
             Contact Tamil Ulagam
           </LinkButton>
           <LinkButton
-            href="/roadmap"
+            href="/join"
             variant="text"
             className={dark ? "hover:text-heritage-gold text-white" : undefined}
           >
-            View the roadmap
+            Join Tamil Ulagam
           </LinkButton>
         </div>
       </Container>

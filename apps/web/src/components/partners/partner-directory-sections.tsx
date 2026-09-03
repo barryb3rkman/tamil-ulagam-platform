@@ -8,6 +8,7 @@ import {
 import { partnersContent } from "@/content/partners";
 
 import { PartnershipEnquiryForm } from "./partnership-enquiry-form";
+import { CheckGrid, NumberedGrid } from "@/components/numbered-grid";
 
 export function InitiativeCollaborationSection() {
   const { initiatives } = partnersContent;
@@ -28,16 +29,7 @@ export function InitiativeCollaborationSection() {
               <h3 className="text-global-navy text-2xl font-semibold">
                 {group.title}
               </h3>
-              <ul className="border-global-navy/12 mt-5 grid border-t sm:grid-cols-2">
-                {group.items.map((item) => (
-                  <li
-                    key={item}
-                    className="border-global-navy/12 border-b py-3 text-sm leading-6 sm:px-4 sm:odd:pl-0 sm:even:border-l"
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
+              <CheckGrid columns={2} items={group.items} />
               <LinkButton
                 href={group.callToAction.href}
                 variant="text"
@@ -65,22 +57,10 @@ export function PartnershipReadinessSection() {
           id="partnership-readiness-title"
           eyebrow={readiness.eyebrow}
           title={readiness.title}
-          className="[&>h2]:text-white"
+          tone="inverse"
         />
         <div>
-          <ol className="grid border-t border-white/16 sm:grid-cols-2">
-            {readiness.items.map((item, index) => (
-              <li
-                key={item}
-                className="grid gap-4 border-b border-white/16 py-5 sm:grid-cols-[2rem_1fr] sm:px-5 sm:odd:pl-0 sm:even:border-l"
-              >
-                <span className="text-heritage-gold text-sm font-semibold">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <p className="leading-7 text-white/84">{item}</p>
-              </li>
-            ))}
-          </ol>
+          <NumberedGrid items={readiness.items} tone="dark" />
           <p className="border-heritage-gold/55 mt-8 border-l-2 pl-5 text-lg leading-8 text-white/84">
             {readiness.statement}
           </p>

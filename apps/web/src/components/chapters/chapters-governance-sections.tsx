@@ -8,6 +8,8 @@ import {
 
 import { images } from "@/config/images";
 import { chaptersContent } from "@/content/chapters";
+import { CheckGrid } from "@/components/numbered-grid";
+import { NumeralFeature } from "@/components/numeral-feature";
 
 export function ChapterGovernanceSection() {
   const { governance } = chaptersContent;
@@ -41,26 +43,13 @@ export function ChapterGovernanceSection() {
           <p className="text-heritage-maroon mt-7 text-sm font-semibold tracking-[0.14em] uppercase">
             Chapter governance principles
           </p>
-          <ol className="border-global-navy/12 divide-global-navy/12 mt-5 divide-y border-y">
-            {governance.principles.map((principle, index) => (
-              <li
-                key={principle.title}
-                className="grid gap-4 py-6 sm:grid-cols-[2.5rem_1fr] sm:gap-5"
-              >
-                <span className="text-heritage-gold text-lg font-semibold">
-                  0{index + 1}
-                </span>
-                <div>
-                  <h3 className="text-global-navy text-xl font-semibold">
-                    {principle.title}
-                  </h3>
-                  <p className="text-slate mt-2 leading-7">
-                    {principle.description}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
+          <NumeralFeature
+            columns={2}
+            items={governance.principles.map((principle) => ({
+              title: principle.title,
+              description: principle.description,
+            }))}
+          />
         </div>
       </Container>
     </Section>
@@ -76,7 +65,7 @@ export function ChapterRelationshipsSection() {
         <SectionHeading
           eyebrow={relationships.eyebrow}
           title={relationships.title}
-          className="[&>h2]:text-white"
+          tone="inverse"
         />
         <div className="mt-10 grid gap-5 lg:grid-cols-3">
           {relationships.groups.map((group) => (
@@ -87,13 +76,7 @@ export function ChapterRelationshipsSection() {
               <h3 className="text-heritage-gold text-xl font-semibold">
                 {group.title}
               </h3>
-              <ul className="mt-5 space-y-3 border-t border-white/16 pt-4">
-                {group.items.map((item) => (
-                  <li key={item} className="leading-7 text-white/80">
-                    {item}
-                  </li>
-                ))}
-              </ul>
+              <CheckGrid columns={2} items={group.items} tone="dark" />
             </div>
           ))}
         </div>

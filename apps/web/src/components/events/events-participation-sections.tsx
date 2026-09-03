@@ -6,6 +6,7 @@ import {
 } from "@tamil-ulagam/ui";
 
 import { eventsContent } from "@/content/events";
+import { CheckGrid, NumberedGrid } from "@/components/numbered-grid";
 
 export function EventsReadinessSection() {
   const { readiness } = eventsContent;
@@ -22,19 +23,7 @@ export function EventsReadinessSection() {
           title={readiness.title}
         />
         <div>
-          <ol className="border-global-navy/12 grid border-t sm:grid-cols-2">
-            {readiness.items.map((item, index) => (
-              <li
-                key={item}
-                className="border-global-navy/12 grid gap-4 border-b py-5 sm:grid-cols-[2rem_1fr] sm:px-5 sm:odd:pl-0 sm:even:border-l"
-              >
-                <span className="text-heritage-maroon text-sm font-semibold">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <p className="leading-7">{item}</p>
-              </li>
-            ))}
-          </ol>
+          <NumberedGrid items={readiness.items} />
           <LinkButton
             href={readiness.callToAction.href}
             variant="text"
@@ -67,16 +56,7 @@ export function EventsInterestSection() {
           description={interest.description}
         />
         <div>
-          <ul className="border-global-navy/12 grid border-t sm:grid-cols-2">
-            {interest.areas.map((area) => (
-              <li
-                key={area}
-                className="border-global-navy/12 border-b py-4 leading-7 sm:px-5 sm:odd:pl-0 sm:even:border-l"
-              >
-                {area}
-              </li>
-            ))}
-          </ul>
+          <CheckGrid columns={2} items={interest.areas} />
           <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center">
             <LinkButton href={interest.primaryCallToAction.href} size="large">
               {interest.primaryCallToAction.label}

@@ -24,6 +24,11 @@ import {
 import { useState, useSyncExternalStore } from "react";
 
 import { joinImages } from "@/config/join-images";
+import { NetworkIllustration } from "@/components/illustration/brand-illustrations";
+import { SequenceSpine } from "@/components/sequence-spine";
+import { EditorialMosaic } from "@/components/editorial-mosaic";
+import { NumeralFeature } from "@/components/numeral-feature";
+import { PortalCardGrid } from "@/components/portal-card-grid";
 
 function ShowcaseSection({
   children,
@@ -96,15 +101,6 @@ function subscribeToReducedMotion(onChange: () => void) {
   return () => query.removeEventListener("change", onChange);
 }
 
-/** Reads and subscribes to the live OS/browser reduced-motion
- * preference — a `useSyncExternalStore` read of an external browser API
- * is the correct pattern here (React's own guidance) rather than
- * setState-in-effect, and it's SSR-safe via the server-snapshot arg
- * (this static-export build prerenders this component with no
- * `window`; the server snapshot always reports "no preference" and the
- * client corrects it on hydration, matching how the rest of this app's
- * motion runtime already treats reduced motion as a progressive,
- * client-only enhancement). */
 function useReducedMotionPreference(): boolean {
   return useSyncExternalStore(
     subscribeToReducedMotion,
@@ -421,6 +417,122 @@ export function DesignSystemShowcase() {
               The request could not be completed. Please try again.
             </Alert>
             <Alert tone="success">Verification complete.</Alert>
+          </div>
+        </ShowcaseSection>
+
+        <ShowcaseSection
+          title="Content treatments"
+          description="The three shapes every content list on the public site now takes. Which one a list gets is decided by what the list is, not by where it sits: a sequence whose order is real gets the spine, peer statements get the mosaic or the numeral grid, and records that lead somewhere get portal cards."
+        >
+          <div className="grid gap-12">
+            <div>
+              <p className="text-slate text-[0.68rem] font-bold tracking-[0.16em] uppercase">
+                Sequence spine — order is real
+              </p>
+              <SequenceSpine
+                steps={[
+                  {
+                    marker: "01",
+                    title: "Express interest",
+                    description:
+                      "A local group registers its intent and names the people who will carry it.",
+                  },
+                  {
+                    marker: "02",
+                    title: "Initial review",
+                    description:
+                      "The federation checks standing, reach and whether a chapter already covers the area.",
+                  },
+                  {
+                    marker: "03",
+                    title: "Provisional recognition",
+                    description:
+                      "The chapter operates under review while it demonstrates activity.",
+                  },
+                ]}
+              />
+            </div>
+            <div>
+              <p className="text-slate text-[0.68rem] font-bold tracking-[0.16em] uppercase">
+                Editorial mosaic — peer statements, high-traffic sections
+              </p>
+              <EditorialMosaic
+                figure={<NetworkIllustration />}
+                items={[
+                  {
+                    title: "Local understanding",
+                    description:
+                      "Countries and cities have different community needs, laws, institutions and opportunities.",
+                  },
+                  {
+                    title: "Community access",
+                    description:
+                      "Local chapters may help people discover trusted events and participation pathways.",
+                  },
+                  {
+                    title: "Language and culture",
+                    description:
+                      "Chapters can support locally relevant Tamil language and cultural activity.",
+                  },
+                ]}
+              />
+            </div>
+            <div>
+              <p className="text-slate text-[0.68rem] font-bold tracking-[0.16em] uppercase">
+                Numeral feature — peer statements, everywhere else
+              </p>
+              <NumeralFeature
+                items={[
+                  {
+                    title: "Verified standing",
+                    description:
+                      "Every organisation is checked before it appears in the directory.",
+                  },
+                  {
+                    title: "Named accountability",
+                    description:
+                      "A real person is responsible for each registration, not an inbox.",
+                  },
+                  {
+                    title: "Reversible decisions",
+                    description:
+                      "Any approval can be revisited, and the history stays readable.",
+                  },
+                ]}
+              />
+            </div>
+            <div>
+              <p className="text-slate text-[0.68rem] font-bold tracking-[0.16em] uppercase">
+                Portal cards — records that lead somewhere
+              </p>
+              <PortalCardGrid
+                columns={3}
+                linkLabel="Explore the vision"
+                cards={[
+                  {
+                    marker: "01",
+                    title: "Education",
+                    description:
+                      "Tamil learning networks across schools, community classes and online.",
+                    href: "/initiatives",
+                  },
+                  {
+                    marker: "02",
+                    title: "Heritage and arts",
+                    description:
+                      "Practitioners, archives and the institutions that hold them.",
+                    href: "/initiatives",
+                  },
+                  {
+                    marker: "03",
+                    title: "Opportunity",
+                    description:
+                      "Work, enterprise and professional pathways across the diaspora.",
+                    href: "/initiatives",
+                  },
+                ]}
+              />
+            </div>
           </div>
         </ShowcaseSection>
 

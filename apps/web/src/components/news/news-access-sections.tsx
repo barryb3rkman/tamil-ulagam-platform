@@ -1,6 +1,7 @@
 import { Container, Section, SectionHeading } from "@tamil-ulagam/ui";
 
 import { newsContent } from "@/content/news";
+import { CheckGrid, NumberedGrid } from "@/components/numbered-grid";
 
 export function MultilingualAccessibilitySection() {
   const { multilingualAccessibility } = newsContent;
@@ -22,16 +23,7 @@ export function MultilingualAccessibilitySection() {
               <h3 className="text-global-navy text-xl font-semibold">
                 {group.title}
               </h3>
-              <ul className="border-global-navy/12 mt-5 border-t">
-                {group.items.map((item) => (
-                  <li
-                    key={item}
-                    className="border-global-navy/12 border-b py-3 leading-7"
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
+              <CheckGrid columns={2} items={group.items} />
             </section>
           ))}
         </div>
@@ -64,16 +56,7 @@ export function FutureDiscoverySection() {
             >
               Discovery fields
             </h3>
-            <ul className="border-global-navy/12 mt-5 border-t">
-              {discovery.discoveryFields.map((item) => (
-                <li
-                  key={item}
-                  className="border-global-navy/12 border-b py-3 leading-7"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <CheckGrid columns={2} items={discovery.discoveryFields} />
           </section>
           <section aria-labelledby="future-article-experience-title">
             <h3
@@ -82,16 +65,7 @@ export function FutureDiscoverySection() {
             >
               Article experience
             </h3>
-            <ul className="border-global-navy/12 mt-5 border-t">
-              {discovery.articleFields.map((item) => (
-                <li
-                  key={item}
-                  className="border-global-navy/12 border-b py-3 leading-7"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <CheckGrid columns={2} items={discovery.articleFields} />
           </section>
         </div>
       </Container>
@@ -109,7 +83,7 @@ export function DistributionSection() {
           id="distribution-title"
           eyebrow={distribution.eyebrow}
           title={distribution.title}
-          className="[&>h2]:text-white"
+          tone="inverse"
         />
         <div className="mt-10 grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20">
           <section aria-labelledby="distribution-channels-title">
@@ -119,16 +93,7 @@ export function DistributionSection() {
             >
               Distribution channels
             </h3>
-            <ul className="mt-5 grid border-t border-white/16 sm:grid-cols-2">
-              {distribution.channels.map((channel) => (
-                <li
-                  key={channel}
-                  className="border-b border-white/16 py-4 leading-7 text-white/84 sm:px-5 sm:odd:pl-0 sm:even:border-l"
-                >
-                  {channel}
-                </li>
-              ))}
-            </ul>
+            <CheckGrid columns={2} items={distribution.channels} tone="dark" />
           </section>
           <section aria-labelledby="distribution-principles-title">
             <h3
@@ -137,19 +102,7 @@ export function DistributionSection() {
             >
               Distribution principles
             </h3>
-            <ol className="mt-5 grid border-t border-white/16 sm:grid-cols-2">
-              {distribution.principles.map((principle, index) => (
-                <li
-                  key={principle}
-                  className="grid gap-4 border-b border-white/16 py-4 sm:grid-cols-[2rem_1fr] sm:px-5 sm:odd:pl-0 sm:even:border-l"
-                >
-                  <span className="text-heritage-gold text-sm font-semibold">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <p className="leading-7 text-white/84">{principle}</p>
-                </li>
-              ))}
-            </ol>
+            <NumberedGrid items={distribution.principles} tone="dark" />
           </section>
         </div>
       </Container>

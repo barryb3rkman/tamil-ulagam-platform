@@ -1,6 +1,7 @@
 import { Container, LinkButton, Section } from "@tamil-ulagam/ui";
 
 import { initiativeOverviewContent } from "@/content/initiatives-overview";
+import { NumeralFeature } from "@/components/numeral-feature";
 
 export function SharedPlatformSection() {
   const { sharedPlatform } = initiativeOverviewContent;
@@ -34,21 +35,12 @@ export function SharedPlatformSection() {
               {sharedPlatform.callToAction.label}
             </LinkButton>
           </div>
-          <ol className="grid divide-y border-y border-white/16 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
-            {sharedPlatform.foundations.map((foundation, index) => (
-              <li
-                key={foundation}
-                className="grid grid-cols-[3.25rem_minmax(0,1fr)] items-start gap-5 border-white/16 py-7 sm:grid-cols-[2.75rem_1fr] sm:gap-4 sm:p-8 odd:sm:border-b"
-              >
-                <span className="border-heritage-gold/60 text-heritage-gold grid size-10 place-items-center rounded-full border text-sm font-semibold sm:size-auto sm:border-0 sm:text-lg">
-                  0{index + 1}
-                </span>
-                <p className="text-base leading-7 font-semibold text-white/92 sm:text-lg sm:leading-normal">
-                  {foundation}
-                </p>
-              </li>
-            ))}
-          </ol>
+          <NumeralFeature
+            tone="dark"
+            items={sharedPlatform.foundations.map((foundation) => ({
+              title: foundation,
+            }))}
+          />
         </div>
       </Container>
     </Section>

@@ -6,6 +6,7 @@ import {
 } from "@tamil-ulagam/ui";
 
 import { partnersContent } from "@/content/partners";
+import { FaqAccordion } from "@/components/faq-accordion";
 
 export function PartnersFaq() {
   return (
@@ -19,18 +20,7 @@ export function PartnersFaq() {
           eyebrow="FREQUENTLY ASKED QUESTIONS"
           title="Clear answers for responsible partnership discussions."
         />
-        <dl className="border-global-navy/12 divide-global-navy/12 border-y">
-          {partnersContent.faqs.map((faq) => (
-            <div key={faq.title} className="py-6">
-              <dt className="text-global-navy text-xl font-semibold">
-                {faq.title}
-              </dt>
-              <dd className="text-slate mt-3 max-w-3xl leading-7">
-                {faq.description}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <FaqAccordion items={partnersContent.faqs} />
       </Container>
     </Section>
   );

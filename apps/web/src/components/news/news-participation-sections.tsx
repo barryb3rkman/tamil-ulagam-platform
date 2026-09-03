@@ -6,6 +6,8 @@ import {
 } from "@tamil-ulagam/ui";
 
 import { newsContent } from "@/content/news";
+import { CheckGrid, NumberedGrid } from "@/components/numbered-grid";
+import { FaqAccordion } from "@/components/faq-accordion";
 
 export function NewsroomReadinessSection() {
   const { readiness } = newsContent;
@@ -22,19 +24,7 @@ export function NewsroomReadinessSection() {
           title={readiness.title}
         />
         <div>
-          <ol className="border-global-navy/12 grid border-t sm:grid-cols-2">
-            {readiness.items.map((item, index) => (
-              <li
-                key={item}
-                className="border-global-navy/12 grid gap-4 border-b py-5 sm:grid-cols-[2rem_1fr] sm:px-5 sm:odd:pl-0 sm:even:border-l"
-              >
-                <span className="text-heritage-gold text-sm font-semibold">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <p className="leading-7">{item}</p>
-              </li>
-            ))}
-          </ol>
+          <NumberedGrid items={readiness.items} />
           <p className="border-heritage-maroon/40 text-slate mt-8 border-l-2 pl-5 text-lg leading-8">
             {readiness.statement}
           </p>
@@ -70,16 +60,7 @@ export function NewsInterestSection() {
           description={interest.description}
         />
         <div>
-          <ul className="border-global-navy/12 grid border-t sm:grid-cols-2">
-            {interest.areas.map((area) => (
-              <li
-                key={area}
-                className="border-global-navy/12 border-b py-4 leading-7 sm:px-5 sm:odd:pl-0 sm:even:border-l"
-              >
-                {area}
-              </li>
-            ))}
-          </ul>
+          <CheckGrid columns={2} items={interest.areas} />
           <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center">
             <LinkButton href={interest.primaryCallToAction.href} size="large">
               {interest.primaryCallToAction.label}
@@ -117,18 +98,7 @@ export function NewsFaq() {
           eyebrow="FREQUENTLY ASKED QUESTIONS"
           title="Clear answers about Tamil Ulagam publishing."
         />
-        <dl className="border-global-navy/12 divide-global-navy/12 border-y">
-          {newsContent.faqs.map((faq) => (
-            <div key={faq.title} className="py-6">
-              <dt className="text-global-navy text-xl font-semibold">
-                {faq.title}
-              </dt>
-              <dd className="text-slate mt-3 max-w-3xl leading-7">
-                {faq.description}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <FaqAccordion items={newsContent.faqs} />
       </Container>
     </Section>
   );

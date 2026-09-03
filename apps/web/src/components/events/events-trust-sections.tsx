@@ -7,6 +7,7 @@ import {
 } from "@tamil-ulagam/ui";
 
 import { eventsContent } from "@/content/events";
+import { CheckGrid, NumberedGrid } from "@/components/numbered-grid";
 
 export function RegistrationAttendanceSection() {
   const { registration } = eventsContent;
@@ -26,32 +27,11 @@ export function RegistrationAttendanceSection() {
           <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
             Participation models
           </p>
-          <ul className="border-global-navy/12 mt-5 grid border-t sm:grid-cols-2">
-            {registration.models.map((model) => (
-              <li
-                key={model}
-                className="border-global-navy/12 border-b py-4 leading-7 sm:px-5 sm:odd:pl-0 sm:even:border-l"
-              >
-                {model}
-              </li>
-            ))}
-          </ul>
+          <CheckGrid columns={2} items={registration.models} />
           <p className="text-heritage-maroon mt-9 text-sm font-semibold tracking-[0.14em] uppercase">
             Registration principles
           </p>
-          <ol className="border-global-navy/12 mt-5 grid border-t sm:grid-cols-2">
-            {registration.principles.map((principle, index) => (
-              <li
-                key={principle}
-                className="border-global-navy/12 grid gap-4 border-b py-5 sm:grid-cols-[2rem_1fr] sm:px-5 sm:odd:pl-0 sm:even:border-l"
-              >
-                <span className="text-heritage-gold text-sm font-semibold">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <p className="leading-7">{principle}</p>
-              </li>
-            ))}
-          </ol>
+          <NumberedGrid items={registration.principles} />
         </div>
       </Container>
     </Section>
@@ -68,38 +48,28 @@ export function EventPrivacySection() {
           id="event-privacy-title"
           eyebrow={privacy.eyebrow}
           title={privacy.title}
-          className="[&>h2]:text-white"
+          tone="inverse"
         />
         <div className="mt-10 grid gap-5 lg:grid-cols-2">
           <section className="bg-deep-navy/45 border border-white/16 p-6 sm:p-8">
             <h3 className="text-heritage-gold text-2xl font-semibold">
               Public event information may include
             </h3>
-            <ul className="mt-5 grid border-t border-white/16 sm:grid-cols-2">
-              {privacy.publicInformation.map((item) => (
-                <li
-                  key={item}
-                  className="border-b border-white/16 py-3 text-sm leading-6 text-white/84 sm:px-4 sm:odd:pl-0 sm:even:border-l"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <CheckGrid
+              columns={2}
+              items={privacy.publicInformation}
+              tone="dark"
+            />
           </section>
           <section className="bg-deep-navy/45 border border-white/16 p-6 sm:p-8">
             <h3 className="text-heritage-gold text-2xl font-semibold">
               Private attendee information may include
             </h3>
-            <ul className="mt-5 grid border-t border-white/16 sm:grid-cols-2">
-              {privacy.privateInformation.map((item) => (
-                <li
-                  key={item}
-                  className="border-b border-white/16 py-3 text-sm leading-6 text-white/84 sm:px-4 sm:odd:pl-0 sm:even:border-l"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <CheckGrid
+              columns={2}
+              items={privacy.privateInformation}
+              tone="dark"
+            />
           </section>
         </div>
         <div className="border-heritage-gold/55 mt-8 flex flex-col items-start gap-5 border-l-2 pl-5 sm:flex-row sm:items-end sm:justify-between">
@@ -144,16 +114,7 @@ export function ChapterOrganisationEventsSection() {
               <h3 className="text-global-navy text-2xl font-semibold">
                 {group.title}
               </h3>
-              <ul className="border-global-navy/12 mt-5 border-t">
-                {group.items.map((item) => (
-                  <li
-                    key={item}
-                    className="border-global-navy/12 border-b py-3 leading-7"
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
+              <CheckGrid columns={2} items={group.items} />
             </section>
           ))}
         </div>
@@ -194,29 +155,11 @@ export function HybridArchiveSection() {
           <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
             Participation support
           </p>
-          <ul className="border-global-navy/12 mt-5 grid border-t sm:grid-cols-2">
-            {hybridArchive.possibilities.map((item) => (
-              <li
-                key={item}
-                className="border-global-navy/12 border-b py-4 leading-7 sm:px-5 sm:odd:pl-0 sm:even:border-l"
-              >
-                {item}
-              </li>
-            ))}
-          </ul>
+          <CheckGrid columns={2} items={hybridArchive.possibilities} />
           <p className="text-heritage-maroon mt-9 text-sm font-semibold tracking-[0.14em] uppercase">
             Required safeguards
           </p>
-          <ul className="border-global-navy/12 mt-5 grid border-t sm:grid-cols-2">
-            {hybridArchive.safeguards.map((item) => (
-              <li
-                key={item}
-                className="border-global-navy/12 border-b py-4 leading-7 sm:px-5 sm:odd:pl-0 sm:even:border-l"
-              >
-                {item}
-              </li>
-            ))}
-          </ul>
+          <CheckGrid columns={2} items={hybridArchive.safeguards} />
           <p className="border-heritage-gold mt-8 border-l-2 pl-5 text-lg leading-8">
             {hybridArchive.statement}
           </p>
@@ -239,7 +182,7 @@ export function EventStatusSection() {
           id="event-status-title"
           eyebrow={statusModel.eyebrow}
           title={statusModel.title}
-          className="[&>h2]:text-white"
+          tone="inverse"
         />
         <div>
           <h3 className="text-heritage-gold text-sm font-semibold tracking-[0.14em] uppercase">
@@ -296,16 +239,7 @@ export function EventSafetySection() {
           title={safety.title}
         />
         <div>
-          <ul className="border-global-navy/12 grid border-t sm:grid-cols-2">
-            {safety.principles.map((principle) => (
-              <li
-                key={principle}
-                className="border-global-navy/12 border-b py-4 leading-7 sm:px-5 sm:odd:pl-0 sm:even:border-l"
-              >
-                {principle}
-              </li>
-            ))}
-          </ul>
+          <CheckGrid columns={2} items={safety.principles} />
           <p className="border-heritage-maroon/40 text-slate mt-8 border-l-2 pl-5 text-lg leading-8">
             {safety.statement}
           </p>

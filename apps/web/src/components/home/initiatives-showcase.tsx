@@ -83,7 +83,6 @@ function DesktopInitiatives() {
   const groups: readonly [InitiativeTier, readonly InitiativeSlug[]][] = [
     ["featured", presentation.featured],
     ["medium", presentation.medium],
-    ["supporting", presentation.supporting],
   ];
 
   return (

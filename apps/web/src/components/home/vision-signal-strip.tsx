@@ -23,7 +23,7 @@ export function VisionSignalStrip() {
                 aria-hidden="true"
                 className="text-heritage-gold text-sm font-semibold"
               >
-                0{index + 1}
+                {String(index + 1).padStart(2, "0")}
               </span>
               <span className="text-global-navy text-[0.78rem] font-semibold tracking-[0.07em] uppercase sm:text-sm">
                 {signal}

@@ -6,6 +6,7 @@ import {
 } from "@tamil-ulagam/ui";
 
 import { tamilIdContent } from "@/content/tamil-id";
+import { FaqAccordion } from "@/components/faq-accordion";
 
 export function TamilIdFaq() {
   return (
@@ -18,18 +19,7 @@ export function TamilIdFaq() {
           eyebrow="FREQUENTLY ASKED QUESTIONS"
           title="Clear answers about Tamil ID membership."
         />
-        <dl className="border-global-navy/12 divide-global-navy/12 border-y">
-          {tamilIdContent.faqs.map((faq) => (
-            <div key={faq.title} className="py-6">
-              <dt className="text-global-navy text-xl font-semibold">
-                {faq.title}
-              </dt>
-              <dd className="text-slate mt-3 max-w-3xl leading-7">
-                {faq.description}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <FaqAccordion items={tamilIdContent.faqs} />
       </Container>
     </Section>
   );

@@ -1,6 +1,7 @@
 import { Container, LinkButton, Section } from "@tamil-ulagam/ui";
 
 import { initiativeOverviewContent } from "@/content/initiatives-overview";
+import { NumeralFeature } from "@/components/numeral-feature";
 
 export function ReadinessPrinciplesSection() {
   const { readiness } = initiativeOverviewContent;
@@ -33,21 +34,11 @@ export function ReadinessPrinciplesSection() {
               </span>
             </LinkButton>
           </div>
-          <ol className="border-global-navy/12 grid divide-y border-y sm:grid-cols-2 sm:divide-x sm:divide-y-0">
-            {readiness.principles.map((principle, index) => (
-              <li
-                key={principle}
-                className="border-global-navy/12 grid grid-cols-[3.25rem_minmax(0,1fr)] items-start gap-5 py-7 sm:grid-cols-[2.75rem_1fr] sm:gap-4 sm:p-8 odd:sm:border-b"
-              >
-                <span className="border-heritage-gold/60 text-heritage-gold grid size-10 place-items-center rounded-full border text-sm font-semibold sm:size-auto sm:border-0 sm:text-lg">
-                  0{index + 1}
-                </span>
-                <p className="text-global-navy text-base leading-7 font-semibold sm:text-lg sm:leading-normal">
-                  {principle}
-                </p>
-              </li>
-            ))}
-          </ol>
+          <NumeralFeature
+            items={readiness.principles.map((principle) => ({
+              title: principle,
+            }))}
+          />
         </div>
       </Container>
     </Section>

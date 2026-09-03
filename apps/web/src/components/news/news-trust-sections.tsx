@@ -1,6 +1,8 @@
 import { Container, Section, SectionHeading } from "@tamil-ulagam/ui";
 
+import { CollapsibleSection } from "@/components/collapsible-section";
 import { newsContent } from "@/content/news";
+import { CheckGrid, NumberedGrid } from "@/components/numbered-grid";
 
 export function SourceVerificationSection() {
   const { verification } = newsContent;
@@ -20,19 +22,7 @@ export function SourceVerificationSection() {
           <p className="text-heritage-maroon text-sm font-semibold tracking-[0.14em] uppercase">
             {verification.label}
           </p>
-          <ol className="border-global-navy/12 mt-5 grid border-t sm:grid-cols-2">
-            {verification.items.map((item, index) => (
-              <li
-                key={item}
-                className="border-global-navy/12 grid gap-4 border-b py-5 sm:grid-cols-[2rem_1fr] sm:px-5 sm:odd:pl-0 sm:even:border-l"
-              >
-                <span className="text-heritage-gold text-sm font-semibold">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <p className="leading-7">{item}</p>
-              </li>
-            ))}
-          </ol>
+          <NumberedGrid items={verification.items} />
         </div>
       </Container>
     </Section>
@@ -58,16 +48,7 @@ export function AuthorshipSection() {
             >
               Public attribution may include
             </h3>
-            <ul className="border-global-navy/12 mt-5 grid border-t sm:grid-cols-2">
-              {authorship.mayInclude.map((item) => (
-                <li
-                  key={item}
-                  className="border-global-navy/12 border-b py-4 leading-7 sm:px-5 sm:odd:pl-0 sm:even:border-l"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <CheckGrid columns={2} items={authorship.mayInclude} />
           </section>
           <section aria-labelledby="attribution-boundaries-title">
             <h3
@@ -103,22 +84,10 @@ export function CommunityStoriesSection() {
           id="community-stories-title"
           eyebrow={communityStories.eyebrow}
           title={communityStories.title}
-          className="[&>h2]:text-white"
+          tone="inverse"
         />
         <div>
-          <ol className="grid border-t border-white/16 sm:grid-cols-2">
-            {communityStories.items.map((item, index) => (
-              <li
-                key={item}
-                className="grid gap-4 border-b border-white/16 py-5 sm:grid-cols-[2rem_1fr] sm:px-5 sm:odd:pl-0 sm:even:border-l"
-              >
-                <span className="text-heritage-gold text-sm font-semibold">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <p className="leading-7 text-white/84">{item}</p>
-              </li>
-            ))}
-          </ol>
+          <NumberedGrid items={communityStories.items} tone="dark" />
           <p className="border-heritage-gold/55 mt-8 border-l-2 pl-5 text-lg leading-8 text-white/84">
             {communityStories.statement}
           </p>
@@ -132,35 +101,24 @@ export function CorrectionsSection() {
   const { corrections } = newsContent;
 
   return (
-    <Section tone="white" aria-labelledby="corrections-title">
-      <Container
-        size="wide"
-        className="grid gap-10 lg:grid-cols-[0.62fr_1.38fr] lg:gap-20"
-      >
-        <SectionHeading
-          id="corrections-title"
-          eyebrow={corrections.eyebrow}
-          title={corrections.title}
-        />
-        <div>
-          <dl className="border-global-navy/12 divide-global-navy/12 border-y">
-            {corrections.categories.map((category) => (
-              <div
-                key={category.title}
-                className="grid gap-3 py-6 sm:grid-cols-[12rem_1fr] sm:gap-7"
-              >
-                <dt className="text-heritage-maroon text-sm font-semibold tracking-[0.12em] uppercase">
-                  {category.title}
-                </dt>
-                <dd className="text-slate leading-7">{category.description}</dd>
-              </div>
-            ))}
-          </dl>
-          <p className="border-heritage-maroon/40 text-slate mt-8 border-l-2 pl-5 text-lg leading-8">
-            {corrections.statement}
-          </p>
-        </div>
-      </Container>
-    </Section>
+    <CollapsibleSection
+      eyebrow={corrections.eyebrow}
+      title={corrections.title}
+      summary={corrections.statement}
+    >
+      <dl className="divide-global-navy/10 divide-y">
+        {corrections.categories.map((category) => (
+          <div
+            key={category.title}
+            className="grid gap-2 py-4 first:pt-0 last:pb-0 sm:grid-cols-[12rem_1fr] sm:gap-7"
+          >
+            <dt className="text-global-navy text-sm font-bold tracking-[0.1em] uppercase">
+              {category.title}
+            </dt>
+            <dd className="text-slate leading-7">{category.description}</dd>
+          </div>
+        ))}
+      </dl>
+    </CollapsibleSection>
   );
 }
