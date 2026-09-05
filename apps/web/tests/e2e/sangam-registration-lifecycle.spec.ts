@@ -263,14 +263,18 @@ test.describe("local Supabase real Tamil Sangam registration lifecycle", () => {
       await registrantPage
         .getByRole("button", { name: "Confirm member" })
         .click();
-      await expect(registrantPage.getByText("Active")).toBeVisible();
+      await expect(
+        registrantPage.locator('[data-status-badge="Active"]'),
+      ).toBeVisible();
 
       // --- Member: workspace reflects the active affiliation ---
       await memberPage.goto("/workspace/member");
       await expect(
         memberPage.getByRole("heading", { name: sangamName, exact: true }),
       ).toBeVisible();
-      await expect(memberPage.getByText("Active")).toBeVisible();
+      await expect(
+        memberPage.locator('[data-status-badge="Active"]'),
+      ).toBeVisible();
     } finally {
       await registrantContext.close();
       await reviewerContext.close();

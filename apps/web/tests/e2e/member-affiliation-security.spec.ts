@@ -54,14 +54,26 @@ test.describe("local Supabase Member affiliation — security & category-questio
       ownerEmail: string,
       ownerName: string,
     ) {
-      const owner = await admin.auth.admin.createUser({
+      // Reuse the account if it is already there, the way the other
+      // suites do. Throwing here made a re-run — or a Playwright retry,
+      // which repeats beforeAll — fail on its own leftovers.
+      const created = await admin.auth.admin.createUser({
         email: ownerEmail,
         password,
         email_confirm: true,
         user_metadata: { full_name: ownerName },
       });
-      if (owner.error)
-        throw new Error(`Create ${ownerEmail}: ${owner.error.message}`);
+      let ownerId = created.data.user?.id;
+      if (created.error) {
+        const existing = await admin.auth.admin.listUsers();
+        ownerId = existing.data.users.find(
+          (user) => user.email === ownerEmail,
+        )?.id;
+        if (!ownerId) {
+          throw new Error(`Create ${ownerEmail}: ${created.error.message}`);
+        }
+      }
+      if (!ownerId) throw new Error(`Create ${ownerEmail}: no user id`);
 
       const org = await admin
         .from("organizations")
@@ -79,7 +91,7 @@ test.describe("local Supabase Member affiliation — security & category-questio
       }
       const application = await admin.from("organization_applications").insert({
         organization_id: org.data.id,
-        submitted_by: owner.data.user.id,
+        submitted_by: ownerId,
         status: "verified",
         submitted_at: new Date().toISOString(),
       });
@@ -88,7 +100,7 @@ test.describe("local Supabase Member affiliation — security & category-questio
       }
       const grant = await admin.from("organization_managers").insert({
         organization_id: org.data.id,
-        user_id: owner.data.user.id,
+        user_id: ownerId,
         role: "owner",
       });
       if (grant.error) throw new Error(`Grant ${name}: ${grant.error.message}`);

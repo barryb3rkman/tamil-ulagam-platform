@@ -291,7 +291,9 @@ test.describe("local Supabase real V3 Organisation registration lifecycle", () =
       await registrantPage
         .getByRole("button", { name: "Confirm member" })
         .click();
-      await expect(registrantPage.getByText("Active")).toBeVisible();
+      await expect(
+        registrantPage.locator('[data-status-badge="Active"]'),
+      ).toBeVisible();
 
       // --- Member: workspace reflects the active affiliation ---
       await memberPage.goto("/workspace/member");
@@ -301,7 +303,9 @@ test.describe("local Supabase real V3 Organisation registration lifecycle", () =
           exact: true,
         }),
       ).toBeVisible();
-      await expect(memberPage.getByText("Active")).toBeVisible();
+      await expect(
+        memberPage.locator('[data-status-badge="Active"]'),
+      ).toBeVisible();
     } finally {
       await registrantContext.close();
       await reviewerContext.close();

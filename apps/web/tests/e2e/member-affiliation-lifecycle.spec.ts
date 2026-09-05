@@ -194,14 +194,18 @@ test.describe("local Supabase real Member Registration lifecycle", () => {
       await expect(managerPage.getByText("Local Browser Member")).toBeVisible();
       await expect(managerPage.getByText(member.email)).toBeVisible();
       await managerPage.getByRole("button", { name: "Confirm member" }).click();
-      await expect(managerPage.getByText("Active")).toBeVisible();
+      await expect(
+        managerPage.locator('[data-status-badge="Active"]'),
+      ).toBeVisible();
 
       // --- Member: Member Workspace reflects the active affiliation ---
       await memberPage.goto("/workspace/member");
       await expect(
         memberPage.getByRole("heading", { name: sangamName, exact: true }),
       ).toBeVisible();
-      await expect(memberPage.getByText("Active")).toBeVisible();
+      await expect(
+        memberPage.locator('[data-status-badge="Active"]'),
+      ).toBeVisible();
     } finally {
       await memberContext.close();
       await managerContext.close();
