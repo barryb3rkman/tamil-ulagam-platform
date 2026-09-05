@@ -43,7 +43,12 @@ async function signIn(page: Page, email: string) {
 }
 
 async function openSwitcher(page: Page) {
-  await page.getByRole("button", { name: "Switch workspace" }).click();
+  // The switcher renders disabled while the workspace inventory loads,
+  // and the shell replaces the node as that resolves — so a click fired
+  // straight away keeps landing on a detached, disabled button.
+  const trigger = page.getByRole("button", { name: "Switch workspace" });
+  await expect(trigger).toBeEnabled({ timeout: 15000 });
+  await trigger.click();
 }
 
 test.describe("real V3 workspace switching across the five named personas", () => {
@@ -219,17 +224,18 @@ test.describe("real V3 workspace switching across the five named personas", () =
   }) => {
     await signIn(page, users.memberOnly.email);
     await page.goto("/workspace/member");
-    await openSwitcher(page);
-    await expect(page.getByRole("link", { name: /^Member/ })).toBeVisible();
+
+    // A member-only account has exactly one workspace and is standing in
+    // it, so switcherHasSomewhereToGo is false and the control is not
+    // rendered at all — a button offering only the page you are on is
+    // chrome with no function. This test predates that rule and used to
+    // open a switcher that no longer exists for this persona.
     await expect(
-      page.getByRole("heading", { name: "Organisations" }),
-    ).toHaveCount(0);
+      page.getByRole("heading", { level: 1, name: "Your affiliations" }),
+    ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "Tamil Sangams" }),
+      page.getByRole("button", { name: "Switch workspace" }),
     ).toHaveCount(0);
-    await expect(page.getByRole("heading", { name: "Federation" })).toHaveCount(
-      0,
-    );
   });
 
   test("B. Organisation manager switches between Member and their Organisation, URL and content both change correctly", async ({
