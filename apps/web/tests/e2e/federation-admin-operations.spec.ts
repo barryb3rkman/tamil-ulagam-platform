@@ -188,7 +188,7 @@ test.describe("Federation Admin Operations V3", () => {
     test.setTimeout(90_000);
     await page.goto("/partners");
     await page.getByLabel("Name").fill("Priya Nadarajah");
-    await page.getByLabel("Email").fill("priya@example.org");
+    await page.getByLabel("Email").first().fill("priya@example.org");
     await page
       .getByLabel("Organisation (optional)")
       .fill("Tamil Research Forum");
@@ -498,8 +498,8 @@ test.describe("Federation Admin Operations V3", () => {
 
 async function signIn(page: Page) {
   await page.goto("/login");
-  await page.getByLabel("Email").fill(adminAccount.email);
-  await page.getByLabel("Password").fill(adminAccount.password);
+  await page.getByLabel("Email").first().fill(adminAccount.email);
+  await page.getByLabel("Password").first().fill(adminAccount.password);
   await page.getByRole("button", { name: "Sign In" }).focus();
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/admin\/?$/);

@@ -8,8 +8,8 @@ const password = "LocalManagementLifecycle!2048Aa";
 async function signIn(page: Page, email: string) {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/login");
-  await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Password").fill(password);
+  await page.getByLabel("Email").first().fill(email);
+  await page.getByLabel("Password").first().fill(password);
   await page.getByRole("button", { name: "Sign In" }).click();
   await page.waitForURL((url) => !url.pathname.startsWith("/login"));
 }
@@ -159,7 +159,7 @@ test.describe("Management administration lifecycle", () => {
     await expect(
       ownerPage.getByRole("heading", { name: "Invite a manager" }),
     ).toBeVisible();
-    await ownerPage.getByLabel("Email").fill(users.recipientA.email);
+    await ownerPage.getByLabel("Email").first().fill(users.recipientA.email);
     await ownerPage.getByLabel("Role").selectOption("admin");
     await ownerPage.getByRole("button", { name: "Send invitation" }).click();
     await expect(
@@ -193,7 +193,9 @@ test.describe("Management administration lifecycle", () => {
     await expect(
       recipientPage.getByRole("heading", { name: "Your workspaces" }),
     ).toBeVisible();
-    await expect(recipientPage.getByText(orgName)).toBeVisible();
+    await expect(
+      recipientPage.getByRole("link", { name: orgName }),
+    ).toBeVisible();
     await recipientPage.keyboard.press("Escape");
 
     // Opens the Organisation Workspace correctly.
@@ -292,7 +294,7 @@ test.describe("Management administration lifecycle", () => {
     await page.goto(`/workspace/organisation/people?organization=${orgId}`);
     await page.getByRole("tab", { name: "Managers" }).click();
     await page.getByRole("button", { name: "Invite manager" }).click();
-    await page.getByLabel("Email").fill(users.recipientB.email);
+    await page.getByLabel("Email").first().fill(users.recipientB.email);
     await page.getByLabel("Role").selectOption("representative");
     await page.getByRole("button", { name: "Send invitation" }).click();
     await expect(page.getByText(users.recipientB.email).first()).toBeVisible();
@@ -352,7 +354,7 @@ test.describe("Management administration lifecycle", () => {
     await page.goto(`/workspace/organisation/people?organization=${orgId}`);
     await page.getByRole("tab", { name: "Managers" }).click();
     await page.getByRole("button", { name: "Invite manager" }).click();
-    await page.getByLabel("Email").fill(users.recipientA.email);
+    await page.getByLabel("Email").first().fill(users.recipientA.email);
     await page.getByLabel("Role").selectOption("admin");
     await page.getByRole("button", { name: "Send invitation" }).click();
     await expect(page.getByText(users.recipientA.email).first()).toBeVisible();
@@ -422,7 +424,7 @@ test.describe("Management administration lifecycle", () => {
     await expect(ownerPage.getByText("Sangam managers")).toBeVisible();
 
     await ownerPage.getByRole("button", { name: "Invite manager" }).click();
-    await ownerPage.getByLabel("Email").fill(users.recipientB.email);
+    await ownerPage.getByLabel("Email").first().fill(users.recipientB.email);
     await ownerPage.getByLabel("Role").selectOption("admin");
     await ownerPage.getByRole("button", { name: "Send invitation" }).click();
     await expect(

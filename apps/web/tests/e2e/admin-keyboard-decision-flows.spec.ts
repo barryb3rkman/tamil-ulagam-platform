@@ -12,8 +12,8 @@ const admin1 = {
 async function signIn(page: Page) {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/login");
-  await page.getByLabel("Email").fill(admin1.email);
-  await page.getByLabel("Password").fill(password);
+  await page.getByLabel("Email").first().fill(admin1.email);
+  await page.getByLabel("Password").first().fill(password);
   await page.getByRole("button", { name: "Sign In" }).click();
   await page.waitForURL((url) => !url.pathname.startsWith("/login"));
 }
