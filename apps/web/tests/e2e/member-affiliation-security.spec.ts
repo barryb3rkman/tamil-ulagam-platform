@@ -242,7 +242,16 @@ test.describe("local Supabase Member affiliation — security & category-questio
         managerPage.getByText("Local Security Member C"),
       ).toBeVisible();
       await managerPage.getByRole("button", { name: "Not a member" }).click();
-      await expect(managerPage.getByText("Not confirmed")).toBeVisible();
+      // Declining is destructive, so it goes through a confirmation step.
+      await expect(
+        managerPage.getByRole("heading", { name: "Decline this affiliation?" }),
+      ).toBeVisible();
+      await managerPage
+        .getByRole("button", { name: "Decline affiliation" })
+        .click();
+      await expect(
+        managerPage.locator('[data-status-badge="Not confirmed"]'),
+      ).toBeVisible();
 
       await memberPage.goto("/workspace/member");
       await expect(

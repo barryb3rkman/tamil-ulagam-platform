@@ -238,7 +238,7 @@ test.describe("local Supabase real V3 Organisation registration lifecycle", () =
         registrantPage.getByRole("heading", { name: organisationName }),
       ).toBeVisible();
       await expect(
-        registrantPage.getByText("Verified Organisation"),
+        registrantPage.locator('[data-status-badge="Verified"]'),
       ).toBeVisible();
       await registrantPage.getByRole("link", { name: "Open People" }).click();
       await expect(registrantPage).toHaveURL(

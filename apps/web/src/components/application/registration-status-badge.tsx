@@ -13,7 +13,10 @@ export function RegistrationStatusBadge({
   const presentation = registrationStatusPresentation[status];
   if (inverse) {
     return (
-      <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs leading-5 font-semibold tracking-wide text-white backdrop-blur-sm">
+      <span
+        data-status-badge={presentation.label}
+        className="inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs leading-5 font-semibold tracking-wide text-white backdrop-blur-sm"
+      >
         <span
           aria-hidden="true"
           className={`size-1.5 rounded-full ${inverseStatusDot[status]}`}
@@ -23,7 +26,11 @@ export function RegistrationStatusBadge({
     );
   }
   return (
-    <Badge tone={presentation.tone} className="gap-2 py-1.5">
+    <Badge
+      tone={presentation.tone}
+      className="gap-2 py-1.5"
+      data-status-badge={presentation.label}
+    >
       <span aria-hidden="true" className="size-1.5 rounded-full bg-current" />
       {presentation.label}
     </Badge>

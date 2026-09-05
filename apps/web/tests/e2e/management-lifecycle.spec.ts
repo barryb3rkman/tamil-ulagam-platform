@@ -187,6 +187,9 @@ test.describe("Management administration lifecycle", () => {
     ).toBeVisible();
 
     // Now appears in the WorkspaceSwitcher.
+    await expect(
+      recipientPage.getByRole("button", { name: "Switch workspace" }),
+    ).toBeEnabled({ timeout: 15000 });
     await recipientPage
       .getByRole("button", { name: "Switch workspace" })
       .click();
@@ -274,13 +277,16 @@ test.describe("Management administration lifecycle", () => {
     const recipientContext = await browser.newContext();
     const recipientPage = await recipientContext.newPage();
     await signIn(recipientPage, users.recipientA.email);
-    await recipientPage
-      .getByRole("button", { name: "Switch workspace" })
-      .click();
+    // With the grant revoked this account manages nothing, so Member is
+    // its only workspace and it is standing in it — the switcher is not
+    // rendered at all, which is the strongest form of "access is gone".
     await expect(
-      recipientPage.getByRole("heading", { name: "Your workspaces" }),
+      recipientPage.getByRole("heading", { name: "Your affiliations" }),
     ).toBeVisible();
-    await expect(recipientPage.getByText(orgName)).not.toBeVisible();
+    await expect(
+      recipientPage.getByRole("button", { name: "Switch workspace" }),
+    ).toHaveCount(0);
+    await expect(recipientPage.getByText(orgName)).toHaveCount(0);
 
     await ownerContext.close();
     await recipientContext.close();
@@ -339,6 +345,9 @@ test.describe("Management administration lifecycle", () => {
       .click();
 
     await repPage.reload();
+    await expect(
+      repPage.getByRole("button", { name: "Switch workspace" }),
+    ).toBeEnabled({ timeout: 15000 });
     await repPage.getByRole("button", { name: "Switch workspace" }).click();
     await expect(
       repPage.getByRole("heading", { name: "Your workspaces" }),
