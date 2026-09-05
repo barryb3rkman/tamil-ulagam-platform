@@ -80,7 +80,7 @@ export function WorkspaceSwitcher({
           </span>
         </span>
         {tone === "dark" ? (
-          <span aria-hidden="true" className="text-white/35">
+          <span aria-hidden="true" className="text-white/70">
             ›
           </span>
         ) : null}

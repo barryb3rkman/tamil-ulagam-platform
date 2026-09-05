@@ -37,9 +37,9 @@ export function LiveClock({ updatedAt }: { readonly updatedAt?: number }) {
             {seconds}
           </span>
         </p>
-        <p className="text-eyebrow-sm mt-1.5 text-white/40">{day}</p>
+        <p className="text-eyebrow-sm mt-1.5 text-white/70">{day}</p>
         {updatedAt ? (
-          <p className="mt-1 flex items-center justify-end gap-1.5 text-[0.68rem] text-white/35">
+          <p className="mt-1 flex items-center justify-end gap-1.5 text-[0.68rem] text-white/70">
             <span
               aria-hidden="true"
               className="bg-success inline-block size-1.5 animate-pulse rounded-full"

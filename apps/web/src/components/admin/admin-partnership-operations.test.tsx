@@ -162,4 +162,29 @@ describe("AdminPartnershipOperations", () => {
       );
     });
   });
+
+  it("refetches the history after a decision, since the record id does not change", async () => {
+    const listPartnershipHistory = vi.fn(() => Promise.resolve([]));
+    searchParams = new URLSearchParams("enquiry=enquiry-1");
+    mountWith({
+      listPartnershipEnquiries: () => Promise.resolve([enquiry()]),
+      listPartnershipHistory,
+    });
+    await screen.findAllByText("Meera Sundaram");
+    await vi.waitFor(() => {
+      expect(listPartnershipHistory).toHaveBeenCalledTimes(1);
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Mark active" }));
+    const dialog = await screen.findByRole("dialog");
+    fireEvent.click(
+      within(dialog).getByRole("button", { name: "Confirm status change" }),
+    );
+
+    // Without an explicit reload the strip keeps showing the history as
+    // it was before the decision was recorded.
+    await vi.waitFor(() => {
+      expect(listPartnershipHistory).toHaveBeenCalledTimes(2);
+    });
+  });
 });

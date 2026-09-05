@@ -151,7 +151,7 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
           onClick={toggleSidebar}
           aria-expanded={!sidebarCollapsed}
           aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className="focus-visible:ring-focus-inverse motion-control text-eyebrow-sm mx-3 mb-2 flex min-h-9 items-center gap-2 rounded-lg px-3 text-white/40 hover:bg-white/6 hover:text-white/70 focus-visible:outline-none"
+          className="focus-visible:ring-focus-inverse motion-control text-eyebrow-sm mx-3 mb-2 flex min-h-9 items-center gap-2 rounded-lg px-3 text-white/70 hover:bg-white/6 hover:text-white/70 focus-visible:outline-none"
         >
           <svg
             aria-hidden="true"

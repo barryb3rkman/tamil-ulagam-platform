@@ -71,10 +71,11 @@ export function AdminMembershipOperations() {
     enabled: capabilities.canOperateFederation,
     load: listMemberships,
   });
-  const history = useAdminHistory<MembershipHistoryEvent>({
-    load: listHistory,
-    recordId: selectedId,
-  });
+  const { history, reload: reloadHistory } =
+    useAdminHistory<MembershipHistoryEvent>({
+      load: listHistory,
+      recordId: selectedId,
+    });
   const {
     action,
     begin: beginAction,
@@ -105,6 +106,7 @@ export function AdminMembershipOperations() {
       if (!service || !selected) return;
       await service.decideMembership(selected.id, chosen, reason);
       reload();
+      reloadHistory();
     });
 
   if (!capabilities.canOperateFederation)

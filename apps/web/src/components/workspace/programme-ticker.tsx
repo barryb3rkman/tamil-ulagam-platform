@@ -25,7 +25,7 @@ function TickerRun({ ariaHidden = false }: { readonly ariaHidden?: boolean }) {
       {workspaceModules.map((workspaceModule) => (
         <li
           key={workspaceModule.id}
-          className="flex shrink-0 items-center gap-2.5 text-white/45"
+          className="flex shrink-0 items-center gap-2.5 text-white/70"
         >
           <ModuleIcon
             moduleId={workspaceModule.id}

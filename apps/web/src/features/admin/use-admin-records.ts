@@ -69,6 +69,7 @@ export function useAdminHistory<Event>({
   readonly load: ((id: string) => Promise<Event[]>) | null;
   readonly recordId: string | null;
 }) {
+  const [reloadKey, setReloadKey] = useState(0);
   const [loaded, setLoaded] = useState<{
     readonly id: string;
     readonly events: Event[];
@@ -87,11 +88,21 @@ export function useAdminHistory<Event>({
     return () => {
       cancelled = true;
     };
-  }, [load, recordId]);
+  }, [load, recordId, reloadKey]);
+
+  // Recording a decision adds an entry but leaves the record id alone, so
+  // without an explicit reload the strip would keep showing the history
+  // as it was before the decision.
+  const reload = useCallback(() => {
+    setReloadKey((value) => value + 1);
+  }, []);
 
   // Derived rather than cleared in the effect, so switching records never
   // shows the previous record's history for a frame.
-  return loaded && loaded.id === recordId ? loaded.events : [];
+  return {
+    history: loaded && loaded.id === recordId ? loaded.events : [],
+    reload,
+  };
 }
 
 /**

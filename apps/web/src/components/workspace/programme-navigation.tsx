@@ -164,7 +164,7 @@ function SidebarProgrammes({
         }`}
       >
         <span>Programmes</span>
-        <span className="flex items-center gap-1.5 text-white/40">
+        <span className="flex items-center gap-1.5 text-white/70">
           {workspaceModules.length}
           <svg
             aria-hidden="true"
@@ -234,7 +234,7 @@ function ProgrammeLinks({
               <ModuleIcon
                 moduleId={workspaceModule.id}
                 className={`size-[1.1rem] shrink-0 ${
-                  variant === "sidebar" && !current ? "text-white/45" : ""
+                  variant === "sidebar" && !current ? "text-white/70" : ""
                 }`}
               />
               <span className="min-w-0 truncate">

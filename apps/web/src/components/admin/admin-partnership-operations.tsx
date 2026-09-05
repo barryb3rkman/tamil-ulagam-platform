@@ -74,10 +74,11 @@ export function AdminPartnershipOperations() {
     enabled: capabilities.canOperateFederation,
     load: listEnquiries,
   });
-  const history = useAdminHistory<PartnershipHistoryEvent>({
-    load: listHistory,
-    recordId: selectedId,
-  });
+  const { history, reload: reloadHistory } =
+    useAdminHistory<PartnershipHistoryEvent>({
+      load: listHistory,
+      recordId: selectedId,
+    });
   const {
     action,
     begin: beginAction,
@@ -108,6 +109,7 @@ export function AdminPartnershipOperations() {
       if (!service || !selected) return;
       await service.transitionPartnership(selected.id, chosen, reason);
       reload();
+      reloadHistory();
     });
 
   if (!capabilities.canOperateFederation)

@@ -126,7 +126,7 @@ function StatRail({ stats }: { readonly stats: readonly WorkspaceStat[] }) {
             >
               <AnimatedCounter value={stat.value} />
             </dd>
-            <dt className="text-eyebrow-sm mt-2.5 text-white/45">
+            <dt className="text-eyebrow-sm mt-2.5 text-white/70">
               {stat.label}
             </dt>
           </div>
