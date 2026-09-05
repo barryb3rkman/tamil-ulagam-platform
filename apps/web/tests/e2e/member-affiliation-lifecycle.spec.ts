@@ -126,7 +126,9 @@ test.describe("local Supabase real Member Registration lifecycle", () => {
       // --- Member: profile -> type -> directory -> confirm -> submit ---
       await signIn(memberPage, member.email, member.password);
       await memberPage.goto("/join/member");
-      await memberPage.getByText("Your details").waitFor({ timeout: 15000 });
+      await memberPage
+        .getByRole("heading", { name: "Your details" })
+        .waitFor({ timeout: 15000 });
       // Account email is never re-asked (H4 brief section 4).
       await expect(memberPage.getByLabel(/email/i)).toHaveCount(0);
 
@@ -140,12 +142,14 @@ test.describe("local Supabase real Member Registration lifecycle", () => {
       await memberPage.getByRole("button", { name: "Continue" }).click();
 
       await expect(
-        memberPage.getByText("Where are you already a member?"),
+        memberPage.getByRole("heading", {
+          name: "Where are you already a member?",
+        }),
       ).toBeVisible();
       await memberPage.getByRole("button", { name: /^Tamil Sangam/ }).click();
 
       await expect(
-        memberPage.getByText("Find your Tamil Sangam"),
+        memberPage.getByRole("heading", { name: "Find your Tamil Sangam" }),
       ).toBeVisible();
       await memberPage
         .getByLabel("Search", { exact: true })
@@ -154,7 +158,7 @@ test.describe("local Supabase real Member Registration lifecycle", () => {
       await memberPage.getByRole("button", { name: "Select" }).click();
 
       await expect(
-        memberPage.getByText("Confirm your affiliation"),
+        memberPage.getByRole("heading", { name: "Confirm your affiliation" }),
       ).toBeVisible();
       // No category question for a Tamil Sangam (H4 brief section 10).
       await expect(memberPage.getByText("Your involvement")).toHaveCount(0);

@@ -212,7 +212,9 @@ test.describe("local Supabase real Tamil Sangam registration lifecycle", () => {
 
       await signIn(memberPage, member.email, member.password);
       await memberPage.goto("/join/member");
-      await memberPage.getByText("Your details").waitFor({ timeout: 15000 });
+      await memberPage
+        .getByRole("heading", { name: "Your details" })
+        .waitFor({ timeout: 15000 });
       await memberPage
         .getByLabel("Full name")
         .fill("Local Browser Sangam Member");
@@ -232,7 +234,7 @@ test.describe("local Supabase real Tamil Sangam registration lifecycle", () => {
       await memberPage.getByRole("button", { name: "Select" }).click();
 
       await expect(
-        memberPage.getByText("Confirm your affiliation"),
+        memberPage.getByRole("heading", { name: "Confirm your affiliation" }),
       ).toBeVisible();
       await expect(
         memberPage.getByText("Tamil Sangam", { exact: true }).first(),

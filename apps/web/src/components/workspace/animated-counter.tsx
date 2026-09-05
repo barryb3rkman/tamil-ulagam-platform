@@ -53,8 +53,9 @@ export function AnimatedCounter({
   }, [value, durationMs]);
 
   return (
-    <span ref={ref} aria-label={String(value)}>
+    <span ref={ref}>
       <span aria-hidden="true">{shown}</span>
+      <span className="sr-only">{value}</span>
     </span>
   );
 }

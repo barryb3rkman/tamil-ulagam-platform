@@ -253,7 +253,9 @@ test.describe("local Supabase real V3 Organisation registration lifecycle", () =
 
       await signIn(memberPage, member.email, member.password);
       await memberPage.goto("/join/member");
-      await memberPage.getByText("Your details").waitFor({ timeout: 15000 });
+      await memberPage
+        .getByRole("heading", { name: "Your details" })
+        .waitFor({ timeout: 15000 });
       await memberPage.getByLabel("Full name").fill("Local Browser Org Member");
       await memberPage.getByLabel("Mobile number").fill("+1 416 555 0199");
       await memberPage.getByLabel("Country").fill("Canada");
@@ -271,7 +273,7 @@ test.describe("local Supabase real V3 Organisation registration lifecycle", () =
       await memberPage.getByRole("button", { name: "Select" }).click();
 
       await expect(
-        memberPage.getByText("Confirm your affiliation"),
+        memberPage.getByRole("heading", { name: "Confirm your affiliation" }),
       ).toBeVisible();
       await memberPage.getByRole("radio", { name: "Community member" }).check();
       await memberPage

@@ -43,15 +43,15 @@ export function StageProgress({
                         ? "border-heritage-maroon text-heritage-maroon ring-heritage-maroon/10 bg-white ring-4"
                         : "border-global-navy/15 text-slate bg-white"
                   }`}
-                  aria-label={
-                    isComplete
+                >
+                  <span aria-hidden="true">{isComplete ? "✓" : number}</span>
+                  <span className="sr-only">
+                    {isComplete
                       ? `${stage}, completed`
                       : isCurrent
                         ? `${stage}, current step`
-                        : `${stage}, upcoming`
-                  }
-                >
-                  {isComplete ? <span aria-hidden="true">✓</span> : number}
+                        : `${stage}, upcoming`}
+                  </span>
                 </span>
                 {number < stages.length ? (
                   <span

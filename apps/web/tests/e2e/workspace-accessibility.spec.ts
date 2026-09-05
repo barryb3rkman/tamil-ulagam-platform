@@ -45,14 +45,18 @@ async function completeMemberProfileStage(
   persona: { readonly fullName: string },
 ) {
   await page.goto("/join/member");
-  await page.getByText("Your details").waitFor({ timeout: 15000 });
+  await page
+    .getByRole("heading", { name: "Your details" })
+    .waitFor({ timeout: 15000 });
   await page.getByLabel("Full name").fill(persona.fullName);
   await page.getByLabel("Mobile number").fill("+1 416 555 0177");
   await page.getByLabel("Country").fill("Canada");
   await page.getByLabel(/State \/ Province \/ Region/).fill("Ontario");
   await page.getByLabel("City").fill("Toronto");
   await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page.getByText("Where are you already a member?")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Where are you already a member?" }),
+  ).toBeVisible();
 }
 
 interface AxeViolation {
@@ -358,7 +362,9 @@ test.describe("workspace shell accessibility (axe)", () => {
   }) => {
     await signInAs(page, memberFlowPersona);
     await page.goto("/join/member");
-    await expect(page.getByText("Your details")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Your details" }),
+    ).toBeVisible();
     await checkAccessibility(page, "Member registration (profile stage)");
   });
 
@@ -396,7 +402,9 @@ test.describe("workspace shell accessibility (axe)", () => {
     await page.getByLabel("Search", { exact: true }).fill(orgName);
     await expect(page.getByText(orgName)).toBeVisible();
     await page.getByRole("button", { name: "Select" }).click();
-    await expect(page.getByText("Confirm your affiliation")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Confirm your affiliation" }),
+    ).toBeVisible();
     await checkAccessibility(
       page,
       "Member registration (confirm affiliation, category question)",
@@ -497,21 +505,30 @@ test.describe("public join surfaces accessibility (axe)", () => {
   test("/join/organisation (logged out)", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/join/organisation");
-    await expect(page.locator("#organisation-journey-title")).toBeVisible();
+    await expect(
+      page.getByRole("heading", {
+        level: 1,
+        name: "Register your organisation",
+      }),
+    ).toBeVisible();
     await checkAccessibility(page, "/join/organisation (logged out)");
   });
 
   test("/join/sangam (logged out)", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/join/sangam");
-    await expect(page.locator("#sangam-journey-title")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Register your Sangam" }),
+    ).toBeVisible();
     await checkAccessibility(page, "/join/sangam (logged out)");
   });
 
   test("/join/member (logged out)", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/join/member");
-    await expect(page.locator("#member-logged-out-title")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { level: 1, name: "Connect your membership" }),
+    ).toBeVisible();
     await checkAccessibility(page, "/join/member (logged out)");
   });
 });

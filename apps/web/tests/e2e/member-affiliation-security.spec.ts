@@ -15,7 +15,9 @@ async function signIn(page: Page, email: string) {
 
 async function fillProfile(page: Page, fullName: string) {
   await page.goto("/join/member");
-  await page.getByText("Your details").waitFor({ timeout: 15000 });
+  await page
+    .getByRole("heading", { name: "Your details" })
+    .waitFor({ timeout: 15000 });
   await page.getByLabel("Full name").fill(fullName);
   await page.getByLabel("Mobile number").fill("+1 416 555 0100");
   await page.getByLabel("Country").fill("Canada");
@@ -136,7 +138,7 @@ test.describe("local Supabase Member affiliation — security & category-questio
     await fillProfile(page, "Local Security Member B");
 
     await expect(
-      page.getByText("Where are you already a member?"),
+      page.getByRole("heading", { name: "Where are you already a member?" }),
     ).toBeVisible();
     await page.getByRole("button", { name: /^Organisation/ }).click();
 
@@ -149,7 +151,9 @@ test.describe("local Supabase Member affiliation — security & category-questio
     await expect(page.getByText(educationOrgName)).toBeVisible();
     await page.getByRole("button", { name: "Select" }).click();
 
-    await expect(page.getByText("Confirm your affiliation")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Confirm your affiliation" }),
+    ).toBeVisible();
     await expect(
       page.getByText("Your connection to this organisation"),
     ).toBeVisible();
@@ -198,7 +202,7 @@ test.describe("local Supabase Member affiliation — security & category-questio
         .fill("Local Browser Security Unrelated");
       await memberPage.getByRole("button", { name: "Select" }).click();
       await expect(
-        memberPage.getByText("Confirm your affiliation"),
+        memberPage.getByRole("heading", { name: "Confirm your affiliation" }),
       ).toBeVisible();
       await memberPage
         .getByRole("radio", { name: "Business owner / Founder" })
