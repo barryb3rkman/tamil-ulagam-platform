@@ -115,6 +115,20 @@ test.describe("local Supabase Member affiliation — security & category-questio
       "Local Education Manager",
     );
 
+    async function ensureAccount(email: string, fullName: string) {
+      const created = await admin.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+        user_metadata: { full_name: fullName },
+      });
+      if (!created.error) return;
+      const existing = await admin.auth.admin.listUsers();
+      if (!existing.data.users.some((user) => user.email === email)) {
+        throw new Error(`Create ${email}: ${created.error.message}`);
+      }
+    }
+
     unrelatedOrgName = "Local Browser Security Unrelated Org";
     unrelatedOrgId = await createVerifiedOrg(
       unrelatedOrgName,
@@ -123,23 +137,14 @@ test.describe("local Supabase Member affiliation — security & category-questio
       "Local Unrelated Manager",
     );
 
-    const memberB = await admin.auth.admin.createUser({
-      email: "local-security-member-b@tamil-ulagam.test",
-      password,
-      email_confirm: true,
-      user_metadata: { full_name: "Local Security Member B" },
-    });
-    if (memberB.error)
-      throw new Error(`Create member B: ${memberB.error.message}`);
-
-    const memberC = await admin.auth.admin.createUser({
-      email: "local-security-member-c@tamil-ulagam.test",
-      password,
-      email_confirm: true,
-      user_metadata: { full_name: "Local Security Member C" },
-    });
-    if (memberC.error)
-      throw new Error(`Create member C: ${memberC.error.message}`);
+    await ensureAccount(
+      "local-security-member-b@tamil-ulagam.test",
+      "Local Security Member B",
+    );
+    await ensureAccount(
+      "local-security-member-c@tamil-ulagam.test",
+      "Local Security Member C",
+    );
   });
 
   test("Persona B — Organisation member: the category-aware connection question is asked and required", async ({
