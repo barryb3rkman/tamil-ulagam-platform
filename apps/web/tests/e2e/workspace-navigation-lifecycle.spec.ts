@@ -238,15 +238,14 @@ test.describe("real V3 workspace switching across the five named personas", () =
     ).toHaveCount(0);
   });
 
-  test("B. Organisation manager switches between Member and their Organisation, URL and content both change correctly", async ({
+  test("B. Organisation manager reaches their Organisation from Member, and has no switcher once standing in it", async ({
     page,
   }) => {
     await signIn(page, users.orgManager.email);
-    await page.goto(
-      `/workspace/organisation?organization=${organisationIds.orgB}`,
-    );
-    await expect(page.getByRole("heading", { name: orgBName })).toBeVisible();
+    await page.goto("/workspace/member");
 
+    // From Member the switcher offers the organisation this account
+    // manages, and nothing else.
     await openSwitcher(page);
     await expect(
       page.getByRole("heading", { name: "Organisations" }),
@@ -254,16 +253,10 @@ test.describe("real V3 workspace switching across the five named personas", () =
     await expect(
       page.getByRole("heading", { name: "Tamil Sangams" }),
     ).toHaveCount(0);
-    await expect(page.getByRole("heading", { name: "Federation" })).toHaveCount(
-      0,
-    );
-    await page.getByRole("link", { name: /^Member/ }).click();
-    await expect(page).toHaveURL(/\/workspace\/member\/?$/);
     await expect(
-      page.getByRole("heading", { name: "Your affiliations" }),
-    ).toBeVisible();
+      page.getByRole("heading", { name: "Federation", exact: true }),
+    ).toHaveCount(0);
 
-    await openSwitcher(page);
     await page.getByRole("link", { name: orgBName }).click();
     await expect(page).toHaveURL(
       new RegExp(
@@ -271,17 +264,22 @@ test.describe("real V3 workspace switching across the five named personas", () =
       ),
     );
     await expect(page.getByRole("heading", { name: orgBName })).toBeVisible();
+
+    // Standing in the only workspace it manages, there is nowhere left to
+    // go, so the control is not rendered — see switcherHasSomewhereToGo.
+    await expect(
+      page.getByRole("button", { name: "Switch workspace" }),
+    ).toHaveCount(0);
   });
 
-  test("C. Tamil Sangam manager sees Tamil Sangams, not Organisations, and switching lands on the Sangam workspace with correct copy", async ({
+  test("C. Tamil Sangam manager sees Tamil Sangams, not Organisations, and switching lands on the Sangam workspace", async ({
     page,
   }) => {
     await signIn(page, users.sangamManager.email);
-    await page.goto(`/workspace/sangam?sangam=${organisationIds.sangamC}`);
-    await expect(
-      page.getByRole("heading", { name: sangamCName }),
-    ).toBeVisible();
+    await page.goto("/workspace/member");
 
+    // Same shape as B: the switcher is offered from Member, where the
+    // Sangam is somewhere else to go.
     await openSwitcher(page);
     await expect(
       page.getByRole("heading", { name: "Tamil Sangams" }),
@@ -289,13 +287,18 @@ test.describe("real V3 workspace switching across the five named personas", () =
     await expect(
       page.getByRole("heading", { name: "Organisations" }),
     ).toHaveCount(0);
-    await expect(page.getByRole("heading", { name: "Federation" })).toHaveCount(
-      0,
-    );
+    await expect(
+      page.getByRole("heading", { name: "Federation", exact: true }),
+    ).toHaveCount(0);
     await expect(page.getByRole("link", { name: sangamCName })).toHaveAttribute(
       "href",
       `/workspace/sangam/?sangam=${organisationIds.sangamC}`,
     );
+
+    await page.getByRole("link", { name: sangamCName }).click();
+    await expect(
+      page.getByRole("heading", { name: sangamCName }),
+    ).toBeVisible();
   });
 
   test("D. Organisation + Tamil Sangam manager sees both sections and each workspace shows only its own identity — no cross-workspace leakage", async ({
@@ -317,9 +320,9 @@ test.describe("real V3 workspace switching across the five named personas", () =
     await expect(
       page.getByRole("heading", { name: "Tamil Sangams" }),
     ).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Federation" })).toHaveCount(
-      0,
-    );
+    await expect(
+      page.getByRole("heading", { name: "Federation", exact: true }),
+    ).toHaveCount(0);
     await page.getByRole("link", { name: sangamDName }).click();
     await expect(page).toHaveURL(
       new RegExp(`/workspace/sangam/?\\?sangam=${organisationIds.sangamD}`),
@@ -347,7 +350,7 @@ test.describe("real V3 workspace switching across the five named personas", () =
       page.getByRole("heading", { name: "Tamil Sangams" }),
     ).toHaveCount(0);
     await expect(
-      page.getByRole("heading", { name: "Federation" }),
+      page.getByRole("heading", { name: "Federation", exact: true }),
     ).toBeVisible();
     await page.getByRole("link", { name: "Federation Admin" }).click();
     await expect(page).toHaveURL(/\/admin\/?$/);
