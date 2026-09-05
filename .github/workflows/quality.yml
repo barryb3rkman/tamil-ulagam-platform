@@ -93,3 +93,75 @@ jobs:
           name: playwright-report
           path: apps/web/playwright-report
           retention-days: 7
+
+  supabase:
+    name: Supabase integration and browser suites
+    runs-on: ubuntu-latest
+    # The stack has to come up, migrations run and two suites execute, one
+    # of them serially against shared database state.
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.17.0
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The CLI is already a pinned devDependency, so pnpm exec uses the
+      # exact version the lockfile resolves. Installing a second copy
+      # through setup-cli would be free to drift from it.
+      - name: Start local Supabase
+        run: pnpm exec supabase start
+
+      # `supabase start` returns before every service is answering, and a
+      # suite that begins in that window fails on a partially-ready stack.
+      # Seen locally: the same suite went 76/81 then 81/81 with no change.
+      - name: Wait for the stack to answer
+        run: |
+          for attempt in $(seq 1 60); do
+            if curl -sf -o /dev/null "http://127.0.0.1:54321/rest/v1/" \
+              -H "apikey: $(pnpm exec supabase status -o env | sed -n 's/^ANON_KEY="\(.*\)"$/\1/p')"; then
+              echo "REST answering after ${attempt}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Supabase did not become ready in 60s" >&2
+          exit 1
+
+      # Runs against the schema built from the migrations, not a snapshot,
+      # so a migration that no longer applies fails here rather than on a
+      # deploy.
+      - name: Run Supabase integration tests
+        run: pnpm test:supabase
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @tamil-ulagam/web exec playwright install --with-deps chromium
+
+      - name: Run Supabase browser tests
+        run: pnpm test:e2e:supabase
+
+      - name: Upload report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-supabase
+          path: apps/web/playwright-report
+          retention-days: 7
+
+      - name: Stop local Supabase
+        if: always()
+        run: pnpm exec supabase stop --no-backup
