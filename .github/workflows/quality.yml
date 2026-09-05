@@ -5,6 +5,9 @@ on:
     branches:
       - main
   pull_request:
+  # So the suites can be run against a branch without opening a pull
+  # request first.
+  workflow_dispatch:
 
 permissions:
   contents: read
