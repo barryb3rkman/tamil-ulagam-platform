@@ -1,6 +1,7 @@
 import { Container, LinkButton } from "@tamil-ulagam/ui";
 import type { ReactNode } from "react";
 
+import { WordReveal } from "@/components/motion/word-reveal";
 import { BrandMark } from "@/components/brand/brand-mark";
 import { ParticleField } from "@/components/motion/particle-field";
 
@@ -59,11 +60,8 @@ export function PublicPageHero({
               {eyebrow}
             </p>
           </div>
-          <h1
-            id={headingId}
-            className="text-display text-gradient-gold mt-5 text-balance"
-          >
-            {title}
+          <h1 id={headingId} className="text-display mt-5 text-balance">
+            <WordReveal className="text-rise-gold" text={title} />
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-white/65 sm:text-xl sm:leading-9">
             {description}

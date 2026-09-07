@@ -5,6 +5,13 @@ import { useEffect, useRef } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { isSupabasePublicEnvironmentConfigured } from "@/lib/supabase/environment";
 
+/** The tables carried by the `supabase_realtime` publication. */
+export type RealtimeTable =
+  | "organization_memberships"
+  | "organization_applications"
+  | "organization_managers"
+  | "partnership_enquiries";
+
 export function useRealtimeRefresh({
   enabled = true,
   filter,
@@ -14,10 +21,9 @@ export function useRealtimeRefresh({
   readonly enabled?: boolean;
   readonly filter?: string;
   readonly onChange: () => void;
-  readonly table:
-    | "organization_memberships"
-    | "organization_applications"
-    | "organization_managers";
+  /** Null when the caller has nothing to watch, so the hook can still be
+   * called unconditionally. */
+  readonly table: RealtimeTable | null;
 }) {
   const handler = useRef(onChange);
   useEffect(() => {
@@ -25,7 +31,7 @@ export function useRealtimeRefresh({
   }, [onChange]);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || !table) return;
     if (!isSupabasePublicEnvironmentConfigured()) return;
 
     const client = getSupabaseBrowserClient();

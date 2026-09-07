@@ -34,9 +34,15 @@ test.describe("organisation enrollment MVP", () => {
       page.getByRole("heading", { name: "Account created" }),
     ).toBeVisible();
     await expect(page.getByText(/mock account/i)).toHaveCount(0);
-    await page
-      .getByRole("button", { name: "Start organisation registration" })
-      .click();
+    // A new account with no journey behind it is offered all of them rather
+    // than being dropped into organisation registration.
+    await expect(
+      page.getByRole("heading", { name: /Choose how you want to take part/ }),
+    ).toBeVisible();
+    await expect(page.locator('a[href^="/join/sangam"]')).toBeVisible();
+    await expect(page.locator('a[href^="/join/member"]')).toBeVisible();
+    await expect(page.locator('a[href^="/dashboard"]')).toBeVisible();
+    await page.locator('a[href^="/join/organisation"]').click();
 
     // Step 1 — Organisation
     await page.getByLabel("Business / Company").check();
@@ -224,9 +230,13 @@ test.describe("organisation enrollment MVP", () => {
     await expect(
       page.getByRole("heading", { name: "Email confirmed" }),
     ).toBeVisible();
+    // Confirming without a journey lands on the same choice the signup screen
+    // offers, not on organisation registration by default.
     await expect(
-      page.getByRole("link", { name: "Continue registration" }),
-    ).toHaveAttribute("href", /\/register\/?$/);
+      page.getByRole("heading", { name: /Choose how you want to take part/ }),
+    ).toBeVisible();
+    await expect(page.locator('a[href^="/join/organisation"]')).toBeVisible();
+    await expect(page.locator('a[href^="/dashboard"]')).toBeVisible();
 
     await page.goto(
       "/auth/callback?flow=confirmation&mock=confirmation&next=%2Fjoin%2Fsangam",

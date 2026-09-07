@@ -207,4 +207,48 @@ describe("WorkspaceShell", () => {
     ).findByText("Acme Education Trust");
     expect(screen.queryByText("Federation Admin")).not.toBeInTheDocument();
   });
+
+  it("asks before signing out, and does not sign out until the prompt is confirmed", async () => {
+    const signOut = vi.fn().mockResolvedValue(undefined);
+    platform({ signOut });
+    membershipService([orgA]);
+    render(
+      <WorkspaceShell>
+        <p>Organisation content</p>
+      </WorkspaceShell>,
+    );
+
+    fireEvent.click(screen.getAllByRole("button", { name: "Sign out" })[0]!);
+
+    const prompt = await screen.findByRole("dialog");
+    expect(
+      within(prompt).getByText(/typed but not saved will be lost/i),
+    ).toBeVisible();
+    expect(signOut).not.toHaveBeenCalled();
+
+    fireEvent.click(within(prompt).getByRole("button", { name: "Sign out" }));
+    await vi.waitFor(() => expect(signOut).toHaveBeenCalledTimes(1));
+  });
+
+  it("leaves the session alone when the sign-out prompt is dismissed", async () => {
+    const signOut = vi.fn().mockResolvedValue(undefined);
+    platform({ signOut });
+    membershipService([orgA]);
+    render(
+      <WorkspaceShell>
+        <p>Organisation content</p>
+      </WorkspaceShell>,
+    );
+
+    fireEvent.click(screen.getAllByRole("button", { name: "Sign out" })[0]!);
+    const prompt = await screen.findByRole("dialog");
+    fireEvent.click(
+      within(prompt).getByRole("button", { name: "Stay signed in" }),
+    );
+
+    await vi.waitFor(() =>
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
+    );
+    expect(signOut).not.toHaveBeenCalled();
+  });
 });

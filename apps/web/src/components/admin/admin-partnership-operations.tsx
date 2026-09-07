@@ -73,6 +73,7 @@ export function AdminPartnershipOperations() {
   } = useAdminRecords<PartnershipEnquiry>({
     enabled: capabilities.canOperateFederation,
     load: listEnquiries,
+    realtimeTable: "partnership_enquiries",
   });
   const { history, reload: reloadHistory } =
     useAdminHistory<PartnershipHistoryEvent>({

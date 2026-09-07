@@ -2,6 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import {
+  useRealtimeRefresh,
+  type RealtimeTable,
+} from "@/features/realtime/use-realtime-refresh";
 import { getPlatformErrorMessage } from "@/lib/supabase/errors";
 
 /**
@@ -16,9 +20,14 @@ import { getPlatformErrorMessage } from "@/lib/supabase/errors";
 export function useAdminRecords<Record>({
   enabled,
   load,
+  realtimeTable = null,
 }: {
   readonly enabled: boolean;
   readonly load: (() => Promise<Record[]>) | null;
+  /** The table this list is a view of. Given one, the list refetches when
+   * anyone else changes a row — an admin queue is somewhere people sit and
+   * wait, so a stale one is worse than an extra request. */
+  readonly realtimeTable?: RealtimeTable | null;
 }) {
   const [records, setRecords] = useState<Record[]>([]);
   const [error, setError] = useState("");
@@ -51,6 +60,12 @@ export function useAdminRecords<Record>({
   const reload = useCallback(() => {
     setReloadKey((value) => value + 1);
   }, []);
+
+  useRealtimeRefresh({
+    enabled: enabled && Boolean(load),
+    table: realtimeTable,
+    onChange: reload,
+  });
 
   return {
     records,

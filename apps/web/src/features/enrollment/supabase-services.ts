@@ -537,6 +537,23 @@ export function createSupabasePlatformServices(
       assertNoError(error, "The password reset request could not be sent.");
     },
 
+    async resendEmailConfirmation(
+      email: string,
+      returnTarget?: string | null,
+    ): Promise<void> {
+      const { error } = await client.auth.resend({
+        type: "signup",
+        email: email.trim().toLowerCase(),
+        options: {
+          emailRedirectTo: authCallbackUrl("confirmation", returnTarget),
+        },
+      });
+      assertNoError(
+        error,
+        "The confirmation email could not be sent again. Wait a minute and try once more.",
+      );
+    },
+
     async resolveAuthCallback(
       intent: AuthCallbackIntent,
       callbackUrlValue: string,

@@ -1,5 +1,6 @@
 import { Container, LinkButton } from "@tamil-ulagam/ui";
 
+import { WordReveal } from "@/components/motion/word-reveal";
 import { BrandMark } from "@/components/brand/brand-mark";
 import { ParticleField } from "@/components/motion/particle-field";
 import { homepageContent } from "@/content/homepage";
@@ -47,9 +48,9 @@ export function HomeHero() {
 
         <h1
           id="home-title"
-          className="text-display text-gradient-gold mt-5 max-w-4xl text-balance"
+          className="text-display mt-5 max-w-4xl text-balance"
         >
-          {hero.title}
+          <WordReveal className="text-rise-gold" text={hero.title} />
         </h1>
 
         <p className="mt-7 max-w-xl text-lg leading-8 text-white/65 sm:text-xl sm:leading-9">

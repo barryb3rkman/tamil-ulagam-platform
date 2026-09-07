@@ -70,6 +70,7 @@ export function AdminMembershipOperations() {
   } = useAdminRecords<AdminMembershipSummary>({
     enabled: capabilities.canOperateFederation,
     load: listMemberships,
+    realtimeTable: "organization_memberships",
   });
   const { history, reload: reloadHistory } =
     useAdminHistory<MembershipHistoryEvent>({

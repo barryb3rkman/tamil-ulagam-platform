@@ -2,10 +2,11 @@
 
 import { Sheet } from "@tamil-ulagam/ui";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useState, type ReactNode } from "react";
 
 import { usePlatform } from "@/features/enrollment/platform-provider";
+import { useSignOutPrompt } from "@/features/auth/use-sign-out-prompt";
 import { useWorkspaceInventory } from "@/features/workspace/use-workspace-inventory";
 import {
   buildWorkspaceOptions,
@@ -37,7 +38,6 @@ function initials(fullName: string): string {
 export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const router = useRouter();
   const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     if (typeof window === "undefined") return false;
@@ -51,8 +51,8 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
     currentUser,
     isHydrated,
     myOrganisationApplications = [],
-    signOut,
   } = usePlatform();
+  const { requestSignOut, signOutPrompt } = useSignOutPrompt();
   const inventory = useWorkspaceInventory();
 
   const active = resolveActiveWorkspace(pathname, searchParams);
@@ -81,10 +81,6 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
   const switcherOptions = visibleSwitcherOptions(options);
   const chromeLoading = !isHydrated || inventory.state === "loading";
   const pageLabel = workspacePageLabel(pathname);
-
-  const signOutAndReturn = () => {
-    void signOut().then(() => router.push("/login"));
-  };
 
   const toggleSidebar = () => {
     setSidebarCollapsed((collapsed) => {
@@ -209,7 +205,7 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
             </Link>
             <button
               type="button"
-              onClick={signOutAndReturn}
+              onClick={requestSignOut}
               aria-label={sidebarCollapsed ? "Sign out" : undefined}
               className={`focus-visible:ring-focus-inverse rounded-button mt-1 flex min-h-10 w-full items-center text-sm font-semibold text-white/55 hover:bg-white/7 hover:text-white ${
                 sidebarCollapsed ? "justify-center px-0" : "px-3"
@@ -415,7 +411,7 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
               </Link>
               <button
                 type="button"
-                onClick={signOutAndReturn}
+                onClick={requestSignOut}
                 className="text-slate focus-visible:ring-focus rounded-button flex min-h-11 items-center px-3 text-sm font-semibold"
               >
                 Sign out
@@ -428,6 +424,8 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
           </Link>
         )}
       </Sheet>
+
+      {signOutPrompt}
     </div>
   );
 }

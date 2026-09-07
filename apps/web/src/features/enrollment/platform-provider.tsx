@@ -19,6 +19,7 @@ import {
   useMemo,
 } from "react";
 
+import { useRealtimeRefresh } from "@/features/realtime/use-realtime-refresh";
 import { type CaptchaConfiguration } from "@/lib/supabase/environment";
 
 import { useManagedOrganisationIds } from "./use-managed-organisation-ids";
@@ -65,6 +66,10 @@ interface PlatformContextValue {
   readonly requestPasswordReset: (
     email: string,
     captchaToken?: string,
+  ) => Promise<void>;
+  readonly resendEmailConfirmation: (
+    email: string,
+    returnTarget?: string | null,
   ) => Promise<void>;
   readonly resolveAuthCallback: (
     intent: AuthCallbackIntent,
@@ -170,6 +175,21 @@ export function PlatformProvider({
     return services;
   }, [platformError, services]);
 
+  // Registration decisions are made by someone else entirely — a federation
+  // reviewer, hours later — so an applicant's screen has no reason of its own
+  // to refetch. Watching here rather than in each screen means everything
+  // reading currentApplication or myOrganisationApplications stays current:
+  // the dashboard, the status badge, the workspace chrome, the join page.
+  const refreshFromRealtime = useCallback(() => {
+    if (services) void refresh(services);
+  }, [refresh, services]);
+
+  useRealtimeRefresh({
+    enabled: Boolean(services) && Boolean(currentUser),
+    table: services ? "organization_applications" : null,
+    onChange: refreshFromRealtime,
+  });
+
   const value = useMemo<PlatformContextValue>(
     () => ({
       backendKind,
@@ -203,6 +223,12 @@ export function PlatformProvider({
       },
       requestPasswordReset: async (email, captchaToken) => {
         await requireServices().auth.requestPasswordReset(email, captchaToken);
+      },
+      resendEmailConfirmation: async (email, returnTarget) => {
+        await requireServices().auth.resendEmailConfirmation(
+          email,
+          returnTarget,
+        );
       },
       resolveAuthCallback: async (intent, callbackUrl) =>
         requireServices().auth.resolveAuthCallback(intent, callbackUrl),

@@ -14,6 +14,9 @@ vi.mock("@/lib/supabase/environment", () => ({
     supabase: { url: "https://example.supabase.co", publishableKey: "test" },
     captcha: { enabled: false },
   }),
+  // The provider subscribes to registration changes; this test drives the
+  // session by hand and has no realtime channel to offer it.
+  isSupabasePublicEnvironmentConfigured: () => false,
 }));
 vi.mock("@/lib/supabase/client", () => ({
   getSupabaseBrowserClient: () => ({
@@ -93,6 +96,7 @@ function createFakeSupabaseServices(options: {
       signup: unimplemented,
       login: unimplemented,
       requestPasswordReset: unimplemented,
+      resendEmailConfirmation: unimplemented,
       resolveAuthCallback: unimplemented,
       completePasswordRecovery: unimplemented,
       signOut: unimplemented,

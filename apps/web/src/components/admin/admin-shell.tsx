@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useSyncExternalStore, type ReactNode } from "react";
 
 import { useAdminOperations } from "@/features/admin/admin-operations-provider";
+import { useSignOutPrompt } from "@/features/auth/use-sign-out-prompt";
 import { usePlatform } from "@/features/enrollment/platform-provider";
 import { useWorkspaceInventory } from "@/features/workspace/use-workspace-inventory";
 import {
@@ -48,9 +49,9 @@ export function AdminShell({ children }: { readonly children: ReactNode }) {
   );
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const router = useRouter();
   const { capabilities, error, loading } = useAdminOperations();
-  const { currentUser, isHydrated, signOut } = usePlatform();
+  const { currentUser, isHydrated } = usePlatform();
+  const { requestSignOut, signOutPrompt } = useSignOutPrompt();
   const inventory = useWorkspaceInventory();
   const workspaceOptions = buildWorkspaceOptions({
     isAuthenticated: inventory.isAuthenticated,
@@ -127,9 +128,7 @@ export function AdminShell({ children }: { readonly children: ReactNode }) {
               <button
                 type="button"
                 className="focus-visible:ring-focus-inverse hover:border-heritage-gold hover:text-heritage-gold rounded-button min-h-11 border border-white/20 px-3 py-2 text-sm font-semibold"
-                onClick={() => {
-                  void signOut().then(() => router.push("/login"));
-                }}
+                onClick={requestSignOut}
               >
                 Sign out
               </button>
@@ -193,6 +192,8 @@ export function AdminShell({ children }: { readonly children: ReactNode }) {
           )}
         </div>
       </div>
+
+      {signOutPrompt}
     </div>
   );
 }

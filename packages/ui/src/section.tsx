@@ -19,7 +19,10 @@ export function Section({
     <section
       data-motion-reveal={motion === "reveal" ? "section" : undefined}
       className={cx(
-        tone === "ivory" && "bg-warm-ivory text-charcoal",
+        // No fill of its own: ivory is the page's own colour, and painting it
+        // again here is what hid the ambient field behind every section and
+        // left the site reading as one flat block of cream.
+        tone === "ivory" && "text-charcoal",
         tone === "white" && "text-charcoal bg-white",
         tone === "navy" && "bg-global-navy text-white",
         spacing === "compact" && "py-section-compact",

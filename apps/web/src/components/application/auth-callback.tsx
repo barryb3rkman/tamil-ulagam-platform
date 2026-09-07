@@ -18,6 +18,7 @@ import { getSafeReturnTarget, withReturnTarget } from "@/lib/return-target";
 
 import { authJourneyPresentation } from "./auth-journey";
 import { FormError, TextField } from "./form-fields";
+import { GetStartedChoices } from "./get-started-choices";
 import { asEventHandler } from "@/lib/event-handlers";
 
 type CallbackView =
@@ -112,39 +113,50 @@ export function AuthCallbackPanel() {
 
   if (view.status === "confirmation_success") {
     const journey = authJourneyPresentation(returnTarget, "signup");
-    const destination = returnTarget ?? "/register";
+    // Someone who confirmed on a second device has a session here but not in
+    // the tab they registered from. That other tab watches for this and moves
+    // on by itself, so this screen only has to look after the device it is on.
+    const confirmedElsewhere = !view.hasSession;
     return (
-      <div className="grid min-h-72 content-center gap-5" aria-live="polite">
-        <span
-          aria-hidden="true"
-          className="bg-success/10 text-success grid size-12 place-items-center rounded-full text-xl font-bold"
-        >
-          ✓
-        </span>
-        <div>
-          <h2 className="text-global-navy text-2xl font-bold">
+      <div className="grid min-h-72 content-center gap-6">
+        <div aria-live="polite">
+          <span
+            aria-hidden="true"
+            className="bg-success/10 text-success motion-pop grid size-12 place-items-center rounded-full text-xl font-bold"
+          >
+            ✓
+          </span>
+          <h2 className="text-global-navy mt-4 text-2xl font-bold">
             Email confirmed
           </h2>
-          <p className="text-slate mt-2 max-w-md leading-7">
-            {view.hasSession
-              ? `Your email is confirmed and your secure session is ready. ${journey.accountLead}`
-              : `Your email is confirmed. Sign in to continue. ${journey.accountLead}`}
-          </p>
+          {confirmedElsewhere || returnTarget ? (
+            <p className="text-slate mt-2 max-w-md leading-7">
+              {confirmedElsewhere
+                ? `Your email is confirmed. Sign in to continue. ${journey.accountLead}`
+                : journey.successLead}
+            </p>
+          ) : null}
         </div>
-        <Link
-          className="bg-global-navy focus-visible:ring-focus rounded-button w-fit px-5 py-3 font-semibold text-white"
-          href={
-            view.hasSession
-              ? destination
-              : withReturnTarget("/login", returnTarget)
-          }
-        >
-          {view.hasSession
-            ? returnTarget
-              ? "Continue your journey"
-              : "Continue registration"
-            : "Continue to sign in"}
-        </Link>
+        {confirmedElsewhere ? (
+          <Link
+            className="bg-global-navy focus-visible:ring-focus rounded-button w-fit px-5 py-3 font-semibold text-white"
+            href={withReturnTarget("/login", returnTarget)}
+          >
+            Continue to sign in
+          </Link>
+        ) : returnTarget ? (
+          <Link
+            className="bg-global-navy focus-visible:ring-focus rounded-button w-fit px-5 py-3 font-semibold text-white"
+            href={returnTarget}
+          >
+            Continue your journey
+          </Link>
+        ) : (
+          <GetStartedChoices
+            heading="Choose how you want to take part"
+            description="Your account is confirmed. Pick a journey now, or open your workspace and decide later."
+          />
+        )}
       </div>
     );
   }

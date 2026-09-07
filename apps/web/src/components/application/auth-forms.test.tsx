@@ -207,3 +207,105 @@ describe("SignupForm return-target behavior", () => {
     );
   });
 });
+
+async function completeSignup() {
+  fireEvent.change(screen.getByLabelText(/full name/i), {
+    target: { value: "Nila Raj" },
+  });
+  fireEvent.change(screen.getByLabelText(/email address/i), {
+    target: { value: "nila@example.org" },
+  });
+  fireEvent.change(screen.getByLabelText(/^password/i), {
+    target: { value: "TamilMvp1!" },
+  });
+  fireEvent.change(screen.getByLabelText(/^confirm password/i), {
+    target: { value: "TamilMvp1!" },
+  });
+  fireEvent.click(screen.getByLabelText(/I agree/i));
+  fireEvent.click(screen.getByRole("button", { name: /create account/i }));
+}
+
+describe("SignupForm success routing", () => {
+  it("offers every journey when no target was carried in, rather than routing a new account straight into organisation registration", async () => {
+    mockedUsePlatform.mockReturnValue({
+      captcha: { enabled: false },
+      signup: vi.fn().mockResolvedValue({ ok: true }),
+      platformError: "",
+    } as unknown as ReturnType<typeof usePlatform>);
+
+    render(<SignupForm />);
+    await completeSignup();
+
+    expect(
+      await screen.findByRole("heading", { name: /choose how you want/i }),
+    ).toBeVisible();
+    // Every journey is on offer, and — the point of the change — someone who
+    // only meant to sign in has a way out that is not a registration wizard.
+    const destinations = screen
+      .getAllByRole("link")
+      .map((link) => link.getAttribute("href"));
+    expect(destinations).toEqual([
+      "/join/organisation",
+      "/join/sangam",
+      "/join/member",
+      "/dashboard",
+    ]);
+    expect(push).not.toHaveBeenCalled();
+  });
+
+  it("keeps the single Continue button when a journey was already chosen", async () => {
+    searchParams = new URLSearchParams({ next: "/join/sangam" });
+    mockedUsePlatform.mockReturnValue({
+      captcha: { enabled: false },
+      signup: vi.fn().mockResolvedValue({ ok: true }),
+      platformError: "",
+    } as unknown as ReturnType<typeof usePlatform>);
+
+    render(<SignupForm />);
+    await completeSignup();
+
+    fireEvent.click(await screen.findByRole("button", { name: "Continue" }));
+    expect(push).toHaveBeenCalledWith("/join/sangam");
+  });
+
+  it("waits for an email confirmation that may be opened on another device, then moves on by itself", async () => {
+    const login = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false, message: "Email not confirmed" })
+      .mockResolvedValue({ ok: true, hasApplication: false, canReview: false });
+    mockedUsePlatform.mockReturnValue({
+      captcha: { enabled: false },
+      signup: vi
+        .fn()
+        .mockResolvedValue({ ok: true, requiresEmailConfirmation: true }),
+      login,
+      resendEmailConfirmation: vi.fn().mockResolvedValue(undefined),
+      platformError: "",
+    } as unknown as ReturnType<typeof usePlatform>);
+
+    render(<SignupForm />);
+    await completeSignup();
+
+    expect(
+      await screen.findByRole("heading", { name: /confirm your email/i }),
+    ).toBeVisible();
+
+    // First check: still unconfirmed, so the screen stays put and says so.
+    fireEvent.click(
+      screen.getByRole("button", { name: /i have confirmed my email/i }),
+    );
+    expect(await screen.findByText(/not confirmed yet/i)).toBeVisible();
+
+    // Second: the link has now been opened elsewhere, and this tab catches up.
+    fireEvent.click(
+      screen.getByRole("button", { name: /i have confirmed my email/i }),
+    );
+    expect(
+      await screen.findByRole("heading", { name: /email confirmed/i }),
+    ).toBeVisible();
+    expect(login).toHaveBeenCalledWith({
+      email: "nila@example.org",
+      password: "TamilMvp1!",
+    });
+  });
+});

@@ -226,7 +226,8 @@
 }
 
 @utility surface-canvas {
-  background-color: var(--tu-color-warm-ivory);
+  /* Left unfilled on purpose — see the note in Section: the page already is
+     this colour, and repainting it buries the ambient field. */
   color: var(--tu-color-charcoal);
 }
 
@@ -446,6 +447,12 @@ body {
   animation-delay: 90ms;
 }
 
+/* A title whose words rise one at a time already has its entrance; sliding
+   the whole block at the same time reads as two competing movements. */
+.motion-ready [data-route-transition] > section:first-child h1:has(.text-rise) {
+  animation: none;
+}
+
 .motion-ready [data-route-transition] > section:first-child h1 ~ p {
   animation-delay: 150ms;
 }
@@ -663,6 +670,25 @@ body {
   transition-delay: 0s;
 }
 
+/* Rows arrive a beat after the panel, counting down the list as they go.
+   Transitions rather than keyframes: a finished transition leaves no trace on
+   getAnimations(), which is how the motion suite proves the panel has come to
+   rest. */
+.motion-mobile-item {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition:
+    opacity var(--tu-motion-base) var(--tu-ease-premium),
+    transform var(--tu-motion-base) var(--tu-ease-premium),
+    color var(--tu-motion-fast) var(--tu-ease-standard);
+}
+
+[data-state="open"] .motion-mobile-item {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: var(--tu-stagger, 0ms);
+}
+
 .motion-sheet {
   transition:
     opacity var(--tu-motion-medium) var(--tu-ease-premium),
@@ -871,6 +897,7 @@ footer a:focus-visible {
   .motion-card .motion-card-image,
   .motion-arrow,
   .motion-mobile-panel,
+  .motion-mobile-item,
   .motion-menu-line,
   [data-motion-mask],
   [data-motion-success] {
@@ -1306,4 +1333,327 @@ footer a:focus-visible {
   .motion-pop-group > * {
     animation: none !important;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Modal choreography
+
+   Native <dialog> jumps into place with no transition of its own. These rules
+   give it one in both directions: @starting-style supplies the frame before
+   it opens, and allow-discrete keeps it painted long enough to leave. The
+   panel and its backdrop are timed together so the blur and the lift read as
+   a single movement.
+   --------------------------------------------------------------------------- */
+
+@utility motion-dialog {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0) scale(0.965);
+  transition:
+    opacity var(--tu-motion-base) var(--tu-ease-premium),
+    transform var(--tu-motion-base) var(--tu-ease-premium),
+    overlay var(--tu-motion-base) var(--tu-ease-premium) allow-discrete,
+    display var(--tu-motion-base) var(--tu-ease-premium) allow-discrete;
+
+  &[open] {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  &[data-closing="true"] {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0) scale(0.98);
+  }
+
+  @starting-style {
+    &[open] {
+      opacity: 0;
+      transform: translate3d(0, 14px, 0) scale(0.965);
+    }
+  }
+
+  &::backdrop {
+    background-color: color-mix(in srgb, var(--tu-color-ink) 62%, transparent);
+    opacity: 0;
+    transition:
+      opacity var(--tu-motion-base) var(--tu-ease-standard),
+      backdrop-filter var(--tu-motion-base) var(--tu-ease-standard),
+      overlay var(--tu-motion-base) allow-discrete,
+      display var(--tu-motion-base) allow-discrete;
+  }
+
+  &[open]::backdrop {
+    opacity: 1;
+    backdrop-filter: blur(7px) saturate(118%);
+  }
+
+  &[data-closing="true"]::backdrop {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+
+  @starting-style {
+    &[open]::backdrop {
+      opacity: 0;
+      backdrop-filter: blur(0);
+    }
+  }
+}
+
+/* The hairline that lights the top edge of a modal as it settles. */
+@utility dialog-crest {
+  animation: tu-crest-draw 720ms var(--tu-ease-premium) 120ms both;
+}
+
+@keyframes tu-crest-draw {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-dialog,
+  .motion-dialog::backdrop {
+    transition-duration: 1ms !important;
+    transform: none !important;
+  }
+
+  .dialog-crest {
+    animation: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Living backgrounds
+
+   surface-page carries a fixed wash that reads as a flat colour on any screen
+   tall enough to show it whole. These add slow movement and a second, warmer
+   layer of colour so a mostly-empty page — the sign-in card in a wide window,
+   say — still has somewhere for the eye to go.
+   --------------------------------------------------------------------------- */
+
+@utility surface-field {
+  position: relative;
+  isolation: isolate;
+
+  /* No background-color of its own: the page beneath already carries the
+     ivory and the drifting ambient field, and painting over it was what
+     made this look like a flat sheet. This layer only deepens the corners.
+
+     The radials are anchored inside the image, so the image has to stay the
+     size of the box — scaling it moved every anchor point off-screen and the
+     whole wash vanished. */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      radial-gradient(
+        62rem 36rem at 4% -14%,
+        color-mix(in srgb, var(--tu-color-royal-indigo) 16%, transparent) 0%,
+        transparent 62%
+      ),
+      radial-gradient(
+        54rem 32rem at 100% 2%,
+        color-mix(in srgb, var(--tu-color-heritage-gold) 26%, transparent) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        50rem 32rem at 88% 108%,
+        color-mix(in srgb, var(--tu-color-vivid-maroon) 14%, transparent) 0%,
+        transparent 62%
+      ),
+      radial-gradient(
+        48rem 30rem at -6% 100%,
+        color-mix(in srgb, var(--tu-color-aurora-teal) 13%, transparent) 0%,
+        transparent 64%
+      );
+  }
+
+  /* The same paper grain surface-page uses, kept above the colour so the
+     gradients do not look like flat printed ink. */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    background-size: 140px 140px;
+  }
+}
+
+/* A heading that carries the full brand spectrum rather than one flat navy. */
+@utility text-gradient-aurora {
+  background-image: linear-gradient(
+    98deg,
+    var(--tu-color-global-navy) 0%,
+    var(--tu-color-royal-indigo) 26%,
+    var(--tu-color-vivid-maroon) 52%,
+    var(--tu-color-heritage-maroon) 70%,
+    var(--tu-color-global-navy) 100%
+  );
+  background-size: 230% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: tu-gradient-drift 11s var(--tu-ease-standard) infinite alternate;
+}
+
+/* Large headings that rise into place a word at a time. Paired with
+   <WordReveal>, which does the splitting. */
+@utility text-rise {
+  & > span {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    /* The mask has to reach below the baseline or it shears the tail off a
+       descender — the y in "Community" lost its tail. Padding widens the clip
+       box, the matching negative margin keeps the line spacing where it was. */
+    padding-bottom: 0.18em;
+    margin-bottom: -0.18em;
+  }
+
+  & > span > span {
+    display: inline-block;
+    animation: tu-word-rise 780ms var(--tu-ease-premium) both;
+    animation-delay: var(--tu-stagger, 0ms);
+  }
+}
+
+/* Colour for a rising heading.
+   It has to live on the words rather than the heading: an animated element
+   forms its own paint layer, and a parent's background-clip:text does not
+   reach inside one — the animated words simply vanished. Each word takes the
+   gradient at its own offset instead, so the spectrum still travels along the
+   line rather than repeating inside every word. */
+/* The gold version, for a heading standing on the dark aurora field. Same
+   reason as text-rise-aurora for living on the words rather than the heading. */
+@utility text-rise-gold {
+  & > span > span {
+    background-image: linear-gradient(
+      104deg,
+      var(--tu-color-heritage-gold) 0%,
+      var(--tu-gold-highlight) 34%,
+      var(--tu-color-lux-gold) 58%,
+      var(--tu-color-heritage-gold) 100%
+    );
+    background-size: 360% 100%;
+    background-position: calc(var(--tu-word-index, 0) * 16%) 0%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+@utility text-rise-aurora {
+  & > span > span {
+    background-image: linear-gradient(
+      98deg,
+      var(--tu-color-global-navy) 0%,
+      var(--tu-color-royal-indigo) 30%,
+      var(--tu-color-vivid-maroon) 62%,
+      var(--tu-color-heritage-maroon) 100%
+    );
+    background-size: 420% 100%;
+    background-position: calc(var(--tu-word-index, 0) * 22%) 0%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+@keyframes tu-word-rise {
+  from {
+    transform: translate3d(0, 105%, 0) rotate(2.5deg);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0) rotate(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-gradient-aurora,
+  .text-rise > span > span {
+    animation: none !important;
+  }
+
+  .text-rise > span > span {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* The ambient blobs behind the whole site. Three different periods, none a
+   multiple of another, so the field never settles into a visible loop. */
+@keyframes tu-drift-a {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(-6vw, 7vh, 0) scale(1.12);
+  }
+}
+
+@keyframes tu-drift-b {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1.06);
+  }
+  100% {
+    transform: translate3d(7vw, -6vh, 0) scale(1);
+  }
+}
+
+@keyframes tu-drift-c {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.94);
+  }
+  100% {
+    transform: translate3d(-9vw, -5vh, 0) scale(1.1);
+  }
+}
+
+@utility motion-drift-a {
+  animation: tu-drift-a 41s ease-in-out infinite alternate;
+}
+
+@utility motion-drift-b {
+  animation: tu-drift-b 53s ease-in-out infinite alternate;
+}
+
+@utility motion-drift-c {
+  animation: tu-drift-c 67s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-drift-a,
+  .motion-drift-b,
+  .motion-drift-c {
+    animation: none !important;
+  }
+}
+
+/* The field behind the mobile panel, timed with it. */
+.motion-menu-scrim {
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity var(--tu-motion-base) var(--tu-ease-standard),
+    backdrop-filter var(--tu-motion-base) var(--tu-ease-standard);
+}
+
+.motion-menu-scrim[data-state="open"] {
+  opacity: 1;
+  pointer-events: auto;
+  backdrop-filter: blur(4px);
 }

@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { ConfirmDialog } from "@/components/application/confirm-dialog";
 import { usePlatform } from "@/features/enrollment/platform-provider";
 import { useManagementService } from "@/features/management/use-management-service";
 import { getPlatformErrorMessage } from "@/lib/supabase/errors";
@@ -39,6 +40,9 @@ export function ManagementInvitations() {
   const [error, setError] = useState("");
   const [actioningId, setActioningId] = useState<string | null>(null);
   const [actionError, setActionError] = useState("");
+  const [declining, setDeclining] = useState<MyManagementInvitation | null>(
+    null,
+  );
 
   useEffect(() => {
     if (!isHydrated || !currentUser || !managementService) return;
@@ -73,6 +77,8 @@ export function ManagementInvitations() {
     }
   };
 
+  // Declining cannot be taken back — the invitation is gone and a manager has
+  // to send a fresh one — so it asks first, unlike Accept.
   const decline = async (invitation: MyManagementInvitation) => {
     if (!managementService) return;
     setActioningId(invitation.id);
@@ -82,8 +88,11 @@ export function ManagementInvitations() {
       setInvitations((current) =>
         current.filter((i) => i.id !== invitation.id),
       );
+      setDeclining(null);
     } catch (caught: unknown) {
-      setActionError(getPlatformErrorMessage(caught));
+      // Rethrown so the prompt shows it in place rather than closing on a
+      // failure the person never sees.
+      throw new Error(getPlatformErrorMessage(caught));
     } finally {
       setActioningId(null);
     }
@@ -186,7 +195,7 @@ export function ManagementInvitations() {
                   <Button
                     variant="ghost"
                     disabled={actioningId === invitation.id}
-                    onClick={() => void decline(invitation)}
+                    onClick={() => setDeclining(invitation)}
                   >
                     Decline
                   </Button>
@@ -196,6 +205,20 @@ export function ManagementInvitations() {
           </div>
         )}
       </div>
+
+      {declining ? (
+        <ConfirmDialog
+          title="Decline this invitation?"
+          description={`You will not be added as ${roleLabel[declining.role]} of ${declining.organisationName || "this organisation"}.`}
+          detail="This cannot be undone. A manager would need to invite you again."
+          confirmLabel="Decline invitation"
+          pendingLabel="Declining…"
+          cancelLabel="Keep it"
+          tone="destructive"
+          onCancel={() => setDeclining(null)}
+          onConfirm={() => decline(declining)}
+        />
+      ) : null}
     </Container>
   );
 }

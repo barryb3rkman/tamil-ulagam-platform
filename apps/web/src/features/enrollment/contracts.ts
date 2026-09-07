@@ -47,6 +47,10 @@ export interface RuntimeAuthService {
   signup(input: SignupInput): Promise<RuntimeAuthResult>;
   login(input: LoginInput): Promise<RuntimeAuthResult>;
   requestPasswordReset(email: string, captchaToken?: string): Promise<void>;
+  resendEmailConfirmation(
+    email: string,
+    returnTarget?: string | null,
+  ): Promise<void>;
   resolveAuthCallback(
     intent: AuthCallbackIntent,
     callbackUrl: string,

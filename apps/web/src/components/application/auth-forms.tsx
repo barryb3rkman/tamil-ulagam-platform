@@ -16,7 +16,9 @@ import {
 } from "@/features/enrollment/validation";
 import { getSafeReturnTarget, withReturnTarget } from "@/lib/return-target";
 
+import { AwaitEmailConfirmation } from "./await-email-confirmation";
 import { authJourneyPresentation } from "./auth-journey";
+import { GetStartedChoices } from "./get-started-choices";
 import { focusFirstInvalidField, FormError, TextField } from "./form-fields";
 import { CaptchaChallenge } from "./captcha-challenge";
 import { asEventHandler } from "@/lib/event-handlers";
@@ -40,6 +42,7 @@ export function SignupForm() {
   const [formError, setFormError] = useState("");
   const [requiresEmailConfirmation, setRequiresEmailConfirmation] =
     useState(false);
+  const [emailConfirmed, setEmailConfirmed] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
   const [captchaError, setCaptchaError] = useState("");
   const [captchaResetKey, setCaptchaResetKey] = useState(0);
@@ -81,40 +84,42 @@ export function SignupForm() {
   };
 
   if (state === "success") {
+    if (requiresEmailConfirmation && !emailConfirmed) {
+      return (
+        <AwaitEmailConfirmation
+          email={values.email}
+          password={values.password}
+          returnTarget={returnTarget}
+          onConfirmed={() => setEmailConfirmed(true)}
+        />
+      );
+    }
+
     return (
-      <div className="grid min-h-80 content-center gap-5" aria-live="polite">
-        <span
-          aria-hidden="true"
-          className="bg-success/10 text-success grid size-12 place-items-center rounded-full text-xl font-bold"
-        >
-          ✓
-        </span>
-        <div>
-          <h2 className="text-global-navy text-2xl font-bold">
-            Account created
+      <div className="grid min-h-80 content-center gap-6">
+        <div aria-live="polite">
+          <span
+            aria-hidden="true"
+            className="bg-success/10 text-success motion-pop grid size-12 place-items-center rounded-full text-xl font-bold"
+          >
+            ✓
+          </span>
+          <h2 className="text-global-navy mt-4 text-2xl font-bold">
+            {emailConfirmed ? "Email confirmed" : "Account created"}
           </h2>
-          <p className="text-slate mt-2 max-w-md leading-7">
-            {requiresEmailConfirmation
-              ? `Check your email and confirm your account before signing in. ${journey.accountLead}`
-              : journey.successLead}
-          </p>
         </div>
-        <Button
-          onClick={() =>
-            router.push(
-              requiresEmailConfirmation
-                ? withReturnTarget("/login", returnTarget)
-                : (returnTarget ?? "/register"),
-            )
-          }
-          className="w-fit"
-        >
-          {requiresEmailConfirmation
-            ? "Go to sign in"
-            : returnTarget
-              ? "Continue"
-              : "Start organisation registration"}
-        </Button>
+        {returnTarget ? (
+          <>
+            <p className="text-slate max-w-md leading-7">
+              {journey.successLead}
+            </p>
+            <Button onClick={() => router.push(returnTarget)} className="w-fit">
+              Continue
+            </Button>
+          </>
+        ) : (
+          <GetStartedChoices description="Pick a journey now, or open your workspace and decide later." />
+        )}
       </div>
     );
   }

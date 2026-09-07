@@ -210,6 +210,10 @@ export function createMockPlatformServices(
       await delay();
     },
 
+    async resendEmailConfirmation() {
+      await delay();
+    },
+
     async resolveAuthCallback(intent, callbackUrl) {
       await Promise.resolve();
       const flow = new URL(callbackUrl).searchParams.get("mock");
