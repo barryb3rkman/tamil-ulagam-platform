@@ -125,6 +125,9 @@ test.describe("public SiteHeader auth-awareness", () => {
     await expect(page).toHaveURL(/\/workspace\/member\/?$/);
 
     await page.getByRole("button", { name: "Sign out" }).click();
+    const prompt = page.getByRole("dialog");
+    await expect(prompt).toBeVisible();
+    await prompt.getByRole("button", { name: "Sign out" }).click();
     await page.waitForURL(/\/login\/?$/);
     await page.goto("/");
     await expect(

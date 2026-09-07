@@ -21,6 +21,25 @@ const memberAccount = {
 } as const;
 
 async function expectDialogFocusAndHiddenSkipLink(page: Page, dialog: Locator) {
+  // A dialog fades and scales in. Auditing it mid-transition reads every
+  // colour through a partly transparent panel, which reported the body copy
+  // at 3.4:1 when settled it is 6.4:1 — a contrast failure that only existed
+  // for a quarter of a second. Wait for the panel itself to come to rest.
+  //
+  // Its own opacity and transform, not getAnimations(): the gold crest along
+  // the top edge is a filled animation that stays listed once finished, so
+  // the list never empties.
+  await expect
+    .poll(() =>
+      dialog.evaluate((element) => {
+        const { opacity, transform } = getComputedStyle(element);
+        return (
+          opacity === "1" &&
+          (transform === "none" || transform === "matrix(1, 0, 0, 1, 0, 0)")
+        );
+      }),
+    )
+    .toBe(true);
   expect(
     await dialog.evaluate((element) =>
       element.contains(document.activeElement),

@@ -32,6 +32,11 @@ async function signIn(
 async function signOut(page: Page) {
   await page.goto("/dashboard");
   await page.getByRole("button", { name: "Sign out" }).click();
+  // Signing out asks first, so nobody loses a half-filled form to a stray
+  // click. The confirm button carries the same name, hence the scoping.
+  const prompt = page.getByRole("dialog");
+  await expect(prompt).toBeVisible();
+  await prompt.getByRole("button", { name: "Sign out" }).click();
   await expect(page).toHaveURL(/\/login\/?$/);
 }
 
