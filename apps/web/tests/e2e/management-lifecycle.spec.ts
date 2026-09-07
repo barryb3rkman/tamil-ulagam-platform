@@ -2,6 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
+import { resetFixtures } from "./support/fixtures";
 
 const password = "LocalManagementLifecycle!2048Aa";
 
@@ -49,6 +50,17 @@ test.describe("Management administration lifecycle", () => {
       throw new Error("Local Supabase not configured.");
     admin = createClient<Database>(url, serviceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    // Start from a known state so this suite can be re-run on its
+    // own, not only through the entry point that resets everything.
+    await resetFixtures(admin, {
+      organisationNames: ["G1 Lifecycle Org", "G1 Lifecycle Sangam"],
+      userEmails: [
+        "g1-lifecycle-owner@tamil-ulagam.test",
+        "g1-lifecycle-recipient-a@tamil-ulagam.test",
+        "g1-lifecycle-recipient-b@tamil-ulagam.test",
+      ],
     });
 
     for (const [key, fixture] of Object.entries(users)) {

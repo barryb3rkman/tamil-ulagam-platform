@@ -2,6 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
+import { resetFixtures } from "./support/fixtures";
 
 const member = {
   email: "local-browser-member@tamil-ulagam.test",
@@ -40,6 +41,16 @@ test.describe("local Supabase real Member Registration lifecycle", () => {
     }
     admin = createClient<Database>(url, serviceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    // Start from a known state so this suite can be re-run on its
+    // own, not only through the entry point that resets everything.
+    await resetFixtures(admin, {
+      organisationNames: ["Local Browser Verified Sangam"],
+      userEmails: [
+        "local-browser-manager@tamil-ulagam.test",
+        "local-browser-member@tamil-ulagam.test",
+      ],
     });
 
     const { error: memberError } = await admin.auth.admin.createUser({

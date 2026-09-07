@@ -2,6 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
+import { resetFixtures } from "./support/fixtures";
 
 const applicant = {
   fullName: "Nila Raj",
@@ -48,6 +49,15 @@ test.describe("local Supabase browser enrollment", () => {
     }
     const admin = createClient<Database>(url, serviceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    // Start from a known state so this suite can be re-run on its
+    // own, not only through the entry point that resets everything.
+    await resetFixtures(admin, {
+      userEmails: [
+        "local-browser-applicant@tamil-ulagam.test",
+        "local-browser-reviewer@tamil-ulagam.test",
+      ],
     });
     const { data, error } = await admin.auth.admin.createUser({
       email: reviewer.email,

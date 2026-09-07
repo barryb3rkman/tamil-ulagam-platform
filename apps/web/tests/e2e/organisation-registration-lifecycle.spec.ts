@@ -2,6 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
+import { resetFixtures } from "./support/fixtures";
 
 const registrant = {
   fullName: "Priya Anand",
@@ -44,6 +45,17 @@ test.describe("local Supabase real V3 Organisation registration lifecycle", () =
     }
     const admin: SupabaseClient<Database> = createClient(url, serviceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    // Start from a known state so this suite can be re-run on its
+    // own, not only through the entry point that resets everything.
+    await resetFixtures(admin, {
+      organisationNames: ["Local Browser Meridian Health Clinic"],
+      userEmails: [
+        "local-browser-org-registrant@tamil-ulagam.test",
+        "local-browser-org-reviewer@tamil-ulagam.test",
+        "local-browser-org-member@tamil-ulagam.test",
+      ],
     });
 
     const createdReviewer = await admin.auth.admin.createUser({

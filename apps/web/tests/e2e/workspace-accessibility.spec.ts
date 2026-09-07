@@ -3,6 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
+import { resetFixtures } from "./support/fixtures";
 
 const password = "LocalBrowserA11y!2048Aa";
 const user = {
@@ -124,6 +125,23 @@ test.describe("workspace shell accessibility (axe)", () => {
     }
     admin = createClient<Database>(url, serviceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    // Start from a known state so this suite can be re-run on its
+    // own, not only through the entry point that resets everything.
+    await resetFixtures(admin, {
+      organisationNames: [
+        "Local Browser A11y Org",
+        "Local Browser A11y Sangam",
+      ],
+      userEmails: [
+        "local-browser-a11y-manager@tamil-ulagam.test",
+        "local-browser-a11y-member@tamil-ulagam.test",
+        "local-browser-a11y-pending-member@tamil-ulagam.test",
+        "local-browser-a11y-registrant@tamil-ulagam.test",
+        "local-mgmt-a11y-comanager@tamil-ulagam.test",
+        "local-mgmt-a11y-invitee@tamil-ulagam.test",
+      ],
     });
 
     const created = await admin.auth.admin.createUser({
@@ -508,7 +526,7 @@ test.describe("public join surfaces accessibility (axe)", () => {
     await expect(
       page.getByRole("heading", {
         level: 1,
-        name: "Register your organisation",
+        name: "Register an Organisation",
       }),
     ).toBeVisible();
     await checkAccessibility(page, "/join/organisation (logged out)");
@@ -518,7 +536,7 @@ test.describe("public join surfaces accessibility (axe)", () => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/join/sangam");
     await expect(
-      page.getByRole("heading", { level: 1, name: "Register your Sangam" }),
+      page.getByRole("heading", { level: 1, name: "Register a Tamil Sangam" }),
     ).toBeVisible();
     await checkAccessibility(page, "/join/sangam (logged out)");
   });

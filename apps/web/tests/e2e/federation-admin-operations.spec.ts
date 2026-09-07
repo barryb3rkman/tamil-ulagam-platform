@@ -6,6 +6,7 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
+import { resetFixtures } from "./support/fixtures";
 
 const adminAccount = {
   email: "f1-browser-admin@tamil-ulagam.test",
@@ -55,6 +56,22 @@ test.describe("Federation Admin Operations V3", () => {
       throw new Error("Local Supabase F1 setup is not configured.");
     serviceRole = createClient<Database>(url, serviceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    // Start from a known state so this suite can be re-run on its own,
+    // not only through the entry point that resets everything.
+    await resetFixtures(serviceRole, {
+      organisationNames: [
+        "F1 London Tamil Sangam",
+        "F1 International Tamil Knowledge and Community Development Forum",
+      ],
+      enquiryEmails: ["priya@example.org"],
+      userEmails: [
+        "f1-browser-admin@tamil-ulagam.test",
+        "f1-browser-member@tamil-ulagam.test",
+        "f1-review@tamil-ulagam.test",
+        "f1-sangam@tamil-ulagam.test",
+      ],
     });
     const adminUser = await createUser(adminAccount);
     const memberUser = await createUser(memberAccount);

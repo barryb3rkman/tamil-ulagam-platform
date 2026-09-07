@@ -2,6 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
+import { resetFixtures } from "./support/fixtures";
 
 const registrant = {
   fullName: "Kavi Selvam",
@@ -44,6 +45,17 @@ test.describe("local Supabase real Tamil Sangam registration lifecycle", () => {
     }
     const admin: SupabaseClient<Database> = createClient(url, serviceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    // Start from a known state so this suite can be re-run on its
+    // own, not only through the entry point that resets everything.
+    await resetFixtures(admin, {
+      organisationNames: ["Local Browser Coastal Tamil Sangam"],
+      userEmails: [
+        "local-browser-sangam-registrant@tamil-ulagam.test",
+        "local-browser-sangam-reviewer@tamil-ulagam.test",
+        "local-browser-sangam-member@tamil-ulagam.test",
+      ],
     });
 
     const createdReviewer = await admin.auth.admin.createUser({

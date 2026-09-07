@@ -2,6 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
+import { resetFixtures } from "./support/fixtures";
 
 const BUCKET = "sangam-registration-documents";
 
@@ -66,6 +67,19 @@ test.describe("local Supabase Sangam registration document upload & security", (
     }
     admin = createClient(apiUrl, serviceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    // Start from a known state so this suite can be re-run on its own,
+    // not only through the entry point that resets everything.
+    await resetFixtures(admin, {
+      organisationNames: ["Local Browser Registered Coastal Sangam"],
+      userEmails: [
+        "local-sangam-doc-applicant-a@tamil-ulagam.test",
+        "local-sangam-doc-applicant-b@tamil-ulagam.test",
+        "local-sangam-doc-informal@tamil-ulagam.test",
+        "local-sangam-doc-reviewer@tamil-ulagam.test",
+        "local-sangam-doc-unrelated@tamil-ulagam.test",
+      ],
     });
 
     for (const actor of [unrelatedUser, reviewer]) {

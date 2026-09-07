@@ -2,6 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "../../src/lib/supabase/database.types";
+import { resetFixtures } from "./support/fixtures";
 
 const password = "LocalBrowserWorkspace!2048Aa";
 
@@ -68,6 +69,19 @@ test.describe("real V3 workspace switching across the five named personas", () =
     }
     admin = createClient<Database>(url, serviceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    // Start from a known state so this suite can be re-run on its own,
+    // rather than only through the entry point that resets the database.
+    await resetFixtures(admin, {
+      organisationNames: [
+        orgBName,
+        sangamCName,
+        orgDName,
+        sangamDName,
+        orgEName,
+      ],
+      userEmails: Object.values(users).map((fixture) => fixture.email),
     });
 
     const userIds: Record<string, string> = {};
