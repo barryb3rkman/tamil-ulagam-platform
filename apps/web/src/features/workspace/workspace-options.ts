@@ -164,6 +164,11 @@ export function visibleSwitcherOptions(
   return options.filter((option) => option.type !== "member");
 }
 
+// Consequence worth knowing before "fixing" it: a manager of exactly one
+// organisation has Member dropped by visibleSwitcherOptions, so once they
+// are standing in that organisation nothing is left to switch to and the
+// control disappears — there is no route back to Member from there. That
+// is a one-way door and it is intended; confirmed 2026-09-08.
 export function switcherHasSomewhereToGo(
   visibleOptions: readonly WorkspaceOption[],
 ): boolean {
