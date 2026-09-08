@@ -1,30 +1,6 @@
-import {
-  Container,
-  LinkButton,
-  Section,
-  SectionHeading,
-} from "@tamil-ulagam/ui";
+import { Container, LinkButton, Section } from "@tamil-ulagam/ui";
 
 import { eventsContent } from "@/content/events";
-import { FaqAccordion } from "@/components/faq-accordion";
-
-export function EventsFaq() {
-  return (
-    <Section tone="ivory" aria-labelledby="events-faq-title">
-      <Container
-        size="wide"
-        className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-20"
-      >
-        <SectionHeading
-          id="events-faq-title"
-          eyebrow="FREQUENTLY ASKED QUESTIONS"
-          title="Clear answers about Tamil Ulagam events."
-        />
-        <FaqAccordion items={eventsContent.faqs} />
-      </Container>
-    </Section>
-  );
-}
 
 export function EventsFinalCta() {
   const { finalCallToAction } = eventsContent;
@@ -72,12 +48,14 @@ export function EventsFinalCta() {
               {finalCallToAction.secondaryCallToAction.label}
             </LinkButton>
           </div>
+          {/* Events and the Global Events initiative are the same programme
+              seen from two sides; the page should say so. */}
           <LinkButton
-            href={finalCallToAction.textCallToAction.href}
+            href="/initiatives/global-events"
             variant="text"
             className="mt-7 text-sm text-white/72 decoration-white/40 hover:text-white"
           >
-            {finalCallToAction.textCallToAction.label}
+            Explore Global Events
             <span aria-hidden="true" className="ml-2">
               ↗
             </span>

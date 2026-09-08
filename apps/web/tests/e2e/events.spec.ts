@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { expect, test } from "@playwright/test";
 
-import { eventsEditorialImageKeys, images } from "@/config/images";
+import { eventsEditorialImageKeys } from "@/config/images";
 import { eventsContent } from "@/content/events";
 
 import { scrollThroughPage, verifyPageImages } from "./helpers/homepage-media";
@@ -65,13 +65,13 @@ test.describe("public Events page", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: eventsContent.hero.title }),
     ).toBeVisible();
-    await expect(page.getByText(eventsContent.hero.caption)).toBeVisible();
-    await expect(
-      page.getByRole("img", { name: images.initiativeGlobalEvents.alt }),
-    ).toHaveCount(0);
-    await expect(
-      page.getByText(eventsContent.definition.statement),
-    ).toBeVisible();
+    // Every federation event, named in Tamil and English.
+    for (const event of eventsContent.signature) {
+      await expect(
+        page.getByRole("heading", { level: 3, name: event.title }),
+      ).toBeVisible();
+      await expect(page.getByText(event.tamilTitle).first()).toBeVisible();
+    }
     await expect(page.locator("main")).not.toContainText(
       /planned|proposed|no live event calendar/i,
     );
@@ -88,25 +88,14 @@ test.describe("public Events page", () => {
     await expect(
       navigation.getByRole("link", { name: "Events" }),
     ).toHaveAttribute("aria-current", "page");
-    await page
-      .getByRole("link", { name: "Understand the Events Model" })
-      .focus();
-    await expect(page.locator(":focus")).toHaveText(
-      "Understand the Events Model",
-    );
-    await page
-      .getByRole("link", { name: "Understand the Events Model" })
-      .click();
-    await expect(page).toHaveURL(/#events-model$/);
+    await page.getByRole("link", { name: "Find a chapter" }).first().focus();
+    await expect(page.locator(":focus")).toHaveText("Find a chapter");
     await expect(
       page.getByRole("link", { name: "Explore Global Events" }).first(),
     ).toHaveAttribute(
       "href",
       getCanonicalRouteHref("/initiatives/global-events"),
     );
-    await expect(
-      page.getByRole("link", { name: "Contact Tamil Ulagam" }).first(),
-    ).toHaveAttribute("href", getCanonicalRouteHref("/contact"));
     await expect(page.locator("#devtools-indicator")).toBeHidden();
 
     await scrollThroughPage(page, eventsEditorialImageKeys);

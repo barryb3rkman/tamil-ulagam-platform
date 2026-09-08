@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { GlobalChaptersFeature } from "@/components/home/global-chapters-feature";
 import { HomeFinalCta } from "@/components/home/home-final-cta";
 import { HomeHero } from "@/components/home/home-hero";
+import { ImpactFigures } from "@/components/home/impact-figures";
 import { InitiativesShowcase } from "@/components/home/initiatives-showcase";
 import { PillarsSection } from "@/components/home/pillars-section";
 import { VisionSignalStrip } from "@/components/home/vision-signal-strip";
@@ -20,6 +21,7 @@ export default function HomePage() {
     <>
       <HomeHero />
       <VisionSignalStrip />
+      <ImpactFigures />
       <PillarsSection />
       <InitiativesShowcase />
       <GlobalChaptersFeature />

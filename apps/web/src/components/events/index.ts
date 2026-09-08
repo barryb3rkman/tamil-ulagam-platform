@@ -1,21 +1,5 @@
-export {
-  EventCategoriesSection,
-  EventLifecycleSection,
-  EventsDefinitionSection,
-  OrganiserModelSection,
-  OrganiserPathwaySection,
-} from "./events-foundation-sections";
-export { EventsFaq, EventsFinalCta } from "./events-faq-and-cta";
+export { ChapterFormats } from "./chapter-formats";
+export { EventsFinalCta } from "./events-final-cta";
 export { EventsHero } from "./events-hero";
-export {
-  EventsInterestSection,
-  EventsReadinessSection,
-} from "./events-participation-sections";
-export {
-  ChapterOrganisationEventsSection,
-  EventPrivacySection,
-  EventSafetySection,
-  EventStatusSection,
-  HybridArchiveSection,
-  RegistrationAttendanceSection,
-} from "./events-trust-sections";
+export { SignatureCalendar } from "./signature-calendar";
+export { TamilMonthRibbon } from "./tamil-month-ribbon";

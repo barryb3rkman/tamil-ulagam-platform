@@ -2090,3 +2090,287 @@ body:has([data-theme="night"]) {
   background-color: color-mix(in srgb, var(--tu-color-ink) 45%, transparent);
   backdrop-filter: blur(6px);
 }
+
+/* ===========================================================================
+   Editorial cards — the events calendar and the newsroom desks
+
+   A photograph and a block of copy in the same card is the hardest thing to
+   make look deliberate: the copy needs a ground of its own, but a solid panel
+   under it cuts the card in half. These sit the copy on a wash that starts
+   inside the image and deepens as it falls, so the two halves are one object.
+   =========================================================================== */
+
+.event-card,
+.stream-card {
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--tu-color-ink) 55%, transparent) 0%,
+    color-mix(in srgb, var(--tu-color-ink) 88%, transparent) 100%
+  );
+  transition:
+    transform var(--tu-motion-base) var(--tu-ease-premium),
+    border-color var(--tu-motion-base) var(--tu-ease-standard),
+    box-shadow var(--tu-motion-base) var(--tu-ease-premium);
+}
+
+.event-card:hover,
+.stream-card:hover {
+  transform: translate3d(0, -4px, 0);
+  border-color: color-mix(
+    in srgb,
+    var(--tu-color-heritage-gold) 45%,
+    transparent
+  );
+  box-shadow: 0 1.5rem 3rem rgba(2, 6, 12, 0.5);
+}
+
+.event-card-image,
+.stream-card-image {
+  transition: transform 900ms var(--tu-ease-premium);
+}
+
+.event-card:hover .event-card-image,
+.stream-card:hover .stream-card-image {
+  transform: scale(1.05);
+}
+
+/* Lets copy sit on any photograph without picking a text colour per image. */
+.event-card-scrim {
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--tu-color-ink) 12%, transparent) 0%,
+    color-mix(in srgb, var(--tu-color-ink) 45%, transparent) 55%,
+    color-mix(in srgb, var(--tu-color-ink) 92%, transparent) 100%
+  );
+}
+
+.event-card-month,
+.stream-card-index {
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--tu-color-white) 22%, transparent);
+  background-color: color-mix(in srgb, var(--tu-color-ink) 55%, transparent);
+  padding: 0.3rem 0.7rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tu-color-champagne);
+  backdrop-filter: blur(6px);
+}
+
+/* Draws left to right as the card is entered — the small movement that tells
+   you a card is a thing you can act on. */
+.event-card-rule {
+  background-image: linear-gradient(
+    90deg,
+    var(--tu-color-heritage-gold),
+    var(--tu-gold-highlight) 45%,
+    transparent
+  );
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--tu-motion-medium) var(--tu-ease-premium);
+}
+
+.event-card:hover .event-card-rule,
+.stream-card:hover .event-card-rule {
+  transform: scaleX(1);
+}
+
+/* --- Numbered rows, shared by the events and newsroom lists --------------- */
+
+.format-row {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--tu-hairline);
+}
+
+.format-row:last-child {
+  border-bottom: 1px solid var(--tu-hairline);
+}
+
+.format-row-number {
+  font-family: var(--tu-font-display);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: color-mix(in srgb, var(--tu-color-heritage-gold) 75%, transparent);
+}
+
+/* --- The classical line --------------------------------------------------- */
+
+.classical-line-glow {
+  position: absolute;
+  inset: -40% 20% auto;
+  height: 140%;
+  background-image: radial-gradient(
+    50% 50% at 50% 40%,
+    color-mix(in srgb, var(--tu-color-heritage-gold) 12%, transparent) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+/* Keyed on the line index, so React remounts it and the entrance replays. */
+.classical-line-body[data-entering="true"] {
+  animation: tu-line-enter 900ms var(--tu-ease-premium) both;
+}
+
+@keyframes tu-line-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.classical-line-dot {
+  height: 0.3rem;
+  width: 1.1rem;
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--tu-color-white) 18%, transparent);
+  transition:
+    background-color var(--tu-motion-base) var(--tu-ease-standard),
+    width var(--tu-motion-base) var(--tu-ease-premium);
+}
+
+.classical-line-dot[data-active="true"] {
+  width: 2.25rem;
+  background-image: var(--tu-gold-leaf, none);
+  background-color: var(--tu-color-heritage-gold);
+}
+
+/* --- The figures band ----------------------------------------------------- */
+
+.impact-band-glow {
+  position: absolute;
+  inset: -30% -10% auto;
+  height: 160%;
+  pointer-events: none;
+  background-image:
+    radial-gradient(
+      44% 52% at 16% 30%,
+      color-mix(in srgb, var(--tu-color-royal-indigo) 60%, transparent) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      40% 48% at 84% 60%,
+      color-mix(in srgb, var(--tu-color-crimson-ember) 40%, transparent) 0%,
+      transparent 70%
+    );
+}
+
+.figure-item {
+  position: relative;
+  padding-left: 1.25rem;
+  border-left: 2px solid
+    color-mix(in srgb, var(--tu-color-heritage-gold) 40%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .event-card,
+  .stream-card,
+  .event-card-image,
+  .stream-card-image,
+  .event-card-rule,
+  .classical-line-dot {
+    transition: none !important;
+  }
+
+  .classical-line-body[data-entering="true"] {
+    animation: none !important;
+  }
+}
+
+/* --- Latest headlines ------------------------------------------------------
+   A live feed needs to look live without shouting about it: one small pulse
+   next to the label, and rows that respond as the eye moves down them. */
+
+.headline-pulse {
+  display: inline-block;
+  height: 0.45rem;
+  width: 0.45rem;
+  border-radius: 999px;
+  background-color: var(--tu-color-heritage-gold);
+  box-shadow: 0 0 0 0
+    color-mix(in srgb, var(--tu-color-heritage-gold) 55%, transparent);
+  animation: tu-headline-pulse 2.4s ease-out infinite;
+}
+
+@keyframes tu-headline-pulse {
+  0% {
+    box-shadow: 0 0 0 0
+      color-mix(in srgb, var(--tu-color-heritage-gold) 55%, transparent);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 0.55rem transparent;
+  }
+}
+
+.headline-lead {
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--tu-color-ink) 55%, transparent) 0%,
+    color-mix(in srgb, var(--tu-color-ink) 88%, transparent) 100%
+  );
+  transition:
+    transform var(--tu-motion-base) var(--tu-ease-premium),
+    border-color var(--tu-motion-base) var(--tu-ease-standard);
+}
+
+.headline-lead:hover {
+  transform: translate3d(0, -4px, 0);
+  border-color: color-mix(
+    in srgb,
+    var(--tu-color-heritage-gold) 45%,
+    transparent
+  );
+}
+
+.headline-lead:hover .event-card-image {
+  transform: scale(1.05);
+}
+
+.headline-lead:hover .event-card-rule {
+  transform: scaleX(1);
+}
+
+.headline-row {
+  padding: 1rem 0;
+  border-top: 1px solid var(--tu-hairline);
+  transition: padding-inline-start var(--tu-motion-base) var(--tu-ease-premium);
+}
+
+.headline-row:hover {
+  padding-inline-start: 0.75rem;
+}
+
+li:last-child > .headline-row {
+  border-bottom: 1px solid var(--tu-hairline);
+}
+
+.headline-row-title {
+  color: var(--tu-fg);
+  transition: color var(--tu-motion-fast) var(--tu-ease-standard);
+}
+
+.headline-row:hover .headline-row-title {
+  color: var(--tu-color-champagne);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .headline-pulse {
+    animation: none !important;
+  }
+
+  .headline-lead,
+  .headline-row,
+  .headline-row-title {
+    transition: none !important;
+  }
+}

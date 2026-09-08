@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import EventsPage from "@/app/events/page";
@@ -6,56 +6,49 @@ import { eventsEditorialImageKeys, images } from "@/config/images";
 import { eventsContent } from "@/content/events";
 
 describe("public Events page", () => {
-  it("renders one global-events heading and the approved registry image", () => {
+  it("renders one heading and every approved calendar image", () => {
     render(<EventsPage />);
 
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       eventsContent.hero.title,
     );
-    expect(screen.getByText(eventsContent.hero.caption)).toBeVisible();
     for (const key of eventsEditorialImageKeys) {
       expect(screen.getByRole("img", { name: images[key].alt })).toBeVisible();
     }
   });
 
-  it("keeps the page honest about attendee access", () => {
+  it("names all six federation events in both languages", () => {
     render(<EventsPage />);
 
-    expect(screen.getByText(eventsContent.definition.statement)).toBeVisible();
-    expect(
-      screen.queryByText(/upcoming events|register now|buy tickets/i),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText(/planned|proposed|no live event calendar/i),
-    ).not.toBeInTheDocument();
-  });
-
-  it("renders the six global celebrations", () => {
-    render(<EventsPage />);
-
-    for (const category of eventsContent.categories.items) {
+    for (const event of eventsContent.signature) {
       expect(
-        screen.getAllByRole("heading", { name: category.title })[0],
+        screen.getByRole("heading", { level: 3, name: event.title }),
       ).toBeVisible();
+      // The Tamil name is the thing that makes this a Tamil calendar rather
+      // than a list of dates, so it is asserted, not assumed.
+      expect(screen.getAllByText(event.tamilTitle)[0]).toBeVisible();
+      expect(screen.getAllByText(event.month)[0]).toBeVisible();
     }
   });
 
-  it("renders key routes and honest FAQs", () => {
+  it("runs the Tamil calendar alongside the federation year", () => {
     render(<EventsPage />);
 
-    for (const link of screen.getAllByRole("link", {
-      name: "Explore Global Events",
-    })) {
-      expect(link).toHaveAttribute("href", "/initiatives/global-events");
+    for (const month of eventsContent.months) {
+      expect(screen.getAllByText(month.tamil).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(month.english).length).toBeGreaterThan(0);
     }
+  });
+
+  it("states no dates it cannot keep, and no year", () => {
+    const { container } = render(<EventsPage />);
+
+    // Months are a promise a chapter can keep; a date is not, and the public
+    // site does not date itself.
+    expect(container.textContent).not.toMatch(/\b(?:19|20)\d{2}\b/);
     expect(
-      screen.getAllByRole("link", { name: "Contact Tamil Ulagam" })[0],
-    ).toHaveAttribute("href", "/contact");
-    for (const faq of eventsContent.faqs) {
-      expect(screen.getAllByText(faq.title)[0]).toBeVisible();
-      fireEvent.click(screen.getByRole("button", { name: faq.title }));
-      expect(screen.getAllByText(faq.description)[0]).toBeVisible();
-    }
+      screen.queryByText(/register now|buy tickets|book your seat/i),
+    ).not.toBeInTheDocument();
   });
 });
