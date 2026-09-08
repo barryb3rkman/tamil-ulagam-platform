@@ -18,6 +18,7 @@
      a dark panel, so the inverse surfaces need their own pair. */
   --tu-color-success-inverse: #78ddb5;
   --tu-color-error-inverse: #ffb1b8;
+  --tu-color-warning-inverse: #f0b45c;
 
   --tu-color-indigo-depth: #2c2a5c;
   --tu-color-crimson-ember: #a8324a;
@@ -1741,6 +1742,17 @@ footer a:focus-visible {
   --tu-action-hover: var(--tu-color-lux-gold);
   --tu-action-fg: var(--tu-color-ink);
 
+  /* Status colours were picked to sit on white, so on the field they read at
+     2-3:1 — an error message that cannot be read is worse than no error
+     message. The inverse pairs already existed for the dark panels in the
+     workspace; night simply makes them the default. Nothing uses these as a
+     solid fill, only as text and as a tint behind it, so lightening them
+     costs nothing elsewhere.
+     Measured on the field: 11.6:1, 11.1:1 and 9.4:1. */
+  --tu-color-error: var(--tu-color-error-inverse);
+  --tu-color-success: var(--tu-color-success-inverse);
+  --tu-color-warning: var(--tu-color-warning-inverse);
+
   color: var(--tu-fg-body);
 }
 
@@ -2371,6 +2383,120 @@ li:last-child > .headline-row {
   .headline-lead,
   .headline-row,
   .headline-row-title {
+    transition: none !important;
+  }
+}
+
+/* --- Workspace programme areas ---------------------------------------------
+   A module page has to carry three different kinds of thing at once: live
+   numbers for the organisation you are standing in, the programme's roadmap,
+   and a way back out. Each gets its own treatment so they do not read as one
+   undifferentiated wall. */
+
+.module-masthead {
+  background-image: linear-gradient(
+    140deg,
+    var(--tu-color-ink) 0%,
+    var(--tu-color-royal-indigo) 55%,
+    var(--tu-color-aurora-violet) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--tu-color-white) 8%, transparent);
+}
+
+.module-masthead-glow {
+  position: absolute;
+  inset: -40% -10% auto;
+  height: 150%;
+  pointer-events: none;
+  background-image: radial-gradient(
+    38% 46% at 78% 28%,
+    color-mix(in srgb, var(--tu-color-heritage-gold) 16%, transparent) 0%,
+    transparent 70%
+  );
+}
+
+.module-now-row {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
+  border: 1px solid var(--tu-hairline);
+  border-radius: var(--tu-radius-button);
+  padding: 0.9rem 1rem;
+  background-color: var(--tu-raised);
+}
+
+.module-now-tick {
+  display: grid;
+  place-items: center;
+  height: 1.35rem;
+  width: 1.35rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--tu-color-ink);
+  background-color: var(--tu-color-heritage-gold);
+}
+
+.module-capability {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  gap: 0.9rem;
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--tu-hairline);
+}
+
+.module-capability-number {
+  font-family: var(--tu-font-display);
+  font-size: 1.25rem;
+  line-height: 1.2;
+  color: color-mix(in srgb, var(--tu-color-heritage-gold) 70%, transparent);
+}
+
+.module-calendar-row {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: baseline;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--tu-hairline);
+}
+
+@media (min-width: 40rem) {
+  .module-calendar-row {
+    grid-template-columns: 6.5rem minmax(0, 1fr) minmax(0, 1.1fr);
+  }
+}
+
+.module-calendar-month {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--tu-color-heritage-gold) 80%, transparent);
+}
+
+.module-sibling {
+  border: 1px solid var(--tu-hairline);
+  border-radius: var(--tu-radius-button);
+  padding: 0.8rem 1rem;
+  background-color: var(--tu-raised);
+  transition:
+    border-color var(--tu-motion-fast) var(--tu-ease-standard),
+    transform var(--tu-motion-fast) var(--tu-ease-premium);
+}
+
+.module-sibling:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--tu-color-heritage-gold) 50%,
+    transparent
+  );
+  transform: translate3d(0, -2px, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .module-sibling {
     transition: none !important;
   }
 }

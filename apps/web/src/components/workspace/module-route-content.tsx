@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import type { WorkspaceModule } from "@/content/workspace-modules";
 import type { WorkspaceType } from "@/features/workspace/workspace-options";
 
-import { ModuleComingSoon } from "./module-coming-soon";
+import { ModuleProgramme } from "./module-programme";
 
 const workspaceLabel: Record<Exclude<WorkspaceType, "admin">, string> = {
   member: "your Member Workspace",
@@ -31,7 +31,7 @@ export function ModuleRouteContent({
   const entityId = paramName ? searchParams.get(paramName) : null;
 
   return (
-    <ModuleComingSoon
+    <ModuleProgramme
       workspaceModule={workspaceModule}
       workspaceType={workspaceType}
       entityId={entityId}

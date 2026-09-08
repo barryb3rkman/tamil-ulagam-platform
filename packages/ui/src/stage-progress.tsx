@@ -38,9 +38,9 @@ export function StageProgress({
                 <span
                   className={`grid size-8 shrink-0 place-items-center rounded-full border text-xs font-bold ${
                     isComplete
-                      ? "border-heritage-maroon bg-heritage-maroon text-white"
+                      ? "border-fg-accent bg-heritage-maroon text-white"
                       : isCurrent
-                        ? "border-heritage-maroon text-heritage-maroon ring-heritage-maroon/10 bg-raised ring-4"
+                        ? "border-fg-accent text-fg-accent ring-fg-accent/10 bg-raised ring-4"
                         : "border-hairline/15 text-fg-muted bg-raised"
                   }`}
                 >
@@ -71,7 +71,7 @@ export function StageProgress({
               <span
                 className={`text-label mt-2 hidden md:block ${
                   isCurrent
-                    ? "text-heritage-maroon"
+                    ? "text-fg-accent"
                     : isComplete
                       ? "text-fg"
                       : "text-fg-muted"
