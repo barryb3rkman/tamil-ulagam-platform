@@ -1,9 +1,9 @@
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
-import { expect, test, type Locator } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-import { images, newsEditorialImageKeys } from "@/config/images";
+import { newsEditorialImageKeys } from "@/config/images";
 import { newsContent } from "@/content/news";
 
 import { scrollThroughPage, verifyPageImages } from "./helpers/homepage-media";
@@ -19,19 +19,6 @@ const reviewViewports = [
   { width: 390, height: 844 },
   { width: 375, height: 812 },
 ] as const;
-
-async function settleEntranceAnimations(locator: Locator) {
-  for (let pass = 0; pass < 2; pass += 1) {
-    await locator.page().waitForTimeout(200);
-    await locator.evaluate(async (element) => {
-      await Promise.all(
-        element
-          .getAnimations({ subtree: true })
-          .map((animation) => animation.finished.catch(() => undefined)),
-      );
-    });
-  }
-}
 
 test.describe("public News page", () => {
   test("captures the requested visual review viewports", async ({ page }) => {
@@ -79,29 +66,46 @@ test.describe("public News page", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: newsContent.hero.title }),
     ).toBeVisible();
-    await expect(page.getByText(newsContent.hero.caption)).toBeVisible();
+    // The three desks, each named in Tamil and English.
+    for (const stream of newsContent.streams) {
+      await expect(
+        page.getByRole("heading", { level: 3, name: stream.title }),
+      ).toBeVisible();
+      await expect(page.getByText(stream.tamilTitle).first()).toBeVisible();
+    }
     await expect(
-      page.getByRole("img", { name: images.communityStories.alt }),
-    ).toHaveCount(0);
-    await expect(
-      page.getByText(newsContent.definition.statement),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: newsContent.corrections.title }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", {
-        name: newsContent.multilingualAccessibility.title,
-      }),
+      page.getByRole("heading", { name: newsContent.principles.title }),
     ).toBeVisible();
     await expect(page.locator("main")).not.toContainText(
       /planned|proposed|in development|future newsroom/i,
     );
 
     const main = page.locator("main#main-content");
-    await expect(main).not.toContainText(/\b20\d{2}\b/);
+    // Same rule, same exception: the federation dates none of its own copy,
+    // and a syndicated headline keeps its publisher's dateline.
+    expect(
+      await main.evaluate((element) => {
+        const ours = element.cloneNode(true) as HTMLElement;
+        for (const quoted of ours.querySelectorAll(
+          "[data-external-headlines]",
+        )) {
+          quoted.remove();
+        }
+        return ours.textContent ?? "";
+      }),
+    ).not.toMatch(/\b20\d{2}\b/);
     await expect(main).not.toContainText(/published today|byline:/i);
-    await expect(main.locator("time")).toHaveCount(0);
+    // The federation timestamps nothing of its own — it has no dated stories
+    // to timestamp. The syndicated headlines are dated because their
+    // publishers dated them, and dropping that would misrepresent them.
+    expect(
+      await main.evaluate(
+        (element) =>
+          [...element.querySelectorAll("time")].filter(
+            (node) => !node.closest("[data-external-headlines]"),
+          ).length,
+      ),
+    ).toBe(0);
     await expect(
       main.locator('[rel="author"], [itemprop="author"], [data-byline]'),
     ).toHaveCount(0);
@@ -119,24 +123,18 @@ test.describe("public News page", () => {
       navigation.getByRole("link", { name: "News" }),
     ).toHaveAttribute("aria-current", "page");
     await page
-      .getByRole("link", { name: "Understand the Editorial Model" })
+      .getByRole("link", { name: "Contact the newsroom" })
+      .first()
       .focus();
-    await expect(page.locator(":focus")).toHaveText(
-      "Understand the Editorial Model",
-    );
-    await page
-      .getByRole("link", { name: "Understand the Editorial Model" })
-      .click();
-    await expect(page).toHaveURL(/#editorial-model$/);
+    await expect(page.locator(":focus")).toHaveText("Contact the newsroom");
+    // Where the newsroom actually sends a reader now: contribute by
+    // registering an organisation, or reach the desk directly.
     await expect(
-      page.getByRole("link", { name: "Explore Partnerships" }).first(),
-    ).toHaveAttribute("href", getCanonicalRouteHref("/partners"));
+      page.getByRole("link", { name: "Register an organisation" }).first(),
+    ).toHaveAttribute("href", getCanonicalRouteHref("/join/organisation"));
     await expect(
-      page.getByRole("link", { name: "Contact Tamil Ulagam" }).first(),
+      page.getByRole("link", { name: "Contact the newsroom" }).first(),
     ).toHaveAttribute("href", getCanonicalRouteHref("/contact"));
-    await expect(
-      page.getByRole("link", { name: "Learn About Tamil Ulagam" }),
-    ).toHaveAttribute("href", getCanonicalRouteHref("/about"));
     await expect(page.locator("#devtools-indicator")).toBeHidden();
 
     await scrollThroughPage(page, newsEditorialImageKeys);
@@ -158,54 +156,5 @@ test.describe("public News page", () => {
         ),
       ).toBe(true);
     }
-  });
-
-  test("balances publication types without an empty final grid cell", async ({
-    page,
-  }) => {
-    const grid = page.locator("[data-publication-type-grid]");
-    const cards = grid.locator("[data-publication-type-card]");
-
-    await page.setViewportSize({ width: 1440, height: 1000 });
-    await page.goto("/news", { waitUntil: "domcontentloaded" });
-    await grid.scrollIntoViewIfNeeded();
-    await expect(grid).toBeVisible();
-    await settleEntranceAnimations(grid);
-    const desktopGrid = await grid.boundingBox();
-    const desktopCards = await cards.evaluateAll((elements) =>
-      elements.map((element) => {
-        const rectangle = element.getBoundingClientRect();
-        return {
-          bottom: rectangle.bottom,
-          left: rectangle.left,
-          right: rectangle.right,
-          top: rectangle.top,
-          width: rectangle.width,
-        };
-      }),
-    );
-
-    expect(desktopGrid).not.toBeNull();
-    expect(desktopCards).toHaveLength(5);
-    expect(desktopCards[0]?.top).toBeCloseTo(desktopCards[2]?.top ?? 0, 0);
-    expect(desktopCards[3]?.top).toBeCloseTo(desktopCards[4]?.top ?? 0, 0);
-    expect(desktopCards[3]?.top ?? 0).toBeGreaterThanOrEqual(
-      desktopCards[0]?.bottom ?? 0,
-    );
-    expect(desktopCards[3]?.width).toBeCloseTo(desktopCards[4]?.width ?? 0, 0);
-    expect(desktopCards[3]?.left).toBeCloseTo(desktopGrid?.x ?? 0, 0);
-    expect(desktopCards[4]?.right).toBeCloseTo(
-      (desktopGrid?.x ?? 0) + (desktopGrid?.width ?? 0),
-      0,
-    );
-
-    await page.setViewportSize({ width: 768, height: 1024 });
-    await page.goto("/news", { waitUntil: "domcontentloaded" });
-    await grid.scrollIntoViewIfNeeded();
-    await settleEntranceAnimations(grid);
-    const tabletGrid = await grid.boundingBox();
-    const finalTabletCard = await cards.last().boundingBox();
-    expect(finalTabletCard?.width).toBeCloseTo(tabletGrid?.width ?? 0, 0);
-    expect(finalTabletCard?.x).toBeCloseTo(tabletGrid?.x ?? 0, 0);
   });
 });

@@ -12,7 +12,6 @@ export function NewsHero() {
       eyebrow={hero.eyebrow}
       title={hero.title}
       description={hero.description}
-      caption={hero.caption}
       primaryAction={hero.primaryCallToAction}
       secondaryAction={hero.secondaryCallToAction}
     />

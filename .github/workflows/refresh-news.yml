@@ -1,0 +1,49 @@
+name: Refresh Tamil headlines
+
+# The site is a static export, so the newsroom is only as current as the last
+# build. This pulls the feeds, commits what changed, and the push to main is
+# what triggers a redeploy.
+#
+# Every three hours, offset to :30 so it is not competing with the top-of-hour
+# crush on shared runners. Tamil newsrooms do not turn over faster than that,
+# and the script exits without committing when nothing is new — so a quiet
+# stretch costs one fetch and no deploy.
+on:
+  schedule:
+    - cron: "30 */3 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: refresh-news
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Fetch the latest headlines
+        working-directory: apps/web
+        run: node scripts/fetch-latest-news.mjs
+
+      - name: Commit if anything changed
+        run: |
+          if git diff --quiet -- apps/web/src/content/generated/latest-news.json; then
+            echo "No new headlines."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/web/src/content/generated/latest-news.json
+          git commit -m "content: refresh Tamil headlines"
+          git push

@@ -88,7 +88,21 @@ test.describe("showcase language integrity", () => {
       await expect(page.locator("body")).not.toContainText(
         bannedShowcaseLanguage,
       );
-      await expect(main).not.toContainText(/\b(?:19|20)\d{2}\b/);
+      // The federation's own copy states no year. Headlines syndicated from
+      // Tamil newsrooms are quoted with their publisher's dateline intact, so
+      // that subtree is excluded rather than the rule being dropped.
+      expect(
+        await main.evaluate((element) => {
+          const ours = element.cloneNode(true) as HTMLElement;
+          for (const quoted of ours.querySelectorAll(
+            "[data-external-headlines]",
+          )) {
+            quoted.remove();
+          }
+          return ours.textContent ?? "";
+        }),
+        `${route.path} should not state a year in Tamil Ulagam's own copy`,
+      ).not.toMatch(/\b(?:19|20)\d{2}\b/);
       expect(await page.title()).not.toMatch(bannedMetadataLanguage);
 
       const description =

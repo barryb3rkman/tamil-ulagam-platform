@@ -1,23 +1,20 @@
 import type { Metadata } from "next";
 
 import {
-  CommunityStoriesSection,
-  CorrectionsSection,
-  MultilingualAccessibilitySection,
-  NewsFaq,
+  ClassicalLine,
+  LatestHeadlines,
   NewsFinalCta,
   NewsHero,
-  NewsInterestSection,
-  NewsroomDefinitionSection,
-  PublicationTypesSection,
+  NewsPrinciples,
+  NewsStreams,
 } from "@/components/news";
 import { images } from "@/config/images";
 import { createPageMetadata } from "@/config/metadata";
 import { newsContent } from "@/content/news";
 
 export const metadata: Metadata = createPageMetadata(
-  "News | Tamil Ulagam Public Editorial Platform",
-  "Explore Tamil Ulagam community news, announcements, diaspora updates and Tamil and English cultural and institutional stories.",
+  "News | Tamil Ulagam Newsroom",
+  "Federation notices, reporting from the chapters, and the Tamil language and heritage desk.",
   "/news",
   images[newsContent.hero.imageKey],
 );
@@ -26,13 +23,10 @@ export default function NewsPage() {
   return (
     <>
       <NewsHero />
-      <NewsroomDefinitionSection />
-      <PublicationTypesSection />
-      <CommunityStoriesSection />
-      <CorrectionsSection />
-      <MultilingualAccessibilitySection />
-      <NewsInterestSection />
-      <NewsFaq />
+      <LatestHeadlines />
+      <NewsStreams />
+      <ClassicalLine />
+      <NewsPrinciples />
       <NewsFinalCta />
     </>
   );
