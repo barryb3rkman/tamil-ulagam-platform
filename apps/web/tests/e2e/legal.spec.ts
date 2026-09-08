@@ -10,6 +10,7 @@ import {
 } from "@/content/legal";
 
 import { getCanonicalRouteHref } from "./helpers/routes";
+import { reviewArtefactOnly } from "./helpers/review-only";
 
 const responsiveViewports = [
   { width: 1920, height: 1080 },
@@ -75,6 +76,7 @@ test.describe("draft public legal pages", () => {
   test("captures the required Privacy and Terms review screenshots", async ({
     page,
   }) => {
+    reviewArtefactOnly();
     test.setTimeout(180_000);
     const reviewDirectory = path.resolve(
       process.cwd(),

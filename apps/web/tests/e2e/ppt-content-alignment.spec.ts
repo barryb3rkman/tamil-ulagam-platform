@@ -2,6 +2,7 @@ import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
 import { expect, test, type Page } from "@playwright/test";
+import { reviewArtefactOnly } from "./helpers/review-only";
 
 const publicRoutes = [
   "/",
@@ -129,6 +130,7 @@ test.describe("PPT-aligned public content", () => {
   test("captures representative desktop and mobile review screenshots", async ({
     page,
   }) => {
+    reviewArtefactOnly();
     test.setTimeout(240_000);
     const reviewDirectory = path.resolve(
       process.cwd(),

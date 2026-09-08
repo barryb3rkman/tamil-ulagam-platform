@@ -8,6 +8,7 @@ import { partnersContent } from "@/content/partners";
 
 import { scrollThroughPage, verifyPageImages } from "./helpers/homepage-media";
 import { getCanonicalRouteHref } from "./helpers/routes";
+import { reviewArtefactOnly } from "./helpers/review-only";
 
 const reviewViewports = [
   { width: 1920, height: 1080 },
@@ -21,6 +22,7 @@ const reviewViewports = [
 
 test.describe("public Partners page", () => {
   test("captures the requested visual review viewports", async ({ page }) => {
+    reviewArtefactOnly();
     test.setTimeout(120_000);
     const reviewDirectory =
       process.env.PARTNERS_REVIEW_DIR ??

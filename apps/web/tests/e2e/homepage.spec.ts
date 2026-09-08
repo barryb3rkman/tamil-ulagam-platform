@@ -8,9 +8,11 @@ import {
   verifyMajorHomepageImages,
 } from "./helpers/homepage-media";
 import { getCanonicalRouteHref } from "./helpers/routes";
+import { reviewArtefactOnly } from "./helpers/review-only";
 
 test.describe("public homepage", () => {
   test("captures the requested visual review viewports", async ({ page }) => {
+    reviewArtefactOnly();
     test.setTimeout(90_000);
     const reviewDirectory =
       process.env.HOMEPAGE_REVIEW_DIR ??

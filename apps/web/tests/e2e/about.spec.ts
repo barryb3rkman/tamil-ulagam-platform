@@ -7,6 +7,7 @@ import { aboutEditorialImageKeys } from "@/config/images";
 
 import { scrollThroughPage, verifyPageImages } from "./helpers/homepage-media";
 import { getCanonicalRouteHref } from "./helpers/routes";
+import { reviewArtefactOnly } from "./helpers/review-only";
 
 const reviewViewports = [
   { width: 1920, height: 1080 },
@@ -20,6 +21,7 @@ const reviewViewports = [
 
 test.describe("public About page", () => {
   test("captures the requested visual review viewports", async ({ page }) => {
+    reviewArtefactOnly();
     test.setTimeout(90_000);
     const reviewDirectory =
       process.env.ABOUT_REVIEW_DIR ??

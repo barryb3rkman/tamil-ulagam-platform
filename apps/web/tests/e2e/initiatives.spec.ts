@@ -7,6 +7,7 @@ import { initiativesEditorialImageKeys, images } from "@/config/images";
 import { initiatives } from "@/content/initiatives";
 
 import { getCanonicalRouteHref } from "./helpers/routes";
+import { reviewArtefactOnly } from "./helpers/review-only";
 
 const reviewViewports = [
   { width: 1920, height: 1080 },
@@ -68,6 +69,7 @@ async function loadInitiativeImages(page: Page) {
 
 test.describe("public Initiatives overview page", () => {
   test("captures the requested visual review viewports", async ({ page }) => {
+    reviewArtefactOnly();
     test.setTimeout(120_000);
     const reviewDirectory = path.resolve(
       process.cwd(),

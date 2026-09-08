@@ -8,6 +8,7 @@ import { newsContent } from "@/content/news";
 
 import { scrollThroughPage, verifyPageImages } from "./helpers/homepage-media";
 import { getCanonicalRouteHref } from "./helpers/routes";
+import { reviewArtefactOnly } from "./helpers/review-only";
 
 const reviewViewports = [
   { width: 1920, height: 1080 },
@@ -34,6 +35,7 @@ async function settleEntranceAnimations(locator: Locator) {
 
 test.describe("public News page", () => {
   test("captures the requested visual review viewports", async ({ page }) => {
+    reviewArtefactOnly();
     test.setTimeout(120_000);
     const reviewDirectory =
       process.env.NEWS_REVIEW_DIR ??

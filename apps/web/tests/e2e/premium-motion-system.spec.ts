@@ -2,6 +2,7 @@ import { mkdir } from "node:fs/promises";
 import path from "node:path";
 
 import { expect, test, type Page } from "@playwright/test";
+import { sweepViewports } from "./helpers/review-only";
 
 const publicRoutes = [
   { path: "/", name: "home" },
@@ -25,16 +26,7 @@ const publicRoutes = [
   { path: "/terms", name: "terms" },
 ] as const;
 
-const requiredViewports = [
-  { width: 375, height: 812 },
-  { width: 390, height: 844 },
-  { width: 430, height: 932 },
-  { width: 768, height: 1024 },
-  { width: 1024, height: 768 },
-  { width: 1280, height: 800 },
-  { width: 1440, height: 1000 },
-  { width: 1920, height: 1080 },
-] as const;
+const requiredViewports = sweepViewports;
 
 const requestedCaptureRoutes = new Set(
   process.env.PREMIUM_MOTION_REVIEW_ROUTE?.split(",") ?? [],

@@ -35,7 +35,8 @@
     "clean:test-artifacts": "node scripts/maintenance/clean-test-artifacts.mjs",
     "test:functions": "node --test supabase/functions/_shared/email-template.test.ts supabase/functions/_shared/secret-keys.test.ts",
     "prepare": "husky",
-    "knip": "knip"
+    "knip": "knip",
+    "test:e2e:review": "E2E_REVIEW=1 turbo test:e2e"
   },
   "devDependencies": {
     "eslint": "9.39.5",

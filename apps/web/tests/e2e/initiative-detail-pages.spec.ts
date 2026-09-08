@@ -13,18 +13,11 @@ import {
 
 import { scrollThroughPage, verifyPageImages } from "./helpers/homepage-media";
 import { getCanonicalRouteHref } from "./helpers/routes";
+import { reviewArtefactOnly, sweepViewports } from "./helpers/review-only";
 
 const standardDesktop = { width: 1440, height: 1000 };
 const standardMobile = { width: 390, height: 844 };
-const responsiveViewports = [
-  { width: 375, height: 812 },
-  standardMobile,
-  { width: 430, height: 932 },
-  { width: 768, height: 1024 },
-  { width: 1024, height: 900 },
-  standardDesktop,
-  { width: 1920, height: 1080 },
-] as const;
+const responsiveViewports = sweepViewports;
 const representativeViewports = [
   { width: 1920, height: 1080 },
   { width: 768, height: 1024 },
@@ -257,6 +250,7 @@ test.describe("initiative detail pages", () => {
   test("captures every approved detail page for visual review", async ({
     page,
   }) => {
+    reviewArtefactOnly();
     test.setTimeout(120_000);
     const reviewDirectory = path.resolve(
       process.cwd(),
