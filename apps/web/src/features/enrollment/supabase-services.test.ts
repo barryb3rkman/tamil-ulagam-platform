@@ -8,6 +8,21 @@ import { describe, expect, it, vi } from "vitest";
 
 import { createSupabasePlatformServices } from "./supabase-services";
 
+/**
+ * The callback URL the service will actually build.
+ *
+ * These assertions used to hard-code callbackUrl(""),
+ * which is only right when NEXT_PUBLIC_BASE_PATH is unset. The deploy
+ * workflow sets it for the whole job, so the same suite that passed locally
+ * failed in CI on a redirect that was in fact correct. Deriving it the way
+ * the service does means the tests hold under either, and they now prove the
+ * base path is honoured rather than assuming it is absent.
+ */
+function callbackUrl(query: string): string {
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+  return `http://localhost:3000${basePath}/auth/callback${query}`;
+}
+
 const authUser = {
   id: "f87e5f44-cc58-4b8f-8f07-232234c7aa22",
   email: "nila@example.org",
@@ -186,8 +201,7 @@ describe("Supabase enrollment services", () => {
     expect(signUp).toHaveBeenCalledWith(
       expect.objectContaining({
         options: expect.objectContaining({
-          emailRedirectTo:
-            "http://localhost:3000/auth/callback?flow=confirmation",
+          emailRedirectTo: callbackUrl("?flow=confirmation"),
         }),
       }),
     );
@@ -207,8 +221,9 @@ describe("Supabase enrollment services", () => {
     expect(signUp).toHaveBeenCalledWith(
       expect.objectContaining({
         options: expect.objectContaining({
-          emailRedirectTo:
-            "http://localhost:3000/auth/callback?flow=confirmation&next=%2Fjoin%2Fsangam",
+          emailRedirectTo: callbackUrl(
+            "?flow=confirmation&next=%2Fjoin%2Fsangam",
+          ),
         }),
       }),
     );
@@ -269,7 +284,7 @@ describe("Supabase enrollment services", () => {
     );
     expect(resetPasswordForEmail).toHaveBeenCalledWith("nila@example.org", {
       captchaToken: "captcha-token",
-      redirectTo: "http://localhost:3000/auth/callback?flow=recovery",
+      redirectTo: callbackUrl("?flow=recovery"),
     });
   });
 
@@ -280,10 +295,7 @@ describe("Supabase enrollment services", () => {
     const auth = services.auth;
     emitAuthEvent("PASSWORD_RECOVERY");
     await expect(
-      auth.resolveAuthCallback(
-        "recovery",
-        "http://localhost:3000/auth/callback?flow=recovery",
-      ),
+      auth.resolveAuthCallback("recovery", callbackUrl("?flow=recovery")),
     ).resolves.toEqual({ status: "recovery_ready" });
     await auth.completePasswordRecovery("UpdatedMvp2!");
     expect(updateUser).toHaveBeenCalledWith({ password: "UpdatedMvp2!" });
@@ -295,7 +307,7 @@ describe("Supabase enrollment services", () => {
     await expect(
       createSupabasePlatformServices(missing.client).auth.resolveAuthCallback(
         "recovery",
-        "http://localhost:3000/auth/callback?flow=recovery",
+        callbackUrl("?flow=recovery"),
       ),
     ).resolves.toEqual(expect.objectContaining({ status: "invalid" }));
 
@@ -305,17 +317,16 @@ describe("Supabase enrollment services", () => {
     const normalAuth = normalServices.auth;
     normal.emitAuthEvent("SIGNED_IN");
     await expect(
-      normalAuth.resolveAuthCallback(
-        "recovery",
-        "http://localhost:3000/auth/callback?flow=recovery",
-      ),
+      normalAuth.resolveAuthCallback("recovery", callbackUrl("?flow=recovery")),
     ).resolves.toEqual(expect.objectContaining({ status: "invalid" }));
 
     const expired = clientWithAuth({});
     await expect(
       createSupabasePlatformServices(expired.client).auth.resolveAuthCallback(
         "recovery",
-        "http://localhost:3000/auth/callback?flow=recovery&error=access_denied&error_code=otp_expired",
+        callbackUrl(
+          "?flow=recovery&error=access_denied&error_code=otp_expired",
+        ),
       ),
     ).resolves.toEqual(expect.objectContaining({ status: "invalid" }));
   });
@@ -329,7 +340,7 @@ describe("Supabase enrollment services", () => {
     await expect(
       auth.resolveAuthCallback(
         "confirmation",
-        "http://localhost:3000/auth/callback?flow=confirmation&token_hash=safe-hash&type=signup",
+        callbackUrl("?flow=confirmation&token_hash=safe-hash&type=signup"),
       ),
     ).resolves.toEqual({
       status: "confirmation_success",
@@ -344,7 +355,7 @@ describe("Supabase enrollment services", () => {
     await expect(
       createSupabasePlatformServices(invalid.client).auth.resolveAuthCallback(
         "confirmation",
-        "http://localhost:3000/auth/callback?flow=confirmation&token_hash=expired&type=signup",
+        callbackUrl("?flow=confirmation&token_hash=expired&type=signup"),
       ),
     ).resolves.toEqual(expect.objectContaining({ status: "invalid" }));
   });
