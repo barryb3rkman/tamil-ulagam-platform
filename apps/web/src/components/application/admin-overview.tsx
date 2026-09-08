@@ -125,16 +125,16 @@ export function AdminOverview() {
             </div>
           </div>
 
-          <aside className="border-global-navy/12 rounded-large border bg-white p-6 sm:p-8">
-            <p className="text-heritage-maroon text-eyebrow-sm">
+          <aside className="border-hairline/12 rounded-large bg-raised border p-6 sm:p-8">
+            <p className="text-fg-accent text-eyebrow-sm">
               Review responsibility
             </p>
-            <h2 className="text-global-navy mt-3 text-xl font-bold">
+            <h2 className="text-fg mt-3 text-xl font-bold">
               {capabilities.canOperateFederation
                 ? "Federation Admin"
                 : "Registration Reviewer"}
             </h2>
-            <p className="text-slate mt-3 leading-7">
+            <p className="text-fg-muted mt-3 leading-7">
               {capabilities.canOperateFederation
                 ? "Operational access includes Federation directories, membership escalation and partnership lifecycle management."
                 : "Your access is limited to registration review. Operational directories, membership escalation and partnerships remain Admin-only."}
@@ -145,12 +145,12 @@ export function AdminOverview() {
 
       {capabilities.canOperateFederation ? (
         <section aria-labelledby="directories-title">
-          <p className="text-heritage-maroon text-eyebrow-sm">
+          <p className="text-fg-accent text-eyebrow-sm">
             Federation directories
           </p>
           <h2
             id="directories-title"
-            className="text-global-navy mt-2 text-2xl font-bold"
+            className="text-fg mt-2 text-2xl font-bold"
           >
             Verified network visibility
           </h2>
@@ -179,30 +179,27 @@ export function AdminOverview() {
 
       {capabilities.canOperateFederation ? (
         <section aria-labelledby="recent-activity-title">
-          <h2
-            id="recent-activity-title"
-            className="text-global-navy text-2xl font-bold"
-          >
+          <h2 id="recent-activity-title" className="text-fg text-2xl font-bold">
             Recent operational activity
           </h2>
           {activity.length ? (
-            <ol className="border-global-navy/12 divide-global-navy/10 rounded-card mt-5 divide-y border bg-white">
+            <ol className="border-hairline/12 divide-global-navy/10 rounded-card bg-raised mt-5 divide-y border">
               {activity.map((item) => (
                 <li
                   key={`${item.domain}-${item.id}`}
                   className="grid gap-2 px-5 py-4 sm:grid-cols-[1fr_auto] sm:items-center"
                 >
                   <div className="min-w-0">
-                    <p className="text-global-navy font-semibold break-words">
+                    <p className="text-fg font-semibold break-words">
                       {item.title}
                     </p>
-                    <p className="text-slate mt-1 text-sm">
+                    <p className="text-fg-muted mt-1 text-sm">
                       {activityDomainLabels[item.domain]} · {item.description} ·{" "}
                       {humanize(item.status)}
                     </p>
                   </div>
                   <time
-                    className="text-slate text-sm"
+                    className="text-fg-muted text-sm"
                     dateTime={item.occurredAt}
                   >
                     {formatOperationalDate(item.occurredAt)}
@@ -211,7 +208,7 @@ export function AdminOverview() {
               ))}
             </ol>
           ) : (
-            <p className="text-slate border-global-navy/12 rounded-card mt-5 border bg-white p-6">
+            <p className="text-fg-muted border-hairline/12 rounded-card bg-raised mt-5 border p-6">
               Operational decisions will appear here as they are recorded.
             </p>
           )}
@@ -257,14 +254,14 @@ function DirectoryLink({
   return (
     <Link
       href={href}
-      className="border-global-navy/12 focus-visible:ring-focus rounded-card group hover:border-heritage-gold/70 border bg-white p-5"
+      className="border-hairline/12 focus-visible:ring-focus rounded-card group hover:border-heritage-gold/70 bg-raised border p-5"
     >
       <div className="flex items-start justify-between gap-4">
-        <h3 className="text-global-navy text-lg font-bold">{label}</h3>
-        <span className="text-heritage-maroon text-2xl font-bold">{value}</span>
+        <h3 className="text-fg text-lg font-bold">{label}</h3>
+        <span className="text-fg-accent text-2xl font-bold">{value}</span>
       </div>
-      <p className="text-slate mt-2 text-sm leading-6">{description}</p>
-      <span className="text-global-navy decoration-heritage-gold mt-4 inline-flex text-sm font-semibold underline underline-offset-4">
+      <p className="text-fg-muted mt-2 text-sm leading-6">{description}</p>
+      <span className="text-fg decoration-heritage-gold mt-4 inline-flex text-sm font-semibold underline underline-offset-4">
         Open directory
       </span>
     </Link>

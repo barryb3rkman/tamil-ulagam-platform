@@ -25,7 +25,7 @@ export function NewsroomReadinessSection() {
         />
         <div>
           <NumberedGrid items={readiness.items} />
-          <p className="border-heritage-maroon/40 text-slate mt-8 border-l-2 pl-5 text-lg leading-8">
+          <p className="border-heritage-maroon/40 text-fg-muted mt-8 border-l-2 pl-5 text-lg leading-8">
             {readiness.statement}
           </p>
           <LinkButton
@@ -137,7 +137,7 @@ export function NewsFinalCta() {
               href={finalCallToAction.primaryCallToAction.href}
               variant="secondary"
               size="large"
-              className="!text-global-navy hover:bg-warm-ivory border-white bg-white"
+              className="!text-fg hover:bg-sunken bg-raised border-white"
             >
               {finalCallToAction.primaryCallToAction.label}
             </LinkButton>

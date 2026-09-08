@@ -56,7 +56,7 @@ export function SiteHeader() {
       />
       <header
         data-scrolled={isScrolled}
-        className="motion-site-header border-global-navy/8 sticky top-0 z-40 border-b"
+        className="motion-site-header border-hairline/8 sticky top-0 z-40 border-b"
       >
         <Container
           size="wide"
@@ -76,12 +76,12 @@ export function SiteHeader() {
                 <BrandMark className="relative size-12 shrink-0 transition-transform duration-500 group-hover:rotate-[8deg]" />
               </span>
               <span className="leading-tight">
-                <span className="text-global-navy block text-base font-bold tracking-[-0.01em]">
+                <span className="text-fg block text-base font-bold tracking-[-0.01em]">
                   {siteContent.shortName}
                 </span>
                 <span
                   lang="ta"
-                  className="font-tamil text-heritage-maroon hidden text-[0.78rem] sm:block"
+                  className="font-tamil text-fg-accent hidden text-[0.78rem] sm:block"
                 >
                   தமிழ் உலகம்
                 </span>
@@ -114,7 +114,7 @@ export function SiteHeader() {
                   >
                     {initials(currentUser.fullName)}
                   </span>
-                  <span className="text-global-navy hidden max-w-28 truncate text-sm font-semibold lg:block">
+                  <span className="text-fg hidden max-w-28 truncate text-sm font-semibold lg:block">
                     {currentUser.fullName}
                   </span>
                 </Link>
@@ -123,7 +123,7 @@ export function SiteHeader() {
               <>
                 <Link
                   href="/login"
-                  className="motion-control border-global-navy/12 text-global-navy hover:border-heritage-gold/60 hover:text-heritage-maroon focus-visible:ring-focus rounded-button inline-flex min-h-10 items-center border bg-white/70 px-4 py-2 text-sm font-bold backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_0.4rem_1rem_rgba(6,29,50,0.08)] focus-visible:outline-none"
+                  className="motion-control border-hairline/12 text-fg hover:border-heritage-gold/60 hover:text-fg-accent focus-visible:ring-focus rounded-button bg-raised hover:bg-fg/10 inline-flex min-h-10 items-center border px-4 py-2 text-sm font-bold backdrop-blur-sm transition-all hover:-translate-y-0.5 focus-visible:outline-none"
                 >
                   Log in
                 </Link>

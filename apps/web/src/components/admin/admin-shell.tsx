@@ -69,7 +69,7 @@ export function AdminShell({ children }: { readonly children: ReactNode }) {
     capabilities.canReviewRegistrations || capabilities.canOperateFederation;
 
   return (
-    <div className="bg-warm-ivory min-h-[calc(100vh-4rem)]">
+    <div className="bg-sunken min-h-[calc(100vh-4rem)]">
       <header className="bg-deep-navy border-heritage-gold/25 border-b text-white">
         <div className="mx-auto flex min-h-20 w-full max-w-[106rem] items-center justify-between gap-4 px-5 py-3 sm:px-7 lg:px-10">
           <div className="flex min-w-0 items-center gap-3 sm:gap-4">
@@ -140,9 +140,9 @@ export function AdminShell({ children }: { readonly children: ReactNode }) {
       <div className="mx-auto grid w-full max-w-[106rem] lg:grid-cols-[15rem_minmax(0,1fr)]">
         <nav
           aria-label="Admin navigation"
-          className="border-global-navy/10 border-b bg-white/70 px-5 py-3 sm:px-7 lg:min-h-[calc(100vh-9rem)] lg:border-r lg:border-b-0 lg:bg-white/45 lg:px-5 lg:py-8"
+          className="border-hairline/10 border-b bg-white/70 px-5 py-3 sm:px-7 lg:min-h-[calc(100vh-9rem)] lg:border-r lg:border-b-0 lg:bg-white/45 lg:px-5 lg:py-8"
         >
-          <p className="text-slate text-eyebrow-sm mb-4 hidden px-3 lg:block">
+          <p className="text-fg-muted text-eyebrow-sm mb-4 hidden px-3 lg:block">
             Federation operations
           </p>
           <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-1">
@@ -159,7 +159,7 @@ export function AdminShell({ children }: { readonly children: ReactNode }) {
                     className={`focus-visible:ring-focus rounded-button flex min-h-11 items-center justify-center px-3 py-2 text-center text-sm font-semibold lg:justify-start lg:px-4 lg:text-left ${
                       current
                         ? "bg-global-navy text-white shadow-sm"
-                        : "text-global-navy hover:bg-global-navy/6"
+                        : "text-fg hover:bg-global-navy/6"
                     }`}
                   >
                     <span
@@ -207,7 +207,7 @@ function AdminShellLoading() {
     >
       <div className="bg-global-navy/8 h-4 w-36 animate-pulse rounded" />
       <div className="bg-global-navy/8 h-10 max-w-md animate-pulse rounded" />
-      <p className="text-slate mt-2">Checking Federation access…</p>
+      <p className="text-fg-muted mt-2">Checking Federation access…</p>
     </div>
   );
 }
@@ -220,13 +220,13 @@ function AdminShellMessage({
   readonly message: string;
 }) {
   return (
-    <section className="border-global-navy/12 rounded-card shadow-card border bg-white p-7 sm:p-9">
-      <p className="text-slate text-eyebrow-sm">Restricted workspace</p>
+    <section className="border-hairline/12 rounded-card shadow-card bg-raised border p-7 sm:p-9">
+      <p className="text-fg-muted text-eyebrow-sm">Restricted workspace</p>
       <h1 className="text-section-title text-gradient-ink mt-2">{title}</h1>
-      <p className="text-slate mt-3 max-w-xl leading-7">{message}</p>
+      <p className="text-fg-muted mt-3 max-w-xl leading-7">{message}</p>
       <Link
         href="/workspace/member"
-        className="text-global-navy focus-visible:ring-focus mt-5 inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
+        className="text-fg focus-visible:ring-focus mt-5 inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
       >
         Return to your member workspace
       </Link>

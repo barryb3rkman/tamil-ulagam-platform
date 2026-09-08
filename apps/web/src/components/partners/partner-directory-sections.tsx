@@ -24,11 +24,9 @@ export function InitiativeCollaborationSection() {
           {initiatives.groups.map((group) => (
             <section
               key={group.title}
-              className="border-global-navy/12 border bg-white p-6 sm:p-8"
+              className="border-hairline/12 bg-raised border p-5 sm:p-6"
             >
-              <h3 className="text-global-navy text-2xl font-semibold">
-                {group.title}
-              </h3>
+              <h3 className="text-fg text-2xl font-semibold">{group.title}</h3>
               <CheckGrid columns={2} items={group.items} />
               <LinkButton
                 href={group.callToAction.href}

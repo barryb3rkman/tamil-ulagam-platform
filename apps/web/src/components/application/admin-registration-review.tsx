@@ -71,13 +71,11 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
   if (!isHydrated) return <p role="status">Loading application…</p>;
   if (!application)
     return (
-      <div className="rounded-card shadow-card bg-white p-7">
-        <h1 className="text-global-navy text-3xl font-bold">
-          Application not found
-        </h1>
+      <div className="rounded-card shadow-card bg-raised p-7">
+        <h1 className="text-fg text-3xl font-bold">Application not found</h1>
         <Link
           href="/admin/reviews"
-          className="text-global-navy mt-4 inline-flex font-semibold underline underline-offset-4"
+          className="text-fg mt-4 inline-flex font-semibold underline underline-offset-4"
         >
           Return to queue
         </Link>
@@ -162,7 +160,7 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
     <div className="grid gap-6">
       <Link
         href="/admin/reviews"
-        className="text-global-navy focus-visible:ring-focus w-fit text-sm font-semibold underline underline-offset-4"
+        className="text-fg focus-visible:ring-focus w-fit text-sm font-semibold underline underline-offset-4"
       >
         ← Back to registration queue
       </Link>
@@ -176,13 +174,11 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
       ) : null}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-heritage-maroon text-eyebrow-sm">
-            Application review
-          </p>
-          <h1 className="text-global-navy mt-3 text-3xl font-bold sm:text-4xl">
+          <p className="text-fg-accent text-eyebrow-sm">Application review</p>
+          <h1 className="text-fg mt-3 text-3xl font-bold sm:text-4xl">
             {application.organisation.name || "Incomplete organisation"}
           </h1>
-          <p className="text-slate mt-2">
+          <p className="text-fg-muted mt-2">
             {getOrganisationDisplayLabel(
               application.organisation.category,
               application.registration.categoryProfile,
@@ -196,9 +192,9 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
         <RegistrationStatusBadge status={application.registration.status} />
       </div>
       {application.registration.adminFeedback ? (
-        <div className="border-global-navy/12 rounded-card border bg-white p-5">
-          <p className="text-global-navy font-bold">Current review feedback</p>
-          <p className="text-slate mt-2 leading-7">
+        <div className="border-hairline/12 rounded-card bg-raised border p-5">
+          <p className="text-fg font-bold">Current review feedback</p>
+          <p className="text-fg-muted mt-2 leading-7">
             {application.registration.adminFeedback}
           </p>
         </div>
@@ -211,8 +207,8 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
           role="alert"
           className="border-heritage-gold/40 bg-heritage-gold/10 rounded-card border p-5"
         >
-          <p className="text-global-navy font-bold">Possible duplicate</p>
-          <ul className="text-slate mt-2 list-disc pl-5 text-sm leading-6">
+          <p className="text-fg font-bold">Possible duplicate</p>
+          <ul className="text-fg-muted mt-2 list-disc pl-5 text-sm leading-6">
             {duplicateSignals.emailMatch ? (
               <li>Official email matches another organisation.</li>
             ) : null}
@@ -224,7 +220,7 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
             ) : null}
           </ul>
           {duplicateSignals.matches.length > 0 ? (
-            <p className="text-slate mt-2 text-sm">
+            <p className="text-fg-muted mt-2 text-sm">
               Matched:{" "}
               {duplicateSignals.matches.map((match) => match.name).join(", ")}
             </p>
@@ -248,29 +244,27 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
         </div>
         <aside
           aria-label="Application review actions"
-          className="border-global-navy/12 rounded-card shadow-card order-first border bg-white p-5 xl:sticky xl:top-24 xl:order-last"
+          className="border-hairline/12 rounded-card shadow-card bg-raised order-first border p-5 xl:sticky xl:top-24 xl:order-last"
         >
-          <p className="text-heritage-maroon text-eyebrow-sm">
-            Review decision
-          </p>
-          <div className="border-global-navy/10 mt-4 border-b pb-5">
+          <p className="text-fg-accent text-eyebrow-sm">Review decision</p>
+          <div className="border-hairline/10 mt-4 border-b pb-5">
             <RegistrationStatusBadge status={application.registration.status} />
             <dl className="mt-5 grid gap-4 text-sm">
               <div>
-                <dt className="text-slate">Representative</dt>
-                <dd className="text-global-navy mt-1 font-semibold">
+                <dt className="text-fg-muted">Representative</dt>
+                <dd className="text-fg mt-1 font-semibold">
                   {application.registration.representative.fullName}
                 </dd>
               </div>
               <div>
-                <dt className="text-slate">Submitted</dt>
-                <dd className="text-charcoal mt-1">
+                <dt className="text-fg-muted">Submitted</dt>
+                <dd className="text-fg-body mt-1">
                   {formatDate(application.registration.submittedAt)}
                 </dd>
               </div>
               <div>
-                <dt className="text-slate">Application reference</dt>
-                <dd className="text-charcoal mt-1 break-all">
+                <dt className="text-fg-muted">Application reference</dt>
+                <dd className="text-fg-body mt-1 break-all">
                   {application.registration.id}
                 </dd>
               </div>
@@ -304,7 +298,7 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
             </Button>
             <Button
               variant="ghost"
-              className="text-heritage-maroon hover:bg-heritage-maroon/7 w-full"
+              className="text-fg-accent hover:bg-heritage-maroon/7 w-full"
               onClick={() => openAction("reject")}
               disabled={pending}
             >
@@ -314,7 +308,7 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
             application.registration.status === "under_review" ? (
               <Button
                 variant="ghost"
-                className="text-heritage-maroon hover:bg-heritage-maroon/7 w-full"
+                className="text-fg-accent hover:bg-heritage-maroon/7 w-full"
                 onClick={() => openAction("suspend")}
                 disabled={pending}
               >
@@ -322,7 +316,7 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
               </Button>
             ) : null}
           </div>
-          <p className="text-slate mt-4 text-xs leading-5">
+          <p className="text-fg-muted mt-4 text-xs leading-5">
             Decisions update the applicant&apos;s dashboard and registration
             record.
           </p>
@@ -337,14 +331,11 @@ export function AdminRegistrationReview({ id }: { readonly id: string }) {
           setError("");
         }}
       >
-        <div className="bg-white p-6 sm:p-8">
-          <h2
-            id="review-action-title"
-            className="text-global-navy text-2xl font-bold"
-          >
+        <div className="bg-raised p-6 sm:p-8">
+          <h2 id="review-action-title" className="text-fg text-2xl font-bold">
             {title}
           </h2>
-          <p className="text-slate mt-3 leading-7">
+          <p className="text-fg-muted mt-3 leading-7">
             {action === "verify"
               ? "Confirm that the reviewed organisation information meets the current verification requirements."
               : action === "needs_changes"

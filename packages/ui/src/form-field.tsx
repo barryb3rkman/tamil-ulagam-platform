@@ -19,7 +19,7 @@ export function FormField({
 }: FormFieldProps) {
   return (
     <div className="grid gap-2">
-      <label htmlFor={id} className="text-label text-global-navy">
+      <label htmlFor={id} className="text-label text-fg">
         {label}
         {required ? (
           <>
@@ -36,7 +36,7 @@ export function FormField({
           {error}
         </p>
       ) : helperText ? (
-        <p id={descriptionId(id)} className="text-slate text-sm">
+        <p id={descriptionId(id)} className="text-fg-muted text-sm">
           {helperText}
         </p>
       ) : null}

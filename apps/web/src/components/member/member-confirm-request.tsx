@@ -91,29 +91,29 @@ export function MemberConfirmRequest({
         >
           <Icon className="size-6" />
         </span>
-        <p className="text-heritage-maroon text-eyebrow-sm mt-4">
+        <p className="text-fg-accent text-eyebrow-sm mt-4">
           {organisationKindLabel(organisation)}
         </p>
-        <h2 className="text-global-navy mt-1 text-2xl font-bold">
+        <h2 className="text-fg mt-1 text-2xl font-bold">
           {memberConfirmContent.title}
         </h2>
-        <p className="text-charcoal mt-2 font-semibold">{organisation.name}</p>
-        <p className="text-slate mt-1">
+        <p className="text-fg-body mt-2 font-semibold">{organisation.name}</p>
+        <p className="text-fg-muted mt-1">
           {organisationLocationLabel(organisation)}
         </p>
         <div className="mt-3">
           <StatusBadge label="Verified" tone="success" />
         </div>
 
-        <dl className="border-global-navy/10 mt-6 grid gap-4 border-t pt-5 text-sm sm:grid-cols-2">
+        <dl className="border-hairline/10 mt-6 grid gap-4 border-t pt-5 text-sm sm:grid-cols-2">
           <div>
-            <dt className="text-slate text-eyebrow-sm">Your details</dt>
-            <dd className="text-charcoal mt-1">{profile.fullName}</dd>
-            <dd className="text-charcoal">{profile.phone}</dd>
+            <dt className="text-fg-muted text-eyebrow-sm">Your details</dt>
+            <dd className="text-fg-body mt-1">{profile.fullName}</dd>
+            <dd className="text-fg-body">{profile.phone}</dd>
           </div>
           <div>
-            <dt className="text-slate text-eyebrow-sm">Location</dt>
-            <dd className="text-charcoal mt-1">
+            <dt className="text-fg-muted text-eyebrow-sm">Location</dt>
+            <dd className="text-fg-body mt-1">
               {[profile.city, profile.region, profile.country]
                 .filter(Boolean)
                 .join(", ")}
@@ -122,7 +122,7 @@ export function MemberConfirmRequest({
         </dl>
 
         {question ? (
-          <div className="border-global-navy/10 mt-6 grid gap-4 border-t pt-5">
+          <div className="border-hairline/10 mt-6 grid gap-4 border-t pt-5">
             <RadioGroup
               label={question.prompt}
               name="connection-type"
@@ -164,7 +164,7 @@ export function MemberConfirmRequest({
           </div>
         ) : null}
 
-        <p className="text-charcoal mt-6 leading-7">
+        <p className="text-fg-body mt-6 leading-7">
           {memberConfirmContent.disclaimer}
         </p>
 
@@ -188,7 +188,7 @@ export function MemberConfirmRequest({
             type="button"
             onClick={onBack}
             disabled={submitting}
-            className="text-global-navy focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
+            className="text-fg focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
           >
             Back to search
           </button>

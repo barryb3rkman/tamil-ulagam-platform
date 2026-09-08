@@ -26,19 +26,19 @@ export function EventsDefinitionSection() {
         />
         <div>
           <CheckGrid columns={2} items={definition.capabilities} />
-          <p className="border-heritage-maroon/40 text-slate mt-8 border-l-2 pl-5 text-lg leading-8">
+          <p className="border-heritage-maroon/40 text-fg-muted mt-8 border-l-2 pl-5 text-lg leading-8">
             {definition.statement}
           </p>
           <div className="mt-10 grid gap-5 sm:grid-cols-2">
             {definition.principles.map((principle) => (
               <section
                 key={principle.title}
-                className="border-global-navy/12 border p-6"
+                className="border-hairline/12 border p-6"
               >
-                <h3 className="text-global-navy text-xl font-semibold">
+                <h3 className="text-fg text-xl font-semibold">
                   {principle.title}
                 </h3>
-                <p className="text-slate mt-3 leading-7">
+                <p className="text-fg-muted mt-3 leading-7">
                   {principle.description}
                 </p>
               </section>
@@ -83,18 +83,18 @@ export function OrganiserModelSection() {
         />
         <div>
           <CheckGrid columns={2} items={organisers.categories} />
-          <p className="border-heritage-maroon/40 text-slate mt-8 border-l-2 pl-5 leading-7">
+          <p className="border-heritage-maroon/40 text-fg-muted mt-8 border-l-2 pl-5 leading-7">
             {organisers.statement}
           </p>
-          <div className="border-global-navy/12 mt-8 border-t pt-6">
-            <p className="text-heritage-maroon text-eyebrow">
+          <div className="border-hairline/12 mt-8 border-t pt-6">
+            <p className="text-fg-accent text-eyebrow">
               Approval may be limited by
             </p>
             <ul className="mt-4 flex flex-wrap gap-3">
               {organisers.limitations.map((limitation) => (
                 <li
                   key={limitation}
-                  className="border-global-navy/14 rounded-full border px-4 py-2 text-sm leading-6"
+                  className="border-hairline/14 rounded-full border px-4 py-2 text-sm leading-6"
                 >
                   {limitation}
                 </li>
@@ -146,9 +146,7 @@ export function EventLifecycleSection() {
           title={lifecycle.title}
           description={lifecycle.description}
         />
-        <p className="text-heritage-maroon text-eyebrow mt-7">
-          Event lifecycle
-        </p>
+        <p className="text-fg-accent text-eyebrow mt-7">Event lifecycle</p>
         <NumeralFeature
           items={lifecycle.steps.map((step) => ({
             title: step.title,

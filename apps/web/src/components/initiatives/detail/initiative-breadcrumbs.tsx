@@ -9,10 +9,10 @@ export function InitiativeBreadcrumbs({
 }: InitiativeBreadcrumbsProps) {
   return (
     <nav aria-label="Breadcrumb" className="text-sm">
-      <ol className="text-slate flex flex-wrap items-center gap-x-2 gap-y-1">
+      <ol className="text-fg-muted flex flex-wrap items-center gap-x-2 gap-y-1">
         <li>
           <Link
-            className="text-global-navy hover:text-heritage-maroon focus-visible:ring-focus decoration-heritage-gold/70 rounded-sm font-semibold underline underline-offset-4 focus-visible:outline-none"
+            className="text-fg hover:text-fg-accent focus-visible:ring-focus decoration-heritage-gold/70 rounded-sm font-semibold underline underline-offset-4 focus-visible:outline-none"
             href="/"
           >
             Home
@@ -23,7 +23,7 @@ export function InitiativeBreadcrumbs({
         </li>
         <li>
           <Link
-            className="text-global-navy hover:text-heritage-maroon focus-visible:ring-focus decoration-heritage-gold/70 rounded-sm font-semibold underline underline-offset-4 focus-visible:outline-none"
+            className="text-fg hover:text-fg-accent focus-visible:ring-focus decoration-heritage-gold/70 rounded-sm font-semibold underline underline-offset-4 focus-visible:outline-none"
             href="/initiatives"
           >
             Initiatives
@@ -32,7 +32,7 @@ export function InitiativeBreadcrumbs({
         <li aria-hidden="true" className="text-heritage-gold">
           →
         </li>
-        <li aria-current="page" className="text-charcoal font-semibold">
+        <li aria-current="page" className="text-fg-body font-semibold">
           {currentTitle}
         </li>
       </ol>

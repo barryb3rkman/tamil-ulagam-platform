@@ -39,7 +39,7 @@ export function HomeFinalCta() {
                 href="/about"
                 variant="secondary"
                 size="large"
-                className="text-global-navy hover:bg-warm-ivory border-white bg-white"
+                className="text-fg hover:bg-sunken bg-raised border-white"
               >
                 Explore Tamil Ulagam
               </LinkButton>

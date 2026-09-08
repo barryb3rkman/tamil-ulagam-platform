@@ -238,13 +238,11 @@ export function MemberRegistration() {
   return (
     <Container className="py-10 sm:py-14 lg:py-16">
       <div className="mb-7 max-w-2xl">
-        <p className="text-heritage-maroon text-eyebrow-sm">
-          Member affiliation
-        </p>
-        <h1 className="text-global-navy mt-3 text-3xl leading-tight font-bold tracking-[-0.03em] sm:text-4xl">
+        <p className="text-fg-accent text-eyebrow-sm">Member affiliation</p>
+        <h1 className="text-fg mt-3 text-3xl leading-tight font-bold tracking-[-0.03em] sm:text-4xl">
           Connect your membership
         </h1>
-        <p className="text-slate mt-3 leading-7">
+        <p className="text-fg-muted mt-3 leading-7">
           Connect your account to a Tamil Sangam or organisation you already
           belong to. The organisation confirms the affiliation after you submit
           it.

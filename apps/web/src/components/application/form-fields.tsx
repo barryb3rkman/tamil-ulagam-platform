@@ -11,7 +11,7 @@ import type {
 import { useId, useState } from "react";
 
 const controlClass =
-  "motion-control focus-visible:ring-focus border-global-navy/15 bg-white/70 text-charcoal placeholder:text-slate/90 hover:border-global-navy/30 hover:bg-white min-h-12 w-full rounded-button border px-4 py-2 text-base shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] transition-[border-color,box-shadow,background-color] duration-200 focus-visible:border-heritage-gold/70 focus-visible:bg-white focus-visible:shadow-[0_0_0_4px_rgba(214,168,75,0.16),inset_0_1px_0_rgba(255,255,255,0.9)] focus-visible:outline-none aria-[invalid=true]:border-error aria-[invalid=true]:bg-error/3 aria-[invalid=true]:shadow-[0_0_0_4px_rgba(185,54,62,0.12)] disabled:bg-global-navy/5 disabled:cursor-not-allowed disabled:text-slate";
+  "motion-control focus-visible:ring-focus border-hairline/15 bg-raised text-fg-body placeholder:text-fg-muted/90 hover:border-hairline/30 hover:bg-raised min-h-12 w-full rounded-button border px-4 py-2 text-base shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] transition-[border-color,box-shadow,background-color] duration-200 focus-visible:border-heritage-gold/70 focus-visible:bg-raised focus-visible:shadow-[0_0_0_4px_rgba(214,168,75,0.16),inset_0_1px_0_rgba(255,255,255,0.9)] focus-visible:outline-none aria-[invalid=true]:border-error aria-[invalid=true]:bg-error/3 aria-[invalid=true]:shadow-[0_0_0_4px_rgba(185,54,62,0.12)] disabled:bg-fg/5 disabled:cursor-not-allowed disabled:text-fg-muted";
 
 interface FieldFrameProps {
   readonly id: string;
@@ -33,17 +33,17 @@ function FieldFrame({
   const descriptionId = `${id}-description`;
   return (
     <div className="grid gap-1.5">
-      <label htmlFor={id} className="text-global-navy text-sm font-semibold">
+      <label htmlFor={id} className="text-fg text-sm font-semibold">
         {label}
         {required ? (
           <>
-            <span className="text-heritage-maroon ml-1" aria-hidden="true">
+            <span className="text-fg-accent ml-1" aria-hidden="true">
               *
             </span>
             <span className="sr-only"> (required)</span>
           </>
         ) : (
-          <span className="text-slate ml-1.5 text-xs font-normal">
+          <span className="text-fg-muted ml-1.5 text-xs font-normal">
             {" "}
             (optional)
           </span>
@@ -55,7 +55,10 @@ function FieldFrame({
           {error}
         </p>
       ) : helperText ? (
-        <p id={descriptionId} className="text-slate max-w-md text-xs leading-5">
+        <p
+          id={descriptionId}
+          className="text-fg-muted max-w-md text-xs leading-5"
+        >
           {helperText}
         </p>
       ) : null}
@@ -120,7 +123,7 @@ export function TextField({
             aria-controls={id}
             aria-pressed={passwordVisible}
             title={`${passwordVisible ? "Hide" : "Show"} ${label.toLowerCase()}`}
-            className="text-global-navy focus-visible:ring-focus rounded-button absolute inset-y-0 right-1 my-auto min-h-10 px-3 text-xs font-bold"
+            className="text-fg focus-visible:ring-focus rounded-button absolute inset-y-0 right-1 my-auto min-h-10 px-3 text-xs font-bold"
           >
             {passwordVisible ? "Hide" : "Show"}
           </button>
@@ -249,7 +252,7 @@ export function CheckboxField({
     <div className="grid gap-2">
       <label
         htmlFor={id}
-        className="border-global-navy/15 focus-within:ring-focus rounded-button flex min-h-12 cursor-pointer items-start gap-3 border bg-white px-4 py-3"
+        className="border-hairline/15 focus-within:ring-focus rounded-button bg-raised flex min-h-12 cursor-pointer items-start gap-3 border px-4 py-3"
       >
         <input
           id={id}
@@ -260,11 +263,13 @@ export function CheckboxField({
           {...props}
         />
         <span>
-          <span className="text-charcoal block text-sm font-semibold">
+          <span className="text-fg-body block text-sm font-semibold">
             {label}
           </span>
           {description ? (
-            <span className="text-slate mt-1 block text-sm">{description}</span>
+            <span className="text-fg-muted mt-1 block text-sm">
+              {description}
+            </span>
           ) : null}
         </span>
       </label>
@@ -301,11 +306,11 @@ export function RadioGroup({
 }: RadioGroupProps) {
   return (
     <fieldset className="grid gap-3">
-      <legend className="text-global-navy text-sm font-semibold">
+      <legend className="text-fg text-sm font-semibold">
         {label}
         {required ? (
           <>
-            <span className="text-heritage-maroon ml-1" aria-hidden="true">
+            <span className="text-fg-accent ml-1" aria-hidden="true">
               *
             </span>
             <span className="sr-only"> (required)</span>
@@ -316,7 +321,7 @@ export function RadioGroup({
         {options.map((option) => (
           <label
             key={option.value}
-            className={`motion-control focus-within:ring-focus rounded-button flex min-h-12 cursor-pointer items-center gap-3 border px-4 py-3 ${value === option.value ? "border-heritage-maroon bg-heritage-maroon/5" : "border-global-navy/15 hover:border-global-navy/30 bg-white"}`}
+            className={`motion-control focus-within:ring-focus rounded-button flex min-h-12 cursor-pointer items-center gap-3 border px-4 py-3 ${value === option.value ? "border-heritage-maroon bg-heritage-maroon/5" : "border-hairline/15 hover:border-hairline/30 bg-raised"}`}
           >
             <input
               type="radio"
@@ -349,12 +354,14 @@ export function FormSection({
   readonly title: string;
 }) {
   return (
-    <section className="border-global-navy/12 rounded-large shadow-card border bg-white p-5 sm:p-7 lg:p-8">
+    <section className="border-hairline/12 rounded-large shadow-card bg-raised border p-5 sm:p-7 lg:p-8">
       <div className="mb-6 max-w-2xl">
-        <h2 className="text-global-navy text-xl font-bold tracking-[-0.015em] sm:text-2xl">
+        <h2 className="text-fg text-xl font-bold tracking-[-0.015em] sm:text-2xl">
           {title}
         </h2>
-        {description ? <p className="text-slate mt-2">{description}</p> : null}
+        {description ? (
+          <p className="text-fg-muted mt-2">{description}</p>
+        ) : null}
       </div>
       <div className="grid gap-5">{children}</div>
     </section>
@@ -374,7 +381,7 @@ function AutosaveIndicator({
   return (
     <p
       aria-live="polite"
-      className="text-slate flex items-center gap-1.5 text-xs font-medium"
+      className="text-fg-muted flex items-center gap-1.5 text-xs font-medium"
     >
       {status === "saving" ? (
         <>
@@ -425,7 +432,7 @@ export function FormActions({
   readonly saveStatus?: AutosaveStatus;
 }) {
   return (
-    <div className="border-global-navy/12 flex flex-col-reverse gap-3 border-t pt-5 sm:flex-row sm:items-center sm:justify-between">
+    <div className="border-hairline/12 flex flex-col-reverse gap-3 border-t pt-5 sm:flex-row sm:items-center sm:justify-between">
       {onBack ? (
         <Button
           type="button"

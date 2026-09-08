@@ -72,19 +72,19 @@ export function MembershipRequestRow({
   };
 
   return (
-    <div className="border-global-navy/10 density-compact grid gap-3 border-b py-4 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center">
+    <div className="border-hairline/10 density-compact grid gap-3 border-b py-4 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center">
       <div className="min-w-0">
-        <p className="text-global-navy font-semibold">
+        <p className="text-fg font-semibold">
           {request.memberFullName || "Member"}
         </p>
-        <p className="text-slate mt-0.5 text-sm break-words">
+        <p className="text-fg-muted mt-0.5 text-sm break-words">
           {[request.memberEmail, request.memberPhone]
             .filter(Boolean)
             .join(" · ")}
         </p>
-        {location ? <p className="text-slate text-sm">{location}</p> : null}
+        {location ? <p className="text-fg-muted text-sm">{location}</p> : null}
         {request.connectionType ? (
-          <p className="text-charcoal mt-1 text-sm">
+          <p className="text-fg-body mt-1 text-sm">
             {request.connectionType}
             {request.connectionContext ? ` — ${request.connectionContext}` : ""}
             {request.connectionContextExtra
@@ -92,7 +92,7 @@ export function MembershipRequestRow({
               : ""}
           </p>
         ) : null}
-        <p className="text-slate mt-1 text-sm">
+        <p className="text-fg-muted mt-1 text-sm">
           Submitted {formatDate(request.requestedAt ?? request.invitedAt)}
         </p>
         {error ? (
@@ -118,7 +118,7 @@ export function MembershipRequestRow({
             onClick={() => setConfirmingReject(true)}
             disabled={busy !== null}
             aria-busy={busy === "reject"}
-            className="border-heritage-maroon text-heritage-maroon hover:bg-heritage-maroon rounded-button motion-control inline-flex min-h-9 items-center border px-4 text-sm font-semibold hover:text-white focus-visible:outline-none disabled:opacity-60"
+            className="border-heritage-maroon text-fg-accent hover:bg-heritage-maroon rounded-button motion-control inline-flex min-h-9 items-center border px-4 text-sm font-semibold hover:text-white focus-visible:outline-none disabled:opacity-60"
           >
             {busy === "reject" ? "Saving…" : "Not a member"}
           </button>

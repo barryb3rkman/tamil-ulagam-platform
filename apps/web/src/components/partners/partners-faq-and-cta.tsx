@@ -58,7 +58,7 @@ export function PartnersFinalCta() {
               href={finalCallToAction.primaryCallToAction.href}
               variant="secondary"
               size="large"
-              className="!text-global-navy hover:bg-warm-ivory border-white bg-white"
+              className="!text-fg hover:bg-sunken bg-raised border-white"
             >
               {finalCallToAction.primaryCallToAction.label}
             </LinkButton>

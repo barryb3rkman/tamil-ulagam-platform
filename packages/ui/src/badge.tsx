@@ -11,10 +11,10 @@ export function Badge({ className, tone = "neutral", ...props }: BadgeProps) {
     <span
       className={cx(
         "inline-flex w-fit items-center rounded-full px-3 py-1 text-xs leading-5 font-semibold tracking-wide",
-        tone === "neutral" && "bg-slate/12 text-charcoal",
+        tone === "neutral" && "bg-slate/12 text-fg-body",
         tone === "success" && "bg-success/12 text-success",
-        tone === "warning" && "bg-warning/12 text-global-navy",
-        tone === "maroon" && "bg-heritage-maroon/10 text-heritage-maroon",
+        tone === "warning" && "bg-warning/12 text-fg",
+        tone === "maroon" && "bg-fg-accent/12 text-fg-accent",
         className,
       )}
       {...props}

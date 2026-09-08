@@ -48,7 +48,7 @@ export function NumberedGrid({
             } ${
               dark
                 ? "border-white/8 bg-white/[0.04] backdrop-blur-sm hover:border-white/16"
-                : "border-global-navy/[0.09] hover:border-heritage-gold/45 bg-white hover:shadow-[0_1rem_2.5rem_rgba(6,29,50,0.09)]"
+                : "border-hairline/[0.09] hover:border-heritage-gold/45 bg-raised hover:shadow-[0_1rem_2.5rem_rgba(6,29,50,0.09)]"
             }`}
           >
             <span
@@ -64,14 +64,14 @@ export function NumberedGrid({
               className={`font-display relative grid size-11 place-items-center rounded-2xl border text-sm font-semibold ${
                 dark
                   ? "border-heritage-gold/30 text-heritage-gold bg-white/[0.06]"
-                  : "border-heritage-gold/40 text-heritage-maroon bg-white shadow-[0_0.5rem_1.25rem_rgba(214,168,75,0.18)]"
+                  : "border-heritage-gold/40 text-fg-accent bg-raised shadow-[0_0.5rem_1.25rem_rgba(214,168,75,0.18)]"
               }`}
             >
               {String(index + startAt).padStart(2, "0")}
             </span>
             <Title
               className={`relative mt-4 leading-7 font-bold ${
-                dark ? "text-white/90" : "text-global-navy"
+                dark ? "text-white/90" : "text-fg"
               } ${headingLevel ? "text-lg tracking-[-0.01em]" : ""}`}
             >
               {title}
@@ -79,7 +79,7 @@ export function NumberedGrid({
             {description ? (
               <p
                 className={`relative mt-1.5 text-sm leading-6 ${
-                  dark ? "text-white/55" : "text-slate"
+                  dark ? "text-white/55" : "text-fg-muted"
                 }`}
               >
                 {description}
@@ -91,7 +91,7 @@ export function NumberedGrid({
                 className={`focus-visible:ring-focus relative mt-4 inline-flex items-center gap-1.5 text-sm font-bold after:absolute after:inset-0 after:content-[''] focus-visible:outline-none ${
                   dark
                     ? "text-heritage-gold hover:text-white"
-                    : "text-global-navy group-hover:text-heritage-maroon"
+                    : "text-fg group-hover:text-fg-accent"
                 }`}
               >
                 {linkLabel}
@@ -134,7 +134,7 @@ export function CheckGrid({
           } ${
             dark
               ? "border-white/8 bg-white/[0.04] text-white/80 backdrop-blur-sm"
-              : "border-global-navy/[0.09] text-charcoal hover:border-heritage-gold/45 bg-white"
+              : "border-hairline/[0.09] text-fg-body hover:border-heritage-gold/45 bg-raised"
           }`}
         >
           <span
@@ -143,7 +143,7 @@ export function CheckGrid({
               marker === "exclude"
                 ? dark
                   ? "border border-white/25 text-white/55"
-                  : "border-global-navy/20 text-slate border"
+                  : "border-hairline/20 text-fg-muted border"
                 : "gradient-gold-leaf text-ink"
             }`}
           >

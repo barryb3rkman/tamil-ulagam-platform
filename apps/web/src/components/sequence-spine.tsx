@@ -47,7 +47,7 @@ export function SequenceSpine({
             className={`ease-snap absolute top-1 -left-9 grid size-6 place-items-center rounded-full border transition-[background-color,border-color,transform,box-shadow] duration-300 group-data-[spine-reached]:scale-110 sm:-left-12 sm:size-8 ${
               dark
                 ? "bg-ink group-data-[spine-reached]:border-heritage-gold group-data-[spine-reached]:bg-heritage-gold/20 border-white/25"
-                : "border-global-navy/18 group-data-[spine-reached]:border-heritage-gold group-data-[spine-reached]:bg-heritage-gold/15 bg-white"
+                : "border-hairline/18 group-data-[spine-reached]:border-heritage-gold group-data-[spine-reached]:bg-heritage-gold/15 bg-raised"
             } group-data-[spine-reached]:shadow-[0_0_0_0.3rem_rgba(214,168,75,0.14)]`}
           >
             <span
@@ -62,7 +62,7 @@ export function SequenceSpine({
               className={`text-[0.68rem] font-bold tracking-[0.2em] uppercase transition-colors duration-300 ${
                 dark
                   ? "group-data-[spine-reached]:text-heritage-gold text-white/40"
-                  : "text-slate/70 group-data-[spine-reached]:text-heritage-maroon"
+                  : "text-fg-muted/70 group-data-[spine-reached]:text-fg-accent"
               }`}
             >
               {step.marker}
@@ -70,7 +70,7 @@ export function SequenceSpine({
           ) : null}
           <Title
             className={`font-display mt-1.5 text-xl font-semibold tracking-[-0.015em] sm:text-2xl ${
-              dark ? "text-white" : "text-global-navy"
+              dark ? "text-white" : "text-fg"
             }`}
           >
             {step.title}
@@ -78,7 +78,7 @@ export function SequenceSpine({
           {step.description ? (
             <p
               className={`mt-2.5 max-w-2xl leading-7 ${
-                dark ? "text-white/70" : "text-slate"
+                dark ? "text-white/70" : "text-fg-muted"
               }`}
             >
               {step.description}

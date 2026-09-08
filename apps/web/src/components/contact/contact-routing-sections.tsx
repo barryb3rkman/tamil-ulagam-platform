@@ -18,7 +18,7 @@ export function ContactRoutingSection() {
           <section aria-labelledby="routing-areas-title">
             <h3
               id="routing-areas-title"
-              className="text-global-navy text-xl font-semibold"
+              className="text-fg text-xl font-semibold"
             >
               Enquiry routing areas
             </h3>
@@ -27,7 +27,7 @@ export function ContactRoutingSection() {
           <section aria-labelledby="routing-principles-title">
             <h3
               id="routing-principles-title"
-              className="text-global-navy text-xl font-semibold"
+              className="text-fg text-xl font-semibold"
             >
               Routing principles
             </h3>
@@ -76,7 +76,7 @@ export function ResponseExpectationsSection() {
         />
         <div>
           <CheckGrid columns={2} items={responseExpectations.items} />
-          <p className="border-heritage-maroon/40 text-slate mt-8 border-l-2 pl-5 text-lg leading-8">
+          <p className="border-heritage-maroon/40 text-fg-muted mt-8 border-l-2 pl-5 text-lg leading-8">
             {responseExpectations.statement}
           </p>
         </div>

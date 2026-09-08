@@ -21,11 +21,12 @@ export function LinkButton({
     <Link
       className={cx(
         "motion-control rounded-button focus-visible:ring-focus inline-flex items-center justify-center font-semibold focus-visible:outline-none",
-        variant === "primary" && "bg-global-navy hover:bg-deep-navy text-white",
+        variant === "primary" &&
+          "bg-action hover:bg-action-hover text-action-fg",
         variant === "secondary" &&
-          "border-global-navy text-global-navy hover:bg-global-navy border bg-transparent hover:text-white",
+          "border-hairline-strong text-fg hover:bg-fg hover:text-fg-inverse border bg-transparent",
         variant === "text" &&
-          "motion-editorial-link text-global-navy hover:text-heritage-maroon rounded-none px-0",
+          "motion-editorial-link text-fg hover:text-fg-accent rounded-none px-0",
         size === "small" && variant !== "text" && "min-h-10 px-4 py-2 text-sm",
         size === "medium" &&
           variant !== "text" &&

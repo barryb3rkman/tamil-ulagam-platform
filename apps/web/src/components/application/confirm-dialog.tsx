@@ -60,13 +60,13 @@ export function ConfirmDialog({
 
   return (
     <Dialog open={!closing} closing={closing} onClose={dismiss} title={title}>
-      <p className="text-slate leading-7">{description}</p>
+      <p className="text-fg-muted leading-7">{description}</p>
       {detail ? (
         <p
           className={
             destructive
-              ? "border-heritage-maroon/25 bg-heritage-maroon/[0.06] text-heritage-maroon rounded-card mt-4 border px-4 py-3 text-sm leading-6 font-semibold"
-              : "border-global-navy/12 bg-warm-ivory text-charcoal rounded-card mt-4 border px-4 py-3 text-sm leading-6"
+              ? "border-heritage-maroon/25 bg-heritage-maroon/[0.06] text-fg-accent rounded-card mt-4 border px-4 py-3 text-sm leading-6 font-semibold"
+              : "border-hairline/12 bg-sunken text-fg-body rounded-card mt-4 border px-4 py-3 text-sm leading-6"
           }
         >
           {detail}

@@ -34,16 +34,16 @@ export function InitiativePurposeSection({
           <h2 id="initiative-purpose-title" className="sr-only">
             Why {initiative.title} matters
           </h2>
-          <p className="text-global-navy text-xl leading-8 font-semibold sm:text-2xl sm:leading-9">
+          <p className="text-fg text-xl leading-8 font-semibold sm:text-2xl sm:leading-9">
             {detail.whyThisMatters.statement}
           </p>
-          <div className="border-global-navy/10 mt-8 border-l-2 pl-5">
-            <p className="text-slate text-base leading-7">
+          <div className="border-hairline/10 mt-8 border-l-2 pl-5">
+            <p className="text-fg-muted text-base leading-7">
               {initiative.description}
             </p>
           </div>
           {detail.safetyNotice ? (
-            <p className="border-error/35 bg-error/5 text-charcoal mt-6 border-l-2 px-5 py-4 text-sm leading-6">
+            <p className="border-error/35 bg-error/5 text-fg-body mt-6 border-l-2 px-5 py-4 text-sm leading-6">
               {detail.safetyNotice}
             </p>
           ) : null}
@@ -108,7 +108,7 @@ export function InitiativeAudienceSection({
           {detail.intendedAudiences.map((audience) => (
             <li
               key={audience}
-              className="border-global-navy/12 text-global-navy flex min-h-12 items-center border-b py-3 font-semibold"
+              className="border-hairline/12 text-fg flex min-h-12 items-center border-b py-3 font-semibold"
             >
               {audience}
             </li>
@@ -136,18 +136,18 @@ export function InitiativeParticipationSection({
       <Container className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
         <div>
           <p
-            className={`text-eyebrow ${dark ? "text-heritage-gold" : "text-heritage-maroon"}`}
+            className={`text-eyebrow ${dark ? "text-heritage-gold" : "text-fg-accent"}`}
           >
             PARTICIPATION AND PARTNERSHIP
           </p>
           <h2
             id="participation-title"
-            className={`font-english mt-4 text-4xl leading-tight font-semibold tracking-[-0.025em] sm:text-5xl ${dark ? "text-white" : "text-global-navy"}`}
+            className={`font-english mt-4 text-4xl leading-tight font-semibold tracking-[-0.025em] sm:text-5xl ${dark ? "text-white" : "text-fg"}`}
           >
             {detail.participationHeading}
           </h2>
           <p
-            className={`mt-5 max-w-2xl text-lg leading-8 ${dark ? "text-white/76" : "text-slate"}`}
+            className={`mt-5 max-w-2xl text-lg leading-8 ${dark ? "text-white/76" : "text-fg-muted"}`}
           >
             {detail.participationStatement}
           </p>
@@ -156,11 +156,7 @@ export function InitiativeParticipationSection({
           <LinkButton
             href="/partners"
             variant={dark ? "primary" : "primary"}
-            className={
-              dark
-                ? "!text-global-navy hover:bg-warm-ivory bg-white"
-                : undefined
-            }
+            className={dark ? "!text-fg hover:bg-sunken bg-raised" : undefined}
           >
             Explore partnership
           </LinkButton>
@@ -169,7 +165,7 @@ export function InitiativeParticipationSection({
             variant="secondary"
             className={
               dark
-                ? "hover:text-global-navy border-white text-white hover:bg-white"
+                ? "hover:text-fg hover:bg-raised border-white text-white"
                 : undefined
             }
           >
@@ -213,18 +209,18 @@ export function RelatedInitiatives({
               <li key={entry.slug}>
                 <Link
                   href={`/initiatives/${entry.slug}`}
-                  className="motion-card border-global-navy/12 focus-visible:ring-focus block h-full border p-6 focus-visible:outline-none"
+                  className="motion-card border-hairline/12 focus-visible:ring-focus block h-full border p-6 focus-visible:outline-none"
                 >
-                  <p className="text-heritage-maroon text-eyebrow-sm">
+                  <p className="text-fg-accent text-eyebrow-sm">
                     {group.title}
                   </p>
-                  <h3 className="text-global-navy mt-3 text-2xl font-semibold">
+                  <h3 className="text-fg mt-3 text-2xl font-semibold">
                     {entry.initiative.title}
                   </h3>
-                  <p className="text-slate mt-3 leading-7">
+                  <p className="text-fg-muted mt-3 leading-7">
                     {entry.relationship}
                   </p>
-                  <span className="text-global-navy decoration-heritage-gold mt-6 inline-block font-semibold underline decoration-2 underline-offset-4">
+                  <span className="text-fg decoration-heritage-gold mt-6 inline-block font-semibold underline decoration-2 underline-offset-4">
                     Explore the vision
                   </span>
                 </Link>
@@ -254,14 +250,14 @@ export function InitiativePreviousNext({
       <Container className="grid gap-4 sm:grid-cols-2">
         {previous ? (
           <Link
-            className="motion-card border-global-navy/14 focus-visible:ring-focus border p-5 focus-visible:outline-none"
+            className="motion-card border-hairline/14 focus-visible:ring-focus border p-5 focus-visible:outline-none"
             href={previous.href}
             aria-label={`Previous initiative: ${previous.title}`}
           >
-            <span className="text-heritage-maroon text-eyebrow-sm">
+            <span className="text-fg-accent text-eyebrow-sm">
               ← Previous initiative
             </span>
-            <span className="text-global-navy mt-2 block text-xl font-semibold">
+            <span className="text-fg mt-2 block text-xl font-semibold">
               {previous.title}
             </span>
           </Link>
@@ -270,14 +266,14 @@ export function InitiativePreviousNext({
         )}
         {next ? (
           <Link
-            className="motion-card border-global-navy/14 focus-visible:ring-focus border p-5 text-right focus-visible:outline-none"
+            className="motion-card border-hairline/14 focus-visible:ring-focus border p-5 text-right focus-visible:outline-none"
             href={next.href}
             aria-label={`Next initiative: ${next.title}`}
           >
-            <span className="text-heritage-maroon text-eyebrow-sm">
+            <span className="text-fg-accent text-eyebrow-sm">
               Next initiative →
             </span>
-            <span className="text-global-navy mt-2 block text-xl font-semibold">
+            <span className="text-fg mt-2 block text-xl font-semibold">
               {next.title}
             </span>
           </Link>
@@ -319,14 +315,14 @@ export function InitiativeFinalCta({
         <div className="flex flex-wrap gap-3 lg:justify-end">
           <LinkButton
             href="/initiatives"
-            className="!text-global-navy hover:bg-warm-ivory bg-white"
+            className="!text-fg hover:bg-sunken bg-raised"
           >
             Explore all initiatives
           </LinkButton>
           <LinkButton
             href="/contact"
             variant="secondary"
-            className="hover:text-global-navy border-white text-white hover:bg-white"
+            className="hover:text-fg hover:bg-raised border-white text-white"
           >
             Contact Tamil Ulagam
           </LinkButton>

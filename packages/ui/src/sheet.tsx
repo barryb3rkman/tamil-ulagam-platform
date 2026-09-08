@@ -52,7 +52,7 @@ export function Sheet({
     >
       <div className="surface-card flex max-h-full flex-col overflow-y-auto border-0 p-6 sm:p-8">
         <div className="flex items-start justify-between gap-4">
-          <h2 id={titleId} className="text-global-navy text-xl font-bold">
+          <h2 id={titleId} className="text-fg text-xl font-bold">
             {title}
           </h2>
           <IconButton aria-label="Close" onClick={onClose}>

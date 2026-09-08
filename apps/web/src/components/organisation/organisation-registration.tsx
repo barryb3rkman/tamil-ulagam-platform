@@ -172,7 +172,7 @@ export function OrganisationRegistration() {
             setDraftError("");
             setDraftAttempt((n) => n + 1);
           }}
-          className="border-global-navy text-global-navy focus-visible:ring-focus rounded-button mt-4 min-h-11 border px-5 text-sm font-semibold"
+          className="border-hairline text-fg focus-visible:ring-focus rounded-button mt-4 min-h-11 border px-5 text-sm font-semibold"
         >
           Try again
         </button>

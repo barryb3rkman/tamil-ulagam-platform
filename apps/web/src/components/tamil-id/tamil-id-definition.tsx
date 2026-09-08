@@ -17,7 +17,7 @@ export function TamilIdDefinition() {
               eyebrow={definition.eyebrow}
               title={definition.title}
             />
-            <p className="text-global-navy mt-6 max-w-3xl text-xl leading-8 font-semibold sm:text-2xl sm:leading-9">
+            <p className="text-fg mt-6 max-w-3xl text-xl leading-8 font-semibold sm:text-2xl sm:leading-9">
               {definition.description}
             </p>
           </div>

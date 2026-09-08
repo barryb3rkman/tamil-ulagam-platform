@@ -61,20 +61,18 @@ export function TransferOwnershipDialog({
   return (
     <Dialog open onClose={onClose} title="Transfer ownership">
       <div className="grid gap-6">
-        <p className="text-slate leading-7">
+        <p className="text-fg-muted leading-7">
           This is a significant, immediate change to {organisationName}. The new
           owner gains full management authority; you will no longer be able to
           undo this yourself unless they transfer ownership back to you.
         </p>
 
         <div>
-          <p className="text-global-navy mb-2 text-sm font-semibold">
-            New owner
-          </p>
+          <p className="text-fg mb-2 text-sm font-semibold">New owner</p>
           <ul className="grid gap-2">
             {candidates.map((candidate) => (
               <li key={candidate.userId}>
-                <label className="border-global-navy/12 has-checked:border-heritage-gold has-checked:bg-heritage-gold/5 motion-card flex cursor-pointer items-center gap-3 rounded-lg border p-3">
+                <label className="border-hairline/12 has-checked:border-heritage-gold has-checked:bg-heritage-gold/5 motion-card flex cursor-pointer items-center gap-3 rounded-lg border p-3">
                   <input
                     type="radio"
                     name="transfer-target"
@@ -82,10 +80,10 @@ export function TransferOwnershipDialog({
                     checked={selectedUserId === candidate.userId}
                     onChange={() => setSelectedUserId(candidate.userId)}
                   />
-                  <span className="text-charcoal text-sm font-semibold">
+                  <span className="text-fg-body text-sm font-semibold">
                     {candidate.fullName || "Unnamed manager"}
                   </span>
-                  <span className="text-slate ml-auto text-xs uppercase">
+                  <span className="text-fg-muted ml-auto text-xs uppercase">
                     Currently {candidate.role}
                   </span>
                 </label>
@@ -95,13 +93,13 @@ export function TransferOwnershipDialog({
         </div>
 
         <div>
-          <p className="text-global-navy mb-2 text-sm font-semibold">
+          <p className="text-fg mb-2 text-sm font-semibold">
             What happens to you
           </p>
           <ul className="grid gap-2">
             {(["admin", "representative", "leave"] as const).map((option) => (
               <li key={option}>
-                <label className="border-global-navy/12 has-checked:border-heritage-gold has-checked:bg-heritage-gold/5 motion-card flex cursor-pointer items-center gap-3 rounded-lg border p-3">
+                <label className="border-hairline/12 has-checked:border-heritage-gold has-checked:bg-heritage-gold/5 motion-card flex cursor-pointer items-center gap-3 rounded-lg border p-3">
                   <input
                     type="radio"
                     name="transfer-outcome"
@@ -109,7 +107,7 @@ export function TransferOwnershipDialog({
                     checked={outcome === option}
                     onChange={() => setOutcome(option)}
                   />
-                  <span className="text-charcoal text-sm font-semibold">
+                  <span className="text-fg-body text-sm font-semibold">
                     {outcomeLabel[option]}
                   </span>
                 </label>
@@ -120,7 +118,7 @@ export function TransferOwnershipDialog({
 
         {selected ? (
           <div className="border-heritage-gold/40 bg-heritage-gold/8 rounded-card border p-4 text-sm">
-            <p className="text-global-navy font-semibold">
+            <p className="text-fg font-semibold">
               Confirm: {selected.fullName || "This manager"} becomes Owner of{" "}
               {organisationName}. You will {outcomeLabel[outcome].toLowerCase()}
               .
@@ -135,7 +133,7 @@ export function TransferOwnershipDialog({
             onChange={(event) => setConfirmed(event.target.checked)}
             className="mt-0.5"
           />
-          <span className="text-charcoal">
+          <span className="text-fg-body">
             I understand this immediately transfers ownership and cannot be
             undone by me alone.
           </span>

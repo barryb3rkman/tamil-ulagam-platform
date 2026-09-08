@@ -23,13 +23,13 @@ function InformationList({
   return (
     <div
       className={
-        tone === "public" ? "bg-white p-6" : "bg-deep-navy p-6 text-white"
+        tone === "public" ? "bg-raised p-6" : "bg-deep-navy p-6 text-white"
       }
     >
       <h3
         className={
           tone === "public"
-            ? "text-global-navy text-xl font-semibold"
+            ? "text-fg text-xl font-semibold"
             : "text-xl font-semibold"
         }
       >
@@ -41,7 +41,7 @@ function InformationList({
             key={item}
             className={
               tone === "public"
-                ? "border-global-navy/12 border-b pb-3 leading-6"
+                ? "border-hairline/12 border-b pb-3 leading-6"
                 : "border-b border-white/16 pb-3 leading-6 text-white/78"
             }
           >
@@ -72,12 +72,12 @@ export function TamilIdVerificationSection() {
                 title: principle,
               }))}
             />
-            <div className="border-global-navy/12 mt-8 border p-5 sm:flex sm:items-center sm:justify-between sm:gap-6">
+            <div className="border-hairline/12 mt-8 border p-5 sm:flex sm:items-center sm:justify-between sm:gap-6">
               <div>
-                <p className="text-global-navy font-semibold">
+                <p className="text-fg font-semibold">
                   {verification.illustrativeUrl}
                 </p>
-                <p className="text-slate mt-1 text-sm leading-6">
+                <p className="text-fg-muted mt-1 text-sm leading-6">
                   {verification.illustrativeUrlLabel}
                 </p>
               </div>
@@ -168,19 +168,19 @@ export function TamilIdGovernanceSection() {
           description={governance.description}
         />
         <div>
-          <h3 className="text-global-navy text-xl font-semibold">
+          <h3 className="text-fg text-xl font-semibold">
             Required governance areas
           </h3>
           <CheckGrid columns={2} items={governance.principles} />
           <div className="border-heritage-maroon/25 mt-9 border-l-2 pl-6 sm:pl-8">
-            <h3 className="text-global-navy text-xl font-semibold">
+            <h3 className="text-fg text-xl font-semibold">
               {governance.statesLabel}
             </h3>
             <ul className="mt-5 flex flex-wrap gap-3">
               {governance.states.map((state) => (
                 <li
                   key={state}
-                  className="border-global-navy/14 text-charcoal bg-white px-3 py-2 text-sm font-semibold"
+                  className="border-hairline/14 text-fg-body bg-raised px-3 py-2 text-sm font-semibold"
                 >
                   {state}
                 </li>

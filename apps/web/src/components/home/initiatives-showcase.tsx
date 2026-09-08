@@ -39,13 +39,13 @@ function InitiativeCard({
     <article
       data-testid="initiative-card"
       data-tier={tier}
-      className={`motion-card group border-global-navy/10 overflow-hidden border bg-white ${featured ? "shadow-card" : ""} ${columnClass}`}
+      className={`motion-card group border-hairline/10 bg-raised overflow-hidden border ${featured ? "shadow-card" : ""} ${columnClass}`}
     >
       <Link
         href={initiative.href}
         className="focus-visible:ring-focus block h-full focus-visible:outline-none"
       >
-        <div className="aspect-[4/3] overflow-hidden">
+        <div className="aspect-[16/9] overflow-hidden">
           <ImageWithFallback
             asset={images[initiative.imageKey as ImageKey]}
             fallbackLabel={`${initiative.title} initiative image`}
@@ -57,16 +57,16 @@ function InitiativeCard({
             className="motion-card-image h-full w-full object-cover"
           />
         </div>
-        <div className={featured ? "p-6 sm:p-7" : "p-5 sm:p-6"}>
+        <div className={featured ? "p-5 sm:p-6" : "p-5 sm:p-6"}>
           <h3
-            className={`text-global-navy font-semibold tracking-[-0.025em] ${featured ? "text-2xl" : "text-xl"}`}
+            className={`text-fg font-semibold tracking-[-0.025em] ${featured ? "text-2xl" : "text-xl"}`}
           >
             {initiative.title}
           </h3>
-          <p className="text-slate mt-3 leading-7">
+          <p className="text-fg-muted mt-3 leading-7">
             {initiative.shortDescription}
           </p>
-          <span className="text-global-navy decoration-heritage-gold mt-5 inline-flex text-sm font-semibold underline decoration-2 underline-offset-4">
+          <span className="text-fg decoration-heritage-gold mt-5 inline-flex text-sm font-semibold underline decoration-2 underline-offset-4">
             Explore vision{" "}
             <span aria-hidden="true" className="motion-arrow ml-2">
               →
@@ -89,7 +89,7 @@ function DesktopInitiatives() {
     <div
       data-testid="initiative-desktop-grid"
       data-motion-group="stagger"
-      className="mt-12 hidden grid-cols-1 gap-6 md:grid md:grid-cols-2 lg:grid-cols-12"
+      className="mt-9 hidden grid-cols-1 gap-5 md:grid md:grid-cols-2 lg:grid-cols-12"
     >
       {groups.flatMap(([tier, slugs]) =>
         selectInitiatives(slugs).map((initiative) => (
@@ -128,11 +128,7 @@ function MobileInitiatives() {
 
 export function InitiativesShowcase() {
   return (
-    <Section
-      tone="ivory"
-      aria-labelledby="initiatives-title"
-      className="py-[clamp(3.75rem,8vw,7rem)]"
-    >
+    <Section tone="ivory" aria-labelledby="initiatives-title">
       <Container size="wide">
         <SectionHeading
           eyebrow="GLOBAL INITIATIVES"

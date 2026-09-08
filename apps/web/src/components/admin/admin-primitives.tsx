@@ -14,9 +14,9 @@ export function AdminPageHeader({
   return (
     <header className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
       <div>
-        <p className="text-slate text-eyebrow-sm">{eyebrow}</p>
+        <p className="text-fg-muted text-eyebrow-sm">{eyebrow}</p>
         <h1 className="text-page-title text-gradient-ink mt-2">{title}</h1>
-        <p className="text-slate mt-3 max-w-3xl leading-7">{description}</p>
+        <p className="text-fg-muted mt-3 max-w-3xl leading-7">{description}</p>
       </div>
       {action ? <div className="shrink-0">{action}</div> : null}
     </header>
@@ -31,9 +31,9 @@ export function AdminEmptyState({
   readonly description: string;
 }) {
   return (
-    <section className="border-global-navy/12 rounded-card border bg-white p-7 text-center sm:p-10">
-      <h2 className="text-global-navy text-xl font-bold">{title}</h2>
-      <p className="text-slate mx-auto mt-2 max-w-xl leading-7">
+    <section className="border-hairline/12 rounded-card bg-raised border p-7 text-center sm:p-10">
+      <h2 className="text-fg text-xl font-bold">{title}</h2>
+      <p className="text-fg-muted mx-auto mt-2 max-w-xl leading-7">
         {description}
       </p>
     </section>

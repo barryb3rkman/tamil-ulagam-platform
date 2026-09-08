@@ -80,7 +80,7 @@ export function ImageWithFallback({
         role="img"
         aria-label={asset.alt}
         className={cx(
-          "rounded-card border-global-navy/10 text-slate shadow-card grid min-h-56 place-items-center overflow-hidden border bg-[linear-gradient(135deg,var(--tu-color-warm-ivory),var(--tu-color-white))] p-8 text-center",
+          "rounded-card border-hairline/10 text-fg-muted shadow-card grid min-h-56 place-items-center overflow-hidden border bg-[linear-gradient(135deg,var(--tu-color-warm-ivory),var(--tu-color-white))] p-8 text-center",
           asset.mobileAlternative &&
             "[aspect-ratio:var(--tu-image-mobile-aspect-ratio)] sm:[aspect-ratio:var(--tu-image-desktop-aspect-ratio)]",
           className,
@@ -92,7 +92,7 @@ export function ImageWithFallback({
             aria-hidden="true"
             className="bg-heritage-gold mx-auto mb-4 block h-1 w-14 rounded-full"
           />
-          <span className="text-global-navy block text-sm font-semibold tracking-wide">
+          <span className="text-fg block text-sm font-semibold tracking-wide">
             {fallbackLabel}
           </span>
         </div>

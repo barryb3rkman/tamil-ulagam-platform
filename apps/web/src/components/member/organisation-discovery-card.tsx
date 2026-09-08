@@ -48,7 +48,7 @@ export function OrganisationDiscoveryCard({
     <Surface
       level="card"
       density="comfortable"
-      className="motion-card border-global-navy/10 flex h-full flex-col"
+      className="motion-card border-hairline/10 flex h-full flex-col"
     >
       <div className="flex items-start gap-3">
         <span
@@ -62,16 +62,16 @@ export function OrganisationDiscoveryCard({
           <Icon className="size-5" />
         </span>
         <div className="min-w-0">
-          <p className="text-heritage-maroon text-eyebrow-sm">
+          <p className="text-fg-accent text-eyebrow-sm">
             {organisationKindLabel(organisation)}
           </p>
-          <h3 className="text-global-navy mt-1 truncate text-lg font-bold">
+          <h3 className="text-fg mt-1 truncate text-lg font-bold">
             {organisation.name}
           </h3>
         </div>
       </div>
 
-      <p className="text-slate mt-3 text-sm">
+      <p className="text-fg-muted mt-3 text-sm">
         {organisationLocationLabel(organisation) || "Location not specified"}
       </p>
 
@@ -88,7 +88,7 @@ export function OrganisationDiscoveryCard({
             <button
               type="button"
               onClick={onSelect}
-              className="text-global-navy hover:text-heritage-maroon focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
+              className="text-fg hover:text-fg-accent focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
             >
               Submit again
             </button>

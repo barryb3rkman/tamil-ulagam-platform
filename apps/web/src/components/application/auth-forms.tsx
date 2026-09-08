@@ -104,13 +104,13 @@ export function SignupForm() {
           >
             ✓
           </span>
-          <h2 className="text-global-navy mt-4 text-2xl font-bold">
+          <h2 className="text-fg mt-4 text-2xl font-bold">
             {emailConfirmed ? "Email confirmed" : "Account created"}
           </h2>
         </div>
         {returnTarget ? (
           <>
-            <p className="text-slate max-w-md leading-7">
+            <p className="text-fg-muted max-w-md leading-7">
               {journey.successLead}
             </p>
             <Button onClick={() => router.push(returnTarget)} className="w-fit">
@@ -127,10 +127,8 @@ export function SignupForm() {
   return (
     <form noValidate onSubmit={asEventHandler(submit)} className="grid gap-5">
       <div>
-        <h2 className="text-global-navy text-2xl font-bold">
-          Personal details
-        </h2>
-        <p className="text-slate mt-2">
+        <h2 className="text-fg text-2xl font-bold">Personal details</h2>
+        <p className="text-fg-muted mt-2">
           Begin with your personal account. {journey.accountLead}
         </p>
       </div>
@@ -191,7 +189,7 @@ export function SignupForm() {
       <div className="grid gap-2">
         <label
           htmlFor="signup-terms-accepted"
-          className="border-global-navy/15 focus-within:ring-focus rounded-button flex min-h-12 cursor-pointer items-start gap-3 border bg-white px-4 py-3"
+          className="border-hairline/15 focus-within:ring-focus rounded-button bg-raised flex min-h-12 cursor-pointer items-start gap-3 border px-4 py-3"
         >
           <input
             id="signup-terms-accepted"
@@ -207,14 +205,14 @@ export function SignupForm() {
               setValues({ ...values, termsAccepted: event.target.checked })
             }
           />
-          <span className="text-charcoal text-sm font-semibold">
+          <span className="text-fg-body text-sm font-semibold">
             I agree to the{" "}
             <Link
               href="/terms"
               target="_blank"
               rel="noopener noreferrer"
               onClick={(event) => event.stopPropagation()}
-              className="text-global-navy underline underline-offset-4"
+              className="text-fg underline underline-offset-4"
             >
               Terms of Use
             </Link>{" "}
@@ -224,7 +222,7 @@ export function SignupForm() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(event) => event.stopPropagation()}
-              className="text-global-navy underline underline-offset-4"
+              className="text-fg underline underline-offset-4"
             >
               Privacy Policy
             </Link>
@@ -249,10 +247,10 @@ export function SignupForm() {
       >
         {state === "loading" ? "Creating account…" : "Create account"}
       </Button>
-      <p className="text-slate text-center text-sm">
+      <p className="text-fg-muted text-center text-sm">
         Already have an account?{" "}
         <Link
-          className="text-global-navy focus-visible:ring-focus font-semibold underline underline-offset-4"
+          className="text-fg focus-visible:ring-focus font-semibold underline underline-offset-4"
           href={withReturnTarget("/login", returnTarget)}
         >
           Sign in
@@ -342,7 +340,7 @@ export function LoginForm() {
       />
       <div className="flex items-center justify-end">
         <Link
-          className="text-global-navy focus-visible:ring-focus text-sm font-semibold underline underline-offset-4"
+          className="text-fg focus-visible:ring-focus text-sm font-semibold underline underline-offset-4"
           href="/forgot-password"
         >
           Forgot password?
@@ -369,10 +367,10 @@ export function LoginForm() {
             ? "Signed in"
             : "Sign In"}
       </Button>
-      <p className="text-slate text-center text-sm">
+      <p className="text-fg-muted text-center text-sm">
         New to Tamil Ulagam?{" "}
         <Link
-          className="text-global-navy focus-visible:ring-focus font-semibold underline underline-offset-4"
+          className="text-fg focus-visible:ring-focus font-semibold underline underline-offset-4"
           href={withReturnTarget("/signup", returnTarget)}
         >
           Create an account
@@ -424,15 +422,13 @@ export function ForgotPasswordForm() {
   if (state === "success") {
     return (
       <div className="grid min-h-72 content-center gap-5" aria-live="polite">
-        <h2 className="text-global-navy text-2xl font-bold">
-          Reset request received
-        </h2>
-        <p className="text-slate max-w-md leading-7">
+        <h2 className="text-fg text-2xl font-bold">Reset request received</h2>
+        <p className="text-fg-muted max-w-md leading-7">
           If an account matches that email, a secure reset link will be sent.
           Open it in the same browser to set a new password.
         </p>
         <Link
-          className="text-global-navy focus-visible:ring-focus w-fit font-semibold underline underline-offset-4"
+          className="text-fg focus-visible:ring-focus w-fit font-semibold underline underline-offset-4"
           href="/login"
         >
           Return to sign in
@@ -444,10 +440,8 @@ export function ForgotPasswordForm() {
   return (
     <form noValidate onSubmit={asEventHandler(submit)} className="grid gap-5">
       <div>
-        <h2 className="text-global-navy text-2xl font-bold">
-          Account recovery
-        </h2>
-        <p className="text-slate mt-2">
+        <h2 className="text-fg text-2xl font-bold">Account recovery</h2>
+        <p className="text-fg-muted mt-2">
           Enter the email address connected to your account.
         </p>
       </div>
@@ -479,7 +473,7 @@ export function ForgotPasswordForm() {
         {state === "loading" ? "Sending…" : "Send reset link"}
       </Button>
       <Link
-        className="text-global-navy focus-visible:ring-focus text-center text-sm font-semibold underline underline-offset-4"
+        className="text-fg focus-visible:ring-focus text-center text-sm font-semibold underline underline-offset-4"
         href="/login"
       >
         Back to sign in

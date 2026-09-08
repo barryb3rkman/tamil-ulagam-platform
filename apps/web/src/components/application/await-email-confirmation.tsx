@@ -153,12 +153,10 @@ export function AwaitEmailConfirmation({
           <span className="motion-halo bg-heritage-gold/15 absolute size-12 rounded-full" />
           <span className="relative">&#9993;</span>
         </span>
-        <h2 className="text-global-navy text-2xl font-bold">
-          Confirm your email
-        </h2>
-        <p className="text-slate mt-2 max-w-md leading-7">
+        <h2 className="text-fg text-2xl font-bold">Confirm your email</h2>
+        <p className="text-fg-muted mt-2 max-w-md leading-7">
           We sent a confirmation link to{" "}
-          <strong className="text-charcoal">{email}</strong>. Open it on any
+          <strong className="text-fg-body">{email}</strong>. Open it on any
           device — phone, tablet, another browser. This page is watching, and
           will carry on by itself the moment your email is confirmed.
         </p>
@@ -167,7 +165,7 @@ export function AwaitEmailConfirmation({
       <FormError message={error} />
 
       {canPollQuietly && !gaveUp ? (
-        <p className="text-slate flex items-center gap-3 text-sm">
+        <p className="text-fg-muted flex items-center gap-3 text-sm">
           <span
             aria-hidden="true"
             className="bg-heritage-gold motion-halo size-2 shrink-0 rounded-full"
@@ -177,7 +175,7 @@ export function AwaitEmailConfirmation({
       ) : null}
 
       {gaveUp ? (
-        <p className="text-slate text-sm leading-6">
+        <p className="text-fg-muted text-sm leading-6">
           We have stopped checking automatically. Use the button below once you
           have opened the link.
         </p>

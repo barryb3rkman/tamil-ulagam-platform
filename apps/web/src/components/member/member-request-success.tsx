@@ -31,10 +31,10 @@ export function MemberRequestSuccess({
         >
           ✓
         </span>
-        <p className="text-heritage-maroon text-eyebrow-sm mt-4">
+        <p className="text-fg-accent text-eyebrow-sm mt-4">
           {memberSuccessContent.eyebrow}
         </p>
-        <h2 className="text-global-navy mt-3 text-2xl font-bold">
+        <h2 className="text-fg mt-3 text-2xl font-bold">
           {memberSuccessContent.title}
         </h2>
         <div className="mt-3 flex items-center justify-center gap-2">
@@ -48,18 +48,16 @@ export function MemberRequestSuccess({
           >
             <Icon className="size-4" />
           </span>
-          <h3 className="text-global-navy text-xl font-bold">
-            {organisation.name}
-          </h3>
+          <h3 className="text-fg text-xl font-bold">{organisation.name}</h3>
         </div>
-        <p className="text-slate mt-1 text-sm">
+        <p className="text-fg-muted mt-1 text-sm">
           {organisationKindLabel(organisation)}
         </p>
         <div className="mt-4 flex justify-center">
           <StatusBadge label="Pending confirmation" tone="warning" />
         </div>
 
-        <p className="text-charcoal mx-auto mt-6 max-w-md leading-7">
+        <p className="text-fg-body mx-auto mt-6 max-w-md leading-7">
           {organisation.name} {memberSuccessContent.body}
         </p>
 
@@ -73,7 +71,7 @@ export function MemberRequestSuccess({
           <button
             type="button"
             onClick={onAddAnother}
-            className="text-global-navy focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
+            className="text-fg focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
           >
             {memberSuccessContent.secondaryCta}
           </button>

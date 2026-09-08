@@ -26,7 +26,7 @@ export function RadioGroup({
 }: RadioGroupProps) {
   return (
     <fieldset className="grid gap-3">
-      <legend className="text-label text-global-navy">
+      <legend className="text-label text-fg">
         {label}
         {required ? (
           <>
@@ -41,7 +41,7 @@ export function RadioGroup({
         {options.map((option) => (
           <label
             key={option.value}
-            className={`motion-control focus-within:ring-focus rounded-button flex min-h-12 cursor-pointer items-center gap-3 border px-4 py-3 ${value === option.value ? "border-heritage-maroon bg-heritage-maroon/5" : "border-global-navy/15 hover:border-global-navy/30 bg-white"}`}
+            className={`motion-control focus-within:ring-focus rounded-button flex min-h-12 cursor-pointer items-center gap-3 border px-4 py-3 ${value === option.value ? "border-heritage-maroon bg-heritage-maroon/5" : "border-hairline/15 hover:border-hairline/30 bg-raised"}`}
           >
             <input
               type="radio"

@@ -17,7 +17,7 @@ export function GovernanceSection() {
       <Container size="wide">
         <div className="grid gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:gap-20">
           <div className="lg:sticky lg:top-24 lg:self-start">
-            <div className="aspect-[4/3] overflow-hidden">
+            <div className="aspect-[16/9] overflow-hidden">
               <ImageWithFallback
                 asset={images[governance.imageKey]}
                 fallbackLabel="Responsible collaboration image"
@@ -25,22 +25,20 @@ export function GovernanceSection() {
                 className="h-full w-full object-cover"
               />
             </div>
-            <p className="border-global-navy/12 text-slate border-b py-4 text-sm leading-6">
+            <p className="border-hairline/12 text-fg-muted border-b py-4 text-sm leading-6">
               Responsible collaboration begins with clear expectations and
               accountable participation.
             </p>
           </div>
           <div>
-            <p className="text-heritage-maroon text-eyebrow">
-              {governance.eyebrow}
-            </p>
+            <p className="text-fg-accent text-eyebrow">{governance.eyebrow}</p>
             <h2
               id="governance-title"
-              className="text-global-navy mt-4 max-w-2xl text-4xl leading-[1.08] font-semibold tracking-[-0.035em] text-balance sm:text-5xl"
+              className="text-fg mt-4 max-w-2xl text-4xl leading-[1.08] font-semibold tracking-[-0.035em] text-balance sm:text-5xl"
             >
               {governance.title}
             </h2>
-            <p className="text-slate mt-6 max-w-2xl text-lg leading-8">
+            <p className="text-fg-muted mt-6 max-w-2xl text-lg leading-8">
               {governance.description}
             </p>
             <NumeralFeature

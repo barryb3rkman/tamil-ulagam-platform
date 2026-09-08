@@ -53,12 +53,9 @@ export function SocialLinksField({
 
   return (
     <div className="grid gap-2">
-      <span
-        id={`${groupId}-label`}
-        className="text-global-navy text-sm font-semibold"
-      >
+      <span id={`${groupId}-label`} className="text-fg text-sm font-semibold">
         Social media links
-        <span className="text-slate ml-1.5 text-xs font-normal">
+        <span className="text-fg-muted ml-1.5 text-xs font-normal">
           {" "}
           (optional)
         </span>
@@ -82,12 +79,12 @@ export function SocialLinksField({
                   aria-invalid={invalid}
                   onChange={(event) => updateAt(index, event.target.value)}
                   onBlur={() => normalizeAt(index)}
-                  className="motion-control focus-visible:ring-focus border-global-navy/20 bg-warm-ivory/20 text-charcoal placeholder:text-slate/90 hover:border-global-navy/35 rounded-button focus-visible:border-interactive-blue aria-[invalid=true]:border-error aria-[invalid=true]:bg-error/3 min-h-11 w-full border px-4 py-2 pr-24 text-base shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] focus-visible:bg-white focus-visible:outline-none"
+                  className="motion-control focus-visible:ring-focus border-hairline/20 bg-sunken/20 text-fg-body placeholder:text-fg-muted/90 hover:border-hairline/35 rounded-button focus-visible:border-interactive-blue aria-[invalid=true]:border-error aria-[invalid=true]:bg-error/3 focus-visible:bg-raised min-h-11 w-full border px-4 py-2 pr-24 text-base shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] focus-visible:outline-none"
                 />
                 {hint ? (
                   <span
                     aria-hidden="true"
-                    className="text-slate absolute top-1/2 right-3 -translate-y-1/2 text-xs"
+                    className="text-fg-muted absolute top-1/2 right-3 -translate-y-1/2 text-xs"
                   >
                     {hint}
                   </span>
@@ -97,7 +94,7 @@ export function SocialLinksField({
                 type="button"
                 onClick={() => removeAt(index)}
                 aria-label={`Remove social media link ${index + 1}`}
-                className="text-slate hover:text-heritage-maroon focus-visible:ring-focus rounded-button flex size-11 shrink-0 items-center justify-center border border-transparent text-lg"
+                className="text-fg-muted hover:text-fg-accent focus-visible:ring-focus rounded-button flex size-11 shrink-0 items-center justify-center border border-transparent text-lg"
               >
                 ×
               </button>
@@ -108,7 +105,7 @@ export function SocialLinksField({
       <button
         type="button"
         onClick={() => onChange([...links, ""])}
-        className="text-global-navy focus-visible:ring-focus w-fit text-sm font-semibold underline underline-offset-4"
+        className="text-fg focus-visible:ring-focus w-fit text-sm font-semibold underline underline-offset-4"
       >
         + Add another link
       </button>

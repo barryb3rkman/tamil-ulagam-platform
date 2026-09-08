@@ -32,14 +32,14 @@ export function LegalPageHeader({ document }: LegalPageHeaderProps) {
           </ol>
         </nav>
 
-        <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-end lg:gap-20">
+        <div className="mt-9 grid gap-12 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-end lg:gap-20">
           <div className="max-w-4xl">
             <p className="text-heritage-gold text-eyebrow">
               {document.eyebrow}
             </p>
             <Badge
               tone="maroon"
-              className="text-heritage-maroon mt-6 border border-white/20 bg-white"
+              className="text-fg-accent bg-raised mt-6 border border-white/20"
             >
               {document.status.label}
             </Badge>

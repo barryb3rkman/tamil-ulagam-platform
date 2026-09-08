@@ -26,19 +26,19 @@ export function NewsroomDefinitionSection() {
         />
         <div>
           <CheckGrid columns={2} items={definition.capabilities} />
-          <p className="border-heritage-maroon/40 text-slate mt-8 border-l-2 pl-5 text-lg leading-8">
+          <p className="border-heritage-maroon/40 text-fg-muted mt-8 border-l-2 pl-5 text-lg leading-8">
             {definition.statement}
           </p>
           <div className="mt-10 grid gap-5 sm:grid-cols-2">
             {definition.principles.map((principle) => (
               <section
                 key={principle.title}
-                className="border-global-navy/12 border p-6"
+                className="border-hairline/12 border p-6"
               >
-                <h3 className="text-global-navy text-xl font-semibold">
+                <h3 className="text-fg text-xl font-semibold">
                   {principle.title}
                 </h3>
-                <p className="text-slate mt-3 leading-7">
+                <p className="text-fg-muted mt-3 leading-7">
                   {principle.description}
                 </p>
               </section>
@@ -89,16 +89,14 @@ export function EditorialDistinctionsSection() {
           eyebrow={distinctions.eyebrow}
           title={distinctions.title}
         />
-        <dl className="border-global-navy/12 divide-global-navy/12 border-y">
+        <dl className="border-hairline/12 divide-global-navy/12 border-y">
           {distinctions.items.map((item) => (
             <div
               key={item.title}
               className="grid gap-3 py-6 sm:grid-cols-[13rem_1fr] sm:gap-7"
             >
-              <dt className="text-heritage-maroon text-eyebrow">
-                {item.title}
-              </dt>
-              <dd className="text-slate leading-7">{item.description}</dd>
+              <dt className="text-fg-accent text-eyebrow">{item.title}</dt>
+              <dd className="text-fg-muted leading-7">{item.description}</dd>
             </div>
           ))}
         </dl>
@@ -145,9 +143,7 @@ export function PublishingWorkflowSection() {
           title={workflow.title}
           description={workflow.description}
         />
-        <p className="text-heritage-maroon text-eyebrow mt-7">
-          {workflow.label}
-        </p>
+        <p className="text-fg-accent text-eyebrow mt-7">{workflow.label}</p>
         <NumeralFeature
           items={workflow.steps.map((step) => ({
             title: step.title,

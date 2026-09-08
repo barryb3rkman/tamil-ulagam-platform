@@ -156,10 +156,10 @@ function SignedOutDashboard() {
   return (
     <Container className="py-16 sm:py-20">
       <div className="surface-card mx-auto max-w-xl p-7 sm:p-9">
-        <h1 className="text-global-navy text-3xl font-bold">
+        <h1 className="text-fg text-3xl font-bold">
           Sign in to view your dashboard
         </h1>
-        <p className="text-charcoal mt-3">
+        <p className="text-fg-body mt-3">
           Sign in to access your organisation enrollment workspace.
         </p>
         <Link

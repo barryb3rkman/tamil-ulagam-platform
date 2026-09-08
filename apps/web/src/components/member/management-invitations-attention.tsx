@@ -37,7 +37,7 @@ export function ManagementInvitationsAttention() {
       </p>
       <Link
         href="/workspace/invitations"
-        className="text-global-navy focus-visible:ring-focus mt-2 inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4 focus-visible:outline-none"
+        className="text-fg focus-visible:ring-focus mt-2 inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4 focus-visible:outline-none"
       >
         Review invitation{count === 1 ? "" : "s"}
       </Link>

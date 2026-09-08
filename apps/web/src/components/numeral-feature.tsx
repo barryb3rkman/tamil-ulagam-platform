@@ -39,10 +39,10 @@ export function NumeralFeature({
           <li
             key={item.title}
             {...(itemAttribute ? { [itemAttribute]: "" } : {})}
-            className={`rounded-card motion-lift group relative isolate grow basis-full overflow-hidden border p-6 sm:p-7 ${basis} ${
+            className={`rounded-card motion-lift group relative isolate grow basis-full overflow-hidden border p-5 sm:p-6 ${basis} ${
               dark
                 ? "hover:border-heritage-gold/40 border-white/12 bg-white/[0.045]"
-                : "border-global-navy/10 hover:border-heritage-gold/45 bg-white"
+                : "border-hairline/10 hover:border-heritage-gold/45 bg-raised"
             }`}
           >
             <span
@@ -65,7 +65,7 @@ export function NumeralFeature({
             />
             <Title
               className={`text-[1.0625rem] font-bold tracking-[-0.01em] sm:text-lg ${
-                dark ? "text-white" : "text-global-navy"
+                dark ? "text-white" : "text-fg"
               }`}
             >
               {item.title}
@@ -73,7 +73,7 @@ export function NumeralFeature({
             {item.description ? (
               <p
                 className={`mt-2.5 text-[0.9375rem] leading-7 ${
-                  dark ? "text-white/68" : "text-slate"
+                  dark ? "text-white/68" : "text-fg-muted"
                 }`}
               >
                 {item.description}

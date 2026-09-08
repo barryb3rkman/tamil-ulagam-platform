@@ -79,7 +79,7 @@ export function OrganisationWorkspace() {
     return (
       <Container className="py-16 sm:py-20">
         <div className="mx-auto max-w-md text-center">
-          <h1 className="text-global-navy text-2xl font-bold">
+          <h1 className="text-fg text-2xl font-bold">
             Sign in to view your Organisation Workspace
           </h1>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
@@ -132,20 +132,18 @@ export function OrganisationWorkspace() {
   if (!requestedOrganisationId) {
     return (
       <Container className="py-16 sm:py-20">
-        <h1 className="text-global-navy text-2xl font-bold">
-          Choose an organisation
-        </h1>
+        <h1 className="text-fg text-2xl font-bold">Choose an organisation</h1>
         <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {myOrganisations.map((application) => (
             <li key={application.organisation.id}>
               <Link
                 href={`/workspace/organisation?organization=${application.organisation.id}`}
-                className="surface-card motion-card border-global-navy/10 block p-5"
+                className="surface-card motion-card border-hairline/10 block p-5"
               >
-                <p className="text-global-navy font-bold">
+                <p className="text-fg font-bold">
                   {application.organisation.name || "Incomplete organisation"}
                 </p>
-                <p className="text-slate text-sm">
+                <p className="text-fg-muted text-sm">
                   {[
                     application.organisation.city,
                     application.organisation.country,
@@ -170,7 +168,7 @@ export function OrganisationWorkspace() {
         <p className="mt-4">
           <Link
             href="/workspace/organisation"
-            className="text-global-navy focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
+            className="text-fg focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
           >
             View your organisations
           </Link>
@@ -257,10 +255,8 @@ export function OrganisationWorkspace() {
         >
           {registration.adminFeedback ? (
             <div className="border-heritage-gold/35 bg-heritage-gold/8 rounded-card border p-4">
-              <p className="text-global-navy text-sm font-bold">
-                Review feedback
-              </p>
-              <p className="text-charcoal mt-1 text-sm leading-6">
+              <p className="text-fg text-sm font-bold">Review feedback</p>
+              <p className="text-fg-body mt-1 text-sm leading-6">
                 {registration.adminFeedback}
               </p>
             </div>
@@ -290,7 +286,7 @@ export function OrganisationWorkspace() {
                 aria-hidden="true"
                 className="bg-heritage-maroon size-2 shrink-0 animate-pulse rounded-full"
               />
-              <p className="text-global-navy text-sm font-bold">
+              <p className="text-fg text-sm font-bold">
                 {peopleStats.pendingCount} request
                 {peopleStats.pendingCount === 1 ? "" : "s"} awaiting your review
               </p>

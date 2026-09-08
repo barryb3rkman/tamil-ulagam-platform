@@ -22,7 +22,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         <label
           htmlFor={id}
           className={cx(
-            "border-global-navy/15 focus-within:ring-focus rounded-button flex min-h-12 cursor-pointer items-start gap-3 border bg-white px-4 py-3",
+            "border-hairline/15 focus-within:ring-focus rounded-button bg-raised flex min-h-12 cursor-pointer items-start gap-3 border px-4 py-3",
             className,
           )}
         >
@@ -36,11 +36,11 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             {...props}
           />
           <span>
-            <span className="text-charcoal block text-sm font-semibold">
+            <span className="text-fg-body block text-sm font-semibold">
               {label}
             </span>
             {description ? (
-              <span className="text-slate mt-1 block text-sm">
+              <span className="text-fg-muted mt-1 block text-sm">
                 {description}
               </span>
             ) : null}

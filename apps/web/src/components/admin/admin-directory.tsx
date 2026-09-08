@@ -132,7 +132,7 @@ export function AdminDirectory({
       ) : null}
       <section
         aria-label={`${plural} filters`}
-        className="border-global-navy/12 rounded-card grid gap-4 border bg-white p-5 sm:grid-cols-3"
+        className="border-hairline/12 rounded-card bg-raised grid gap-4 border p-5 sm:grid-cols-3"
       >
         <TextField
           label={`Search ${kind === "sangam" ? "Tamil Sangam" : "Organisation"}`}
@@ -166,7 +166,7 @@ export function AdminDirectory({
           }
         />
       </section>
-      <p className="text-slate text-sm" aria-live="polite">
+      <p className="text-fg-muted text-sm" aria-live="polite">
         {filtered.length} {filtered.length === 1 ? "record" : "records"}
       </p>
       {loading ? (
@@ -182,10 +182,8 @@ export function AdminDirectory({
               header: kind === "sangam" ? "Tamil Sangam" : "Organisation",
               render: (row) => (
                 <div>
-                  <p className="text-global-navy font-bold break-words">
-                    {row.name}
-                  </p>
-                  <p className="text-slate mt-1 text-sm">
+                  <p className="text-fg font-bold break-words">{row.name}</p>
+                  <p className="text-fg-muted mt-1 text-sm">
                     {row.category
                       ? categoryLabels[row.category]
                       : "Category pending"}
@@ -197,7 +195,7 @@ export function AdminDirectory({
               key: "location",
               header: "Location",
               render: (row) => (
-                <span className="text-charcoal text-sm">
+                <span className="text-fg-body text-sm">
                   {[row.city, row.region, row.country]
                     .filter(Boolean)
                     .join(", ") || "Not recorded"}
@@ -212,7 +210,7 @@ export function AdminDirectory({
                   <StatusBadge
                     {...registrationStatusPresentation[row.applicationStatus]}
                   />
-                  <span className="text-slate text-xs">
+                  <span className="text-fg-muted text-xs">
                     {row.registrationStatus === "registered"
                       ? "Formally registered"
                       : "Informal / unregistered"}
@@ -224,7 +222,7 @@ export function AdminDirectory({
               key: "relationships",
               header: "Relationships",
               render: (row) => (
-                <span className="text-charcoal text-sm">
+                <span className="text-fg-body text-sm">
                   {row.managerCount} manager{row.managerCount === 1 ? "" : "s"}{" "}
                   · {row.memberCount} approved member
                   {row.memberCount === 1 ? "" : "s"}
@@ -237,7 +235,7 @@ export function AdminDirectory({
               render: (row) => (
                 <Link
                   href={`${kind === "sangam" ? "/admin/sangams" : "/admin/organisations"}?organization=${encodeURIComponent(row.id)}`}
-                  className="focus-visible:ring-focus text-global-navy decoration-heritage-gold inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
+                  className="focus-visible:ring-focus text-fg decoration-heritage-gold inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
                 >
                   Inspect
                 </Link>
@@ -267,21 +265,21 @@ function OperationalEntityDetail({
   return (
     <section
       aria-labelledby="entity-detail-title"
-      className="border-heritage-gold/50 rounded-large shadow-card border bg-white p-5 sm:p-7"
+      className="border-heritage-gold/50 rounded-large shadow-card bg-raised border p-5 sm:p-7"
     >
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-slate text-eyebrow-sm">Operational detail</p>
+          <p className="text-fg-muted text-eyebrow-sm">Operational detail</p>
           <h2
             id="entity-detail-title"
-            className="text-global-navy mt-2 text-2xl font-bold"
+            className="text-fg mt-2 text-2xl font-bold"
           >
             {entry.name}
           </h2>
         </div>
         <Link
           href={closeHref}
-          className="focus-visible:ring-focus text-global-navy inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
+          className="focus-visible:ring-focus text-fg inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
         >
           Close detail
         </Link>
@@ -332,11 +330,9 @@ function OperationalEntityDetail({
         />
       </div>
       {entry.kind === "sangam" ? (
-        <div className="border-global-navy/10 mt-5 border-t pt-5 text-sm">
-          <p className="text-global-navy font-semibold">
-            Sangam network context
-          </p>
-          <p className="text-slate mt-1 leading-6">
+        <div className="border-hairline/10 mt-5 border-t pt-5 text-sm">
+          <p className="text-fg font-semibold">Sangam network context</p>
+          <p className="text-fg-muted mt-1 leading-6">
             {entry.networkAffiliated === null
               ? "Network affiliation not recorded."
               : entry.networkAffiliated
@@ -357,15 +353,15 @@ function DetailBlock({
   readonly items: readonly (readonly [string, string])[];
 }) {
   return (
-    <div className="bg-warm-ivory rounded-card p-5">
-      <h3 className="text-global-navy font-bold">{title}</h3>
+    <div className="bg-sunken rounded-card p-5">
+      <h3 className="text-fg font-bold">{title}</h3>
       <dl className="mt-4 grid gap-3">
         {items.map(([label, value]) => (
           <div key={`${label}-${value}`}>
-            <dt className="text-slate text-xs font-bold tracking-[0.08em] uppercase">
+            <dt className="text-fg-muted text-xs font-bold tracking-[0.08em] uppercase">
               {label}
             </dt>
-            <dd className="text-charcoal mt-1 break-words">{value}</dd>
+            <dd className="text-fg-body mt-1 break-words">{value}</dd>
           </div>
         ))}
       </dl>

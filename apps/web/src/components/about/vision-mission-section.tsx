@@ -16,7 +16,7 @@ export function VisionMissionSection() {
         <div className="mb-10 flex items-end justify-between gap-6 sm:mb-12">
           <h2
             id="vision-mission-title"
-            className="text-global-navy text-4xl leading-tight font-semibold tracking-[-0.035em] sm:text-5xl"
+            className="text-fg text-4xl leading-tight font-semibold tracking-[-0.035em] sm:text-5xl"
           >
             {title}
           </h2>
@@ -26,9 +26,9 @@ export function VisionMissionSection() {
           />
         </div>
         <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:gap-7">
-          <article className="bg-heritage-maroon flex min-h-[340px] flex-col justify-between p-8 text-white sm:p-12">
+          <article className="bg-heritage-maroon flex min-h-[340px] flex-col justify-between p-6 text-white sm:p-12">
             <div>
-              <p className="text-heritage-gold text-eyebrow">{vision.label}</p>
+              <p className="text-champagne text-eyebrow">{vision.label}</p>
               <h3 className="mt-8 max-w-3xl text-4xl leading-[1.08] font-semibold tracking-[-0.035em] text-balance sm:text-5xl">
                 {vision.title}
               </h3>
@@ -37,9 +37,9 @@ export function VisionMissionSection() {
               {vision.supportingLine}
             </p>
           </article>
-          <article className="bg-deep-navy flex min-h-[300px] flex-col justify-between p-8 text-white sm:p-12 lg:mt-14">
+          <article className="bg-deep-navy flex min-h-[300px] flex-col justify-between p-6 text-white sm:p-12 lg:mt-14">
             <div>
-              <p className="text-heritage-gold text-eyebrow">{mission.label}</p>
+              <p className="text-champagne text-eyebrow">{mission.label}</p>
               <h3 className="mt-8 text-3xl leading-[1.12] font-semibold tracking-[-0.03em] text-balance sm:text-4xl">
                 {mission.title}
               </h3>

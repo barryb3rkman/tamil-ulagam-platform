@@ -6,7 +6,7 @@ export function VisionSignalStrip() {
   return (
     <section
       aria-label="Tamil Ulagam vision signals"
-      className="border-global-navy/10 border-y bg-white"
+      className="border-hairline/10 bg-raised border-y"
     >
       <Container>
         <ul className="divide-global-navy/10 grid divide-y sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-3 xl:grid-cols-6">
@@ -25,7 +25,7 @@ export function VisionSignalStrip() {
               >
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <span className="text-global-navy text-[0.78rem] font-semibold tracking-[0.07em] uppercase sm:text-sm">
+              <span className="text-fg text-[0.78rem] font-semibold tracking-[0.07em] uppercase sm:text-sm">
                 {signal}
               </span>
             </li>

@@ -14,9 +14,7 @@ export function TamilIdJourney() {
           title={journey.title}
           description={journey.description}
         />
-        <p className="text-heritage-maroon text-eyebrow mt-7">
-          Membership journey
-        </p>
+        <p className="text-fg-accent text-eyebrow mt-7">Membership journey</p>
         <NumeralFeature
           items={journey.steps.map((step) => ({
             title: step.title,

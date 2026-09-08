@@ -154,7 +154,7 @@ export function ManagerPeople() {
     return (
       <Container className="py-16 sm:py-20">
         <div className="mx-auto max-w-md text-center">
-          <h1 className="text-global-navy text-2xl font-bold">
+          <h1 className="text-fg text-2xl font-bold">
             Sign in to manage your organisation&rsquo;s People
           </h1>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
@@ -213,20 +213,16 @@ export function ManagerPeople() {
   if (!requestedOrganisationId) {
     return (
       <Container className="py-16 sm:py-20">
-        <h1 className="text-global-navy text-2xl font-bold">
-          Choose an organisation
-        </h1>
+        <h1 className="text-fg text-2xl font-bold">Choose an organisation</h1>
         <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {managedOrganisations.map((organisation) => (
             <li key={organisation.id}>
               <Link
                 href={`/workspace/organisation/people?organization=${organisation.id}`}
-                className="surface-card motion-card border-global-navy/10 block p-5"
+                className="surface-card motion-card border-hairline/10 block p-5"
               >
-                <p className="text-global-navy font-bold">
-                  {organisation.name}
-                </p>
-                <p className="text-slate text-sm">
+                <p className="text-fg font-bold">{organisation.name}</p>
+                <p className="text-fg-muted text-sm">
                   {organisationLocationLabel(organisation)}
                 </p>
               </Link>
@@ -246,7 +242,7 @@ export function ManagerPeople() {
         <p className="mt-4">
           <Link
             href="/workspace/organisation/people"
-            className="text-global-navy focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
+            className="text-fg focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
           >
             View your organisations
           </Link>
@@ -261,11 +257,11 @@ export function ManagerPeople() {
 
   return (
     <Container className="py-12 sm:py-16 lg:py-20">
-      <p className="text-heritage-maroon text-eyebrow-sm">PEOPLE</p>
-      <h1 className="text-global-navy mt-2 text-3xl font-bold tracking-[-0.01em]">
+      <p className="text-fg-accent text-eyebrow-sm">PEOPLE</p>
+      <h1 className="text-fg mt-2 text-3xl font-bold tracking-[-0.01em]">
         {activeOrganisation.name}
       </h1>
-      <p className="text-slate mt-2">
+      <p className="text-fg-muted mt-2">
         {organisationKindLabel(activeOrganisation)}
         <span aria-hidden="true"> · </span>
         {organisationLocationLabel(activeOrganisation)}
@@ -274,7 +270,7 @@ export function ManagerPeople() {
       <div
         role="tablist"
         aria-label="People sections"
-        className="border-global-navy/10 mt-8 flex gap-6 border-b"
+        className="border-hairline/10 mt-8 flex gap-6 border-b"
       >
         <button
           type="button"
@@ -283,8 +279,8 @@ export function ManagerPeople() {
           onClick={() => setTab("members")}
           className={`focus-visible:ring-focus -mb-px border-b-2 px-1 py-3 text-sm font-semibold focus-visible:outline-none ${
             tab === "members"
-              ? "border-heritage-maroon text-heritage-maroon"
-              : "text-slate border-transparent"
+              ? "border-heritage-maroon text-fg-accent"
+              : "text-fg-muted border-transparent"
           }`}
         >
           Affiliations{pendingCount > 0 ? ` (${pendingCount} pending)` : ""}
@@ -296,8 +292,8 @@ export function ManagerPeople() {
           onClick={() => setTab("managers")}
           className={`focus-visible:ring-focus -mb-px border-b-2 px-1 py-3 text-sm font-semibold focus-visible:outline-none ${
             tab === "managers"
-              ? "border-heritage-maroon text-heritage-maroon"
-              : "text-slate border-transparent"
+              ? "border-heritage-maroon text-fg-accent"
+              : "text-fg-muted border-transparent"
           }`}
         >
           Managers
@@ -321,7 +317,7 @@ export function ManagerPeople() {
             <div className="grid gap-6">
               {pendingRequests.length > 0 ? (
                 <div className="surface-card px-5">
-                  <h2 className="text-global-navy pt-5 text-base font-bold">
+                  <h2 className="text-fg pt-5 text-base font-bold">
                     Pending affiliation confirmations
                   </h2>
                   {pendingRequests.map((request) => (
@@ -336,7 +332,7 @@ export function ManagerPeople() {
               ) : null}
               {decidedRequests.length > 0 ? (
                 <div className="surface-card px-5">
-                  <h2 className="text-global-navy pt-5 text-base font-bold">
+                  <h2 className="text-fg pt-5 text-base font-bold">
                     Other affiliations
                   </h2>
                   {decidedRequests.map((request) => (

@@ -87,7 +87,7 @@ export function ModuleComingSoon({
         <h2 className="text-section-title text-gradient-ink">
           The rest of the programme
         </h2>
-        <p className="text-slate mt-2 max-w-2xl text-sm leading-6">
+        <p className="text-fg-muted mt-2 max-w-2xl text-sm leading-6">
           Eleven areas make up the federation&rsquo;s work. Here is everything
           else being built alongside {workspaceModule.shortLabel}.
         </p>
@@ -104,20 +104,20 @@ export function ModuleComingSoon({
             <li key={sibling.id} className="min-w-0">
               <Link
                 href={href}
-                className="border-global-navy/[0.09] rounded-card motion-lift focus-visible:ring-focus hover:border-heritage-gold/45 group flex min-h-[4.5rem] items-center gap-3.5 border bg-white px-4 py-3.5 hover:shadow-[0_1rem_2.5rem_rgba(6,29,50,0.1)] focus-visible:outline-none"
+                className="border-hairline/[0.09] rounded-card motion-lift focus-visible:ring-focus hover:border-heritage-gold/45 group bg-raised flex min-h-[4.5rem] items-center gap-3.5 border px-4 py-3.5 hover:shadow-[0_1rem_2.5rem_rgba(6,29,50,0.1)] focus-visible:outline-none"
               >
                 <span
                   aria-hidden="true"
-                  className="border-global-navy/10 text-global-navy/60 group-hover:border-heritage-gold/45 group-hover:bg-heritage-gold/10 group-hover:text-heritage-maroon grid size-10 shrink-0 place-items-center rounded-xl border transition-colors duration-300"
+                  className="border-hairline/10 text-fg/60 group-hover:border-heritage-gold/45 group-hover:bg-heritage-gold/10 group-hover:text-fg-accent grid size-10 shrink-0 place-items-center rounded-xl border transition-colors duration-300"
                 >
                   <ModuleIcon moduleId={sibling.id} />
                 </span>
-                <span className="text-global-navy min-w-0 truncate text-sm font-bold">
+                <span className="text-fg min-w-0 truncate text-sm font-bold">
                   {sibling.shortLabel}
                 </span>
                 <span
                   aria-hidden="true"
-                  className="text-global-navy/25 group-hover:text-heritage-maroon ml-auto shrink-0 transition-all duration-300 group-hover:translate-x-1"
+                  className="text-fg/25 group-hover:text-fg-accent ml-auto shrink-0 transition-all duration-300 group-hover:translate-x-1"
                 >
                   &rarr;
                 </span>
@@ -130,7 +130,7 @@ export function ModuleComingSoon({
       <p className="mt-9">
         <Link
           href={backHref}
-          className="border-global-navy/12 text-global-navy hover:border-heritage-gold/55 hover:bg-heritage-gold/8 focus-visible:ring-focus rounded-button motion-control inline-flex min-h-11 items-center gap-2 border bg-white px-5 text-sm font-bold focus-visible:outline-none"
+          className="border-hairline/12 text-fg hover:border-heritage-gold/55 hover:bg-heritage-gold/8 focus-visible:ring-focus rounded-button motion-control bg-raised inline-flex min-h-11 items-center gap-2 border px-5 text-sm font-bold focus-visible:outline-none"
         >
           <span aria-hidden="true">&larr;</span>
           Back to {workspaceLabel}

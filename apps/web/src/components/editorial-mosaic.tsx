@@ -26,18 +26,16 @@ export function EditorialMosaic({
 
   const shell = dark
     ? "border-white/12 bg-white/[0.045] hover:border-heritage-gold/40"
-    : "border-global-navy/10 hover:border-heritage-gold/45 bg-white";
+    : "border-hairline/10 hover:border-heritage-gold/45 bg-raised";
 
   return (
     <div data-motion-group className="mt-10 flex flex-wrap gap-4">
       <article
-        className={`rounded-large motion-lift group relative isolate flex min-h-[19rem] grow basis-full flex-col justify-end overflow-hidden border p-7 sm:p-9 lg:basis-[calc(66.666%-0.667rem)] ${shell}`}
+        className={`rounded-large motion-lift group relative isolate flex min-h-[19rem] grow basis-full flex-col justify-end overflow-hidden border p-6 sm:p-7 lg:basis-[calc(66.666%-0.667rem)] ${shell}`}
       >
         <div
           className={`ease-snap pointer-events-none absolute -top-10 -right-12 w-72 transition-transform duration-700 group-hover:-translate-y-2 sm:w-96 ${
-            dark
-              ? "text-white/70 opacity-40"
-              : "text-global-navy opacity-[0.11]"
+            dark ? "text-white/70 opacity-40" : "text-fg opacity-[0.11]"
           }`}
         >
           {leadFigure}
@@ -56,7 +54,7 @@ export function EditorialMosaic({
         {lead.description ? (
           <p
             className={`relative mt-4 max-w-lg text-[1.0625rem] leading-8 ${
-              dark ? "text-white/70" : "text-slate"
+              dark ? "text-white/70" : "text-fg-muted"
             }`}
           >
             {lead.description}
@@ -81,7 +79,7 @@ export function EditorialMosaic({
             <div className="min-w-0">
               <Title
                 className={`text-[1.0625rem] font-bold tracking-[-0.01em] ${
-                  dark ? "text-white" : "text-global-navy"
+                  dark ? "text-white" : "text-fg"
                 }`}
               >
                 {item.title}
@@ -89,7 +87,7 @@ export function EditorialMosaic({
               {item.description ? (
                 <p
                   className={`mt-2 text-[0.9375rem] leading-7 ${
-                    dark ? "text-white/68" : "text-slate"
+                    dark ? "text-white/68" : "text-fg-muted"
                   }`}
                 >
                   {item.description}

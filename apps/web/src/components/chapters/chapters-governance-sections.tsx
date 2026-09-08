@@ -21,7 +21,7 @@ export function ChapterGovernanceSection() {
         className="grid gap-12 lg:grid-cols-[0.88fr_1.12fr] lg:gap-20"
       >
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <div className="aspect-[4/3] overflow-hidden">
+          <div className="aspect-[16/9] overflow-hidden">
             <ImageWithFallback
               asset={images[governance.imageKey]}
               fallbackLabel="Responsible chapter collaboration"
@@ -29,7 +29,7 @@ export function ChapterGovernanceSection() {
               className="h-full w-full object-cover"
             />
           </div>
-          <p className="border-global-navy/12 text-slate border-b py-4 text-sm leading-6">
+          <p className="border-hairline/12 text-fg-muted border-b py-4 text-sm leading-6">
             Community collaboration visual. It does not represent a confirmed
             organisation relationship.
           </p>
@@ -40,7 +40,7 @@ export function ChapterGovernanceSection() {
             title={governance.title}
             description={governance.description}
           />
-          <p className="text-heritage-maroon text-eyebrow mt-7">
+          <p className="text-fg-accent text-eyebrow mt-7">
             Chapter governance principles
           </p>
           <NumeralFeature
@@ -119,13 +119,13 @@ export function ChapterStatusSection() {
             {statusModel.statuses.map((status) => (
               <li
                 key={status}
-                className="border-global-navy/14 text-charcoal bg-white px-4 py-3 text-sm font-semibold"
+                className="border-hairline/14 text-fg-body bg-raised px-4 py-3 text-sm font-semibold"
               >
                 {status}
               </li>
             ))}
           </ul>
-          <p className="border-heritage-maroon/35 text-slate mt-8 border-l-2 pl-5 leading-7">
+          <p className="border-heritage-maroon/35 text-fg-muted mt-8 border-l-2 pl-5 leading-7">
             Status labels keep chapter recognition and local responsibility
             clear without misrepresenting a location.
           </p>

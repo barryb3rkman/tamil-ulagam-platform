@@ -14,15 +14,13 @@ export function MultilingualAccessibilitySection() {
           eyebrow={multilingualAccessibility.eyebrow}
           title={multilingualAccessibility.title}
         />
-        <div className="mt-10 grid gap-5 md:grid-cols-2">
+        <div className="mt-9 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {multilingualAccessibility.groups.map((group) => (
             <section
               key={group.title}
-              className="border-global-navy/12 border p-6 sm:p-7"
+              className="border-hairline/12 border p-5 sm:p-6"
             >
-              <h3 className="text-global-navy text-xl font-semibold">
-                {group.title}
-              </h3>
+              <h3 className="text-fg text-xl font-semibold">{group.title}</h3>
               <CheckGrid columns={2} items={group.items} />
             </section>
           ))}
@@ -52,7 +50,7 @@ export function FutureDiscoverySection() {
           <section aria-labelledby="discovery-fields-title">
             <h3
               id="discovery-fields-title"
-              className="text-global-navy text-xl font-semibold"
+              className="text-fg text-xl font-semibold"
             >
               Discovery fields
             </h3>
@@ -61,7 +59,7 @@ export function FutureDiscoverySection() {
           <section aria-labelledby="future-article-experience-title">
             <h3
               id="future-article-experience-title"
-              className="text-global-navy text-xl font-semibold"
+              className="text-fg text-xl font-semibold"
             >
               Article experience
             </h3>
@@ -129,7 +127,7 @@ export function ContentStatusSection() {
           <section aria-labelledby="internal-statuses-title">
             <h3
               id="internal-statuses-title"
-              className="text-global-navy text-xl font-semibold"
+              className="text-fg text-xl font-semibold"
             >
               Internal statuses
             </h3>
@@ -137,7 +135,7 @@ export function ContentStatusSection() {
               {statusModel.internalStatuses.map((status) => (
                 <li
                   key={status}
-                  className="border-global-navy/14 rounded-full border px-4 py-2 text-sm leading-6"
+                  className="border-hairline/14 rounded-full border px-4 py-2 text-sm leading-6"
                 >
                   {status}
                 </li>
@@ -147,7 +145,7 @@ export function ContentStatusSection() {
           <section aria-labelledby="public-statuses-title">
             <h3
               id="public-statuses-title"
-              className="text-global-navy text-xl font-semibold"
+              className="text-fg text-xl font-semibold"
             >
               Public statuses
             </h3>
@@ -155,7 +153,7 @@ export function ContentStatusSection() {
               {statusModel.publicStatuses.map((status) => (
                 <li
                   key={status}
-                  className="border-heritage-maroon/30 bg-heritage-maroon/6 text-heritage-maroon rounded-full border px-4 py-2 text-sm leading-6 font-semibold"
+                  className="border-heritage-maroon/30 bg-heritage-maroon/6 text-fg-accent rounded-full border px-4 py-2 text-sm leading-6 font-semibold"
                 >
                   {status}
                 </li>

@@ -89,7 +89,7 @@ export function WorkspaceNavigation({
       {vertical && !collapsed ? (
         <p
           className={`text-eyebrow-sm mb-2 px-3 ${
-            variant === "sidebar" ? "text-heritage-gold/80" : "text-slate"
+            variant === "sidebar" ? "text-heritage-gold/80" : "text-fg-muted"
           }`}
         >
           Workspace
@@ -140,13 +140,11 @@ function workspaceLinkClassName(
     return `focus-visible:ring-focus motion-control rounded-button flex min-h-11 items-center gap-3 px-3 text-sm font-semibold ${
       current
         ? "bg-global-navy text-white"
-        : "text-charcoal hover:bg-global-navy/6 hover:text-global-navy"
+        : "text-fg-body hover:bg-global-navy/6 hover:text-fg"
     }`;
   }
   return `focus-visible:ring-focus motion-control rounded-button inline-flex min-h-10 items-center px-3.5 text-sm font-semibold ${
-    current
-      ? "bg-global-navy text-white"
-      : "text-global-navy hover:bg-global-navy/8"
+    current ? "bg-global-navy text-white" : "text-fg hover:bg-global-navy/8"
   }`;
 }
 

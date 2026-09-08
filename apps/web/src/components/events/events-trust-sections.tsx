@@ -24,11 +24,9 @@ export function RegistrationAttendanceSection() {
           title={registration.title}
         />
         <div>
-          <p className="text-heritage-maroon text-eyebrow">
-            Participation models
-          </p>
+          <p className="text-fg-accent text-eyebrow">Participation models</p>
           <CheckGrid columns={2} items={registration.models} />
-          <p className="text-heritage-maroon text-eyebrow mt-9">
+          <p className="text-fg-accent text-eyebrow mt-9">
             Registration principles
           </p>
           <NumberedGrid items={registration.principles} />
@@ -51,7 +49,7 @@ export function EventPrivacySection() {
           tone="inverse"
         />
         <div className="mt-10 grid gap-5 lg:grid-cols-2">
-          <section className="bg-deep-navy/45 border border-white/16 p-6 sm:p-8">
+          <section className="bg-deep-navy/45 border border-white/16 p-5 sm:p-6">
             <h3 className="text-heritage-gold text-2xl font-semibold">
               Public event information may include
             </h3>
@@ -61,7 +59,7 @@ export function EventPrivacySection() {
               tone="dark"
             />
           </section>
-          <section className="bg-deep-navy/45 border border-white/16 p-6 sm:p-8">
+          <section className="bg-deep-navy/45 border border-white/16 p-5 sm:p-6">
             <h3 className="text-heritage-gold text-2xl font-semibold">
               Private attendee information may include
             </h3>
@@ -109,16 +107,14 @@ export function ChapterOrganisationEventsSection() {
           {relationships.groups.map((group) => (
             <section
               key={group.title}
-              className="border-global-navy/12 border bg-white p-6 sm:p-8"
+              className="border-hairline/12 bg-raised border p-5 sm:p-6"
             >
-              <h3 className="text-global-navy text-2xl font-semibold">
-                {group.title}
-              </h3>
+              <h3 className="text-fg text-2xl font-semibold">{group.title}</h3>
               <CheckGrid columns={2} items={group.items} />
             </section>
           ))}
         </div>
-        <p className="border-heritage-maroon/40 text-slate mt-8 max-w-4xl border-l-2 pl-5 text-lg leading-8">
+        <p className="border-heritage-maroon/40 text-fg-muted mt-8 max-w-4xl border-l-2 pl-5 text-lg leading-8">
           {relationships.statement}
         </p>
         <div className="mt-7 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap">
@@ -152,11 +148,9 @@ export function HybridArchiveSection() {
           title={hybridArchive.title}
         />
         <div>
-          <p className="text-heritage-maroon text-eyebrow">
-            Participation support
-          </p>
+          <p className="text-fg-accent text-eyebrow">Participation support</p>
           <CheckGrid columns={2} items={hybridArchive.possibilities} />
-          <p className="text-heritage-maroon text-eyebrow mt-9">
+          <p className="text-fg-accent text-eyebrow mt-9">
             Required safeguards
           </p>
           <CheckGrid columns={2} items={hybridArchive.safeguards} />
@@ -238,7 +232,7 @@ export function EventSafetySection() {
         />
         <div>
           <CheckGrid columns={2} items={safety.principles} />
-          <p className="border-heritage-maroon/40 text-slate mt-8 border-l-2 pl-5 text-lg leading-8">
+          <p className="border-heritage-maroon/40 text-fg-muted mt-8 border-l-2 pl-5 text-lg leading-8">
             {safety.statement}
           </p>
         </div>

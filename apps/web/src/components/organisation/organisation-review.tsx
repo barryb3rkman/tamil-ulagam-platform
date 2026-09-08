@@ -71,13 +71,11 @@ export function OrganisationReview({
     <section className="gradient-warm-welcome">
       <div className="mx-auto max-w-[74rem] px-5 py-10 sm:px-7 sm:py-14 lg:px-10">
         <div className="mb-7 max-w-3xl">
-          <p className="text-heritage-maroon text-eyebrow-sm">
-            {content.eyebrow}
-          </p>
-          <h1 className="text-global-navy mt-3 text-3xl font-bold tracking-[-0.03em] sm:text-4xl">
+          <p className="text-fg-accent text-eyebrow-sm">{content.eyebrow}</p>
+          <h1 className="text-fg mt-3 text-3xl font-bold tracking-[-0.03em] sm:text-4xl">
             {content.title}
           </h1>
-          <p className="text-slate mt-3 leading-7">{content.description}</p>
+          <p className="text-fg-muted mt-3 leading-7">{content.description}</p>
         </div>
         <StageProgress stages={[...organisationStages]} currentStage={4} />
 
@@ -115,7 +113,7 @@ export function OrganisationReview({
           <Button
             size="large"
             onClick={() => setConfirmOpen(true)}
-            className="bg-heritage-gold text-deep-navy hover:bg-white"
+            className="bg-heritage-gold text-deep-navy hover:bg-raised"
           >
             {content.submitCta}
           </Button>
@@ -126,7 +124,7 @@ export function OrganisationReview({
           onClose={() => setConfirmOpen(false)}
           title={content.confirmDialogTitle}
         >
-          <p className="text-slate leading-7">{content.confirmDialogBody}</p>
+          <p className="text-fg-muted leading-7">{content.confirmDialogBody}</p>
           <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <Button variant="ghost" onClick={() => setConfirmOpen(false)}>
               Continue reviewing

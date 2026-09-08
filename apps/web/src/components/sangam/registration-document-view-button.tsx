@@ -38,12 +38,12 @@ export function RegistrationDocumentViewButton({
 
   return (
     <span className="flex flex-wrap items-center gap-3">
-      <span className="text-charcoal">{filename}</span>
+      <span className="text-fg-body">{filename}</span>
       <button
         type="button"
         onClick={() => void handleView()}
         disabled={pending}
-        className="text-global-navy focus-visible:ring-focus text-sm font-semibold underline underline-offset-4 disabled:opacity-60"
+        className="text-fg focus-visible:ring-focus text-sm font-semibold underline underline-offset-4 disabled:opacity-60"
       >
         {pending ? "Opening…" : "View"}
       </button>

@@ -51,8 +51,8 @@ export function AccountForm() {
   if (!isHydrated) return <p role="status">Loading account…</p>;
   if (!currentUser)
     return (
-      <div className="rounded-card shadow-card bg-white p-7">
-        <h1 className="text-global-navy text-3xl font-bold">
+      <div className="rounded-card shadow-card bg-raised p-7">
+        <h1 className="text-fg text-3xl font-bold">
           Sign in to edit your account
         </h1>
       </div>
@@ -148,14 +148,14 @@ export function AccountForm() {
         <form
           noValidate
           onSubmit={asEventHandler(submit)}
-          className="rounded-large border-global-navy/10 grid gap-6 border bg-white p-6 sm:p-8 lg:p-9"
+          className="rounded-large border-hairline/10 bg-raised grid gap-6 border p-6 sm:p-8 lg:p-9"
         >
-          <div className="border-global-navy/10 border-b pb-5">
-            <p className="text-slate text-eyebrow-sm">Profile information</p>
+          <div className="border-hairline/10 border-b pb-5">
+            <p className="text-fg-muted text-eyebrow-sm">Profile information</p>
             <h2 className="text-section-title text-gradient-ink mt-2">
               Personal profile
             </h2>
-            <p className="text-slate mt-2 text-sm leading-6">
+            <p className="text-fg-muted mt-2 text-sm leading-6">
               Keep the contact information associated with your personal account
               current.
             </p>
@@ -202,14 +202,14 @@ export function AccountForm() {
           </div>
           <FormError message={formError} />
           {dirty || saving ? (
-            <div className="border-global-navy/10 flex flex-col gap-4 border-t pt-6 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-slate text-sm">You have unsaved changes.</p>
+            <div className="border-hairline/10 flex flex-col gap-4 border-t pt-6 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-fg-muted text-sm">You have unsaved changes.</p>
               <div className="flex flex-wrap items-center gap-3">
                 <button
                   type="button"
                   onClick={reset}
                   disabled={saving}
-                  className="border-global-navy/12 text-global-navy hover:border-global-navy/30 hover:bg-global-navy/5 focus-visible:ring-focus rounded-button motion-control inline-flex min-h-11 items-center border bg-white px-4 text-sm font-semibold focus-visible:outline-none disabled:opacity-60"
+                  className="border-hairline/12 text-fg hover:border-hairline/30 hover:bg-global-navy/5 focus-visible:ring-focus rounded-button motion-control bg-raised inline-flex min-h-11 items-center border px-4 text-sm font-semibold focus-visible:outline-none disabled:opacity-60"
                 >
                   Discard
                 </button>

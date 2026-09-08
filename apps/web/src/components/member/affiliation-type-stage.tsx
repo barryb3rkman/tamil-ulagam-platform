@@ -20,10 +20,10 @@ export function AffiliationTypeStage({
   return (
     <div className="surface-card grid gap-6 p-5 sm:p-7 lg:p-8">
       <div className="max-w-xl">
-        <h2 className="text-global-navy text-xl font-bold tracking-[-0.01em] sm:text-2xl">
+        <h2 className="text-fg text-xl font-bold tracking-[-0.01em] sm:text-2xl">
           {memberAffiliationTypeContent.title}
         </h2>
-        <p className="text-slate mt-2 leading-6">
+        <p className="text-fg-muted mt-2 leading-6">
           {memberAffiliationTypeContent.description}
         </p>
       </div>
@@ -39,7 +39,7 @@ export function AffiliationTypeStage({
               key={option.value}
               type="button"
               onClick={() => onSelect(option.value)}
-              className="motion-control border-global-navy/15 hover:border-heritage-maroon focus-visible:ring-focus rounded-card border bg-white p-5 text-left"
+              className="motion-control border-hairline/15 hover:border-heritage-maroon focus-visible:ring-focus rounded-card bg-raised border p-5 text-left"
             >
               <span
                 aria-hidden="true"
@@ -51,21 +51,19 @@ export function AffiliationTypeStage({
               >
                 <Icon className="size-5" />
               </span>
-              <p className="text-global-navy mt-3 text-base font-bold">
-                {option.title}
-              </p>
-              <p className="text-slate mt-1 text-sm leading-6">
+              <p className="text-fg mt-3 text-base font-bold">{option.title}</p>
+              <p className="text-fg-muted mt-1 text-sm leading-6">
                 {option.description}
               </p>
             </button>
           );
         })}
       </div>
-      <div className="border-global-navy/12 border-t pt-5">
+      <div className="border-hairline/12 border-t pt-5">
         <button
           type="button"
           onClick={onBack}
-          className="text-global-navy focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
+          className="text-fg focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
         >
           Back
         </button>

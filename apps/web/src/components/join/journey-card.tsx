@@ -32,7 +32,7 @@ export function JourneyCard({
   return (
     <Link
       href={href}
-      className="group focus-visible:ring-focus rounded-card border-global-navy/[0.09] motion-lift hover:border-heritage-gold/45 relative block h-full overflow-hidden border bg-white p-6 hover:shadow-[0_1.25rem_3rem_rgba(6,29,50,0.12)] focus-visible:outline-none"
+      className="group focus-visible:ring-focus rounded-card border-hairline/[0.09] motion-lift hover:border-heritage-gold/45 bg-raised relative block h-full overflow-hidden border p-6 hover:shadow-[0_1.25rem_3rem_rgba(6,29,50,0.12)] focus-visible:outline-none"
     >
       <span
         aria-hidden="true"
@@ -40,16 +40,18 @@ export function JourneyCard({
       />
       <span
         aria-hidden="true"
-        className="border-global-navy/10 text-global-navy/70 group-hover:border-heritage-gold/45 group-hover:bg-heritage-gold/10 group-hover:text-heritage-maroon grid size-12 place-items-center rounded-2xl border bg-white transition-colors duration-300"
+        className="border-hairline/10 text-fg/70 group-hover:border-heritage-gold/45 group-hover:bg-heritage-gold/10 group-hover:text-fg-accent bg-raised grid size-12 place-items-center rounded-2xl border transition-colors duration-300"
       >
         <Icon className="size-6" />
       </span>
-      <p className="text-slate text-eyebrow-sm mt-5">{journey.eyebrow}</p>
-      <h3 className="text-global-navy mt-2 text-xl font-bold tracking-[-0.01em]">
+      <p className="text-fg-muted text-eyebrow-sm mt-5">{journey.eyebrow}</p>
+      <h3 className="text-fg mt-2 text-xl font-bold tracking-[-0.01em]">
         {title}
       </h3>
-      <p className="text-slate mt-2 text-sm leading-6">{journey.description}</p>
-      <span className="text-global-navy group-hover:text-heritage-maroon mt-5 inline-flex items-center gap-2 text-sm font-bold transition-colors duration-300">
+      <p className="text-fg-muted mt-2 text-sm leading-6">
+        {journey.description}
+      </p>
+      <span className="text-fg group-hover:text-fg-accent mt-5 inline-flex items-center gap-2 text-sm font-bold transition-colors duration-300">
         {cta}
         <span
           aria-hidden="true"

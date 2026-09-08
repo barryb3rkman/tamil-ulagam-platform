@@ -14,16 +14,16 @@ export function AboutManifesto() {
             />
             <h2
               id="manifesto-title"
-              className="text-global-navy max-w-4xl text-5xl leading-[1.02] font-semibold tracking-[-0.045em] text-balance sm:text-6xl lg:text-7xl"
+              className="text-fg max-w-4xl text-5xl leading-[1.02] font-semibold tracking-[-0.045em] text-balance sm:text-6xl lg:text-7xl"
             >
               {aboutContent.manifesto.statement}
             </h2>
           </div>
-          <div className="border-global-navy/12 lg:mt-3 lg:border-l lg:pl-10">
+          <div className="border-hairline/12 lg:mt-3 lg:border-l lg:pl-10">
             {aboutContent.manifesto.paragraphs.map((paragraph) => (
               <p
                 key={paragraph}
-                className="text-slate mb-6 text-lg leading-8 last:mb-0"
+                className="text-fg-muted mb-6 text-lg leading-8 last:mb-0"
               >
                 {paragraph}
               </p>

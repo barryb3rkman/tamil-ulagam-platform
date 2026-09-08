@@ -81,7 +81,7 @@ export function TamilIdCard3D({
         />
         <span className="gradient-gold-leaf pointer-events-none absolute inset-x-0 top-0 h-px opacity-80" />
 
-        <div className="relative flex h-full flex-col justify-between p-6 sm:p-7">
+        <div className="relative flex h-full flex-col justify-between p-5 sm:p-6">
           <div className="flex items-start justify-between gap-4">
             <BrandMark className="size-11 shrink-0" />
             <span className="text-[0.6rem] font-bold tracking-[0.24em] text-white/70 uppercase">
@@ -103,19 +103,19 @@ export function TamilIdCard3D({
       </div>
       <div
         aria-hidden="true"
-        className="motion-pop border-global-navy/[0.09] absolute -top-6 -left-4 hidden rounded-2xl border bg-white px-4 py-3 shadow-[0_1rem_2.5rem_rgba(6,29,50,0.14)] sm:block"
+        className="motion-pop border-hairline/[0.09] bg-raised absolute -top-6 -left-4 hidden rounded-2xl border px-4 py-3 shadow-[0_1rem_2.5rem_rgba(6,29,50,0.14)] sm:block"
       >
-        <p className="text-slate text-eyebrow-sm">One identity</p>
-        <p className="text-global-navy font-display mt-1 text-lg font-semibold">
+        <p className="text-fg-muted text-eyebrow-sm">One identity</p>
+        <p className="text-fg font-display mt-1 text-lg font-semibold">
           Every workspace
         </p>
       </div>
       <div
         aria-hidden="true"
-        className="motion-pop border-global-navy/[0.09] absolute -right-4 -bottom-7 hidden rounded-2xl border bg-white px-4 py-3 shadow-[0_1rem_2.5rem_rgba(6,29,50,0.14)] [animation-delay:220ms] sm:block"
+        className="motion-pop border-hairline/[0.09] bg-raised absolute -right-4 -bottom-7 hidden rounded-2xl border px-4 py-3 shadow-[0_1rem_2.5rem_rgba(6,29,50,0.14)] [animation-delay:220ms] sm:block"
       >
-        <p className="text-slate text-eyebrow-sm">Verified by</p>
-        <p className="text-global-navy font-display mt-1 text-lg font-semibold">
+        <p className="text-fg-muted text-eyebrow-sm">Verified by</p>
+        <p className="text-fg font-display mt-1 text-lg font-semibold">
           The federation
         </p>
       </div>

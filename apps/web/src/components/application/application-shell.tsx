@@ -2,10 +2,11 @@
 
 import { ImageWithFallback } from "@tamil-ulagam/ui";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { images } from "@/config/images";
+import { useSignOutPrompt } from "@/features/auth/use-sign-out-prompt";
 import { usePlatform } from "@/features/enrollment/platform-provider";
 import { WorkspaceShell } from "@/components/workspace/workspace-shell";
 
@@ -34,7 +35,7 @@ export function ApplicationShell({
   readonly area: "member" | "admin";
 }) {
   const pathname = usePathname();
-  const router = useRouter();
+  const { requestSignOut, signOutPrompt } = useSignOutPrompt();
   const {
     availableOrganisations,
     canReviewApplications,
@@ -43,7 +44,6 @@ export function ApplicationShell({
     isHydrated,
     platformError,
     selectOrganisation,
-    signOut,
   } = usePlatform();
 
   if (
@@ -148,9 +148,7 @@ export function ApplicationShell({
               <button
                 type="button"
                 className="focus-visible:ring-focus hover:border-heritage-gold hover:text-heritage-gold rounded-button min-h-11 border border-white/20 px-3 py-2 text-sm font-semibold transition-colors sm:px-4"
-                onClick={() => {
-                  void signOut().then(() => router.push("/login"));
-                }}
+                onClick={requestSignOut}
               >
                 Sign out
               </button>
@@ -181,20 +179,20 @@ export function ApplicationShell({
           aria-label={
             area === "admin" ? "Admin navigation" : "Account navigation"
           }
-          className="border-global-navy/10 border-b bg-white/65 px-5 py-3 sm:px-7 lg:min-h-[calc(100vh-9rem)] lg:border-r lg:border-b-0 lg:bg-white/40 lg:px-5 lg:py-9"
+          className="portal-rail border-hairline border-b px-5 py-3 sm:px-7 lg:min-h-[calc(100vh-9rem)] lg:border-r lg:border-b-0 lg:px-5 lg:py-9"
         >
-          <p className="text-slate text-eyebrow-sm mb-4 hidden px-3 lg:block">
+          <p className="text-fg-muted text-eyebrow-sm mb-4 hidden px-3 lg:block">
             {area === "admin" ? "Review workspace" : "Your workspace"}
           </p>
           {area === "member" && availableOrganisations.length > 1 ? (
             <label className="mb-4 grid gap-1.5 px-1 text-xs font-semibold">
-              <span className="text-slate">Current organisation</span>
+              <span className="text-fg-muted">Current organisation</span>
               <select
                 value={currentApplication?.organisation.id ?? ""}
                 onChange={(event) => {
                   void selectOrganisation(event.target.value);
                 }}
-                className="border-global-navy/20 text-global-navy focus-visible:ring-focus rounded-button min-h-11 min-w-0 border bg-white px-3 text-sm"
+                className="border-hairline/20 text-fg focus-visible:ring-focus rounded-button bg-raised min-h-11 min-w-0 border px-3 text-sm"
               >
                 {availableOrganisations.map((organisation) => (
                   <option key={organisation.id} value={organisation.id}>
@@ -223,14 +221,14 @@ export function ApplicationShell({
                   key={item.href}
                   className={
                     item.variant === "context"
-                      ? "lg:border-global-navy/10 col-span-full lg:mt-2 lg:border-t lg:pt-3"
+                      ? "lg:border-hairline/10 col-span-full lg:mt-2 lg:border-t lg:pt-3"
                       : undefined
                   }
                 >
                   <Link
                     href={item.href}
                     aria-current={current ? "page" : undefined}
-                    className={`motion-control focus-visible:ring-focus rounded-button relative flex min-h-11 items-center justify-center px-3 py-2 text-center text-sm font-semibold lg:justify-start lg:px-4 lg:text-left ${current ? "bg-global-navy text-white shadow-sm" : "text-global-navy hover:bg-global-navy/6"}`}
+                    className={`motion-control focus-visible:ring-focus rounded-button relative flex min-h-11 items-center justify-center px-3 py-2 text-center text-sm font-semibold lg:justify-start lg:px-4 lg:text-left ${current ? "bg-global-navy text-white shadow-sm" : "text-fg hover:bg-global-navy/6"}`}
                   >
                     <span
                       aria-hidden="true"
@@ -255,22 +253,24 @@ export function ApplicationShell({
             </div>
           ) : null}
           {area === "admin" && !isHydrated ? (
-            <p role="status" className="text-slate">
+            <p role="status" className="text-fg-muted">
               Loading…
             </p>
           ) : area === "admin" && !canReviewApplications ? (
-            <section className="border-global-navy/12 rounded-card shadow-card border bg-white p-7 sm:p-9">
-              <p className="text-slate text-eyebrow-sm">Restricted workspace</p>
+            <section className="border-hairline/12 rounded-card shadow-card bg-raised border p-7 sm:p-9">
+              <p className="text-fg-muted text-eyebrow-sm">
+                Restricted workspace
+              </p>
               <h1 className="text-section-title text-gradient-ink mt-2">
                 Review access required
               </h1>
-              <p className="text-slate mt-3 max-w-xl leading-7">
+              <p className="text-fg-muted mt-3 max-w-xl leading-7">
                 This account does not have an administrator or reviewer role.
                 Review access is enforced by the enrollment service.
               </p>
               <Link
                 href="/dashboard"
-                className="text-global-navy focus-visible:ring-focus mt-5 inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
+                className="text-fg focus-visible:ring-focus mt-5 inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
               >
                 Return to your dashboard
               </Link>
@@ -280,6 +280,7 @@ export function ApplicationShell({
           )}
         </div>
       </div>
+      {signOutPrompt}
     </div>
   );
 }

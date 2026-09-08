@@ -21,9 +21,7 @@ export function PartnershipPathwaySection() {
           title={pathway.title}
           description={pathway.description}
         />
-        <p className="text-heritage-maroon text-eyebrow mt-7">
-          Partnership pathway
-        </p>
+        <p className="text-fg-accent text-eyebrow mt-7">Partnership pathway</p>
         <NumeralFeature
           items={pathway.steps.map((step) => ({
             title: step.title,
@@ -50,9 +48,7 @@ export function DueDiligenceSection() {
           description={dueDiligence.description}
         />
         <div>
-          <p className="text-heritage-maroon text-eyebrow">
-            Due-diligence areas
-          </p>
+          <p className="text-fg-accent text-eyebrow">Due-diligence areas</p>
           <NumberedGrid items={dueDiligence.items} />
         </div>
       </Container>
@@ -121,14 +117,14 @@ export function PartnershipStatusSection() {
               <li key={status}>
                 <Badge
                   tone="neutral"
-                  className="border-global-navy/14 border px-4 py-3 text-sm"
+                  className="border-hairline/14 border px-4 py-3 text-sm"
                 >
                   {status}
                 </Badge>
               </li>
             ))}
           </ul>
-          <p className="border-heritage-maroon/35 text-slate mt-8 border-l-2 pl-5 leading-7">
+          <p className="border-heritage-maroon/35 text-fg-muted mt-8 border-l-2 pl-5 leading-7">
             {statusModel.statement}
           </p>
         </div>

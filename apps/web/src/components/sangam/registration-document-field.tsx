@@ -44,28 +44,27 @@ export function RegistrationDocumentField({
 
   return (
     <div className="grid gap-1.5">
-      <label
-        htmlFor={inputId}
-        className="text-global-navy text-sm font-semibold"
-      >
+      <label htmlFor={inputId} className="text-fg text-sm font-semibold">
         Registration document
-        <span className="text-heritage-maroon ml-1" aria-hidden="true">
+        <span className="text-fg-accent ml-1" aria-hidden="true">
           *
         </span>
         <span className="sr-only"> (required)</span>
       </label>
 
       {status === "uploaded" && filename ? (
-        <div className="border-global-navy/15 rounded-button flex items-center gap-3 border bg-white px-4 py-3">
+        <div className="border-hairline/15 rounded-button bg-raised flex items-center gap-3 border px-4 py-3">
           <span aria-hidden="true" className="text-xl">
             {documentIcon(filename)}
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-charcoal truncate text-sm font-semibold">
+            <p className="text-fg-body truncate text-sm font-semibold">
               {filename}
             </p>
             {typeof fileSize === "number" ? (
-              <p className="text-slate text-xs">{formatFileSize(fileSize)}</p>
+              <p className="text-fg-muted text-xs">
+                {formatFileSize(fileSize)}
+              </p>
             ) : null}
           </div>
           <button
@@ -78,7 +77,7 @@ export function RegistrationDocumentField({
           <button
             type="button"
             onClick={onRemove}
-            className="text-heritage-maroon focus-visible:ring-focus rounded-sm text-sm font-semibold underline underline-offset-4"
+            className="text-fg-accent focus-visible:ring-focus rounded-sm text-sm font-semibold underline underline-offset-4"
           >
             Remove
           </button>
@@ -89,7 +88,7 @@ export function RegistrationDocumentField({
           onClick={() => inputRef.current?.click()}
           disabled={status === "uploading"}
           aria-describedby={statusId}
-          className="motion-control border-global-navy/25 hover:border-global-navy/45 focus-visible:ring-focus rounded-button flex min-h-11 w-full items-center justify-center gap-2 border border-dashed bg-white px-4 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+          className="motion-control border-hairline/25 hover:border-hairline/45 focus-visible:ring-focus rounded-button bg-raised flex min-h-11 w-full items-center justify-center gap-2 border border-dashed px-4 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
         >
           {status === "uploading" ? (
             <>
@@ -120,7 +119,7 @@ export function RegistrationDocumentField({
       <p
         id={statusId}
         aria-live="polite"
-        className="text-slate text-xs leading-5"
+        className="text-fg-muted text-xs leading-5"
       >
         {status === "error"
           ? ""

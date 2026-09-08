@@ -106,7 +106,7 @@ export function ManagementInvitations() {
     return (
       <Container className="py-16 sm:py-20">
         <div className="mx-auto max-w-md text-center">
-          <h1 className="text-global-navy text-2xl font-bold">
+          <h1 className="text-fg text-2xl font-bold">
             Sign in to review management invitations
           </h1>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
@@ -134,13 +134,11 @@ export function ManagementInvitations() {
 
   return (
     <Container className="py-12 sm:py-16 lg:py-20">
-      <p className="text-heritage-maroon text-eyebrow-sm">
-        MANAGEMENT INVITATIONS
-      </p>
-      <h1 className="text-global-navy mt-2 text-3xl font-bold tracking-[-0.01em]">
+      <p className="text-fg-accent text-eyebrow-sm">MANAGEMENT INVITATIONS</p>
+      <h1 className="text-fg mt-2 text-3xl font-bold tracking-[-0.01em]">
         Your invitations
       </h1>
-      <p className="text-slate mt-2 max-w-xl">
+      <p className="text-fg-muted mt-2 max-w-xl">
         Accepting grants you management authority only — it does not make you a
         Member of the Organisation or Tamil Sangam.
       </p>
@@ -170,16 +168,16 @@ export function ManagementInvitations() {
                 className="surface-card grid gap-4 p-5 sm:flex sm:items-center sm:justify-between"
               >
                 <div>
-                  <p className="text-global-navy font-bold">
+                  <p className="text-fg font-bold">
                     {invitation.organisationName || "Untitled organisation"}
                   </p>
-                  <p className="text-slate text-sm">
+                  <p className="text-fg-muted text-sm">
                     {invitation.organisationKind === "sangam"
                       ? "Tamil Sangam"
                       : "Organisation"}{" "}
                     · Invited as {roleLabel[invitation.role]}
                   </p>
-                  <p className="text-slate mt-1 text-xs">
+                  <p className="text-fg-muted mt-1 text-xs">
                     Invited by {invitation.inviterName || "a manager"} on{" "}
                     {new Date(invitation.invitedAt).toLocaleDateString()}
                   </p>

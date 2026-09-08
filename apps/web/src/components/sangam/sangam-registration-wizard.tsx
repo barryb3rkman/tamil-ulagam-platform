@@ -206,7 +206,7 @@ export function SangamRegistrationWizard() {
             setLoadState("loading");
             load();
           }}
-          className="border-global-navy text-global-navy focus-visible:ring-focus rounded-button mt-4 min-h-11 border px-5 text-sm font-semibold"
+          className="border-hairline text-fg focus-visible:ring-focus rounded-button mt-4 min-h-11 border px-5 text-sm font-semibold"
         >
           Try again
         </button>
@@ -577,10 +577,10 @@ function StageAboutYourSangam({
   return (
     <div className="surface-card grid gap-6 p-5 sm:p-7 lg:p-8">
       <div className="max-w-xl">
-        <h2 className="text-global-navy text-xl font-bold tracking-[-0.01em] sm:text-2xl">
+        <h2 className="text-fg text-xl font-bold tracking-[-0.01em] sm:text-2xl">
           {sangamStageOneContent.title}
         </h2>
-        <p className="text-slate mt-2 leading-6">
+        <p className="text-fg-muted mt-2 leading-6">
           {sangamStageOneContent.description}
         </p>
       </div>
@@ -682,10 +682,10 @@ function StageRegistrationDetails({
   return (
     <div className="surface-card grid gap-6 p-5 sm:p-7 lg:p-8">
       <div className="max-w-xl">
-        <h2 className="text-global-navy text-xl font-bold tracking-[-0.01em] sm:text-2xl">
+        <h2 className="text-fg text-xl font-bold tracking-[-0.01em] sm:text-2xl">
           {sangamStageTwoContent.title}
         </h2>
-        <p className="text-slate mt-2 leading-6">
+        <p className="text-fg-muted mt-2 leading-6">
           {sangamStageTwoContent.description}
         </p>
       </div>
@@ -721,7 +721,7 @@ function StageRegistrationDetails({
           />
         </div>
       ) : null}
-      <div className="border-global-navy/10 grid gap-4 border-t pt-6">
+      <div className="border-hairline/10 grid gap-4 border-t pt-6">
         <RadioGroup
           label={sangamStageTwoContent.networkQuestion}
           name="network-affiliated"
@@ -780,20 +780,20 @@ function StageLeadershipContact({
     <div className="grid gap-6">
       <div className="surface-card grid gap-7 p-5 sm:p-7 lg:p-8">
         <div className="max-w-xl">
-          <h2 className="text-global-navy text-xl font-bold tracking-[-0.01em] sm:text-2xl">
+          <h2 className="text-fg text-xl font-bold tracking-[-0.01em] sm:text-2xl">
             {sangamStageThreeContent.title}
           </h2>
-          <p className="text-slate mt-2 leading-6">
+          <p className="text-fg-muted mt-2 leading-6">
             {sangamStageThreeContent.description}
           </p>
         </div>
 
         <div className="grid gap-4">
           <div>
-            <h3 className="text-global-navy text-base font-bold">
+            <h3 className="text-fg text-base font-bold">
               {sangamStageThreeContent.spocTitle}
             </h3>
-            <p className="text-slate mt-1 text-sm">
+            <p className="text-fg-muted mt-1 text-sm">
               {sangamStageThreeContent.spocDescription}
             </p>
           </div>
@@ -830,13 +830,13 @@ function StageLeadershipContact({
           </div>
         </div>
 
-        <div className="border-global-navy/10 grid gap-4 border-t pt-6">
+        <div className="border-hairline/10 grid gap-4 border-t pt-6">
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <div>
-              <h3 className="text-global-navy text-base font-bold">
+              <h3 className="text-fg text-base font-bold">
                 {sangamStageThreeContent.presidentTitle}
               </h3>
-              <p className="text-slate mt-1 text-sm">
+              <p className="text-fg-muted mt-1 text-sm">
                 {sangamStageThreeContent.presidentDescription}
               </p>
             </div>
@@ -850,7 +850,7 @@ function StageLeadershipContact({
                   presidentPhone: profile.spocPhone,
                 })
               }
-              className="text-global-navy focus-visible:ring-focus text-sm font-semibold underline underline-offset-4"
+              className="text-fg focus-visible:ring-focus text-sm font-semibold underline underline-offset-4"
             >
               {sangamStageThreeContent.sameAsSpoc}
             </button>
@@ -888,8 +888,8 @@ function StageLeadershipContact({
           </div>
         </div>
 
-        <div className="border-global-navy/10 grid gap-5 border-t pt-6">
-          <h3 className="text-global-navy text-base font-bold">
+        <div className="border-hairline/10 grid gap-5 border-t pt-6">
+          <h3 className="text-fg text-base font-bold">
             {sangamStageThreeContent.digitalPresenceTitle}
           </h3>
           <div className="sm:max-w-md">

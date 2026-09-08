@@ -134,7 +134,7 @@ export function AdminMembershipOperations() {
       ) : null}
       <section
         aria-label="Membership filters"
-        className="border-global-navy/12 rounded-card grid gap-4 border bg-white p-5 sm:grid-cols-3"
+        className="border-hairline/12 rounded-card bg-raised grid gap-4 border p-5 sm:grid-cols-3"
       >
         <TextField
           label="Search member or organisation"
@@ -167,7 +167,7 @@ export function AdminMembershipOperations() {
           onChange={(event) => setKind(event.target.value as typeof kind)}
         />
       </section>
-      <p className="text-slate text-sm" aria-live="polite">
+      <p className="text-fg-muted text-sm" aria-live="polite">
         {filtered.length} membership{" "}
         {filtered.length === 1 ? "record" : "records"}
       </p>
@@ -184,10 +184,10 @@ export function AdminMembershipOperations() {
               header: "Member",
               render: (row) => (
                 <div className="min-w-0">
-                  <p className="text-global-navy font-bold break-words">
+                  <p className="text-fg font-bold break-words">
                     {row.memberFullName}
                   </p>
-                  <p className="text-slate mt-1 text-sm break-all">
+                  <p className="text-fg-muted mt-1 text-sm break-all">
                     {row.memberEmail}
                   </p>
                 </div>
@@ -198,10 +198,10 @@ export function AdminMembershipOperations() {
               header: "Organisation / Sangam",
               render: (row) => (
                 <div>
-                  <p className="text-charcoal font-semibold break-words">
+                  <p className="text-fg-body font-semibold break-words">
                     {row.organisationName}
                   </p>
-                  <p className="text-slate mt-1 text-xs">
+                  <p className="text-fg-muted mt-1 text-xs">
                     {row.organisationKind === "sangam"
                       ? "Tamil Sangam"
                       : "Organisation"}
@@ -213,7 +213,7 @@ export function AdminMembershipOperations() {
               key: "requested",
               header: "Requested",
               render: (row) => (
-                <span className="text-slate text-sm">
+                <span className="text-fg-muted text-sm">
                   {formatOperationalDate(row.requestedAt ?? row.invitedAt)}
                 </span>
               ),
@@ -231,7 +231,7 @@ export function AdminMembershipOperations() {
               render: (row) => (
                 <Link
                   href={`/admin/memberships?membership=${encodeURIComponent(row.id)}`}
-                  className="focus-visible:ring-focus text-global-navy decoration-heritage-gold inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
+                  className="focus-visible:ring-focus text-fg decoration-heritage-gold inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
                 >
                   Inspect
                 </Link>
@@ -257,7 +257,7 @@ export function AdminMembershipOperations() {
               : "Revoke affiliation?"
         }
       >
-        <p className="text-slate leading-7">
+        <p className="text-fg-muted leading-7">
           {action === "approve"
             ? "Confirm this affiliation claim. This does not grant Organisation management authority."
             : "Record a clear reason for the member and the immutable history."}
@@ -310,30 +310,30 @@ function MembershipDetail({
   return (
     <section
       aria-labelledby="membership-detail-title"
-      className="border-heritage-gold/50 rounded-large shadow-card border bg-white p-5 sm:p-7"
+      className="border-heritage-gold/50 rounded-large shadow-card bg-raised border p-5 sm:p-7"
     >
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-slate text-eyebrow-sm">Affiliation detail</p>
+          <p className="text-fg-muted text-eyebrow-sm">Affiliation detail</p>
           <h2
             id="membership-detail-title"
-            className="text-global-navy mt-2 text-2xl font-bold"
+            className="text-fg mt-2 text-2xl font-bold"
           >
             {membership.memberFullName}
           </h2>
-          <p className="text-slate mt-1 break-words">
+          <p className="text-fg-muted mt-1 break-words">
             {membership.organisationName}
           </p>
         </div>
         <Link
           href="/admin/memberships"
-          className="focus-visible:ring-focus text-global-navy inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
+          className="focus-visible:ring-focus text-fg inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
         >
           Close detail
         </Link>
       </div>
       <div className="mt-6 grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
-        <div className="bg-warm-ivory rounded-card p-5">
+        <div className="bg-sunken rounded-card p-5">
           <StatusBadge {...membershipStatusPresentation[membership.status]} />
           <dl className="mt-5 grid gap-4">
             <Detail label="Member email" value={membership.memberEmail} />
@@ -374,32 +374,32 @@ function MembershipDetail({
           </div>
         </div>
         <div>
-          <h3 className="text-global-navy font-bold">Application history</h3>
+          <h3 className="text-fg font-bold">Application history</h3>
           {history.length ? (
-            <ol className="border-global-navy/10 mt-4 grid gap-0 border-l pl-5">
+            <ol className="border-hairline/10 mt-4 grid gap-0 border-l pl-5">
               {history.map((event) => (
                 <li
                   key={event.id}
-                  className="border-global-navy/10 relative border-b py-4 first:pt-0 last:border-b-0"
+                  className="border-hairline/10 relative border-b py-4 first:pt-0 last:border-b-0"
                 >
                   <span
                     aria-hidden="true"
                     className="bg-heritage-gold absolute top-5 -left-[1.45rem] size-2 rounded-full"
                   />
-                  <p className="text-global-navy font-semibold">
+                  <p className="text-fg font-semibold">
                     {membershipStatusPresentation[event.newStatus].label}
                   </p>
-                  <p className="text-slate mt-1 text-sm">
+                  <p className="text-fg-muted mt-1 text-sm">
                     {formatOperationalDate(event.createdAt)}
                   </p>
                   {event.note ? (
-                    <p className="text-charcoal mt-2 leading-6">{event.note}</p>
+                    <p className="text-fg-body mt-2 leading-6">{event.note}</p>
                   ) : null}
                 </li>
               ))}
             </ol>
           ) : (
-            <p className="text-slate mt-4">
+            <p className="text-fg-muted mt-4">
               No membership decisions have been recorded yet.
             </p>
           )}
@@ -418,10 +418,10 @@ function Detail({
 }) {
   return (
     <div>
-      <dt className="text-slate text-xs font-bold tracking-[0.08em] uppercase">
+      <dt className="text-fg-muted text-xs font-bold tracking-[0.08em] uppercase">
         {label}
       </dt>
-      <dd className="text-charcoal mt-1 break-words">{value}</dd>
+      <dd className="text-fg-body mt-1 break-words">{value}</dd>
     </div>
   );
 }

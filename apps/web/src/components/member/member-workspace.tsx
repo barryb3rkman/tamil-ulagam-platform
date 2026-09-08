@@ -121,10 +121,10 @@ export function MemberWorkspace() {
     return (
       <Container className="py-16 sm:py-20">
         <div className="mx-auto max-w-md text-center">
-          <h1 className="text-global-navy text-2xl font-bold">
+          <h1 className="text-fg text-2xl font-bold">
             Sign in to view your Member Workspace
           </h1>
-          <p className="text-slate mt-2">
+          <p className="text-fg-muted mt-2">
             Your affiliations are only visible once you&rsquo;re signed in.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
@@ -136,7 +136,7 @@ export function MemberWorkspace() {
             </Link>
             <Link
               href={withReturnTarget("/signup", "/workspace/member")}
-              className="text-global-navy focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
+              className="text-fg focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
             >
               Create account
             </Link>
@@ -223,7 +223,7 @@ export function MemberWorkspace() {
             </button>
           </Alert>
         ) : sortedMemberships.length === 0 ? (
-          <div className="gradient-aurora-light border-global-navy/[0.09] rounded-large relative isolate grid justify-items-center gap-3 overflow-hidden border px-6 py-14 text-center">
+          <div className="gradient-aurora-light border-hairline/[0.09] rounded-large relative isolate grid justify-items-center gap-3 overflow-hidden border px-6 py-14 text-center">
             <span
               aria-hidden="true"
               data-motion-ambient
@@ -231,14 +231,14 @@ export function MemberWorkspace() {
             />
             <span
               aria-hidden="true"
-              className="border-heritage-gold/40 text-heritage-maroon relative grid size-14 shrink-0 place-items-center rounded-2xl border bg-white shadow-[0_0.75rem_2rem_rgba(214,168,75,0.22)]"
+              className="border-heritage-gold/40 text-fg-accent bg-raised relative grid size-14 shrink-0 place-items-center rounded-2xl border shadow-[0_0.75rem_2rem_rgba(214,168,75,0.22)]"
             >
               <LinkGlyph />
             </span>
             <p className="text-section-title text-gradient-ink relative mt-1">
               No affiliations yet
             </p>
-            <p className="text-slate relative max-w-sm text-sm leading-6">
+            <p className="text-fg-muted relative max-w-sm text-sm leading-6">
               Connect your account to a registered Tamil Sangam or Organisation
               you already belong to, and it will appear here once confirmed.
             </p>

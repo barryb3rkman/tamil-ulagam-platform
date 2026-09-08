@@ -20,18 +20,18 @@ export function PillarsSection() {
         />
         <div
           data-motion-group="stagger"
-          className="mt-12 grid gap-6 md:grid-cols-3"
+          className="mt-9 grid gap-6 md:grid-cols-3"
         >
           {homepageContent.pillars.map((pillar) => (
             <article
               key={pillar.title}
-              className="motion-card group border-global-navy/10 shadow-card overflow-hidden border bg-white"
+              className="motion-card group border-hairline/10 shadow-card bg-raised overflow-hidden border"
             >
               <Link
                 href={pillar.href}
                 className="focus-visible:ring-focus block h-full focus-visible:outline-none"
               >
-                <div className="aspect-[3/4] overflow-hidden">
+                <div className="aspect-[16/9] overflow-hidden">
                   <ImageWithFallback
                     asset={images[pillar.imageKey as ImageKey]}
                     fallbackLabel={`${pillar.title} image`}
@@ -39,17 +39,17 @@ export function PillarsSection() {
                     className="motion-card-image h-full w-full object-cover"
                   />
                 </div>
-                <div className="p-6 sm:p-7">
-                  <p className="text-heritage-maroon text-eyebrow-sm">
+                <div className="p-5 sm:p-6">
+                  <p className="text-fg-accent text-eyebrow-sm">
                     0{homepageContent.pillars.indexOf(pillar) + 1}
                   </p>
-                  <h3 className="text-global-navy mt-3 text-3xl font-semibold tracking-[-0.03em]">
+                  <h3 className="text-fg mt-3 text-3xl font-semibold tracking-[-0.03em]">
                     {pillar.title}
                   </h3>
-                  <p className="text-slate mt-3 leading-7">
+                  <p className="text-fg-muted mt-3 leading-7">
                     {pillar.description}
                   </p>
-                  <span className="text-global-navy decoration-heritage-gold mt-6 inline-flex items-center text-sm font-semibold underline decoration-2 underline-offset-4">
+                  <span className="text-fg decoration-heritage-gold mt-6 inline-flex items-center text-sm font-semibold underline decoration-2 underline-offset-4">
                     Explore the direction{" "}
                     <span aria-hidden="true" className="motion-arrow ml-2">
                       →

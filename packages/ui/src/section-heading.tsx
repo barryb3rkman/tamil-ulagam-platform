@@ -40,7 +40,7 @@ export function SectionHeading({
         <p
           className={cx(
             "mb-3 text-sm font-semibold tracking-[0.14em] uppercase",
-            tone === "inverse" ? "text-heritage-gold" : "text-heritage-maroon",
+            tone === "inverse" ? "text-heritage-gold" : "text-fg-accent",
           )}
         >
           {eyebrow}
@@ -55,7 +55,7 @@ export function SectionHeading({
         {title}
       </Heading>
       {description ? (
-        <p className="text-slate mt-5 text-lg leading-8">{description}</p>
+        <p className="text-fg-muted mt-5 text-lg leading-8">{description}</p>
       ) : null}
     </div>
   );

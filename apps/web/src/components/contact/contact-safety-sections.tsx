@@ -24,7 +24,7 @@ export function InstitutionalEnquiriesSection() {
           <section aria-labelledby="institutional-details-title">
             <h3
               id="institutional-details-title"
-              className="text-global-navy text-xl font-semibold"
+              className="text-fg text-xl font-semibold"
             >
               Useful institutional context
             </h3>
@@ -33,13 +33,13 @@ export function InstitutionalEnquiriesSection() {
           <section aria-labelledby="institutional-boundaries-title">
             <h3
               id="institutional-boundaries-title"
-              className="text-global-navy text-xl font-semibold"
+              className="text-fg text-xl font-semibold"
             >
               Authority and partnership boundaries
             </h3>
             <ul className="border-heritage-maroon/35 mt-5 space-y-5 border-l-2 pl-5">
               {institutionalEnquiries.boundaries.map((boundary) => (
-                <li key={boundary} className="text-slate leading-7">
+                <li key={boundary} className="text-fg-muted leading-7">
                   {boundary}
                 </li>
               ))}
@@ -73,9 +73,7 @@ export function FutureContactModelSection() {
           title={workflow.title}
           description={workflow.description}
         />
-        <p className="text-heritage-maroon text-eyebrow mt-7">
-          {workflow.label}
-        </p>
+        <p className="text-fg-accent text-eyebrow mt-7">{workflow.label}</p>
         <NumeralFeature
           items={workflow.steps.map((step) => ({
             title: step.title,

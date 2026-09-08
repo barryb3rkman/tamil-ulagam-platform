@@ -19,9 +19,7 @@ export function SourceVerificationSection() {
           title={verification.title}
         />
         <div>
-          <p className="text-heritage-maroon text-eyebrow">
-            {verification.label}
-          </p>
+          <p className="text-fg-accent text-eyebrow">{verification.label}</p>
           <NumberedGrid items={verification.items} />
         </div>
       </Container>
@@ -44,7 +42,7 @@ export function AuthorshipSection() {
           <section aria-labelledby="future-attribution-title">
             <h3
               id="future-attribution-title"
-              className="text-global-navy text-xl font-semibold"
+              className="text-fg text-xl font-semibold"
             >
               Public attribution may include
             </h3>
@@ -53,13 +51,13 @@ export function AuthorshipSection() {
           <section aria-labelledby="attribution-boundaries-title">
             <h3
               id="attribution-boundaries-title"
-              className="text-global-navy text-xl font-semibold"
+              className="text-fg text-xl font-semibold"
             >
               Clear boundaries for public attribution
             </h3>
             <ul className="border-heritage-maroon/35 mt-5 space-y-4 border-l-2 pl-5">
               {authorship.principles.map((item) => (
-                <li key={item} className="text-slate leading-7">
+                <li key={item} className="text-fg-muted leading-7">
                   {item}
                 </li>
               ))}
@@ -112,8 +110,8 @@ export function CorrectionsSection() {
             key={category.title}
             className="grid gap-2 py-4 first:pt-0 last:pb-0 sm:grid-cols-[12rem_1fr] sm:gap-7"
           >
-            <dt className="text-global-navy text-eyebrow">{category.title}</dt>
-            <dd className="text-slate leading-7">{category.description}</dd>
+            <dt className="text-fg text-eyebrow">{category.title}</dt>
+            <dd className="text-fg-muted leading-7">{category.description}</dd>
           </div>
         ))}
       </dl>

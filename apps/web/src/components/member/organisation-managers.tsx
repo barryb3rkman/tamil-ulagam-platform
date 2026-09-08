@@ -178,8 +178,8 @@ export function OrganisationManagers({
   return (
     <div className="grid gap-8">
       <div>
-        <h2 className="text-global-navy text-xl font-bold">{noun} managers</h2>
-        <p className="text-slate mt-2 text-sm leading-6">
+        <h2 className="text-fg text-xl font-bold">{noun} managers</h2>
+        <p className="text-fg-muted mt-2 text-sm leading-6">
           People who can administer this {noun.toLowerCase()}. Management access
           is separate from membership — belonging as a Member never grants
           administrative authority, and management never implies Member
@@ -199,10 +199,7 @@ export function OrganisationManagers({
       ) : null}
 
       <section aria-labelledby="active-managers-heading">
-        <h2
-          id="active-managers-heading"
-          className="text-global-navy text-lg font-bold"
-        >
+        <h2 id="active-managers-heading" className="text-fg text-lg font-bold">
           Active managers
         </h2>
         <div className="mt-3">
@@ -216,7 +213,7 @@ export function OrganisationManagers({
                 header: "Manager",
                 render: (row) => (
                   <div>
-                    <p className="text-global-navy font-bold">
+                    <p className="text-fg font-bold">
                       {row.userId === currentUserId
                         ? `${row.fullName || "You"} (You)`
                         : row.fullName || "Unnamed manager"}
@@ -228,7 +225,7 @@ export function OrganisationManagers({
                 key: "role",
                 header: "Role",
                 render: (row) => (
-                  <span className="text-charcoal text-sm font-semibold">
+                  <span className="text-fg-body text-sm font-semibold">
                     {roleLabel[row.role]}
                   </span>
                 ),
@@ -237,7 +234,7 @@ export function OrganisationManagers({
                 key: "granted",
                 header: "Granted",
                 render: (row) => (
-                  <span className="text-slate text-sm">
+                  <span className="text-fg-muted text-sm">
                     {new Date(row.grantedAt).toLocaleDateString()}
                   </span>
                 ),
@@ -270,11 +267,11 @@ export function OrganisationManagers({
       <section aria-labelledby="pending-invitations-heading">
         <h2
           id="pending-invitations-heading"
-          className="text-global-navy text-lg font-bold"
+          className="text-fg text-lg font-bold"
         >
           Pending invitations
         </h2>
-        <p className="text-slate mt-1 text-sm">
+        <p className="text-fg-muted mt-1 text-sm">
           An invitation grants no access until the recipient accepts it.
         </p>
         <div className="mt-3">
@@ -293,7 +290,7 @@ export function OrganisationManagers({
                   key: "email",
                   header: "Email",
                   render: (row) => (
-                    <span className="text-charcoal text-sm break-all">
+                    <span className="text-fg-body text-sm break-all">
                       {row.email}
                     </span>
                   ),
@@ -302,7 +299,7 @@ export function OrganisationManagers({
                   key: "role",
                   header: "Invited role",
                   render: (row) => (
-                    <span className="text-charcoal text-sm font-semibold">
+                    <span className="text-fg-body text-sm font-semibold">
                       {roleLabel[row.role]}
                     </span>
                   ),
@@ -320,7 +317,7 @@ export function OrganisationManagers({
                   key: "invited",
                   header: "Invited",
                   render: (row) => (
-                    <span className="text-slate text-sm">
+                    <span className="text-fg-muted text-sm">
                       {new Date(row.invitedAt).toLocaleDateString()}
                     </span>
                   ),
@@ -332,7 +329,7 @@ export function OrganisationManagers({
                     isOwner ? (
                       <Button
                         variant="ghost"
-                        className="text-heritage-maroon hover:bg-heritage-maroon/7"
+                        className="text-fg-accent hover:bg-heritage-maroon/7"
                         onClick={() =>
                           setConfirmAction({ kind: "revoke", invitation: row })
                         }
@@ -353,7 +350,7 @@ export function OrganisationManagers({
             type="button"
             onClick={() => setShowHistory((current) => !current)}
             aria-expanded={showHistory}
-            className="focus-visible:ring-focus text-global-navy rounded-button inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4 focus-visible:outline-none"
+            className="focus-visible:ring-focus text-fg rounded-button inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4 focus-visible:outline-none"
           >
             <span id="management-history-heading">
               {showHistory
@@ -374,18 +371,20 @@ export function OrganisationManagers({
                 <ul className="surface-card divide-global-navy/10 divide-y px-5">
                   {history.map((event) => (
                     <li key={event.id} className="py-3">
-                      <p className="text-charcoal text-sm font-semibold">
+                      <p className="text-fg-body text-sm font-semibold">
                         {historyEventLabel[event.eventType]}
                         {event.managerName ? ` — ${event.managerName}` : ""}
                       </p>
-                      <p className="text-slate mt-0.5 text-xs">
+                      <p className="text-fg-muted mt-0.5 text-xs">
                         {new Date(event.createdAt).toLocaleString()}
                         {event.actorName && event.actorName !== "System"
                           ? ` · by ${event.actorName}`
                           : ""}
                       </p>
                       {event.note ? (
-                        <p className="text-slate mt-1 text-sm">{event.note}</p>
+                        <p className="text-fg-muted mt-1 text-sm">
+                          {event.note}
+                        </p>
                       ) : null}
                     </li>
                   ))}
@@ -460,7 +459,7 @@ function ManagerRowActions({
         </Button>
         <Button
           variant="ghost"
-          className="text-heritage-maroon hover:bg-heritage-maroon/7"
+          className="text-fg-accent hover:bg-heritage-maroon/7"
           onClick={onRemove}
         >
           Remove
@@ -472,7 +471,7 @@ function ManagerRowActions({
     return (
       <Button
         variant="ghost"
-        className="text-heritage-maroon hover:bg-heritage-maroon/7"
+        className="text-fg-accent hover:bg-heritage-maroon/7"
         onClick={onLeave}
       >
         Leave management
@@ -515,7 +514,7 @@ function InviteManagerDialog({
   return (
     <Dialog open onClose={onClose} title="Invite a manager">
       <form onSubmit={(event) => void submit(event)} className="grid gap-5">
-        <p className="text-slate text-sm leading-6">
+        <p className="text-fg-muted text-sm leading-6">
           Management access is separate from membership — invite someone by
           email regardless of whether they already belong as a Member.
         </p>
@@ -543,7 +542,7 @@ function InviteManagerDialog({
             setRole(event.target.value as "admin" | "representative")
           }
         />
-        <p className="text-slate text-xs leading-5">
+        <p className="text-fg-muted text-xs leading-5">
           Email delivery is not configured yet — the invitation is created
           immediately and the recipient will see it after signing in, but no
           email is sent.
@@ -634,7 +633,7 @@ function ConfirmActionDialog({
 
   return (
     <Dialog open onClose={onClose} title={title}>
-      <p className="text-slate leading-7">{description}</p>
+      <p className="text-fg-muted leading-7">{description}</p>
       {error ? (
         <p role="alert" className="text-error mt-4">
           {error}

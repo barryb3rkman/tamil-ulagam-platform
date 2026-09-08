@@ -15,7 +15,7 @@ export function ChapterFormationJourney() {
           title={formationJourney.title}
           description={formationJourney.description}
         />
-        <p className="text-heritage-maroon text-eyebrow mt-7">
+        <p className="text-fg-accent text-eyebrow mt-7">
           Chapter formation journey
         </p>
         <SequenceSpine

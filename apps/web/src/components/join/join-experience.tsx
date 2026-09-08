@@ -72,11 +72,11 @@ export function JoinExperience() {
           <div data-motion-reveal="">
             <h2
               id="join-selector-title"
-              className="text-global-navy text-2xl font-bold tracking-[-0.01em] sm:text-3xl"
+              className="text-fg text-2xl font-bold tracking-[-0.01em] sm:text-3xl"
             >
               Join Tamil Ulagam
             </h2>
-            <p className="text-slate mt-2 max-w-xl text-base leading-7">
+            <p className="text-fg-muted mt-2 max-w-xl text-base leading-7">
               Choose how you&rsquo;d like to get started.
             </p>
           </div>

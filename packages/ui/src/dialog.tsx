@@ -72,7 +72,7 @@ export function Dialog({
         <div className="flex items-start justify-between gap-4">
           <h2
             id={titleId}
-            className="text-global-navy text-2xl font-bold tracking-[-0.01em]"
+            className="text-fg text-2xl font-bold tracking-[-0.01em]"
           >
             {title}
           </h2>

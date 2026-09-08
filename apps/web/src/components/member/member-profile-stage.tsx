@@ -33,10 +33,10 @@ export function MemberProfileStage({
     <form noValidate onSubmit={onSubmit} className="grid gap-6">
       <div className="surface-card grid gap-6 p-5 sm:p-7 lg:p-8">
         <div className="max-w-xl">
-          <h2 className="text-global-navy text-xl font-bold tracking-[-0.01em] sm:text-2xl">
+          <h2 className="text-fg text-xl font-bold tracking-[-0.01em] sm:text-2xl">
             {memberProfileContent.title}
           </h2>
-          <p className="text-slate mt-2 leading-6">
+          <p className="text-fg-muted mt-2 leading-6">
             {memberProfileContent.description}
           </p>
         </div>

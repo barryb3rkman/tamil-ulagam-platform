@@ -31,7 +31,7 @@ export function GlobalChaptersFeature() {
               <LinkButton
                 href="/chapters"
                 variant="secondary"
-                className="hover:text-global-navy border-white text-white hover:bg-white"
+                className="hover:text-fg hover:bg-raised border-white text-white"
               >
                 Explore Chapters
               </LinkButton>

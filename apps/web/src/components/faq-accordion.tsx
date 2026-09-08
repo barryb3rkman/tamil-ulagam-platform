@@ -25,8 +25,8 @@ export function FaqAccordion({
             key={item.title}
             className={`rounded-card overflow-hidden border transition-colors duration-300 ${
               expanded
-                ? "border-heritage-gold/45 bg-white shadow-[0_1rem_2.5rem_rgba(6,29,50,0.08)]"
-                : "border-global-navy/[0.09] hover:border-global-navy/20 bg-white"
+                ? "border-heritage-gold/45 bg-raised shadow-[0_1rem_2.5rem_rgba(6,29,50,0.08)]"
+                : "border-hairline/[0.09] hover:border-hairline/20 bg-raised"
             }`}
           >
             <dt>
@@ -37,15 +37,15 @@ export function FaqAccordion({
                 aria-controls={panelId}
                 className="focus-visible:ring-focus group flex w-full items-center justify-between gap-5 px-5 py-5 text-left focus-visible:outline-none sm:px-6"
               >
-                <span className="text-global-navy group-hover:text-heritage-maroon text-lg font-bold tracking-[-0.01em] transition-colors">
+                <span className="text-fg group-hover:text-fg-accent text-lg font-bold tracking-[-0.01em] transition-colors">
                   {item.title}
                 </span>
                 <span
                   aria-hidden="true"
                   className={`grid size-9 shrink-0 place-items-center rounded-full border transition-all duration-300 ${
                     expanded
-                      ? "border-heritage-gold/50 bg-heritage-gold/12 text-heritage-maroon rotate-180"
-                      : "border-global-navy/12 text-global-navy group-hover:border-heritage-gold/45"
+                      ? "border-heritage-gold/50 bg-heritage-gold/12 text-fg-accent rotate-180"
+                      : "border-hairline/12 text-fg group-hover:border-heritage-gold/45"
                   }`}
                 >
                   <svg
@@ -67,7 +67,7 @@ export function FaqAccordion({
             {expanded ? (
               <dd
                 id={panelId}
-                className="text-slate border-global-navy/[0.07] border-t px-5 pt-4 pb-5 leading-7 sm:px-6"
+                className="text-fg-muted border-hairline/[0.07] border-t px-5 pt-4 pb-5 leading-7 sm:px-6"
               >
                 {item.description}
               </dd>

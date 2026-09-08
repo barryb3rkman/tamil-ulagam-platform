@@ -40,8 +40,8 @@ export function StageProgress({
                     isComplete
                       ? "border-heritage-maroon bg-heritage-maroon text-white"
                       : isCurrent
-                        ? "border-heritage-maroon text-heritage-maroon ring-heritage-maroon/10 bg-white ring-4"
-                        : "border-global-navy/15 text-slate bg-white"
+                        ? "border-heritage-maroon text-heritage-maroon ring-heritage-maroon/10 bg-raised ring-4"
+                        : "border-hairline/15 text-fg-muted bg-raised"
                   }`}
                 >
                   <span aria-hidden="true">{isComplete ? "✓" : number}</span>
@@ -73,8 +73,8 @@ export function StageProgress({
                   isCurrent
                     ? "text-heritage-maroon"
                     : isComplete
-                      ? "text-global-navy"
-                      : "text-slate"
+                      ? "text-fg"
+                      : "text-fg-muted"
                 }`}
               >
                 {stage}
@@ -83,7 +83,7 @@ export function StageProgress({
           );
         })}
       </ol>
-      <p className="text-global-navy mt-3 text-sm font-semibold md:hidden">
+      <p className="text-fg mt-3 text-sm font-semibold md:hidden">
         Stage {currentStage} of {stages.length}{" "}
         <span aria-hidden="true">·</span> {stages[currentStage - 1]}
       </p>

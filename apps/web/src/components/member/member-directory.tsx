@@ -78,18 +78,16 @@ export function MemberDirectory({
       <button
         type="button"
         onClick={onBack}
-        className="text-global-navy focus-visible:ring-focus rounded-button mb-4 text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
+        className="text-fg focus-visible:ring-focus rounded-button mb-4 text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
       >
         Back
       </button>
-      <h2 className="text-global-navy text-2xl font-bold tracking-[-0.01em]">
-        {title}
-      </h2>
-      <p className="text-slate mt-2 max-w-xl">{description}</p>
+      <h2 className="text-fg text-2xl font-bold tracking-[-0.01em]">{title}</h2>
+      <p className="text-fg-muted mt-2 max-w-xl">{description}</p>
 
       <div className="mt-6 grid gap-3 sm:flex sm:items-center">
-        <div className="border-global-navy/15 focus-within:ring-focus rounded-button flex flex-1 items-center gap-3 border bg-white px-4 py-3">
-          <span aria-hidden="true" className="text-slate">
+        <div className="border-hairline/15 focus-within:ring-focus rounded-button bg-raised flex flex-1 items-center gap-3 border px-4 py-3">
+          <span aria-hidden="true" className="text-fg-muted">
             <svg
               viewBox="0 0 20 20"
               className="size-4"
@@ -113,7 +111,7 @@ export function MemberDirectory({
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={memberDirectoryContent.searchPlaceholder}
-            className="text-charcoal placeholder:text-slate min-w-0 flex-1 border-0 bg-transparent text-sm outline-none"
+            className="text-fg-body placeholder:text-fg-muted min-w-0 flex-1 border-0 bg-transparent text-sm outline-none"
           />
         </div>
         {kind === "organisation" ? (
@@ -127,7 +125,7 @@ export function MemberDirectory({
               onChange={(event) =>
                 setCategory(event.target.value as OrganisationCategory | "")
               }
-              className="motion-control focus-visible:ring-focus border-global-navy/20 bg-warm-ivory/20 text-charcoal hover:border-global-navy/35 rounded-button focus-visible:border-interactive-blue min-h-11 w-full border px-4 py-2 text-sm focus-visible:bg-white focus-visible:outline-none"
+              className="motion-control focus-visible:ring-focus border-hairline/20 bg-sunken/20 text-fg-body hover:border-hairline/35 rounded-button focus-visible:border-interactive-blue focus-visible:bg-raised min-h-11 w-full border px-4 py-2 text-sm focus-visible:outline-none"
             >
               <option value="">{memberDirectoryContent.allCategories}</option>
               {organisationCategories
@@ -141,7 +139,7 @@ export function MemberDirectory({
           </div>
         ) : null}
       </div>
-      <p className="text-slate mt-2 text-sm" aria-live="polite">
+      <p className="text-fg-muted mt-2 text-sm" aria-live="polite">
         {results.length === scoped.length
           ? `${results.length} verified ${kind === "sangam" ? "Sangam" : "organisation"}${results.length === 1 ? "" : "s"}`
           : `${results.length} of ${scoped.length} match`}
@@ -178,15 +176,15 @@ export function MemberDirectory({
         )}
       </div>
 
-      <div className="border-global-navy/12 mt-8 border-t pt-6">
-        <p className="text-global-navy text-sm font-semibold">
+      <div className="border-hairline/12 mt-8 border-t pt-6">
+        <p className="text-fg text-sm font-semibold">
           {memberDirectoryContent.cantFindTitle}
         </p>
-        <p className="text-slate mt-1 max-w-lg text-sm leading-6">
+        <p className="text-fg-muted mt-1 max-w-lg text-sm leading-6">
           {memberDirectoryContent.cantFindDescription}{" "}
           <a
             href={kind === "sangam" ? "/join/sangam" : "/join/organisation"}
-            className="text-global-navy focus-visible:ring-focus underline underline-offset-4"
+            className="text-fg focus-visible:ring-focus underline underline-offset-4"
           >
             {kind === "sangam"
               ? "Tamil Sangam registration"

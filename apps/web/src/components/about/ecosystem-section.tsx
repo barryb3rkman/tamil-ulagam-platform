@@ -29,14 +29,14 @@ export function EcosystemSection() {
             <LinkButton
               href={ecosystem.callToAction.href}
               variant="secondary"
-              className="hover:text-global-navy mt-9 border-white text-white hover:bg-white"
+              className="hover:text-fg hover:bg-raised mt-9 border-white text-white"
             >
               {ecosystem.callToAction.label}
             </LinkButton>
           </div>
           <div className="grid divide-y divide-white/16 border-y border-white/16 lg:grid-cols-3 lg:divide-x lg:divide-y-0">
             {ecosystem.groups.map((group) => (
-              <article key={group.title} className="p-7 sm:p-9 lg:min-h-80">
+              <article key={group.title} className="p-6 sm:p-7 lg:min-h-80">
                 <h3 className="text-heritage-gold text-2xl font-semibold tracking-[-0.02em]">
                   {group.title}
                 </h3>

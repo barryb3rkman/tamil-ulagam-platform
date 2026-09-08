@@ -39,13 +39,13 @@ export function DashboardRegistration() {
   if (!isHydrated) return <p role="status">Loading registration…</p>;
   if (!currentApplication)
     return (
-      <div className="rounded-card shadow-card bg-white p-7">
-        <h1 className="text-global-navy text-3xl font-bold">
+      <div className="rounded-card shadow-card bg-raised p-7">
+        <h1 className="text-fg text-3xl font-bold">
           No organisation registration
         </h1>
         <Link
           href="/register"
-          className="text-global-navy mt-4 inline-flex font-semibold underline underline-offset-4"
+          className="text-fg mt-4 inline-flex font-semibold underline underline-offset-4"
         >
           Start registration
         </Link>
@@ -58,14 +58,12 @@ export function DashboardRegistration() {
     <div className="grid gap-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-heritage-maroon text-eyebrow-sm">
-            Registration record
-          </p>
-          <h1 className="text-global-navy mt-3 text-3xl font-bold">
+          <p className="text-fg-accent text-eyebrow-sm">Registration record</p>
+          <h1 className="text-fg mt-3 text-3xl font-bold">
             {currentApplication.organisation.name ||
               "Organisation registration"}
           </h1>
-          <p className="text-slate mt-3 max-w-2xl leading-7">
+          <p className="text-fg-muted mt-3 max-w-2xl leading-7">
             Review the organisation information and application history held in
             your registration record.
           </p>
@@ -83,7 +81,7 @@ export function DashboardRegistration() {
         </div>
       ) : null}
       {verificationNotice ? (
-        <p role="status" className="text-charcoal text-sm font-semibold">
+        <p role="status" className="text-fg-body text-sm font-semibold">
           {verificationNotice}
         </p>
       ) : null}
@@ -107,7 +105,7 @@ export function DashboardRegistration() {
           Edit registration
         </Link>
       ) : (
-        <p className="text-slate rounded-button border-global-navy/12 border bg-white p-4 text-sm leading-6">
+        <p className="text-fg-muted rounded-button border-hairline/12 bg-raised border p-4 text-sm leading-6">
           This record is read-only while the application has its current status.
           If the review team requests changes, editing will become available.
         </p>

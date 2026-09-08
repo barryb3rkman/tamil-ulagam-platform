@@ -26,14 +26,14 @@ export function DetailGroup({
   readonly items: readonly DetailItem[];
 }) {
   return (
-    <section className="border-global-navy/12 rounded-card border bg-white p-5 sm:p-7">
+    <section className="border-hairline/12 rounded-card bg-raised border p-5 sm:p-7">
       <div className="flex items-center justify-between gap-4">
-        <h2 className="text-global-navy text-xl font-bold">{title}</h2>
+        <h2 className="text-fg text-xl font-bold">{title}</h2>
         {action ? (
           <button
             type="button"
             onClick={action.onClick}
-            className="text-global-navy focus-visible:ring-focus hover:text-heritage-maroon decoration-heritage-gold min-h-10 px-2 text-sm font-semibold underline decoration-2 underline-offset-4"
+            className="text-fg focus-visible:ring-focus hover:text-fg-accent decoration-heritage-gold min-h-10 px-2 text-sm font-semibold underline decoration-2 underline-offset-4"
           >
             {action.label}
           </button>
@@ -43,11 +43,11 @@ export function DetailGroup({
         {items.map((item) => (
           <div
             key={item.label}
-            className="border-global-navy/8 min-w-0 border-t pt-4"
+            className="border-hairline/8 min-w-0 border-t pt-4"
           >
-            <dt className="text-slate text-eyebrow-sm">{item.label}</dt>
+            <dt className="text-fg-muted text-eyebrow-sm">{item.label}</dt>
             <dd
-              className={`mt-1.5 leading-6 break-words ${item.value ? "text-charcoal" : "text-slate italic"}`}
+              className={`mt-1.5 leading-6 break-words ${item.value ? "text-fg-body" : "text-fg-muted italic"}`}
             >
               {item.value || "Not provided (optional)"}
             </dd>
@@ -226,28 +226,26 @@ export function ApplicationDetails({
             ]}
           />
           {application.reviewHistory?.length ? (
-            <section className="border-global-navy/12 rounded-card border bg-white p-5 sm:p-7">
-              <h2 className="text-global-navy text-xl font-bold">
-                Review history
-              </h2>
-              <ol className="border-global-navy/10 mt-5 grid gap-0 border-l pl-5">
+            <section className="border-hairline/12 rounded-card bg-raised border p-5 sm:p-7">
+              <h2 className="text-fg text-xl font-bold">Review history</h2>
+              <ol className="border-hairline/10 mt-5 grid gap-0 border-l pl-5">
                 {application.reviewHistory.map((event) => (
                   <li
                     key={event.id}
-                    className="border-global-navy/10 relative border-b py-4 first:pt-0 last:border-b-0 last:pb-0"
+                    className="border-hairline/10 relative border-b py-4 first:pt-0 last:border-b-0 last:pb-0"
                   >
                     <span
                       aria-hidden="true"
                       className="bg-heritage-gold absolute top-5 -left-[1.45rem] size-2 rounded-full first:top-1"
                     />
-                    <p className="text-global-navy font-semibold">
+                    <p className="text-fg font-semibold">
                       {registrationStatusPresentation[event.newStatus].label}
                     </p>
-                    <p className="text-slate mt-1 text-sm">
+                    <p className="text-fg-muted mt-1 text-sm">
                       {formatDate(event.createdAt)}
                     </p>
                     {event.feedback ? (
-                      <p className="text-charcoal mt-2 leading-6">
+                      <p className="text-fg-body mt-2 leading-6">
                         {event.feedback}
                       </p>
                     ) : null}

@@ -24,23 +24,23 @@ export function SangamStatusScreen({
           <div className="flex justify-center">
             <RegistrationStatusBadge status={registration.status} />
           </div>
-          <h1 className="text-global-navy mt-5 text-3xl font-bold tracking-[-0.02em] sm:text-4xl">
+          <h1 className="text-fg mt-5 text-3xl font-bold tracking-[-0.02em] sm:text-4xl">
             {isFreshSubmission
               ? sangamSuccessContent.title
               : presentation.title}
           </h1>
-          <p className="text-slate mt-2 text-lg font-semibold">
+          <p className="text-fg-muted mt-2 text-lg font-semibold">
             {organisation.name || "Your Sangam"}
           </p>
-          <p className="text-charcoal mx-auto mt-6 max-w-md leading-7">
+          <p className="text-fg-body mx-auto mt-6 max-w-md leading-7">
             {isFreshSubmission
               ? sangamSuccessContent.body
               : presentation.description}
           </p>
           {registration.adminFeedback ? (
             <div className="border-heritage-gold/35 bg-heritage-gold/8 rounded-card mt-6 border p-5 text-left">
-              <p className="text-global-navy font-bold">Review feedback</p>
-              <p className="text-charcoal mt-2 leading-6">
+              <p className="text-fg font-bold">Review feedback</p>
+              <p className="text-fg-body mt-2 leading-6">
                 {registration.adminFeedback}
               </p>
             </div>
@@ -54,7 +54,7 @@ export function SangamStatusScreen({
             </Link>
             <Link
               href="/join"
-              className="text-global-navy focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
+              className="text-fg focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
             >
               {sangamSuccessContent.browseCta}
             </Link>

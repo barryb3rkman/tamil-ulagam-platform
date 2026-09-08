@@ -3,7 +3,6 @@ import { Fraunces, Noto_Sans_Tamil, Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { RouteFrame } from "@/components/application/route-frame";
-import { AmbientField } from "@/components/motion/ambient-field";
 import { MotionRuntime } from "@/components/motion/motion-runtime";
 import { ScrollProgress } from "@/components/motion/scroll-progress";
 import { defaultMetadata } from "@/config/metadata";
@@ -51,7 +50,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
       className={`${displayFont.variable} ${englishFont.variable} ${tamilFont.variable}`}
     >
       <body>
-        <AmbientField />
         <PlatformProvider>
           <MotionRuntime />
           <ScrollProgress />

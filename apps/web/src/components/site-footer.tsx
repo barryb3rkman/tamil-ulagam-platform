@@ -6,7 +6,7 @@ import { siteContent, socialLinks } from "@/content/site";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-deep-navy text-white">
+    <footer className="border-hairline bg-ink/45 border-t text-white backdrop-blur-sm">
       <Container className="grid gap-12 py-14 lg:grid-cols-[1.35fr_2fr] lg:py-18">
         <div className="max-w-md">
           <Link

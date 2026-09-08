@@ -168,10 +168,10 @@ export function OrganisationStageStanding({
     <div className="grid gap-6">
       <div className="surface-card grid gap-6 p-5 sm:p-7 lg:p-8">
         <div className="max-w-xl">
-          <h2 className="text-global-navy text-xl font-bold tracking-[-0.01em] sm:text-2xl">
+          <h2 className="text-fg text-xl font-bold tracking-[-0.01em] sm:text-2xl">
             {content.title}
           </h2>
-          <p className="text-slate mt-2 leading-6">{content.description}</p>
+          <p className="text-fg-muted mt-2 leading-6">{content.description}</p>
         </div>
         <Alert tone="info">{content.informalNotice}</Alert>
         <RadioGroup
@@ -199,8 +199,8 @@ export function OrganisationStageStanding({
           </div>
         ) : null}
 
-        <div className="border-global-navy/10 grid gap-5 border-t pt-6">
-          <h3 className="text-global-navy text-base font-bold">
+        <div className="border-hairline/10 grid gap-5 border-t pt-6">
+          <h3 className="text-fg text-base font-bold">
             {categoryLabel} details
           </h3>
           <CategoryQuestion

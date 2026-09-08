@@ -28,14 +28,14 @@ export function DataTable<Row>({
   return (
     <div
       className={cx(
-        "rounded-card border-global-navy/12 shadow-card overflow-hidden border bg-white",
+        "rounded-card border-hairline/12 shadow-card bg-raised overflow-hidden border",
         className,
       )}
     >
       <div className="hidden overflow-x-auto md:block">
         <table className="w-full border-collapse text-left">
           <caption className="sr-only">{caption}</caption>
-          <thead className="bg-global-navy/4 text-slate border-global-navy/10 border-b text-xs font-bold tracking-[0.08em] uppercase">
+          <thead className="bg-global-navy/4 text-fg-muted border-hairline/10 border-b text-xs font-bold tracking-[0.08em] uppercase">
             <tr>
               {columns.map((column) => (
                 <th
@@ -50,10 +50,7 @@ export function DataTable<Row>({
           </thead>
           <tbody className="divide-global-navy/10 divide-y">
             {rows.map((row) => (
-              <tr
-                key={rowKey(row)}
-                className="hover:bg-warm-ivory/45 align-top"
-              >
+              <tr key={rowKey(row)} className="hover:bg-sunken/45 align-top">
                 {columns.map((column) => (
                   <td
                     key={column.key}
@@ -76,7 +73,7 @@ export function DataTable<Row>({
           <li key={rowKey(row)} className="grid gap-4 p-5">
             {columns.map((column) => (
               <div key={column.key} className="min-w-0">
-                <p className="text-slate mb-1 text-[0.68rem] font-bold tracking-[0.08em] uppercase">
+                <p className="text-fg-muted mb-1 text-[0.68rem] font-bold tracking-[0.08em] uppercase">
                   {column.mobileLabel ?? column.header}
                 </p>
                 <div className="min-w-0">{column.render(row)}</div>

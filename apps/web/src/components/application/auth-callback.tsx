@@ -74,10 +74,10 @@ export function AuthCallbackPanel() {
   if (view.status === "processing") {
     return (
       <div className="grid min-h-72 content-center gap-4" aria-live="polite">
-        <h2 className="text-global-navy text-2xl font-bold">
+        <h2 className="text-fg text-2xl font-bold">
           Checking your secure link
         </h2>
-        <p className="text-slate leading-7">
+        <p className="text-fg-muted leading-7">
           Please wait while Tamil Ulagam verifies this request.
         </p>
       </div>
@@ -87,21 +87,19 @@ export function AuthCallbackPanel() {
   if (view.status === "invalid") {
     return (
       <div className="grid min-h-72 content-center gap-5" aria-live="polite">
-        <h2 className="text-global-navy text-2xl font-bold">
-          Link unavailable
-        </h2>
+        <h2 className="text-fg text-2xl font-bold">Link unavailable</h2>
         <FormError message={platformError || view.message} />
         <div className="flex flex-wrap gap-4">
           {intent === "recovery" ? (
             <Link
-              className="text-global-navy focus-visible:ring-focus font-semibold underline underline-offset-4"
+              className="text-fg focus-visible:ring-focus font-semibold underline underline-offset-4"
               href="/forgot-password"
             >
               Request a new reset link
             </Link>
           ) : null}
           <Link
-            className="text-global-navy focus-visible:ring-focus font-semibold underline underline-offset-4"
+            className="text-fg focus-visible:ring-focus font-semibold underline underline-offset-4"
             href="/login"
           >
             Return to sign in
@@ -126,11 +124,9 @@ export function AuthCallbackPanel() {
           >
             ✓
           </span>
-          <h2 className="text-global-navy mt-4 text-2xl font-bold">
-            Email confirmed
-          </h2>
+          <h2 className="text-fg mt-4 text-2xl font-bold">Email confirmed</h2>
           {confirmedElsewhere || returnTarget ? (
-            <p className="text-slate mt-2 max-w-md leading-7">
+            <p className="text-fg-muted mt-2 max-w-md leading-7">
               {confirmedElsewhere
                 ? `Your email is confirmed. Sign in to continue. ${journey.accountLead}`
                 : journey.successLead}
@@ -164,10 +160,8 @@ export function AuthCallbackPanel() {
   if (view.status === "password_updated") {
     return (
       <div className="grid min-h-72 content-center gap-5" aria-live="polite">
-        <h2 className="text-global-navy text-2xl font-bold">
-          Password updated
-        </h2>
-        <p className="text-slate max-w-md leading-7">
+        <h2 className="text-fg text-2xl font-bold">Password updated</h2>
+        <p className="text-fg-muted max-w-md leading-7">
           Your recovery session has been closed. Sign in with your new password.
         </p>
         <Link
@@ -221,10 +215,8 @@ function PasswordRecoveryForm({
   return (
     <form noValidate onSubmit={asEventHandler(submit)} className="grid gap-5">
       <div>
-        <h2 className="text-global-navy text-2xl font-bold">
-          Set a new password
-        </h2>
-        <p className="text-slate mt-2 leading-7">
+        <h2 className="text-fg text-2xl font-bold">Set a new password</h2>
+        <p className="text-fg-muted mt-2 leading-7">
           Choose a strong password for your Tamil Ulagam account.
         </p>
       </div>

@@ -22,16 +22,16 @@ export function HumanDevelopmentSection() {
     <Section tone="white" aria-labelledby="human-development-title">
       <Container size="wide">
         <div className="max-w-3xl">
-          <p className="text-heritage-maroon text-eyebrow">
+          <p className="text-fg-accent text-eyebrow">
             {humanDevelopment.eyebrow}
           </p>
           <h2
             id="human-development-title"
-            className="text-global-navy mt-4 text-4xl leading-[1.06] font-semibold tracking-[-0.04em] text-balance sm:text-5xl"
+            className="text-fg mt-4 text-4xl leading-[1.06] font-semibold tracking-[-0.04em] text-balance sm:text-5xl"
           >
             {humanDevelopment.title}
           </h2>
-          <p className="text-slate mt-5 max-w-2xl text-lg leading-8">
+          <p className="text-fg-muted mt-5 max-w-2xl text-lg leading-8">
             {humanDevelopment.description}
           </p>
         </div>
@@ -39,7 +39,7 @@ export function HumanDevelopmentSection() {
           {featuredInitiatives.map((initiative, index) => {
             const detail = initiativeOverviewDetails[initiative.slug];
             const image = (
-              <div className="aspect-[4/3] overflow-hidden">
+              <div className="aspect-[16/9] overflow-hidden">
                 <ImageWithFallback
                   asset={images[initiative.imageKey as ImageKey]}
                   fallbackLabel={`${initiative.title} initiative image`}
@@ -51,17 +51,17 @@ export function HumanDevelopmentSection() {
 
             const content = (
               <div className="flex flex-col justify-center py-1 lg:py-8">
-                <h3 className="text-global-navy text-3xl leading-tight font-semibold tracking-[-0.035em] sm:text-4xl">
+                <h3 className="text-fg text-3xl leading-tight font-semibold tracking-[-0.035em] sm:text-4xl">
                   {initiative.title}
                 </h3>
-                <p className="text-slate mt-5 text-lg leading-8">
+                <p className="text-fg-muted mt-5 text-lg leading-8">
                   {detail.purpose}
                 </p>
-                <ul className="border-global-navy/12 mt-7 grid divide-y border-y sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+                <ul className="border-hairline/12 mt-7 grid divide-y border-y sm:grid-cols-2 sm:divide-x sm:divide-y-0">
                   {detail.capabilities.map((capability) => (
                     <li
                       key={capability}
-                      className="text-charcoal px-4 py-3 text-sm leading-6 sm:first:pl-0 sm:last:pr-0"
+                      className="text-fg-body px-4 py-3 text-sm leading-6 sm:first:pl-0 sm:last:pr-0"
                     >
                       {capability}
                     </li>

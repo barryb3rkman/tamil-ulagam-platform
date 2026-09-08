@@ -25,7 +25,7 @@ export function ContactPurposeSection() {
         />
         <div>
           <NumberedGrid items={purpose.guidance} />
-          <p className="border-heritage-maroon/40 text-slate mt-8 border-l-2 pl-5 text-lg leading-8">
+          <p className="border-heritage-maroon/40 text-fg-muted mt-8 border-l-2 pl-5 text-lg leading-8">
             {purpose.statement}
           </p>
         </div>

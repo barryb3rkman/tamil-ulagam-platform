@@ -23,7 +23,7 @@ export function TamilIdFeature() {
               asset={images.tamilIdShowcase}
               fallbackLabel="Tamil ID digital membership visual"
               sizes="(min-width: 1024px) 30vw, 90vw"
-              className="aspect-[3/4] h-full w-full object-cover"
+              className="aspect-[16/9] h-full w-full object-cover"
             />
           </div>
           <div className="lg:order-1">
@@ -54,7 +54,7 @@ export function TamilIdFeature() {
             <LinkButton
               href="/tamil-id"
               variant="secondary"
-              className="hover:text-global-navy mt-9 border-white text-white hover:bg-white"
+              className="hover:text-fg hover:bg-raised mt-9 border-white text-white"
             >
               Explore Tamil ID
             </LinkButton>

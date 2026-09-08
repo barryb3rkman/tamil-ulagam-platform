@@ -31,38 +31,38 @@ export function AuthShell({
           >
             <BrandMark className="size-11 shrink-0" />
             <span className="leading-tight">
-              <span className="text-global-navy block text-sm font-bold sm:text-base">
+              <span className="text-fg block text-sm font-bold sm:text-base">
                 Tamil Ulagam
               </span>
-              <span className="text-slate text-eyebrow-sm block sm:text-xs">
+              <span className="text-fg-muted text-eyebrow-sm block sm:text-xs">
                 {portalLabel}
               </span>
             </span>
           </Link>
           <Link
             href="/"
-            className="border-global-navy/12 text-global-navy hover:border-heritage-gold/55 hover:bg-heritage-gold/8 focus-visible:ring-focus rounded-button motion-control hidden min-h-11 items-center border bg-white px-4 text-sm font-bold focus-visible:outline-none sm:inline-flex"
+            className="border-hairline text-fg hover:border-heritage-gold/55 hover:bg-heritage-gold/10 focus-visible:ring-focus rounded-button motion-control bg-raised hidden min-h-11 items-center border px-4 text-sm font-bold focus-visible:outline-none sm:inline-flex"
           >
             Back to website
           </Link>
         </div>
 
-        <div className="rounded-large border-global-navy/[0.09] grid overflow-hidden border bg-white shadow-[0_1.5rem_4rem_rgba(6,29,50,0.10)] lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+        <div className="auth-card rounded-large border-hairline grid overflow-hidden border lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
           <AuthBrandPanel supportingCopy={supportingCopy} />
 
           <div className="flex items-center p-6 sm:p-9 lg:p-11 xl:p-14">
             <div className="w-full">
               <MobileBrandStrip supportingCopy={supportingCopy} />
-              <p className="text-slate text-[0.68rem] font-bold tracking-[0.2em] uppercase">
+              <p className="text-fg-muted text-[0.68rem] font-bold tracking-[0.2em] uppercase">
                 {eyebrow}
               </p>
               <h1 className="text-page-title mt-3">
                 <WordReveal className="text-rise-aurora" text={title} />
               </h1>
-              <p className="text-slate mt-4 max-w-xl leading-7">
+              <p className="text-fg-muted mt-4 max-w-xl leading-7">
                 {description}
               </p>
-              <div className="border-global-navy/10 mt-7 border-t pt-7">
+              <div className="border-hairline/10 mt-7 border-t pt-7">
                 {children}
               </div>
             </div>
@@ -120,7 +120,7 @@ function AuthBrandPanel({
   readonly supportingCopy: string;
 }) {
   return (
-    <div className="gradient-aurora relative isolate hidden min-h-[34rem] flex-col justify-between overflow-hidden p-9 lg:flex xl:p-11">
+    <div className="auth-brand-panel relative isolate hidden min-h-[34rem] flex-col justify-between overflow-hidden p-9 lg:flex xl:p-11">
       <ParticleField count={54} />
 
       <div

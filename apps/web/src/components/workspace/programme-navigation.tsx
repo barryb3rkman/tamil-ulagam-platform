@@ -64,7 +64,7 @@ export function ProgrammeNavigation({
   if (variant === "drawer") {
     return (
       <nav aria-label="Tamil Ulagam programmes">
-        <p className="text-slate text-eyebrow-sm mb-2 px-3">Programmes</p>
+        <p className="text-fg-muted text-eyebrow-sm mb-2 px-3">Programmes</p>
         <ProgrammeLinks
           type={type}
           entityId={entityId}
@@ -87,7 +87,7 @@ export function ProgrammeNavigation({
         className={`focus-visible:ring-focus motion-control rounded-button inline-flex min-h-10 items-center gap-1.5 px-3.5 text-sm font-semibold ${
           isOnAModule
             ? "bg-global-navy text-white"
-            : "text-global-navy hover:bg-global-navy/8"
+            : "text-fg hover:bg-global-navy/8"
         }`}
       >
         Programmes
@@ -102,7 +102,7 @@ export function ProgrammeNavigation({
         title="Tamil Ulagam programmes"
         side={side}
       >
-        <p className="text-charcoal mb-5 text-sm leading-6">
+        <p className="text-fg-body mb-5 text-sm leading-6">
           Tamil Ulagam&rsquo;s programme areas. Most are still in development —
           each has its own page with the current status.
         </p>
@@ -263,12 +263,12 @@ function programmeLinkClassName(
     return `focus-visible:ring-focus motion-control rounded-button flex min-h-10 items-center gap-3 px-3 text-sm font-semibold ${
       current
         ? "bg-global-navy text-white"
-        : "text-charcoal hover:bg-global-navy/6 hover:text-global-navy"
+        : "text-fg-body hover:bg-global-navy/6 hover:text-fg"
     }`;
   }
   return `focus-visible:ring-focus motion-control rounded-card flex min-h-11 items-center gap-2.5 border px-3.5 py-2.5 text-sm ${
     current
-      ? "border-heritage-gold bg-heritage-gold/10 text-global-navy font-bold"
-      : "border-global-navy/12 text-charcoal hover:border-global-navy/30 hover:bg-warm-ivory font-semibold"
+      ? "border-heritage-gold bg-heritage-gold/10 text-fg font-bold"
+      : "border-hairline/12 text-fg-body hover:border-hairline/30 hover:bg-sunken font-semibold"
   }`;
 }

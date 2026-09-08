@@ -147,7 +147,7 @@ export function WorkspaceSectionHeading({
     <div className="max-w-2xl">
       <h2 className="text-section-title text-gradient-ink">{title}</h2>
       {description ? (
-        <p className="text-slate mt-2 text-sm leading-6">{description}</p>
+        <p className="text-fg-muted mt-2 text-sm leading-6">{description}</p>
       ) : null}
     </div>
   );
@@ -183,9 +183,9 @@ export function WorkspacePanel({
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           {eyebrow ? (
-            <p className="text-slate text-eyebrow-sm">{eyebrow}</p>
+            <p className="text-fg-muted text-eyebrow-sm">{eyebrow}</p>
           ) : null}
-          <h3 className="text-global-navy mt-1.5 text-[1.0625rem] font-bold tracking-[-0.01em]">
+          <h3 className="text-fg mt-1.5 text-[1.0625rem] font-bold tracking-[-0.01em]">
             {title}
           </h3>
         </div>
@@ -194,8 +194,8 @@ export function WorkspacePanel({
             aria-hidden="true"
             className={`grid size-10 shrink-0 place-items-center rounded-xl border transition-colors duration-300 ${
               href
-                ? "border-global-navy/10 text-global-navy/70 group-hover:border-heritage-gold/45 group-hover:bg-heritage-gold/10 group-hover:text-heritage-maroon bg-white"
-                : "border-global-navy/8 text-global-navy/35 bg-white"
+                ? "border-hairline/10 text-fg/70 group-hover:border-heritage-gold/45 group-hover:bg-heritage-gold/10 group-hover:text-fg-accent bg-raised"
+                : "border-hairline/8 text-fg/35 bg-raised"
             }`}
           >
             {icon}
@@ -203,7 +203,7 @@ export function WorkspacePanel({
         ) : null}
       </div>
       {description ? (
-        <p className="text-slate mt-3 max-w-xl text-sm leading-6">
+        <p className="text-fg-muted mt-3 max-w-xl text-sm leading-6">
           {description}
         </p>
       ) : null}
@@ -212,7 +212,7 @@ export function WorkspacePanel({
         <p className="mt-auto pt-5">
           <Link
             href={href}
-            className="text-global-navy group-hover:text-heritage-maroon focus-visible:ring-focus rounded-button inline-flex items-center gap-1.5 text-sm font-bold transition-colors duration-300 after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
+            className="text-fg group-hover:text-fg-accent focus-visible:ring-focus rounded-button inline-flex items-center gap-1.5 text-sm font-bold transition-colors duration-300 after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
           >
             {linkLabel}
             <span
@@ -227,12 +227,12 @@ export function WorkspacePanel({
     </>
   );
 
-  const shell = `border-global-navy/[0.09] rounded-card relative flex h-full min-h-48 flex-col overflow-hidden border bg-white p-5 sm:p-6 ${className}`;
+  const shell = `border-hairline/[0.09] rounded-card relative flex h-full min-h-48 flex-col overflow-hidden border bg-raised p-5 sm:p-6 ${className}`;
 
   if (href) {
     return (
       <section
-        className={`${shell} motion-lift group hover:border-global-navy/20 hover:shadow-[0_1.25rem_3rem_rgba(6,29,50,0.13)]`}
+        className={`${shell} motion-lift group hover:border-hairline/20 hover:shadow-[0_1.25rem_3rem_rgba(6,29,50,0.13)]`}
       >
         {body}
       </section>
@@ -249,4 +249,4 @@ export const workspaceSecondaryActionClassName =
   "border-white/18 text-white/85 hover:border-heritage-gold/50 hover:bg-white/8 hover:text-white focus-visible:ring-focus-inverse rounded-button motion-control inline-flex min-h-11 items-center border bg-white/[0.06] px-5 text-sm font-semibold backdrop-blur-sm focus-visible:outline-none";
 
 export const panelActionClassName =
-  "border-global-navy/12 text-global-navy hover:border-heritage-gold/55 hover:bg-heritage-gold/8 focus-visible:ring-focus rounded-button motion-control inline-flex min-h-10 items-center gap-1.5 border bg-white px-3.5 text-sm font-bold focus-visible:outline-none";
+  "border-hairline/12 text-fg hover:border-heritage-gold/55 hover:bg-heritage-gold/8 focus-visible:ring-focus rounded-button motion-control inline-flex min-h-10 items-center gap-1.5 border bg-raised px-3.5 text-sm font-bold focus-visible:outline-none";

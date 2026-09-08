@@ -40,7 +40,7 @@ export function OpportunityEconomySection() {
             </p>
           </div>
           <div className="space-y-8">
-            <article className="border-heritage-gold/30 text-charcoal overflow-hidden border bg-white">
+            <article className="border-heritage-gold/30 text-fg-body bg-raised overflow-hidden border">
               <div className="aspect-[16/9] overflow-hidden">
                 <ImageWithFallback
                   asset={images[business.imageKey as ImageKey]}
@@ -49,11 +49,11 @@ export function OpportunityEconomySection() {
                   className="h-full w-full object-cover"
                 />
               </div>
-              <div className="p-7 sm:p-9">
-                <h3 className="text-global-navy text-3xl font-semibold tracking-[-0.035em]">
+              <div className="p-6 sm:p-7">
+                <h3 className="text-fg text-3xl font-semibold tracking-[-0.035em]">
                   {business.title}
                 </h3>
-                <p className="text-slate mt-4 max-w-2xl text-lg leading-8">
+                <p className="text-fg-muted mt-4 max-w-2xl text-lg leading-8">
                   {businessDetail.purpose}
                 </p>
                 <LinkButton
@@ -77,7 +77,7 @@ export function OpportunityEconomySection() {
                     key={initiative.slug}
                     className="overflow-hidden border border-white/20 bg-white/6"
                   >
-                    <div className="aspect-[4/3] overflow-hidden">
+                    <div className="aspect-[16/9] overflow-hidden">
                       <ImageWithFallback
                         asset={images[initiative.imageKey as ImageKey]}
                         fallbackLabel={`${initiative.title} initiative image`}
@@ -85,7 +85,7 @@ export function OpportunityEconomySection() {
                         className="h-full w-full object-cover"
                       />
                     </div>
-                    <div className="p-6 sm:p-7">
+                    <div className="p-5 sm:p-6">
                       <h3 className="text-2xl font-semibold tracking-[-0.025em]">
                         {initiative.title}
                       </h3>

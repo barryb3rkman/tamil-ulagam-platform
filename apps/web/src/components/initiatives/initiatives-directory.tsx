@@ -16,17 +16,15 @@ export function InitiativesDirectory() {
       <Container size="wide">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
-            <p className="text-heritage-maroon text-eyebrow">
-              {directory.eyebrow}
-            </p>
+            <p className="text-fg-accent text-eyebrow">{directory.eyebrow}</p>
             <h2
               id="initiatives-directory-title"
-              className="text-global-navy mt-4 text-4xl leading-[1.06] font-semibold tracking-[-0.04em] text-balance sm:text-5xl"
+              className="text-fg mt-4 text-4xl leading-[1.06] font-semibold tracking-[-0.04em] text-balance sm:text-5xl"
             >
               {directory.title}
             </h2>
           </div>
-          <p className="text-slate max-w-xl leading-7">
+          <p className="text-fg-muted max-w-xl leading-7">
             {directory.description}
           </p>
         </div>

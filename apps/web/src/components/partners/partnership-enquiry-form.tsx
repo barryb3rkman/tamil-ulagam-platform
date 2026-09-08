@@ -83,13 +83,13 @@ export function PartnershipEnquiryForm() {
       <div
         role="status"
         aria-live="polite"
-        className="border-success/25 bg-success/5 rounded-large border p-6 sm:p-8"
+        className="border-success/25 bg-success/5 rounded-large border p-5 sm:p-6"
       >
         <p className="text-success text-eyebrow-sm">Enquiry received</p>
-        <h3 className="text-global-navy mt-3 text-2xl font-bold">
+        <h3 className="text-fg mt-3 text-2xl font-bold">
           Your enquiry was received.
         </h3>
-        <p className="text-slate mt-3 leading-7">
+        <p className="text-fg-muted mt-3 leading-7">
           The Federation team will review it.
         </p>
         <Button
@@ -107,13 +107,13 @@ export function PartnershipEnquiryForm() {
       noValidate
       data-partnership-form-ready={mounted ? "true" : "false"}
       onSubmit={(event) => void submit(event)}
-      className="border-global-navy/12 rounded-large shadow-card grid gap-5 border bg-white p-5 sm:p-7"
+      className="border-hairline/12 rounded-large shadow-card bg-raised grid gap-5 border p-5 sm:p-7"
     >
       <div>
-        <h3 className="text-global-navy text-2xl font-bold">
+        <h3 className="text-fg text-2xl font-bold">
           Begin a partnership conversation
         </h3>
-        <p className="text-slate mt-2 leading-7">
+        <p className="text-fg-muted mt-2 leading-7">
           This starts an enquiry only. It does not create an approved
           partnership.
         </p>

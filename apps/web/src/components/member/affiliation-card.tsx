@@ -96,11 +96,7 @@ export function AffiliationCard({
   };
 
   return (
-    <Surface
-      level="card"
-      density="comfortable"
-      className="border-global-navy/10"
-    >
+    <Surface level="card" density="comfortable" className="border-hairline/10">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
           <span
@@ -114,13 +110,13 @@ export function AffiliationCard({
             <Icon className="size-5" />
           </span>
           <div>
-            <p className="text-heritage-maroon text-eyebrow-sm">
+            <p className="text-fg-accent text-eyebrow-sm">
               {organisationKindLabel(organisation)}
             </p>
-            <h3 className="text-global-navy mt-1 text-lg font-bold">
+            <h3 className="text-fg mt-1 text-lg font-bold">
               {organisation.name}
             </h3>
-            <p className="text-slate mt-0.5 text-sm">
+            <p className="text-fg-muted mt-0.5 text-sm">
               {organisationLocationLabel(organisation)}
             </p>
           </div>
@@ -128,7 +124,7 @@ export function AffiliationCard({
         <StatusBadge label={presentation.label} tone={presentation.tone} />
       </div>
 
-      <div className="text-slate mt-4 text-sm">
+      <div className="text-fg-muted mt-4 text-sm">
         {membership.status === "approved" && membership.decidedAt ? (
           <p>Member since {formatDate(membership.decidedAt)}</p>
         ) : membership.status === "pending" ? (
@@ -144,12 +140,12 @@ export function AffiliationCard({
               <button
                 type="button"
                 onClick={asEventHandler(loadReason)}
-                className="text-global-navy focus-visible:ring-focus rounded-button mt-1 text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
+                className="text-fg focus-visible:ring-focus rounded-button mt-1 text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
               >
                 See why
               </button>
             ) : (
-              <p className="text-charcoal mt-1">{reason}</p>
+              <p className="text-fg-body mt-1">{reason}</p>
             )}
           </div>
         ) : (
@@ -162,7 +158,7 @@ export function AffiliationCard({
           <button
             type="button"
             onClick={() => setConfirmingLeave(true)}
-            className="text-heritage-maroon focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
+            className="text-fg-accent focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
           >
             Leave organisation
           </button>
@@ -170,7 +166,7 @@ export function AffiliationCard({
           membership.status === "revoked" ? (
           <Link
             href="/join/member"
-            className="text-global-navy focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
+            className="text-fg focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
           >
             Submit again
           </Link>
@@ -182,7 +178,7 @@ export function AffiliationCard({
         onClose={() => setConfirmingLeave(false)}
         title={`Leave ${organisation.name}?`}
       >
-        <p className="text-slate text-sm leading-6">
+        <p className="text-fg-muted text-sm leading-6">
           Your affiliation will end. Any organisation-management permissions you
           separately hold are not affected. You may submit an affiliation claim
           again later if the organisation allows it.
@@ -206,7 +202,7 @@ export function AffiliationCard({
             type="button"
             onClick={() => setConfirmingLeave(false)}
             disabled={leaving}
-            className="text-global-navy focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
+            className="text-fg focus-visible:ring-focus rounded-button text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-none"
           >
             Cancel
           </button>

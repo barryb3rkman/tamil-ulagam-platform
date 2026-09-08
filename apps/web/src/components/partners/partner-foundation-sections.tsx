@@ -51,7 +51,7 @@ export function PartnerCategoriesSection() {
         <div className="mt-10">
           <CheckGrid columns={3} items={categories.items} />
         </div>
-        <p className="border-heritage-maroon/35 text-slate mt-8 max-w-4xl border-l-2 pl-5 text-lg leading-8">
+        <p className="border-heritage-maroon/35 text-fg-muted mt-8 max-w-4xl border-l-2 pl-5 text-lg leading-8">
           {categories.statement}
         </p>
       </Container>

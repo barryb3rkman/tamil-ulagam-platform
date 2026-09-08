@@ -31,14 +31,14 @@ export function CollapsibleSection({
       className={`rounded-card border ${
         dark
           ? "border-white/12 bg-white/[0.04] backdrop-blur-sm"
-          : "border-global-navy/[0.09] bg-white"
+          : "border-hairline/[0.09] bg-raised"
       }`}
     >
       <div className="px-5 pt-5 sm:px-6">
         {eyebrow ? (
           <p
             className={`text-eyebrow-sm ${
-              dark ? "text-heritage-gold/85" : "text-slate"
+              dark ? "text-heritage-gold/85" : "text-fg-muted"
             }`}
           >
             {eyebrow}
@@ -57,7 +57,7 @@ export function CollapsibleSection({
               className={`text-lg font-bold tracking-[-0.01em] transition-colors ${
                 dark
                   ? "group-hover:text-heritage-gold text-white"
-                  : "text-global-navy group-hover:text-heritage-maroon"
+                  : "text-fg group-hover:text-fg-accent"
               }`}
             >
               {title}
@@ -67,7 +67,7 @@ export function CollapsibleSection({
               className={`group-hover:border-heritage-gold/55 group-hover:bg-heritage-gold/10 mt-0.5 grid size-9 shrink-0 place-items-center rounded-full border transition-all duration-300 ${
                 dark
                   ? "border-white/20 text-white"
-                  : "border-global-navy/12 text-global-navy"
+                  : "border-hairline/12 text-fg"
               } ${open ? "rotate-180" : ""}`}
             >
               <svg
@@ -89,7 +89,7 @@ export function CollapsibleSection({
         {summary ? (
           <p
             className={`mt-2 pb-5 text-sm leading-6 ${
-              dark ? "text-white/70" : "text-slate"
+              dark ? "text-white/70" : "text-fg-muted"
             }`}
           >
             {summary}
@@ -104,7 +104,7 @@ export function CollapsibleSection({
           role="region"
           aria-labelledby={buttonId}
           className={`border-t px-5 pt-5 pb-6 sm:px-6 ${
-            dark ? "border-white/10" : "border-global-navy/[0.07]"
+            dark ? "border-white/10" : "border-hairline/[0.07]"
           }`}
         >
           {children}

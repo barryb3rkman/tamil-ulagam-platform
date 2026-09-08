@@ -17,7 +17,7 @@ export function ChapterDefinitionSection() {
       >
         <SectionHeading eyebrow={definition.eyebrow} title={definition.title} />
         <div>
-          <p className="text-global-navy max-w-2xl text-xl leading-8 font-semibold sm:text-2xl sm:leading-9">
+          <p className="text-fg max-w-2xl text-xl leading-8 font-semibold sm:text-2xl sm:leading-9">
             {definition.description}
           </p>
           <NumeralFeature
@@ -67,7 +67,7 @@ export function GlobalLocalRelationshipSection() {
           {[relationship.federation, relationship.chapter].map((group) => (
             <div
               key={group.title}
-              className="bg-deep-navy/45 border border-white/16 p-6 sm:p-8"
+              className="bg-deep-navy/45 border border-white/16 p-5 sm:p-6"
             >
               <h3 className="text-heritage-gold text-xl font-semibold">
                 {group.title}

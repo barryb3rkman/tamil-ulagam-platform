@@ -35,7 +35,7 @@ export function AboutFinalCta() {
               href={finalCallToAction.primaryCallToAction.href}
               variant="secondary"
               size="large"
-              className="text-global-navy hover:bg-warm-ivory hover:text-deep-navy border-white bg-white"
+              className="text-fg hover:bg-sunken hover:text-deep-navy bg-raised border-white"
             >
               {finalCallToAction.primaryCallToAction.label}
             </LinkButton>

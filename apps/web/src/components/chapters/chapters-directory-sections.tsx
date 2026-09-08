@@ -25,7 +25,7 @@ export function ChapterRegionsSection() {
         />
         <div>
           <CheckGrid columns={2} items={directory.areas} />
-          <p className="text-slate mt-7 leading-7">
+          <p className="text-fg-muted mt-7 leading-7">
             Chapter recognition complements existing Tamil organisations and
             does not imply control over them. A listed region does not represent
             an operating chapter.

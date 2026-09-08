@@ -15,10 +15,10 @@ export interface InitiativeHeroProps {
 
 const heroPresentation = {
   "human-development": {
-    shell: "bg-warm-ivory",
-    copy: "text-global-navy",
+    shell: "bg-sunken",
+    copy: "text-fg",
     imageOrder: "lg:order-2",
-    panel: "bg-white border-global-navy/10",
+    panel: "bg-raised border-hairline/10",
   },
   opportunity: {
     shell: "bg-deep-navy",
@@ -27,10 +27,10 @@ const heroPresentation = {
     panel: "bg-white/6 border-white/20",
   },
   "knowledge-global": {
-    shell: "bg-white",
-    copy: "text-global-navy",
+    shell: "bg-raised",
+    copy: "text-fg",
     imageOrder: "lg:order-2",
-    panel: "bg-warm-ivory border-heritage-gold/35",
+    panel: "bg-sunken border-heritage-gold/35",
   },
 } as const;
 
@@ -52,7 +52,7 @@ export function InitiativeHero({
             <figure
               className={`border ${presentation.panel} shadow-card overflow-hidden p-2`}
             >
-              <div className="aspect-[4/3] overflow-hidden">
+              <div className="aspect-[16/9] overflow-hidden">
                 <ImageWithFallback
                   asset={images[imageKey]}
                   className="h-full w-full transition-transform duration-500 hover:scale-[1.02]"
@@ -62,7 +62,7 @@ export function InitiativeHero({
                 />
               </div>
               <figcaption
-                className={`px-2 pt-3 pb-1 text-xs leading-5 ${isDark ? "text-white/72" : "text-slate"}`}
+                className={`px-2 pt-3 pb-1 text-xs leading-5 ${isDark ? "text-white/72" : "text-fg-muted"}`}
               >
                 {detail.conceptStatement}
               </figcaption>
@@ -74,7 +74,7 @@ export function InitiativeHero({
             }
           >
             <p
-              className={`text-eyebrow ${isDark ? "text-heritage-gold" : "text-heritage-maroon"}`}
+              className={`text-eyebrow ${isDark ? "text-heritage-gold" : "text-fg-accent"}`}
             >
               {groupTitle}
             </p>
@@ -85,12 +85,12 @@ export function InitiativeHero({
               {initiative.title}
             </h1>
             <p
-              className={`mt-6 max-w-xl text-xl leading-8 font-semibold sm:text-2xl sm:leading-9 ${isDark ? "text-white/92" : "text-charcoal"}`}
+              className={`mt-6 max-w-xl text-xl leading-8 font-semibold sm:text-2xl sm:leading-9 ${isDark ? "text-white/92" : "text-fg-body"}`}
             >
               {detail.heroStatement}
             </p>
             <p
-              className={`mt-5 max-w-xl text-base leading-7 sm:text-lg sm:leading-8 ${isDark ? "text-white/76" : "text-slate"}`}
+              className={`mt-5 max-w-xl text-base leading-7 sm:text-lg sm:leading-8 ${isDark ? "text-white/76" : "text-fg-muted"}`}
             >
               {detail.introduction}
             </p>
@@ -99,9 +99,7 @@ export function InitiativeHero({
                 href={detail.primaryCallToAction.href}
                 variant={isDark ? "primary" : "primary"}
                 className={
-                  isDark
-                    ? "!text-global-navy hover:bg-warm-ivory bg-white"
-                    : undefined
+                  isDark ? "!text-fg hover:bg-sunken bg-raised" : undefined
                 }
               >
                 {detail.primaryCallToAction.label}
@@ -111,7 +109,7 @@ export function InitiativeHero({
                 variant="secondary"
                 className={
                   isDark
-                    ? "hover:text-global-navy border-white text-white hover:bg-white"
+                    ? "hover:text-fg hover:bg-raised border-white text-white"
                     : undefined
                 }
               >

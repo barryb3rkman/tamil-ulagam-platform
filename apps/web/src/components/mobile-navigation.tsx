@@ -104,7 +104,7 @@ export function MobileNavigation({
         aria-controls="mobile-navigation-panel"
         aria-expanded={isOpen}
         data-state={isOpen ? "open" : "closed"}
-        className="motion-control rounded-button border-global-navy/20 text-global-navy hover:bg-global-navy/5 focus-visible:ring-focus grid size-11 place-items-center border focus-visible:outline-none"
+        className="motion-control rounded-button border-hairline/25 text-fg hover:bg-fg/10 focus-visible:ring-focus grid size-11 place-items-center border focus-visible:outline-none"
         onClick={() => {
           if (isOpen) {
             closeMenu();

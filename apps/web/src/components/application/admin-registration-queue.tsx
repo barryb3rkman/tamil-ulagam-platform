@@ -102,20 +102,18 @@ export function AdminRegistrationQueue() {
   return (
     <div className="grid gap-6">
       <div>
-        <p className="text-heritage-maroon text-eyebrow-sm">
-          Application review
-        </p>
-        <h1 className="text-global-navy mt-3 text-3xl font-bold sm:text-4xl">
+        <p className="text-fg-accent text-eyebrow-sm">Application review</p>
+        <h1 className="text-fg mt-3 text-3xl font-bold sm:text-4xl">
           Registration queue
         </h1>
-        <p className="text-slate mt-3">
+        <p className="text-fg-muted mt-3">
           Search and filter Organisation and Tamil Sangam applications without
           changing the trusted review lifecycle.
         </p>
       </div>
       <section
         aria-label="Application filters"
-        className="rounded-card border-global-navy/12 grid gap-4 border bg-white p-5 shadow-sm sm:grid-cols-2 xl:grid-cols-5"
+        className="rounded-card border-hairline/12 bg-raised grid gap-4 border p-5 shadow-sm sm:grid-cols-2 xl:grid-cols-5"
       >
         <TextField
           label="Search organisation"
@@ -165,7 +163,7 @@ export function AdminRegistrationQueue() {
         />
       </section>
       <div className="flex items-center justify-between gap-4">
-        <p className="text-slate text-sm" aria-live="polite">
+        <p className="text-fg-muted text-sm" aria-live="polite">
           {filtered.length} application{filtered.length === 1 ? "" : "s"}
         </p>
         {search ||
@@ -175,7 +173,7 @@ export function AdminRegistrationQueue() {
         country !== "all" ? (
           <button
             type="button"
-            className="text-global-navy focus-visible:ring-focus decoration-heritage-gold min-h-10 text-sm font-semibold underline decoration-2 underline-offset-4"
+            className="text-fg focus-visible:ring-focus decoration-heritage-gold min-h-10 text-sm font-semibold underline decoration-2 underline-offset-4"
             onClick={() => {
               setSearch("");
               setStatus("all");

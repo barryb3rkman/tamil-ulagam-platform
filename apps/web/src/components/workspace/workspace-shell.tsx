@@ -265,7 +265,7 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
       </aside>
 
       <div className="relative min-w-0 overflow-hidden">
-        <header className="border-global-navy/10 bg-warm-ivory/95 sticky top-0 z-30 border-b backdrop-blur-xl">
+        <header className="border-hairline/10 bg-sunken/95 sticky top-0 z-30 border-b backdrop-blur-xl">
           <div className="flex min-h-[4.5rem] items-center justify-between gap-4 px-5 sm:px-7 lg:px-8 xl:px-10">
             <div className="flex min-w-0 items-center gap-3 lg:hidden">
               <button
@@ -274,7 +274,7 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
                 aria-label="Open workspace navigation"
                 aria-haspopup="dialog"
                 aria-expanded={mobileNavigationOpen}
-                className="border-global-navy/15 focus-visible:ring-focus rounded-button grid size-11 shrink-0 place-items-center border bg-white"
+                className="border-hairline/15 focus-visible:ring-focus rounded-button bg-raised grid size-11 shrink-0 place-items-center border"
               >
                 <span aria-hidden="true" className="grid gap-1">
                   <span className="bg-global-navy block h-0.5 w-5" />
@@ -295,24 +295,21 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
               aria-label="Current workspace"
               className="hidden min-w-0 lg:block"
             >
-              <p className="text-slate text-eyebrow-sm">
+              <p className="text-fg-muted text-eyebrow-sm">
                 Tamil Ulagam
-                <span aria-hidden="true" className="text-global-navy/25 mx-1.5">
+                <span aria-hidden="true" className="text-fg/25 mx-1.5">
                   ·
                 </span>
                 <span>{workspaceTypeLabel(current?.type ?? active.type)}</span>
               </p>
               <p className="mt-0.5 flex min-w-0 items-center text-sm font-bold">
-                <span className="text-global-navy truncate">
+                <span className="text-fg truncate">
                   {current?.label ?? "Workspace"}
                 </span>
-                <span
-                  aria-hidden="true"
-                  className="text-global-navy/25 mx-2 shrink-0"
-                >
+                <span aria-hidden="true" className="text-fg/25 mx-2 shrink-0">
                   /
                 </span>
-                <span className="text-slate shrink-0 font-semibold">
+                <span className="text-fg-muted shrink-0 font-semibold">
                   {pageLabel}
                 </span>
               </p>
@@ -392,7 +389,7 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
                   variant="drawer"
                   onNavigate={() => setMobileNavigationOpen(false)}
                 />
-                <div className="border-global-navy/10 my-5 border-t" />
+                <div className="border-hairline/10 my-5 border-t" />
                 <ProgrammeNavigation
                   type={active.type}
                   entityId={active.id}
@@ -401,25 +398,25 @@ export function WorkspaceShell({ children }: { readonly children: ReactNode }) {
                 />
               </div>
             ) : null}
-            <div className="border-global-navy/10 mt-6 grid gap-1 border-t pt-5">
+            <div className="border-hairline/10 mt-6 grid gap-1 border-t pt-5">
               <Link
                 href="/dashboard/account"
                 onClick={() => setMobileNavigationOpen(false)}
-                className="text-global-navy focus-visible:ring-focus rounded-button flex min-h-11 items-center px-3 text-sm font-semibold"
+                className="text-fg focus-visible:ring-focus rounded-button flex min-h-11 items-center px-3 text-sm font-semibold"
               >
                 Account settings
               </Link>
               <button
                 type="button"
                 onClick={requestSignOut}
-                className="text-slate focus-visible:ring-focus rounded-button flex min-h-11 items-center px-3 text-sm font-semibold"
+                className="text-fg-muted focus-visible:ring-focus rounded-button flex min-h-11 items-center px-3 text-sm font-semibold"
               >
                 Sign out
               </button>
             </div>
           </>
         ) : (
-          <Link href="/login" className="text-global-navy font-semibold">
+          <Link href="/login" className="text-fg font-semibold">
             Sign in
           </Link>
         )}

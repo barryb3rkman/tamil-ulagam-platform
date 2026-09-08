@@ -11,7 +11,7 @@ const toneClassName: Record<NonNullable<AlertProps["tone"]>, string> = {
   error: "border-error/25 bg-error/5 text-error",
   warning: "border-warning/25 bg-warning/8 text-warning",
   success: "border-success/25 bg-success/8 text-success",
-  info: "border-heritage-gold/40 bg-heritage-gold/10 text-global-navy",
+  info: "border-heritage-gold/40 bg-heritage-gold/10 text-fg",
 };
 
 export function Alert({

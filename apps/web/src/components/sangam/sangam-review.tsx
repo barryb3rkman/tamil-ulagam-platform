@@ -83,13 +83,13 @@ export function SangamReview({
     <section className="gradient-warm-welcome">
       <div className="mx-auto max-w-[74rem] px-5 py-10 sm:px-7 sm:py-14 lg:px-10">
         <div className="mb-7 max-w-3xl">
-          <p className="text-heritage-maroon text-eyebrow-sm">
+          <p className="text-fg-accent text-eyebrow-sm">
             {sangamReviewContent.eyebrow}
           </p>
-          <h1 className="text-global-navy mt-3 text-3xl font-bold tracking-[-0.03em] sm:text-4xl">
+          <h1 className="text-fg mt-3 text-3xl font-bold tracking-[-0.03em] sm:text-4xl">
             {sangamReviewContent.title}
           </h1>
-          <p className="text-slate mt-3 leading-7">
+          <p className="text-fg-muted mt-3 leading-7">
             {sangamReviewContent.description}
           </p>
         </div>
@@ -115,7 +115,7 @@ export function SangamReview({
           </Alert>
         ) : null}
 
-        <div className="border-global-navy/12 rounded-card border bg-white p-5 sm:p-7 lg:p-8">
+        <div className="border-hairline/12 rounded-card bg-raised border p-5 sm:p-7 lg:p-8">
           <ReviewSection title="Sangam" onEdit={() => onEdit(1)}>
             <ReviewRow label="Name" value={organisation.name} />
             <ReviewRow
@@ -157,7 +157,7 @@ export function SangamReview({
                   value={organisation.registrationNumber}
                 />
                 <div>
-                  <dt className="text-slate text-eyebrow-sm">
+                  <dt className="text-fg-muted text-eyebrow-sm">
                     Registration certificate
                   </dt>
                   <dd className="mt-1 leading-6">
@@ -170,7 +170,7 @@ export function SangamReview({
                         }
                       />
                     ) : (
-                      <span className="text-slate italic">Not provided</span>
+                      <span className="text-fg-muted italic">Not provided</span>
                     )}
                   </dd>
                 </div>
@@ -202,7 +202,9 @@ export function SangamReview({
           <ReviewSection title="Digital presence" onEdit={() => onEdit(3)}>
             <ReviewRow label="Website" value={organisation.website} />
             <div className="sm:col-span-2">
-              <dt className="text-slate text-eyebrow-sm">Social media links</dt>
+              <dt className="text-fg-muted text-eyebrow-sm">
+                Social media links
+              </dt>
               <dd className="mt-1 leading-6">
                 {profile?.socialLinks.length ? (
                   <ul className="grid gap-1">
@@ -212,7 +214,7 @@ export function SangamReview({
                           href={link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-global-navy focus-visible:ring-focus underline underline-offset-4"
+                          className="text-fg focus-visible:ring-focus underline underline-offset-4"
                         >
                           {link}
                         </a>
@@ -220,7 +222,7 @@ export function SangamReview({
                     ))}
                   </ul>
                 ) : (
-                  <span className="text-slate italic">Not provided</span>
+                  <span className="text-fg-muted italic">Not provided</span>
                 )}
               </dd>
             </div>
@@ -264,7 +266,7 @@ export function SangamReview({
             size="large"
             onClick={() => setConfirmOpen(true)}
             disabled={!service}
-            className="bg-heritage-gold text-deep-navy hover:bg-white"
+            className="bg-heritage-gold text-deep-navy hover:bg-raised"
           >
             {sangamReviewContent.submitCta}
           </Button>
@@ -275,7 +277,7 @@ export function SangamReview({
           onClose={() => setConfirmOpen(false)}
           title={sangamReviewContent.confirmDialogTitle}
         >
-          <p className="text-slate leading-7">
+          <p className="text-fg-muted leading-7">
             {sangamReviewContent.confirmDialogBody}
           </p>
           <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
@@ -314,13 +316,13 @@ function ReviewSection({
   readonly children: ReactNode;
 }) {
   return (
-    <div className="border-global-navy/10 grid gap-4 border-t pt-6 first:border-t-0 first:pt-0">
+    <div className="border-hairline/10 grid gap-4 border-t pt-6 first:border-t-0 first:pt-0">
       <div className="flex items-center justify-between gap-4">
-        <h2 className="text-global-navy text-base font-bold">{title}</h2>
+        <h2 className="text-fg text-base font-bold">{title}</h2>
         <button
           type="button"
           onClick={onEdit}
-          className="text-global-navy focus-visible:ring-focus hover:text-heritage-maroon decoration-heritage-gold min-h-8 text-sm font-semibold underline decoration-2 underline-offset-4"
+          className="text-fg focus-visible:ring-focus hover:text-fg-accent decoration-heritage-gold min-h-8 text-sm font-semibold underline decoration-2 underline-offset-4"
         >
           Edit
         </button>
@@ -339,9 +341,9 @@ function ReviewRow({
 }) {
   return (
     <div className="min-w-0">
-      <dt className="text-slate text-eyebrow-sm">{label}</dt>
+      <dt className="text-fg-muted text-eyebrow-sm">{label}</dt>
       <dd
-        className={`mt-1 leading-6 break-words ${value ? "text-charcoal" : "text-slate italic"}`}
+        className={`mt-1 leading-6 break-words ${value ? "text-fg-body" : "text-fg-muted italic"}`}
       >
         {value || "Not provided"}
       </dd>

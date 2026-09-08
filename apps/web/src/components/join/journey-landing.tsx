@@ -48,7 +48,7 @@ export function JourneyLanding({
         <div className="mx-auto max-w-2xl">
           <h2 className="text-section-title text-gradient-ink">{stepsTitle}</h2>
           {stepsDescription ? (
-            <p className="text-slate mt-3 leading-7">{stepsDescription}</p>
+            <p className="text-fg-muted mt-3 leading-7">{stepsDescription}</p>
           ) : null}
 
           <ol data-motion-group className="mt-10 grid gap-0">
@@ -67,15 +67,15 @@ export function JourneyLanding({
                   ) : null}
                   <span
                     aria-hidden="true"
-                    className="border-heritage-gold/40 text-heritage-maroon font-display relative z-10 grid size-11 shrink-0 place-items-center rounded-full border bg-white text-sm font-bold shadow-[0_0.5rem_1.5rem_rgba(214,168,75,0.18)]"
+                    className="border-heritage-gold/40 text-fg-accent font-display bg-raised relative z-10 grid size-11 shrink-0 place-items-center rounded-full border text-sm font-bold shadow-[0_0.5rem_1.5rem_rgba(214,168,75,0.18)]"
                   >
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <div className="min-w-0 pt-1.5">
-                    <p className="text-global-navy text-lg font-bold tracking-[-0.01em]">
+                    <p className="text-fg text-lg font-bold tracking-[-0.01em]">
                       {step.title}
                     </p>
-                    <p className="text-slate mt-1.5 leading-7">
+                    <p className="text-fg-muted mt-1.5 leading-7">
                       {step.description}
                     </p>
                   </div>
@@ -93,14 +93,14 @@ export function JourneyLanding({
             </Link>
             <Link
               href={withReturnTarget("/login", returnTo)}
-              className="border-global-navy/12 text-global-navy hover:border-heritage-gold/55 hover:bg-heritage-gold/8 focus-visible:ring-focus rounded-button motion-control inline-flex min-h-12 items-center border bg-white px-6 text-sm font-bold focus-visible:outline-none"
+              className="border-hairline/12 text-fg hover:border-heritage-gold/55 hover:bg-heritage-gold/8 focus-visible:ring-focus rounded-button motion-control bg-raised inline-flex min-h-12 items-center border px-6 text-sm font-bold focus-visible:outline-none"
             >
               Sign in
             </Link>
             {backHref && backLabel ? (
               <Link
                 href={backHref}
-                className="text-slate hover:text-global-navy focus-visible:ring-focus rounded-button inline-flex min-h-12 items-center text-sm font-semibold focus-visible:outline-none"
+                className="text-fg-muted hover:text-fg focus-visible:ring-focus rounded-button inline-flex min-h-12 items-center text-sm font-semibold focus-visible:outline-none"
               >
                 {backLabel}
               </Link>

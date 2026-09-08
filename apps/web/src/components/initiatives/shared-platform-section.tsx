@@ -30,7 +30,7 @@ export function SharedPlatformSection() {
             <LinkButton
               href={sharedPlatform.callToAction.href}
               variant="secondary"
-              className="hover:text-deep-navy mt-9 border-white text-white hover:bg-white"
+              className="hover:text-deep-navy hover:bg-raised mt-9 border-white text-white"
             >
               {sharedPlatform.callToAction.label}
             </LinkButton>

@@ -68,7 +68,7 @@ export function WorkspaceSwitcher({
             ? `focus-visible:ring-focus-inverse hover:border-heritage-gold/45 border-white/10 bg-black/10 text-white/82 hover:bg-white/7 hover:text-white ${
                 block ? "w-full justify-between" : ""
               }`
-            : "border-global-navy/15 text-global-navy focus-visible:ring-focus hover:border-global-navy/35 bg-white"
+            : "border-hairline/15 text-fg focus-visible:ring-focus hover:border-hairline/35 bg-raised"
         }`}
       >
         <span className="flex items-center gap-2">
@@ -93,15 +93,12 @@ export function WorkspaceSwitcher({
         side={side}
       >
         {current ? (
-          <p className="text-charcoal mb-5 text-sm">
+          <p className="text-fg-body mb-5 text-sm">
             You are currently managing{" "}
-            <span className="text-global-navy font-semibold">
-              {current.label}
-            </span>
-            .
+            <span className="text-fg font-semibold">{current.label}</span>.
           </p>
         ) : (
-          <p className="text-charcoal mb-5 text-sm">
+          <p className="text-fg-body mb-5 text-sm">
             Choose a workspace to open.
           </p>
         )}
@@ -152,7 +149,7 @@ function WorkspaceSwitcherSection({
 }) {
   return (
     <div>
-      <h3 className="text-slate text-eyebrow-sm mb-2">{heading}</h3>
+      <h3 className="text-fg-muted text-eyebrow-sm mb-2">{heading}</h3>
       <ul className="grid gap-1.5">
         {options.map((option) => (
           <li key={`${option.type}-${option.id}`} className="min-w-0">
@@ -162,13 +159,13 @@ function WorkspaceSwitcherSection({
               aria-current={option.current ? "page" : undefined}
               className={`focus-visible:ring-focus motion-control rounded-card flex min-h-11 items-center justify-between gap-3 border px-3.5 py-2.5 text-sm ${
                 option.current
-                  ? "border-heritage-gold bg-heritage-gold/10 text-global-navy font-bold"
-                  : "border-global-navy/12 text-charcoal hover:border-global-navy/30 hover:bg-warm-ivory font-semibold"
+                  ? "border-heritage-gold bg-heritage-gold/10 text-fg font-bold"
+                  : "border-hairline/12 text-fg-body hover:border-hairline/30 hover:bg-sunken font-semibold"
               }`}
             >
               <span className="min-w-0 truncate">{option.label}</span>
               {option.current ? (
-                <span className="text-global-navy/60 text-eyebrow-sm shrink-0">
+                <span className="text-fg/60 text-eyebrow-sm shrink-0">
                   Current
                 </span>
               ) : null}

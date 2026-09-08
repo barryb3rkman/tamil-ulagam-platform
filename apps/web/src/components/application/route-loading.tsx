@@ -18,7 +18,7 @@ export function RouteLoading({
           className="bg-heritage-gold/18 motion-halo absolute size-36 rounded-full blur-3xl"
         />
         <BrandMark orbit className="relative size-16" />
-        <span className="text-slate relative text-[0.7rem] font-bold tracking-[0.22em] uppercase">
+        <span className="text-fg-muted relative text-[0.7rem] font-bold tracking-[0.22em] uppercase">
           {label}
         </span>
       </div>

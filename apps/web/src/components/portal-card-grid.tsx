@@ -37,7 +37,7 @@ export function PortalCardGrid({
     >
       {cards.map((card) => (
         <li key={card.title} className={`flex grow basis-full ${basis}`}>
-          <article className="rounded-card border-global-navy/[0.09] motion-lift group hover:border-global-navy/20 relative flex h-full w-full flex-col overflow-hidden border bg-white p-6 hover:shadow-[0_1.25rem_3rem_rgba(6,29,50,0.13)]">
+          <article className="rounded-card border-hairline/[0.09] motion-lift group hover:border-hairline/20 bg-raised relative flex h-full w-full flex-col overflow-hidden border p-6 hover:shadow-[0_1.25rem_3rem_rgba(6,29,50,0.13)]">
             <span
               aria-hidden="true"
               className="gradient-gold-leaf ease-snap absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
@@ -50,16 +50,16 @@ export function PortalCardGrid({
                 {card.marker}
               </span>
             ) : null}
-            <h3 className="text-global-navy group-hover:text-heritage-maroon mt-4 text-xl font-semibold tracking-[-0.025em] transition-colors duration-300">
+            <h3 className="text-fg group-hover:text-fg-accent mt-4 text-xl font-semibold tracking-[-0.025em] transition-colors duration-300">
               {card.title}
             </h3>
-            <p className="text-slate mt-3 flex-1 text-sm leading-6">
+            <p className="text-fg-muted mt-3 flex-1 text-sm leading-6">
               {card.description}
             </p>
             <p className="mt-6">
               <Link
                 href={card.href}
-                className="text-global-navy group-hover:text-heritage-maroon focus-visible:ring-focus rounded-button inline-flex items-center gap-1.5 text-sm font-bold transition-colors duration-300 after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
+                className="text-fg group-hover:text-fg-accent focus-visible:ring-focus rounded-button inline-flex items-center gap-1.5 text-sm font-bold transition-colors duration-300 after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
               >
                 {linkLabel}
                 <span

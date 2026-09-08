@@ -18,9 +18,9 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         type={type}
         className={cx(
           "motion-control focus-visible:ring-focus grid size-10 shrink-0 place-items-center rounded-full focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-55",
-          variant === "ghost" &&
-            "text-global-navy hover:bg-global-navy/8 bg-transparent",
-          variant === "solid" && "bg-global-navy hover:bg-deep-navy text-white",
+          variant === "ghost" && "text-fg hover:bg-fg/8 bg-transparent",
+          variant === "solid" &&
+            "bg-action hover:bg-action-hover text-action-fg",
           className,
         )}
         {...props}
