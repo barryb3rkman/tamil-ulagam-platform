@@ -73,15 +73,26 @@ jobs:
       - name: Verify static export
         shell: bash
         run: |
+          # One entry per public route, so a page silently dropping out of the
+          # export fails the deploy rather than 404ing in front of visitors.
+          # /roadmap was listed here long after the page itself was removed,
+          # which failed every deploy on main until it was noticed.
           required_files=(
             apps/web/out/index.html
             apps/web/out/404.html
             apps/web/out/about/index.html
             apps/web/out/initiatives/index.html
             apps/web/out/tamil-id/index.html
-            apps/web/out/roadmap/index.html
+            apps/web/out/chapters/index.html
+            apps/web/out/partners/index.html
+            apps/web/out/events/index.html
+            apps/web/out/news/index.html
+            apps/web/out/contact/index.html
+            apps/web/out/join/index.html
             apps/web/out/privacy/index.html
             apps/web/out/terms/index.html
+            apps/web/out/login/index.html
+            apps/web/out/register/index.html
             apps/web/out/icon.svg
             apps/web/out/sitemap.xml
             apps/web/out/robots.txt
